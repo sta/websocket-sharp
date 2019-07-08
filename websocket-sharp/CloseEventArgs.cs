@@ -111,11 +111,11 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the reason for the close.
+    /// Gets the reason for the connection close.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the reason for the close
-    /// if present.
+    /// A <see cref="string"/> that represents the reason for
+    /// the connection close if present.
     /// </value>
     public string Reason {
       get {
