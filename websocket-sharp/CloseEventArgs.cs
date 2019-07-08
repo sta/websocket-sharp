@@ -85,16 +85,6 @@ namespace WebSocketSharp
 
     #endregion
 
-    #region Internal Properties
-
-    internal PayloadData PayloadData {
-      get {
-        return _payloadData;
-      }
-    }
-
-    #endregion
-
     #region Public Properties
 
     /// <summary>
