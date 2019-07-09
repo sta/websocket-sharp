@@ -53,11 +53,6 @@ namespace WebSocketSharp
 
     #region Internal Constructors
 
-    internal CloseEventArgs (ushort code)
-      : this (code, null)
-    {
-    }
-
     internal CloseEventArgs (CloseStatusCode code)
       : this ((ushort) code, null)
     {
