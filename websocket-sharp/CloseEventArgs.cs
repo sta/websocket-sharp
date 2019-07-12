@@ -68,6 +68,12 @@ namespace WebSocketSharp
     {
     }
 
+    internal CloseEventArgs (PayloadData payloadData, bool clean)
+    {
+      _payloadData = payloadData;
+      _clean = clean;
+    }
+
     #endregion
 
     #region Public Properties
