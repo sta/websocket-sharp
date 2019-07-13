@@ -54,8 +54,8 @@ namespace WebSocketSharp
     #region Internal Constructors
 
     internal CloseEventArgs (PayloadData payloadData)
+      : this (payloadData, false)
     {
-      _payloadData = payloadData;
     }
 
     internal CloseEventArgs (ushort code, string reason)
