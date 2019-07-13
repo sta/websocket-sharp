@@ -1134,8 +1134,7 @@ namespace WebSocketSharp
 
       _readyState = WebSocketState.Closed;
 
-      var e = new CloseEventArgs (payloadData);
-      e.WasClean = res;
+      var e = new CloseEventArgs (payloadData, res);
 
       try {
         OnClose.Emit (this, e);
