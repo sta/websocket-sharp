@@ -1788,7 +1788,7 @@ namespace WebSocketSharp
 
       _readyState = WebSocketState.Closed;
 
-      var e = new CloseEventArgs (code, reason);
+      var e = new CloseEventArgs ((ushort) code, reason, false);
 
       try {
         OnClose.Emit (this, e);
