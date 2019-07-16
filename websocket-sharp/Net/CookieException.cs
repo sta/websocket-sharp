@@ -46,7 +46,7 @@ namespace WebSocketSharp.Net
   /// The exception that is thrown when a <see cref="Cookie"/> gets an error.
   /// </summary>
   [Serializable]
-  public class CookieException : FormatException
+  public class CookieException : FormatException, ISerializable
   {
     #region Internal Constructors
 
