@@ -58,11 +58,6 @@ namespace WebSocketSharp
       _payloadData = new PayloadData (code, reason);
     }
 
-    internal CloseEventArgs (CloseStatusCode code, string reason)
-      : this ((ushort) code, reason)
-    {
-    }
-
     internal CloseEventArgs (PayloadData payloadData, bool clean)
     {
       _payloadData = payloadData;
