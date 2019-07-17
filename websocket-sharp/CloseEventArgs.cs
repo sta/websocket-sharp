@@ -106,10 +106,6 @@ namespace WebSocketSharp
       get {
         return _clean;
       }
-
-      internal set {
-        _clean = value;
-      }
     }
 
     #endregion
