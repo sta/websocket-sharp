@@ -5,6 +5,13 @@ let camera;
 let controls;
 let mesh;
 let mousePressed = false;
+let startingDistance;
+
+let dataStruct = {
+    az: 0, // azimuth 
+    el: 0, // elevation
+    z: 1 // zoom
+};
 
 function initThreeJS (){
     container = document.querySelector( '#scene-container' );
@@ -14,11 +21,11 @@ function initThreeJS (){
     scene.background = new THREE.Color( 0x7FBCDD );
     // camera
     camera = new THREE.PerspectiveCamera(35, container.clientWidth / container.clientHeight, 0.1, 100,);
-    camera.position.set( -4, 4, 10 );
+    camera.position.set( 0, 0, 5 );
     // controls
     controls = new THREE.OrbitControls( camera, container );
     // mesh
-    const geometry = new THREE.BoxBufferGeometry( 2, 2, 2 );
+    const geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
     const material = new THREE.MeshStandardMaterial( { color: 0x005000 } );
     mesh = new THREE.Mesh( geometry, material );
     scene.add( mesh );
@@ -43,7 +50,9 @@ function initMouseEvents (){
     container = document.querySelector( '#scene-container' );
     container.onmousemove = function(){
         if(mousePressed){
-            sendAngles(controls.getAzimuthalAngle(), controls.getPolarAngle());
+            dataStruct.az = controls.getAzimuthalAngle();
+            dataStruct.el = controls.getPolarAngle();
+            sendData();
         }
     };
     container.onmousedown = function(){
@@ -52,6 +61,13 @@ function initMouseEvents (){
     container.onmouseup = function(){
         mousePressed = false;
     }
+    // mouse wheel
+    container.addEventListener("wheel", function(){
+        dataStruct.z = startingDistance/controls.target.distanceTo( controls.object.position );
+        sendData();
+    });
+        
+    startingDistance = controls.target.distanceTo( controls.object.position );
 }
 
 function initWebSocket (addr){
@@ -76,13 +92,10 @@ function initWebSocket (addr){
     }
 }
 
-function sendAngles(azimuth, elevation){
+function sendData(azimuth, elevation){
     if(wsocket){
         if(wsocket.readyState === WebSocket.OPEN){
-            wsocket.send(JSON.stringify({
-                az: azimuth, 
-                el: elevation
-            }));
+            wsocket.send(JSON.stringify(dataStruct));
         }
     }
 }
