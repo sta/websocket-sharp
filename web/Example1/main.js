@@ -77,11 +77,13 @@ function initWebSocket (addr){
 }
 
 function sendAngles(azimuth, elevation){
-    if(wsocket.readyState === WebSocket.OPEN){
-        wsocket.send(JSON.stringify({
-            az: azimuth, 
-            el: elevation
-        }));
+    if(wsocket){
+        if(wsocket.readyState === WebSocket.OPEN){
+            wsocket.send(JSON.stringify({
+                az: azimuth, 
+                el: elevation
+            }));
+        }
     }
 }
 
@@ -89,8 +91,12 @@ $(document).ready(function () {
     // more here: https://notifyjs.jpillora.com
     $.notify.defaults( {globalPosition: "top left"} );
 
+    let btnConnect = document.querySelector( '#btn-connect' );
+    btnConnect.onclick = function(){
+        let addr = document.getElementById("ws-address").value;
+        initWebSocket("ws://" + addr);
+    }
+
     initThreeJS();
     initMouseEvents();
-    initWebSocket("ws://127.0.0.1:55555/Laputa");
-
 });
