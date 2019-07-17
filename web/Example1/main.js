@@ -1,4 +1,4 @@
-let connection;
+let wsocket;
 let container;
 let scene;
 let camera;
@@ -54,35 +54,43 @@ function initMouseEvents (){
     }
 }
 
+function initWebSocket (addr){
+    wsocket = new WebSocket(addr);
+    // set callbacks
+    wsocket.onopen = () => {
+        console.log("websocket onopen");
+        $.notify("Connected to server", "success");
+    }
+    wsocket.onerror = error => {
+        console.log(error);
+        $.notify("WebSocket Error", "error");
+    }
+    wsocket.onclose = e => {
+        console.log(e);
+        let msg = e.reason ? "connection closed with the reason: " + e.reason : "connection closed without any reason";
+        $.notify(msg, "warn");
+    }
+    wsocket.onmessage = (e) => {
+        console.log("message received from server");
+        console.log(e.data);
+    }
+}
+
 function sendAngles(azimuth, elevation){
-    // todo: send this stuff over websocket to the server
-    console.log(azimuth + '   ' + elevation);
+    if(wsocket.readyState === WebSocket.OPEN){
+        wsocket.send(JSON.stringify({
+            az: azimuth, 
+            el: elevation
+        }));
+    }
 }
 
 $(document).ready(function () {
-    console.log("go");
+    // more here: https://notifyjs.jpillora.com
+    $.notify.defaults( {globalPosition: "top left"} );
 
     initThreeJS();
     initMouseEvents();
-
-    connection = new WebSocket("ws://127.0.0.1:55555/Laputa");
-    connection.onopen = () => {
-        console.log("opened");
-        connection.send('BALUS');
-    }
-
-    connection.onerror = error => {
-        console.log("WebSocket error");
-        console.log(error);
-    }
-
-    connection.onclose = e => {
-        console.log("connection closes");
-        console.log(e);
-    }
-
-    connection.onmessage = (e) => {
-        console.log(e.data);
-    }
+    initWebSocket("ws://127.0.0.1:55555/Laputa");
 
 });
