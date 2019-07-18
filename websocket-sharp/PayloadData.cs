@@ -123,7 +123,7 @@ namespace WebSocketSharp
     internal ushort Code {
       get {
         if (!_codeSet) {
-          _code = _length > 1
+          _code = _length >= 2
                   ? _data.SubArray (0, 2).ToUInt16 (ByteOrder.Big)
                   : (ushort) 1005;
 
