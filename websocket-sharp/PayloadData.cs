@@ -146,7 +146,7 @@ namespace WebSocketSharp
 
     internal bool HasReservedCode {
       get {
-        return _length > 1 && Code.IsReserved ();
+        return _length >= 2 && Code.IsReserved ();
       }
     }
 
