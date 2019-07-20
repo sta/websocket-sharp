@@ -74,7 +74,7 @@ namespace WebSocketSharp
 
     static PayloadData ()
     {
-      Empty = new PayloadData ();
+      Empty = new PayloadData (WebSocket.EmptyBytes, 0);
       MaxLength = Int64.MaxValue;
     }
 
