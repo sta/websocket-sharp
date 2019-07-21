@@ -82,17 +82,6 @@ namespace WebSocketSharp
 
     #region Internal Constructors
 
-    internal PayloadData ()
-    {
-      _code = 1005;
-      _reason = String.Empty;
-
-      _data = WebSocket.EmptyBytes;
-
-      _codeSet = true;
-      _reasonSet = true;
-    }
-
     internal PayloadData (byte[] data)
       : this (data, data.LongLength)
     {
