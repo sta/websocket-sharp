@@ -36,8 +36,6 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private ushort _code;
-    private bool   _codeSet;
     private byte[] _data;
     private long   _extDataLength;
     private long   _length;
@@ -95,13 +93,11 @@ namespace WebSocketSharp
 
     internal PayloadData (ushort code, string reason)
     {
-      _code = code;
       _reason = reason ?? String.Empty;
 
       _data = code.Append (reason);
       _length = _data.LongLength;
 
-      _codeSet = true;
       _reasonSet = true;
     }
 
@@ -111,15 +107,9 @@ namespace WebSocketSharp
 
     internal ushort Code {
       get {
-        if (!_codeSet) {
-          _code = _length >= 2
-                  ? _data.SubArray (0, 2).ToUInt16 (ByteOrder.Big)
-                  : (ushort) 1005;
-
-          _codeSet = true;
-        }
-
-        return _code;
+        return _length >= 2
+               ? _data.SubArray (0, 2).ToUInt16 (ByteOrder.Big)
+               : (ushort) 1005;
       }
     }
 
