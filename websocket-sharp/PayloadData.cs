@@ -39,8 +39,6 @@ namespace WebSocketSharp
     private byte[] _data;
     private long   _extDataLength;
     private long   _length;
-    private string _reason;
-    private bool   _reasonSet;
 
     #endregion
 
@@ -93,12 +91,8 @@ namespace WebSocketSharp
 
     internal PayloadData (ushort code, string reason)
     {
-      _reason = reason ?? String.Empty;
-
       _data = code.Append (reason);
       _length = _data.LongLength;
-
-      _reasonSet = true;
     }
 
     #endregion
@@ -131,24 +125,15 @@ namespace WebSocketSharp
 
     internal string Reason {
       get {
-        if (!_reasonSet) {
-          if (_length > 2) {
-            var raw = _data.SubArray (2, _length - 2);
+        if (_length <= 2)
+          return String.Empty;
 
-            string reason;
-            if (!raw.TryGetUTF8DecodedString (out reason))
-              reason = String.Empty;
+        var raw = _data.SubArray (2, _length - 2);
 
-            _reason = reason;
-          }
-          else {
-            _reason = String.Empty;
-          }
-
-          _reasonSet = true;
-        }
-
-        return _reason;
+        string reason;
+        return raw.TryGetUTF8DecodedString (out reason)
+               ? reason
+               : String.Empty;
       }
     }
 
