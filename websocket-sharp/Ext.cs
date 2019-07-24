@@ -570,13 +570,15 @@ namespace WebSocketSharp
       return unquote ? val.Unquote () : val;
     }
 
-    internal static byte[] InternalToByteArray (this ushort value, ByteOrder order)
+    internal static byte[] InternalToByteArray (
+      this ushort value, ByteOrder order
+    )
     {
-      var bytes = BitConverter.GetBytes (value);
+      var ret = BitConverter.GetBytes (value);
       if (!order.IsHostOrder ())
-        Array.Reverse (bytes);
+        Array.Reverse (ret);
 
-      return bytes;
+      return ret;
     }
 
     internal static byte[] InternalToByteArray (this ulong value, ByteOrder order)
