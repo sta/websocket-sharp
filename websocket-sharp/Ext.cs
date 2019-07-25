@@ -581,13 +581,16 @@ namespace WebSocketSharp
       return ret;
     }
 
-    internal static byte[] InternalToByteArray (this ulong value, ByteOrder order)
+    internal static byte[] InternalToByteArray (
+      this ulong value, ByteOrder order
+    )
     {
-      var bytes = BitConverter.GetBytes (value);
-      if (!order.IsHostOrder ())
-        Array.Reverse (bytes);
+      var ret = BitConverter.GetBytes (value);
 
-      return bytes;
+      if (!order.IsHostOrder ())
+        Array.Reverse (ret);
+
+      return ret;
     }
 
     internal static bool IsCompressionExtension (
