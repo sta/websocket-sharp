@@ -575,6 +575,7 @@ namespace WebSocketSharp
     )
     {
       var ret = BitConverter.GetBytes (value);
+
       if (!order.IsHostOrder ())
         Array.Reverse (ret);
 
