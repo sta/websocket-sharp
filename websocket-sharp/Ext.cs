@@ -172,14 +172,15 @@ namespace WebSocketSharp
 
     internal static byte[] Append (this ushort code, string reason)
     {
-      var ret = code.InternalToByteArray (ByteOrder.Big);
-      if (reason != null && reason.Length > 0) {
-        var buff = new List<byte> (ret);
-        buff.AddRange (Encoding.UTF8.GetBytes (reason));
-        ret = buff.ToArray ();
-      }
+      var bytes = code.InternalToByteArray (ByteOrder.Big);
 
-      return ret;
+      if (reason == null || reason.Length == 0)
+        return bytes;
+
+      var buff = new List<byte> (bytes);
+      buff.AddRange (Encoding.UTF8.GetBytes (reason));
+
+      return buff.ToArray ();
     }
 
     internal static void Close (this HttpListenerResponse response, HttpStatusCode code)
