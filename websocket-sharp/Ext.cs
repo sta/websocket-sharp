@@ -183,7 +183,9 @@ namespace WebSocketSharp
       return buff.ToArray ();
     }
 
-    internal static void Close (this HttpListenerResponse response, HttpStatusCode code)
+    internal static void Close (
+      this HttpListenerResponse response, HttpStatusCode code
+    )
     {
       response.StatusCode = (int) code;
       response.OutputStream.Close ();
