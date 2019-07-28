@@ -192,7 +192,8 @@ namespace WebSocketSharp
     }
 
     internal static void CloseWithAuthChallenge (
-      this HttpListenerResponse response, string challenge)
+      this HttpListenerResponse response, string challenge
+    )
     {
       response.Headers.InternalSet ("WWW-Authenticate", challenge, true);
       response.Close (HttpStatusCode.Unauthorized);
