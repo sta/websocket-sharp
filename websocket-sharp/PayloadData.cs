@@ -50,7 +50,7 @@ namespace WebSocketSharp
     public static readonly PayloadData Empty;
 
     /// <summary>
-    /// Represents the allowable max length.
+    /// Represents the allowable max length of payload data.
     /// </summary>
     /// <remarks>
     ///   <para>
@@ -58,9 +58,9 @@ namespace WebSocketSharp
     ///   incoming payload data is greater than the value of this field.
     ///   </para>
     ///   <para>
-    ///   If you would like to change the value, you must set it to a value
-    ///   between <c>WebSocket.FragmentLength</c> and <c>Int64.MaxValue</c>
-    ///   inclusive.
+    ///   If you would like to change the value of this field, it must be
+    ///   a number between <see cref="WebSocket.FragmentLength"/> and
+    ///   <see cref="Int64.MaxValue"/> inclusive.
     ///   </para>
     /// </remarks>
     public static readonly ulong MaxLength;
