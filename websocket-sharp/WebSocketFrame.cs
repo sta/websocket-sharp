@@ -383,7 +383,9 @@ namespace WebSocketSharp
       var payloadLen = frame._payloadLength;
 
       // Extended Payload Length
-      var extPayloadLen = payloadLen > 125 ? frame.FullPayloadLength.ToString () : String.Empty;
+      var extPayloadLen = payloadLen > 125
+                          ? frame.FullPayloadLength.ToString ()
+                          : String.Empty;
 
       // Masking Key
       var maskingKey = BitConverter.ToString (frame._maskingKey);
