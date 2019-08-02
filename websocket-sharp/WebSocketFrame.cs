@@ -412,17 +412,18 @@ Extended Payload Length: {7}
            Payload Data: {9}";
 
       return String.Format (
-        fmt,
-        frame._fin,
-        frame._rsv1,
-        frame._rsv2,
-        frame._rsv3,
-        frame._opcode,
-        frame._mask,
-        payloadLen,
-        extPayloadLen,
-        maskingKey,
-        payload);
+               fmt,
+               frame._fin,
+               frame._rsv1,
+               frame._rsv2,
+               frame._rsv3,
+               frame._opcode,
+               frame._mask,
+               payloadLen,
+               extPayloadLen,
+               maskingKey,
+               payload
+             );
     }
 
     private static WebSocketFrame processHeader (byte[] header)
