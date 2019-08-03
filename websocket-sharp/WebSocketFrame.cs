@@ -395,7 +395,12 @@ namespace WebSocketSharp
                     ? String.Empty
                     : payloadLen > 125
                       ? "---"
-                      : frame.IsText && !(frame.IsFragment || frame.IsMasked || frame.IsCompressed)
+                      : frame.IsText
+                        && !(
+                             frame.IsFragment
+                             || frame.IsMasked
+                             || frame.IsCompressed
+                           )
                         ? frame._payloadData.ApplicationData.UTF8Decode ()
                         : frame._payloadData.ToString ();
 
