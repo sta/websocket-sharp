@@ -395,14 +395,12 @@ namespace WebSocketSharp
                     ? String.Empty
                     : payloadLen > 125
                       ? "---"
-                      : frame.IsText
-                        && !(
-                             frame.IsFragment
-                             || frame.IsMasked
-                             || frame.IsCompressed
-                           )
-                        ? frame._payloadData.ApplicationData.UTF8Decode ()
-                        : frame._payloadData.ToString ();
+                      : !frame.IsText
+                        || frame.IsFragment
+                        || frame.IsMasked
+                        || frame.IsCompressed
+                        ? frame._payloadData.ToString ()
+                        : frame._payloadData.ApplicationData.UTF8Decode ();
 
       var fmt = @"
                     FIN: {0}
