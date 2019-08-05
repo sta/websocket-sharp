@@ -637,6 +637,16 @@ Extended Payload Length: {7}
       stream.ReadBytesAsync (llen, 1024, compl, error);
     }
 
+    private static string utf8Decode (byte[] bytes)
+    {
+      try {
+        return Encoding.UTF8.GetString (bytes);
+      }
+      catch {
+        return null;
+      }
+    }
+
     #endregion
 
     #region Internal Methods
