@@ -400,7 +400,7 @@ namespace WebSocketSharp
                         || frame.IsMasked
                         || frame.IsCompressed
                         ? frame._payloadData.ToString ()
-                        : frame._payloadData.ApplicationData.UTF8Decode ();
+                        : utf8Decode (frame._payloadData.ApplicationData);
 
       var fmt = @"
                     FIN: {0}
