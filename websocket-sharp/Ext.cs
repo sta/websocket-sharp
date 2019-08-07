@@ -1246,16 +1246,6 @@ namespace WebSocketSharp
       return HttpUtility.UrlEncode (value, encoding);
     }
 
-    internal static string UTF8Decode (this byte[] bytes)
-    {
-      try {
-        return Encoding.UTF8.GetString (bytes);
-      }
-      catch {
-        return null;
-      }
-    }
-
     internal static void WriteBytes (
       this Stream stream, byte[] bytes, int bufferLength
     )
