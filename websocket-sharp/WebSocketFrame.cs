@@ -95,7 +95,9 @@ namespace WebSocketSharp
     {
     }
 
-    internal WebSocketFrame (Fin fin, Opcode opcode, byte[] data, bool compressed, bool mask)
+    internal WebSocketFrame (
+      Fin fin, Opcode opcode, byte[] data, bool compressed, bool mask
+    )
       : this (fin, opcode, new PayloadData (data), compressed, mask)
     {
     }
