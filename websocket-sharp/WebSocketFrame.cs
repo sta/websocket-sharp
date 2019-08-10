@@ -150,7 +150,11 @@ namespace WebSocketSharp
 
     internal int ExtendedPayloadLengthCount {
       get {
-        return _payloadLength < 126 ? 0 : (_payloadLength == 126 ? 2 : 8);
+        return _payloadLength < 126
+               ? 0
+               : _payloadLength == 126
+                 ? 2
+                 : 8;
       }
     }
 
