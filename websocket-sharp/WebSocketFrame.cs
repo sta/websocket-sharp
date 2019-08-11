@@ -258,7 +258,9 @@ namespace WebSocketSharp
 
     public ulong Length {
       get {
-        return 2 + (ulong) (_extPayloadLength.Length + _maskingKey.Length) + _payloadData.Length;
+        return 2
+               + (ulong) (_extPayloadLength.Length + _maskingKey.Length)
+               + _payloadData.Length;
       }
     }
 
