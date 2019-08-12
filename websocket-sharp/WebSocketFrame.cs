@@ -787,7 +787,10 @@ Extended Payload Length: {7}
         header = (header << 4) + (int) _opcode;
         header = (header << 1) + (int) _mask;
         header = (header << 7) + (int) _payloadLength;
-        buff.Write (((ushort) header).InternalToByteArray (ByteOrder.Big), 0, 2);
+
+        buff.Write (
+          ((ushort) header).InternalToByteArray (ByteOrder.Big), 0, 2
+        );
 
         if (_payloadLength > 125)
           buff.Write (_extPayloadLength, 0, _payloadLength == 126 ? 2 : 8);
@@ -797,6 +800,7 @@ Extended Payload Length: {7}
 
         if (_payloadLength > 0) {
           var bytes = _payloadData.ToArray ();
+
           if (_payloadLength < 127)
             buff.Write (bytes, 0, bytes.Length);
           else
