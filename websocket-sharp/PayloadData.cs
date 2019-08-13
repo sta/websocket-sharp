@@ -95,6 +95,21 @@ namespace WebSocketSharp
       _data = code.Append (reason);
       _length = _data.LongLength;
     }
+    
+    internal PayloadData(PayloadData original)
+    {        
+        _code = original._code;
+        _codeSet = original._codeSet;            
+        _extDataLength = original._extDataLength;
+        _length = original._length;
+        _reason = original._reason;
+        _reasonSet = original._reasonSet;
+
+        _data = new byte[_length];
+        original._data.CopyTo(_data, 0);
+
+        
+    }
 
     #endregion
 
