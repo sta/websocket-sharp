@@ -494,7 +494,9 @@ Extended Payload Length: {7}
       return frame;
     }
 
-    private static WebSocketFrame readExtendedPayloadLength (Stream stream, WebSocketFrame frame)
+    private static WebSocketFrame readExtendedPayloadLength (
+      Stream stream, WebSocketFrame frame
+    )
     {
       var len = frame.ExtendedPayloadLengthCount;
       if (len == 0) {
@@ -503,9 +505,10 @@ Extended Payload Length: {7}
       }
 
       var bytes = stream.ReadBytes (len);
-      if (bytes.Length != len)
-        throw new WebSocketException (
-          "The extended payload length of a frame cannot be read from the stream.");
+      if (bytes.Length != len) {
+        var msg = "The extended payload length of a frame could not be read.";
+        throw new WebSocketException (msg);
+      }
 
       frame._extPayloadLength = bytes;
       return frame;
