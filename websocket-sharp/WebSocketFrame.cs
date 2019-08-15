@@ -550,9 +550,12 @@ Extended Payload Length: {7}
     }
 
     private static void readHeaderAsync (
-      Stream stream, Action<WebSocketFrame> completed, Action<Exception> error)
+      Stream stream, Action<WebSocketFrame> completed, Action<Exception> error
+    )
     {
-      stream.ReadBytesAsync (2, bytes => completed (processHeader (bytes)), error);
+      stream.ReadBytesAsync (
+        2, bytes => completed (processHeader (bytes)), error
+      );
     }
 
     private static WebSocketFrame readMaskingKey (Stream stream, WebSocketFrame frame)
