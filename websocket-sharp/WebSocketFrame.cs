@@ -558,7 +558,9 @@ Extended Payload Length: {7}
       );
     }
 
-    private static WebSocketFrame readMaskingKey (Stream stream, WebSocketFrame frame)
+    private static WebSocketFrame readMaskingKey (
+      Stream stream, WebSocketFrame frame
+    )
     {
       var len = frame.IsMasked ? 4 : 0;
       if (len == 0) {
@@ -567,8 +569,10 @@ Extended Payload Length: {7}
       }
 
       var bytes = stream.ReadBytes (len);
-      if (bytes.Length != len)
-        throw new WebSocketException ("The masking key of a frame cannot be read from the stream.");
+      if (bytes.Length != len) {
+        var msg = "The masking key of a frame could not be read.";
+        throw new WebSocketException (msg);
+      }
 
       frame._maskingKey = bytes;
       return frame;
