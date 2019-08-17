@@ -608,7 +608,9 @@ Extended Payload Length: {7}
       );
     }
 
-    private static WebSocketFrame readPayloadData (Stream stream, WebSocketFrame frame)
+    private static WebSocketFrame readPayloadData (
+      Stream stream, WebSocketFrame frame
+    )
     {
       var len = frame.FullPayloadLength;
       if (len == 0) {
@@ -616,17 +618,20 @@ Extended Payload Length: {7}
         return frame;
       }
 
-      if (len > PayloadData.MaxLength)
-        throw new WebSocketException (CloseStatusCode.TooBig, "A frame has a long payload length.");
+      if (len > PayloadData.MaxLength) {
+        var msg = "A frame has too long payload data length.";
+        throw new WebSocketException (CloseStatusCode.TooBig, msg);
+      }
 
       var llen = (long) len;
       var bytes = frame._payloadLength < 127
                   ? stream.ReadBytes ((int) len)
                   : stream.ReadBytes (llen, 1024);
 
-      if (bytes.LongLength != llen)
-        throw new WebSocketException (
-          "The payload data of a frame cannot be read from the stream.");
+      if (bytes.LongLength != llen) {
+        var msg = "The payload data of a frame could not be read.";
+        throw new WebSocketException (msg);
+      }
 
       frame._payloadData = new PayloadData (bytes, llen);
       return frame;
