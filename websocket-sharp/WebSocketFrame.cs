@@ -641,7 +641,8 @@ Extended Payload Length: {7}
       Stream stream,
       WebSocketFrame frame,
       Action<WebSocketFrame> completed,
-      Action<Exception> error)
+      Action<Exception> error
+    )
     {
       var len = frame.FullPayloadLength;
       if (len == 0) {
@@ -651,18 +652,22 @@ Extended Payload Length: {7}
         return;
       }
 
-      if (len > PayloadData.MaxLength)
-        throw new WebSocketException (CloseStatusCode.TooBig, "A frame has a long payload length.");
+      if (len > PayloadData.MaxLength) {
+        var msg = "A frame has too long payload data length.";
+        throw new WebSocketException (CloseStatusCode.TooBig, msg);
+      }
 
       var llen = (long) len;
-      Action<byte[]> compl = bytes => {
-        if (bytes.LongLength != llen)
-          throw new WebSocketException (
-            "The payload data of a frame cannot be read from the stream.");
+      Action<byte[]> compl =
+        bytes => {
+          if (bytes.LongLength != llen) {
+            var msg = "The payload data of a frame could not be read.";
+            throw new WebSocketException (msg);
+          }
 
-        frame._payloadData = new PayloadData (bytes, llen);
-        completed (frame);
-      };
+          frame._payloadData = new PayloadData (bytes, llen);
+          completed (frame);
+        };
 
       if (frame._payloadLength < 127) {
         stream.ReadBytesAsync ((int) len, compl, error);
