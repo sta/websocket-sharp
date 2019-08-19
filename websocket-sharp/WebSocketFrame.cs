@@ -445,8 +445,10 @@ Extended Payload Length: {7}
 
     private static WebSocketFrame processHeader (byte[] header)
     {
-      if (header.Length != 2)
-        throw new WebSocketException ("The header of a frame cannot be read from the stream.");
+      if (header.Length != 2) {
+        var msg = "The header part of a frame could not be read.";
+        throw new WebSocketException (msg);
+      }
 
       // FIN
       var fin = (header[0] & 0x80) == 0x80 ? Fin.Final : Fin.More;
