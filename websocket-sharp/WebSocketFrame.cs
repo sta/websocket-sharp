@@ -471,18 +471,25 @@ Extended Payload Length: {7}
       // Payload Length
       var payloadLen = (byte) (header[1] & 0x7f);
 
-      var err = !opcode.IsSupported ()
-                ? "An unsupported opcode."
-                : !opcode.IsData () && rsv1 == Rsv.On
-                  ? "A non data frame is compressed."
-                  : opcode.IsControl () && fin == Fin.More
-                    ? "A control frame is fragmented."
-                    : opcode.IsControl () && payloadLen > 125
-                      ? "A control frame has a long payload length."
-                      : null;
+      if (!opcode.IsSupported ()) {
+        var msg = "An unsupported opcode.";
+        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
+      }
 
-      if (err != null)
-        throw new WebSocketException (CloseStatusCode.ProtocolError, err);
+      if (!opcode.IsData () && rsv1 == Rsv.On) {
+        var msg = "A non data frame is compressed.";
+        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
+      }
+
+      if (opcode.IsControl () && fin == Fin.More) {
+        var msg = "A control frame is fragmented.";
+        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
+      }
+
+      if (opcode.IsControl () && payloadLen > 125) {
+        var msg = "A control frame has too long payload length.";
+        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
+      }
 
       var frame = new WebSocketFrame ();
       frame._fin = fin;
