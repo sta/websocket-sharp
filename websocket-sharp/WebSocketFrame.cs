@@ -472,7 +472,7 @@ Extended Payload Length: {7}
       var payloadLen = (byte) (header[1] & 0x7f);
 
       if (!opcode.IsSupported ()) {
-        var msg = "An unsupported opcode.";
+        var msg = "A frame has an unsupported opcode.";
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
       }
 
