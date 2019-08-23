@@ -664,7 +664,7 @@ Extended Payload Length: {7}
       }
 
       if (len > PayloadData.MaxLength) {
-        var msg = "A frame has too long payload data length.";
+        var msg = "A frame has too long payload length.";
         throw new WebSocketException (CloseStatusCode.TooBig, msg);
       }
 
