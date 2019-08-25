@@ -597,13 +597,14 @@ Extended Payload Length: {7}
       Action<Exception> error
     )
     {
-      var len = frame.IsMasked ? 4 : 0;
-      if (len == 0) {
+      if (!frame.IsMasked) {
         frame._maskingKey = WebSocket.EmptyBytes;
         completed (frame);
 
         return;
       }
+
+      var len = 4;
 
       stream.ReadBytesAsync (
         len,
