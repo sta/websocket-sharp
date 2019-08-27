@@ -625,28 +625,28 @@ Extended Payload Length: {7}
       Stream stream, WebSocketFrame frame
     )
     {
-      var len = frame.FullPayloadLength;
-      if (len > PayloadData.MaxLength) {
+      var fullLen = frame.FullPayloadLength;
+      if (fullLen > PayloadData.MaxLength) {
         var msg = "A frame has too long payload length.";
         throw new WebSocketException (CloseStatusCode.TooBig, msg);
       }
 
-      if (len == 0) {
+      if (fullLen == 0) {
         frame._payloadData = PayloadData.Empty;
         return frame;
       }
 
-      var llen = (long) len;
+      var len = (long) fullLen;
       var bytes = frame._payloadLength < 127
-                  ? stream.ReadBytes ((int) len)
-                  : stream.ReadBytes (llen, 1024);
+                  ? stream.ReadBytes ((int) fullLen)
+                  : stream.ReadBytes (len, 1024);
 
-      if (bytes.LongLength != llen) {
+      if (bytes.LongLength != len) {
         var msg = "The payload data of a frame could not be read.";
         throw new WebSocketException (msg);
       }
 
-      frame._payloadData = new PayloadData (bytes, llen);
+      frame._payloadData = new PayloadData (bytes, len);
       return frame;
     }
 
