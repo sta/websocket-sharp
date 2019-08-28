@@ -148,6 +148,16 @@ namespace WebSocketSharp
 
     #region Internal Properties
 
+    internal ulong ExactPayloadLength {
+      get {
+        return _payloadLength < 126
+               ? _payloadLength
+               : _payloadLength == 126
+                 ? _extPayloadLength.ToUInt16 (ByteOrder.Big)
+                 : _extPayloadLength.ToUInt64 (ByteOrder.Big);
+      }
+    }
+
     internal int ExtendedPayloadLengthCount {
       get {
         return _payloadLength < 126
@@ -155,16 +165,6 @@ namespace WebSocketSharp
                : _payloadLength == 126
                  ? 2
                  : 8;
-      }
-    }
-
-    internal ulong FullPayloadLength {
-      get {
-        return _payloadLength < 126
-               ? _payloadLength
-               : _payloadLength == 126
-                 ? _extPayloadLength.ToUInt16 (ByteOrder.Big)
-                 : _extPayloadLength.ToUInt64 (ByteOrder.Big);
       }
     }
 
@@ -398,7 +398,7 @@ namespace WebSocketSharp
 
       // Extended Payload Length
       var extPayloadLen = payloadLen > 125
-                          ? frame.FullPayloadLength.ToString ()
+                          ? frame.ExactPayloadLength.ToString ()
                           : String.Empty;
 
       // Masking Key
@@ -625,7 +625,7 @@ Extended Payload Length: {7}
       Stream stream, WebSocketFrame frame
     )
     {
-      var fullLen = frame.FullPayloadLength;
+      var fullLen = frame.ExactPayloadLength;
       if (fullLen > PayloadData.MaxLength) {
         var msg = "A frame has too long payload length.";
         throw new WebSocketException (CloseStatusCode.TooBig, msg);
@@ -657,7 +657,7 @@ Extended Payload Length: {7}
       Action<Exception> error
     )
     {
-      var len = frame.FullPayloadLength;
+      var len = frame.ExactPayloadLength;
       if (len == 0) {
         frame._payloadData = PayloadData.Empty;
         completed (frame);
