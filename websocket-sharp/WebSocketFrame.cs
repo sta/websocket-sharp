@@ -657,37 +657,37 @@ Extended Payload Length: {7}
       Action<Exception> error
     )
     {
-      var len = frame.ExactPayloadLength;
-      if (len == 0) {
+      var exactLen = frame.ExactPayloadLength;
+      if (exactLen > PayloadData.MaxLength) {
+        var msg = "A frame has too long payload length.";
+        throw new WebSocketException (CloseStatusCode.TooBig, msg);
+      }
+
+      if (exactLen == 0) {
         frame._payloadData = PayloadData.Empty;
         completed (frame);
 
         return;
       }
 
-      if (len > PayloadData.MaxLength) {
-        var msg = "A frame has too long payload length.";
-        throw new WebSocketException (CloseStatusCode.TooBig, msg);
-      }
-
-      var llen = (long) len;
-      Action<byte[]> compl =
+      var len = (long) exactLen;
+      Action<byte[]> comp =
         bytes => {
-          if (bytes.LongLength != llen) {
+          if (bytes.LongLength != len) {
             var msg = "The payload data of a frame could not be read.";
             throw new WebSocketException (msg);
           }
 
-          frame._payloadData = new PayloadData (bytes, llen);
+          frame._payloadData = new PayloadData (bytes, len);
           completed (frame);
         };
 
       if (frame._payloadLength < 127) {
-        stream.ReadBytesAsync ((int) len, compl, error);
+        stream.ReadBytesAsync ((int) exactLen, comp, error);
         return;
       }
 
-      stream.ReadBytesAsync (llen, 1024, compl, error);
+      stream.ReadBytesAsync (len, 1024, comp, error);
     }
 
     private static string utf8Decode (byte[] bytes)
