@@ -350,9 +350,13 @@ namespace WebSocketSharp
       }
 
       var spFmt = String.Format ("{{0,{0}}}", cntDigit);
-      var headerFmt = String.Format (@"
+
+      var headerFmt = String.Format (
+                        @"
 {0} 01234567 89ABCDEF 01234567 89ABCDEF
-{0}+--------+--------+--------+--------+\n", spFmt);
+{0}+--------+--------+--------+--------+\n",
+                        spFmt
+                      );
 
       var lineFmt = String.Format (
                       "{0}|{{1,8}} {{2,8}} {{3,8}} {{4,8}}|\n", cntFmt
