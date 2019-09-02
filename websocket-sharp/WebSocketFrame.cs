@@ -358,7 +358,9 @@ namespace WebSocketSharp
                       "{0}|{{1,8}} {{2,8}} {{3,8}} {{4,8}}|\n", cntFmt
                     );
 
-      var footerFmt = String.Format ("{0}+--------+--------+--------+--------+", spFmt);
+      var footerFmt = String.Format (
+                        "{0}+--------+--------+--------+--------+", spFmt
+                      );
 
       var output = new StringBuilder (64);
       Func<Action<string, string, string, string>> linePrinter = () => {
