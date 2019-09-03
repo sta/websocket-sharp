@@ -367,11 +367,17 @@ namespace WebSocketSharp
                       );
 
       var output = new StringBuilder (64);
-      Func<Action<string, string, string, string>> linePrinter = () => {
-        long lineCnt = 0;
-        return (arg1, arg2, arg3, arg4) =>
-          output.AppendFormat (lineFmt, ++lineCnt, arg1, arg2, arg3, arg4);
-      };
+
+      Func<Action<string, string, string, string>> linePrinter =
+        () => {
+          long lineCnt = 0;
+          return (arg1, arg2, arg3, arg4) => {
+                   output.AppendFormat (
+                     lineFmt, ++lineCnt, arg1, arg2, arg3, arg4
+                   );
+                 };
+        };
+
       var printLine = linePrinter ();
 
       output.AppendFormat (headerFmt, String.Empty);
