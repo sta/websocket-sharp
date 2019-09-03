@@ -385,12 +385,14 @@ namespace WebSocketSharp
       var bytes = frame.ToArray ();
       for (long i = 0; i <= cnt; i++) {
         var j = i * 4;
+
         if (i < cnt) {
           printLine (
             Convert.ToString (bytes[j], 2).PadLeft (8, '0'),
             Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0'),
             Convert.ToString (bytes[j + 2], 2).PadLeft (8, '0'),
-            Convert.ToString (bytes[j + 3], 2).PadLeft (8, '0'));
+            Convert.ToString (bytes[j + 3], 2).PadLeft (8, '0')
+          );
 
           continue;
         }
