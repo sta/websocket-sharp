@@ -379,10 +379,10 @@ namespace WebSocketSharp
         };
 
       var printLine = linePrinter ();
+      var bytes = frame.ToArray ();
 
       output.AppendFormat (headerFmt, String.Empty);
 
-      var bytes = frame.ToArray ();
       for (long i = 0; i <= cnt; i++) {
         var j = i * 4;
 
