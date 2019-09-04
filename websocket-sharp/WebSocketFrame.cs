@@ -397,12 +397,18 @@ namespace WebSocketSharp
           continue;
         }
 
-        if (rem > 0)
+        if (rem > 0) {
           printLine (
             Convert.ToString (bytes[j], 2).PadLeft (8, '0'),
-            rem >= 2 ? Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0') : String.Empty,
-            rem == 3 ? Convert.ToString (bytes[j + 2], 2).PadLeft (8, '0') : String.Empty,
-            String.Empty);
+            rem >= 2
+            ? Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0')
+            : String.Empty,
+            rem == 3
+            ? Convert.ToString (bytes[j + 2], 2).PadLeft (8, '0')
+            : String.Empty,
+            String.Empty
+          );
+        }
       }
 
       output.AppendFormat (footerFmt, String.Empty);
