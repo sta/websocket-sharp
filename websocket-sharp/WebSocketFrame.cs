@@ -366,13 +366,13 @@ namespace WebSocketSharp
                         "{0}+--------+--------+--------+--------+", spFmt
                       );
 
-      var output = new StringBuilder (64);
+      var buff = new StringBuilder (64);
 
       Func<Action<string, string, string, string>> linePrinter =
         () => {
           long lineCnt = 0;
           return (arg1, arg2, arg3, arg4) => {
-                   output.AppendFormat (
+                   buff.AppendFormat (
                      lineFmt, ++lineCnt, arg1, arg2, arg3, arg4
                    );
                  };
@@ -381,7 +381,7 @@ namespace WebSocketSharp
       var printLine = linePrinter ();
       var bytes = frame.ToArray ();
 
-      output.AppendFormat (headerFmt, String.Empty);
+      buff.AppendFormat (headerFmt, String.Empty);
 
       for (long i = 0; i <= cnt; i++) {
         var j = i * 4;
@@ -411,8 +411,8 @@ namespace WebSocketSharp
         }
       }
 
-      output.AppendFormat (footerFmt, String.Empty);
-      return output.ToString ();
+      buff.AppendFormat (footerFmt, String.Empty);
+      return buff.ToString ();
     }
 
     private static string print (WebSocketFrame frame)
