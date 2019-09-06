@@ -61,11 +61,12 @@ namespace WebSocketSharp
     #region Internal Fields
 
     /// <summary>
-    /// Represents the ping frame without the payload data as an array of <see cref="byte"/>.
+    /// Represents the ping frame without the payload data as an array of
+    /// <see cref="byte"/>.
     /// </summary>
     /// <remarks>
-    /// The value of this field is created from a non masked frame, so it can only be used to
-    /// send a ping from a server.
+    /// The value of this field is created from a non masked ping frame,
+    /// so it can only be used to send a ping from the server.
     /// </remarks>
     internal static readonly byte[] EmptyPingBytes;
 
