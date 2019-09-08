@@ -1791,8 +1791,14 @@ namespace WebSocketSharp
     /// </param>
     public static void Times (this int n, Action action)
     {
-      if (n > 0 && action != null)
-        ((ulong) n).times (action);
+      if (n <= 0)
+        return;
+
+      if (action == null)
+        return;
+
+      for (int i = 0; i < n; i++)
+        action ();
     }
 
     /// <summary>
