@@ -160,12 +160,6 @@ namespace WebSocketSharp
              || value == "POST";
     }
 
-    private static void times (this ulong n, Action action)
-    {
-      for (ulong i = 0; i < n; i++)
-        action ();
-    }
-
     #endregion
 
     #region Internal Methods
