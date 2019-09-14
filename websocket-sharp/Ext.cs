@@ -1848,7 +1848,7 @@ namespace WebSocketSharp
     /// </param>
     public static void Times (this ulong n, Action action)
     {
-      if (n <= 0)
+      if (n == 0)
         return;
 
       if (action == null)
