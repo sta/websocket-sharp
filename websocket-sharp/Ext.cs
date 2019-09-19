@@ -1923,9 +1923,14 @@ namespace WebSocketSharp
     /// </param>
     public static void Times (this uint n, Action<uint> action)
     {
-      if (n > 0 && action != null)
-        for (uint i = 0; i < n; i++)
-          action (i);
+      if (n == 0)
+        return;
+
+      if (action == null)
+        return;
+
+      for (uint i = 0; i < n; i++)
+        action (i);
     }
 
     /// <summary>
