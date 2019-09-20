@@ -1949,9 +1949,14 @@ namespace WebSocketSharp
     /// </param>
     public static void Times (this ulong n, Action<ulong> action)
     {
-      if (n > 0 && action != null)
-        for (ulong i = 0; i < n; i++)
-          action (i);
+      if (n == 0)
+        return;
+
+      if (action == null)
+        return;
+
+      for (ulong i = 0; i < n; i++)
+        action (i);
     }
 
     /// <summary>
