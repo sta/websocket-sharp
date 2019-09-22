@@ -1796,7 +1796,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Executes the specified delegate the specified times.
+    /// Executes the specified delegate <paramref name="n"/> times.
     /// </summary>
     /// <param name="n">
     /// A <see cref="long"/> that specifies the number of times to execute.
