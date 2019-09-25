@@ -1995,28 +1995,28 @@ namespace WebSocketSharp
         return default (T);
 
       var type = typeof (T);
-      var buff = source.ToHostOrder (sourceOrder);
+      var val = source.ToHostOrder (sourceOrder);
 
       return type == typeof (Boolean)
-             ? (T)(object) BitConverter.ToBoolean (buff, 0)
+             ? (T)(object) BitConverter.ToBoolean (val, 0)
              : type == typeof (Char)
-               ? (T)(object) BitConverter.ToChar (buff, 0)
+               ? (T)(object) BitConverter.ToChar (val, 0)
                : type == typeof (Double)
-                 ? (T)(object) BitConverter.ToDouble (buff, 0)
+                 ? (T)(object) BitConverter.ToDouble (val, 0)
                  : type == typeof (Int16)
-                   ? (T)(object) BitConverter.ToInt16 (buff, 0)
+                   ? (T)(object) BitConverter.ToInt16 (val, 0)
                    : type == typeof (Int32)
-                     ? (T)(object) BitConverter.ToInt32 (buff, 0)
+                     ? (T)(object) BitConverter.ToInt32 (val, 0)
                      : type == typeof (Int64)
-                       ? (T)(object) BitConverter.ToInt64 (buff, 0)
+                       ? (T)(object) BitConverter.ToInt64 (val, 0)
                        : type == typeof (Single)
-                         ? (T)(object) BitConverter.ToSingle (buff, 0)
+                         ? (T)(object) BitConverter.ToSingle (val, 0)
                          : type == typeof (UInt16)
-                           ? (T)(object) BitConverter.ToUInt16 (buff, 0)
+                           ? (T)(object) BitConverter.ToUInt16 (val, 0)
                            : type == typeof (UInt32)
-                             ? (T)(object) BitConverter.ToUInt32 (buff, 0)
+                             ? (T)(object) BitConverter.ToUInt32 (val, 0)
                              : type == typeof (UInt64)
-                               ? (T)(object) BitConverter.ToUInt64 (buff, 0)
+                               ? (T)(object) BitConverter.ToUInt64 (val, 0)
                                : default (T);
     }
 
