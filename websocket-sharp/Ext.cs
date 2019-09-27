@@ -1964,18 +1964,14 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Converts the specified array of <see cref="byte"/> to the specified
-    /// type data.
+    /// type value.
     /// </summary>
     /// <returns>
     ///   <para>
     ///   A T converted from <paramref name="source"/>.
     ///   </para>
     ///   <para>
-    ///   A default value of T if <paramref name="source"/> is an empty array of
-    ///   <see cref="byte"/> or if the type of T is not <see cref="bool"/>,
-    ///   <see cref="char"/>, <see cref="double"/>, <see cref="float"/>,
-    ///   <see cref="int"/>, <see cref="long"/>, <see cref="short"/>,
-    ///   <see cref="uint"/>, <see cref="ulong"/>, or <see cref="ushort"/>.
+    ///   The default value of T if it could not be converted.
     ///   </para>
     /// </returns>
     /// <param name="source">
@@ -1994,7 +1990,10 @@ namespace WebSocketSharp
     ///   The type of the return.
     ///   </para>
     ///   <para>
-    ///   It must be a value type.
+    ///   <see cref="bool"/>, <see cref="char"/>, <see cref="double"/>,
+    ///   <see cref="float"/>, <see cref="int"/>, <see cref="long"/>,
+    ///   <see cref="short"/>, <see cref="uint"/>, <see cref="ulong"/>,
+    ///   or <see cref="ushort"/>.
     ///   </para>
     /// </typeparam>
     /// <exception cref="ArgumentNullException">
