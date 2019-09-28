@@ -2077,8 +2077,10 @@ namespace WebSocketSharp
                                       ? BitConverter.GetBytes ((UInt64)(object) value)
                                       : WebSocket.EmptyBytes;
 
-      if (bytes.Length > 1 && !order.IsHostOrder ())
-        Array.Reverse (bytes);
+      if (bytes.Length > 1) {
+        if (!order.IsHostOrder ())
+          Array.Reverse (bytes);
+      }
 
       return bytes;
     }
