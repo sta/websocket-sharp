@@ -2035,7 +2035,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Converts the specified <paramref name="value"/> to an array of <see cref="byte"/>.
+    /// Converts the specified value to an array of <see cref="byte"/>.
     /// </summary>
     /// <returns>
     /// An array of <see cref="byte"/> converted from <paramref name="value"/>.
@@ -2044,10 +2044,23 @@ namespace WebSocketSharp
     /// A T to convert.
     /// </param>
     /// <param name="order">
-    /// One of the <see cref="ByteOrder"/> enum values, specifies the byte order of the return.
+    ///   <para>
+    ///   One of the <see cref="ByteOrder"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It specifies the byte order of the return.
+    ///   </para>
     /// </param>
     /// <typeparam name="T">
-    /// The type of <paramref name="value"/>. The T must be a value type.
+    ///   <para>
+    ///   The type of <paramref name="value"/>.
+    ///   </para>
+    ///   <para>
+    ///   <see cref="bool"/>, <see cref="byte"/>, <see cref="char"/>,
+    ///   <see cref="double"/>, <see cref="float"/>, <see cref="int"/>,
+    ///   <see cref="long"/>, <see cref="short"/>, <see cref="uint"/>,
+    ///   <see cref="ulong"/>, or <see cref="ushort"/>.
+    ///   </para>
     /// </typeparam>
     public static byte[] ToByteArray<T> (this T value, ByteOrder order)
       where T : struct
