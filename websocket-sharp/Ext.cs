@@ -2108,9 +2108,9 @@ namespace WebSocketSharp
     ///   <paramref name="source"/>.
     ///   </para>
     ///   <para>
-    ///   Or <paramref name="source"/> if the number of elements in it
-    ///   is less than 2 or <paramref name="sourceOrder"/> is same as
-    ///   host byte order.
+    ///   <paramref name="source"/> if the number of elements in
+    ///   it is less than 2 or <paramref name="sourceOrder"/> is
+    ///   same as host byte order.
     ///   </para>
     /// </returns>
     /// <param name="source">
