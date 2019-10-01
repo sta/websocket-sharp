@@ -2135,7 +2135,10 @@ namespace WebSocketSharp
       if (source.Length < 2)
         return source;
 
-      return !sourceOrder.IsHostOrder () ? source.Reverse () : source;
+      if (sourceOrder.IsHostOrder ())
+        return source;
+
+      return source.Reverse ();
     }
 
     /// <summary>
