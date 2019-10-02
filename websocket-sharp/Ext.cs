@@ -1963,15 +1963,14 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Converts the specified array of <see cref="byte"/> to the specified
-    /// type value.
+    /// Converts the specified byte array to the specified type value.
     /// </summary>
     /// <returns>
     ///   <para>
     ///   A T converted from <paramref name="source"/>.
     ///   </para>
     ///   <para>
-    ///   The default value of T if it could not be converted.
+    ///   The default value of T if not converted.
     ///   </para>
     /// </returns>
     /// <param name="source">
