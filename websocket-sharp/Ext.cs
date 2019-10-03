@@ -1998,6 +1998,7 @@ namespace WebSocketSharp
     /// <exception cref="ArgumentNullException">
     /// <paramref name="source"/> is <see langword="null"/>.
     /// </exception>
+    [Obsolete ("This method will be removed.")]
     public static T To<T> (this byte[] source, ByteOrder sourceOrder)
       where T : struct
     {
