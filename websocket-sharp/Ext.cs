@@ -2035,7 +2035,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Converts the specified value to an array of <see cref="byte"/>.
+    /// Converts the specified value to a byte array.
     /// </summary>
     /// <returns>
     /// An array of <see cref="byte"/> converted from <paramref name="value"/>.
