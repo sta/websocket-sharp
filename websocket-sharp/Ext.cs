@@ -2062,6 +2062,7 @@ namespace WebSocketSharp
     ///   <see cref="ulong"/>, or <see cref="ushort"/>.
     ///   </para>
     /// </typeparam>
+    [Obsolete ("This method will be removed.")]
     public static byte[] ToByteArray<T> (this T value, ByteOrder order)
       where T : struct
     {
