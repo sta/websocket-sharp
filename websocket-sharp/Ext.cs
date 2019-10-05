@@ -2180,11 +2180,12 @@ namespace WebSocketSharp
         separator = String.Empty;
 
       var buff = new StringBuilder (64);
+      var end = len - 1;
 
-      for (var i = 0; i < len - 1; i++)
+      for (var i = 0; i < end; i++)
         buff.AppendFormat ("{0}{1}", array[i], separator);
 
-      buff.Append (array[len - 1].ToString ());
+      buff.Append (array[end].ToString ());
       return buff.ToString ();
     }
 
