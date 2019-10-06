@@ -2143,7 +2143,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Converts the specified array to a <see cref="string"/>.
+    /// Converts the specified array to a string.
     /// </summary>
     /// <returns>
     ///   <para>
