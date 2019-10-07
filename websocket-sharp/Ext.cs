@@ -2235,7 +2235,9 @@ namespace WebSocketSharp
     ///   <paramref name="content"/> is <see langword="null"/>.
     ///   </para>
     /// </exception>
-    public static void WriteContent (this HttpListenerResponse response, byte[] content)
+    public static void WriteContent (
+      this HttpListenerResponse response, byte[] content
+    )
     {
       if (response == null)
         throw new ArgumentNullException ("response");
@@ -2250,7 +2252,9 @@ namespace WebSocketSharp
       }
 
       response.ContentLength64 = len;
+
       var output = response.OutputStream;
+
       if (len <= Int32.MaxValue)
         output.Write (content, 0, (int) len);
       else
