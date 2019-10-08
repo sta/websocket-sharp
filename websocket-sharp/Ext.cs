@@ -2214,15 +2214,14 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Writes and sends the specified <paramref name="content"/> data with the specified
-    /// <see cref="HttpListenerResponse"/>.
+    /// Sends the specified content data with the HTTP response.
     /// </summary>
     /// <param name="response">
-    /// A <see cref="HttpListenerResponse"/> that represents the HTTP response used to
-    /// send the content data.
+    /// A <see cref="HttpListenerResponse"/> that represents the HTTP response
+    /// used to send the content data.
     /// </param>
     /// <param name="content">
-    /// An array of <see cref="byte"/> that represents the content data to send.
+    /// An array of <see cref="byte"/> that specifies the content data to send.
     /// </param>
     /// <exception cref="ArgumentNullException">
     ///   <para>
