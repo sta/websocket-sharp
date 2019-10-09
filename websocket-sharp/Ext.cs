@@ -2234,6 +2234,7 @@ namespace WebSocketSharp
     ///   <paramref name="content"/> is <see langword="null"/>.
     ///   </para>
     /// </exception>
+    [Obsolete ("This method will be removed.")]
     public static void WriteContent (
       this HttpListenerResponse response, byte[] content
     )
