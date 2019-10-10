@@ -272,8 +272,13 @@ namespace WebSocketSharp.Net
     /// </exception>
     public Stream OutputStream {
       get {
-        checkDisposed ();
-        return _outputStream ?? (_outputStream = _context.Connection.GetResponseStream ());
+        if (_disposed)
+          throw new ObjectDisposedException (GetType ().ToString ());
+
+        if (_outputStream == null)
+          _outputStream = _context.Connection.GetResponseStream ();
+
+        return _outputStream;
       }
     }
 
