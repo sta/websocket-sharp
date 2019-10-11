@@ -262,13 +262,14 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a <see cref="Stream"/> to use to write the entity body data.
+    /// Gets a stream instance to which the entity body data can be written.
     /// </summary>
     /// <value>
-    /// A <see cref="Stream"/> to use to write the entity body data.
+    /// A <see cref="Stream"/> instance to which the entity body data can be
+    /// written.
     /// </value>
     /// <exception cref="ObjectDisposedException">
-    /// This object is closed.
+    /// This instance is closed.
     /// </exception>
     public Stream OutputStream {
       get {
