@@ -136,7 +136,9 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        checkDisposed ();
+        if (_disposed)
+          throw new ObjectDisposedException (GetType ().ToString ());
+
         _contentEncoding = value;
       }
     }
