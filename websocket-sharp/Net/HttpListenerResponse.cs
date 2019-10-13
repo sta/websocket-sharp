@@ -121,14 +121,20 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets the encoding for the entity body data included in the response.
+    /// Gets or sets the encoding for the entity body data included in
+    /// the response.
     /// </summary>
     /// <value>
-    /// A <see cref="Encoding"/> that represents the encoding for the entity body data,
-    /// or <see langword="null"/> if no encoding is specified.
+    ///   <para>
+    ///   A <see cref="Encoding"/> that represents the encoding for
+    ///   the entity body data.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if no encoding is specified.
+    ///   </para>
     /// </value>
     /// <exception cref="ObjectDisposedException">
-    /// This object is closed.
+    /// This instance is closed.
     /// </exception>
     public Encoding ContentEncoding {
       get {
