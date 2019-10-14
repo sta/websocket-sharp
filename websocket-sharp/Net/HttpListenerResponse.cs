@@ -198,7 +198,9 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        checkDisposed ();
+        if (_disposed)
+          throw new ObjectDisposedException (GetType ().ToString ());
+
         if (value != null && value.Length == 0)
           throw new ArgumentException ("An empty string.", "value");
 
