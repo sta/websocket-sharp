@@ -182,15 +182,22 @@ namespace WebSocketSharp.Net
     /// Gets or sets the media type of the entity body included in the response.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the media type of the entity body,
-    /// or <see langword="null"/> if no media type is specified. This value is
-    /// used for the value of the Content-Type entity-header.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the media type of the entity
+    ///   body.
+    ///   </para>
+    ///   <para>
+    ///   It is used for the value of the Content-Type entity-header.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if no media type is specified.
+    ///   </para>
     /// </value>
     /// <exception cref="ArgumentException">
     /// The value specified for a set operation is empty.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// This object is closed.
+    /// This instance is closed.
     /// </exception>
     public string ContentType {
       get {
