@@ -355,14 +355,19 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        checkDisposed ();
+        if (_disposed)
+          throw new ObjectDisposedException (GetType ().ToString ());
+
         if (value == null) {
           _location = null;
           return;
         }
 
-        Uri uri = null;
-        if (!value.MaybeUri () || !Uri.TryCreate (value, UriKind.Absolute, out uri))
+        if (!value.MaybeUri ())
+          throw new ArgumentException ("Not an absolute URL.", "value");
+
+        Uri uri;
+        if (!Uri.TryCreate (value, UriKind.Absolute, out uri))
           throw new ArgumentException ("Not an absolute URL.", "value");
 
         _location = value;
