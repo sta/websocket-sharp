@@ -337,17 +337,23 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the URL to which the client is redirected to locate a requested resource.
+    /// Gets or sets the URL to which the client is redirected to locate
+    /// a requested resource.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the Location response-header,
-    /// or <see langword="null"/> if no redirect location is specified.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the value of the Location
+    ///   response-header.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if no redirect location is specified.
+    ///   </para>
     /// </value>
     /// <exception cref="ArgumentException">
-    /// The value specified for a set operation isn't an absolute URL.
+    /// The value specified for a set operation is not an absolute URL.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// This object is closed.
+    /// This instance is closed.
     /// </exception>
     public string RedirectLocation {
       get {
