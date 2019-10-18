@@ -741,12 +741,15 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Close (byte[] responseEntity, bool willBlock)
     {
-      checkDisposed ();
+      if (_disposed)
+        throw new ObjectDisposedException (GetType ().ToString ());
+
       if (responseEntity == null)
         throw new ArgumentNullException ("responseEntity");
 
       var len = responseEntity.Length;
       var output = OutputStream;
+
       if (willBlock) {
         output.Write (responseEntity, 0, len);
         close (false);
@@ -762,7 +765,8 @@ namespace WebSocketSharp.Net
           output.EndWrite (ar);
           close (false);
         },
-        null);
+        null
+      );
     }
 
     /// <summary>
