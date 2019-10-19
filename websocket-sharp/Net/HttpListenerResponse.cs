@@ -712,7 +712,7 @@ namespace WebSocketSharp.Net
 
     /// <summary>
     /// Returns the response to the client and releases the resources used by
-    /// this <see cref="HttpListenerResponse"/> instance.
+    /// this instance.
     /// </summary>
     public void Close ()
     {
