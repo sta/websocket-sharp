@@ -723,21 +723,21 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Returns the response with the specified array of <see cref="byte"/> to the client and
-    /// releases the resources used by this <see cref="HttpListenerResponse"/> instance.
+    /// Returns the response with the specified entity body data to the client
+    /// and releases the resources used by this instance.
     /// </summary>
     /// <param name="responseEntity">
-    /// An array of <see cref="byte"/> that contains the response entity body data.
+    /// An array of <see cref="byte"/> that contains the entity body data.
     /// </param>
     /// <param name="willBlock">
-    /// <c>true</c> if this method blocks execution while flushing the stream to the client;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if this method blocks execution while flushing the stream to
+    /// the client; otherwise, <c>false</c>.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="responseEntity"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// This object is closed.
+    /// This instance is closed.
     /// </exception>
     public void Close (byte[] responseEntity, bool willBlock)
     {
