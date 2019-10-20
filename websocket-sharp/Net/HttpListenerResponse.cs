@@ -495,12 +495,6 @@ namespace WebSocketSharp.Net
       return false;
     }
 
-    private void checkDisposed ()
-    {
-      if (_disposed)
-        throw new ObjectDisposedException (GetType ().ToString ());
-    }
-
     private void checkDisposedOrHeadersSent ()
     {
       if (_disposed)
