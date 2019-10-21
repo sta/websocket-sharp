@@ -170,9 +170,18 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        checkDisposedOrHeadersSent ();
-        if (value < 0)
-          throw new ArgumentOutOfRangeException ("Less than zero.", "value");
+        if (_disposed)
+          throw new ObjectDisposedException (GetType ().ToString ());
+
+        if (_headersSent) {
+          var msg = "The response has already been sent.";
+          throw new InvalidOperationException (msg);
+        }
+
+        if (value < 0) {
+          var msg = "Less than zero.";
+          throw new ArgumentOutOfRangeException (msg, "value");
+        }
 
         _contentLength = value;
       }
