@@ -176,7 +176,7 @@ namespace WebSocketSharp.Net
           throw new ObjectDisposedException (GetType ().ToString ());
 
         if (_headersSent) {
-          var msg = "The response has already been sent.";
+          var msg = "The response is already being sent.";
           throw new InvalidOperationException (msg);
         }
 
