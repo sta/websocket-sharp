@@ -150,19 +150,21 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the number of bytes in the entity body data included in the response.
+    /// Gets or sets the number of bytes in the entity body data included in
+    /// the response.
     /// </summary>
     /// <value>
-    /// A <see cref="long"/> that represents the value of the Content-Length entity-header.
+    /// A <see cref="long"/> that represents the value of the Content-Length
+    /// header.
     /// </value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The value specified for a set operation is less than zero.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The response has already been sent.
+    /// The response is already being sent.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// This object is closed.
+    /// This instance is closed.
     /// </exception>
     public long ContentLength64 {
       get {
