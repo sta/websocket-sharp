@@ -266,17 +266,23 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the server requests a persistent connection.
+    /// Gets or sets a value indicating whether the server requests
+    /// a persistent connection.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the server requests a persistent connection; otherwise, <c>false</c>.
-    /// The default value is <c>true</c>.
+    ///   <para>
+    ///   <c>true</c> if the server requests a persistent connection;
+    ///   otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>true</c>.
+    ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The response has already been sent.
+    /// The response is already being sent.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// This object is closed.
+    /// This instance is closed.
     /// </exception>
     public bool KeepAlive {
       get {
