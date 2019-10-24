@@ -349,12 +349,26 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        checkDisposedOrHeadersSent ();
+        if (_disposed)
+          throw new ObjectDisposedException (GetType ().ToString ());
+
+        if (_headersSent) {
+          var msg = "The response is already being sent.";
+          throw new InvalidOperationException (msg);
+        }
+
         if (value == null)
           throw new ArgumentNullException ("value");
 
-        if (value.Major != 1 || (value.Minor != 0 && value.Minor != 1))
-          throw new ArgumentException ("Not 1.0 or 1.1.", "value");
+        if (value.Major != 1) {
+          var msg = "Its Major property is not 1.";
+          throw new ArgumentException (msg, "value");
+        }
+
+        if (value.Minor < 0 || value.Minor > 1) {
+          var msg = "Its Minor property is not 0 or 1.";
+          throw new ArgumentException (msg, "value");
+        }
 
         _version = value;
       }
