@@ -325,23 +325,33 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the HTTP version used in the response.
+    /// Gets or sets the HTTP version used for the response.
     /// </summary>
     /// <value>
-    /// A <see cref="Version"/> that represents the version used in the response.
+    /// A <see cref="Version"/> that represents the HTTP version used for
+    /// the response.
     /// </value>
     /// <exception cref="ArgumentNullException">
     /// The value specified for a set operation is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// The value specified for a set operation doesn't have its <c>Major</c> property set to 1 or
-    /// doesn't have its <c>Minor</c> property set to either 0 or 1.
+    ///   <para>
+    ///   The value specified for a set operation does not have its Major
+    ///   property set to 1.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The value specified for a set operation does not have its Minor
+    ///   property set to either 0 or 1.
+    ///   </para>
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The response has already been sent.
+    /// The response is already being sent.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// This object is closed.
+    /// This instance is closed.
     /// </exception>
     public Version ProtocolVersion {
       get {
