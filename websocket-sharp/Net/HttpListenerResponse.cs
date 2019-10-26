@@ -447,7 +447,14 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        checkDisposedOrHeadersSent ();
+        if (_disposed)
+          throw new ObjectDisposedException (GetType ().ToString ());
+
+        if (_headersSent) {
+          var msg = "The response is already being sent.";
+          throw new InvalidOperationException (msg);
+        }
+
         _sendChunked = value;
       }
     }
