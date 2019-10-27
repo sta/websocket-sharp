@@ -429,17 +429,23 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the response uses the chunked transfer encoding.
+    /// Gets or sets a value indicating whether the response uses the chunked
+    /// transfer encoding.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the response uses the chunked transfer encoding;
-    /// otherwise, <c>false</c>. The default value is <c>false</c>.
+    ///   <para>
+    ///   <c>true</c> if the response uses the chunked transfer encoding;
+    ///   otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The response has already been sent.
+    /// The response is already being sent.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// This object is closed.
+    /// This instance is closed.
     /// </exception>
     public bool SendChunked {
       get {
