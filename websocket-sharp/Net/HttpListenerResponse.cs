@@ -488,10 +488,18 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        checkDisposedOrHeadersSent ();
-        if (value < 100 || value > 999)
-          throw new System.Net.ProtocolViolationException (
-            "A value isn't between 100 and 999 inclusive.");
+        if (_disposed)
+          throw new ObjectDisposedException (GetType ().ToString ());
+
+        if (_headersSent) {
+          var msg = "The response is already being sent.";
+          throw new InvalidOperationException (msg);
+        }
+
+        if (value < 100 || value > 999) {
+          var msg = "A value is not between 100 and 999 inclusive.";
+          throw new System.Net.ProtocolViolationException (msg);
+        }
 
         _statusCode = value;
         _statusDescription = value.GetStatusDescription ();
