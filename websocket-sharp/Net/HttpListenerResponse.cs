@@ -469,18 +469,28 @@ namespace WebSocketSharp.Net
     /// Gets or sets the HTTP status code returned to the client.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that represents the status code for the response to
-    /// the request. The default value is same as <see cref="HttpStatusCode.OK"/>.
+    ///   <para>
+    ///   An <see cref="int"/> that represents the HTTP status code for
+    ///   the response to the request.
+    ///   </para>
+    ///   <para>
+    ///   The default value is 200. It is same as
+    ///   <see cref="HttpStatusCode.OK"/>.
+    ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The response has already been sent.
+    /// The response is already being sent.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// This object is closed.
+    /// This instance is closed.
     /// </exception>
     /// <exception cref="System.Net.ProtocolViolationException">
-    /// The value specified for a set operation is invalid. Valid values are
-    /// between 100 and 999 inclusive.
+    ///   <para>
+    ///   The value specified for a set operation is invalid.
+    ///   </para>
+    ///   <para>
+    ///   Valid values are between 100 and 999 inclusive.
+    ///   </para>
     /// </exception>
     public int StatusCode {
       get {
