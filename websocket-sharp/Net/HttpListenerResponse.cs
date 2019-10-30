@@ -540,14 +540,28 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        checkDisposedOrHeadersSent ();
+        if (_disposed)
+          throw new ObjectDisposedException (GetType ().ToString ());
+
+        if (_headersSent) {
+          var msg = "The response is already being sent.";
+          throw new InvalidOperationException (msg);
+        }
+
         if (value == null || value.Length == 0) {
           _statusDescription = _statusCode.GetStatusDescription ();
           return;
         }
 
-        if (!value.IsText () || value.IndexOfAny (new[] { '\r', '\n' }) > -1)
-          throw new ArgumentException ("Contains invalid characters.", "value");
+        if (!value.IsText ()) {
+          var msg = "It contains invalid characters.";
+          throw new ArgumentException (msg, "value");
+        }
+
+        if (value.IndexOfAny (new[] { '\r', '\n' }) > -1) {
+          var msg = "It contains invalid characters.";
+          throw new ArgumentException (msg, "value");
+        }
 
         _statusDescription = value;
       }
