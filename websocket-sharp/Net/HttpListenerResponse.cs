@@ -548,7 +548,10 @@ namespace WebSocketSharp.Net
           throw new InvalidOperationException (msg);
         }
 
-        if (value == null || value.Length == 0) {
+        if (value == null)
+          throw new ArgumentNullException ("value");
+
+        if (value.Length == 0) {
           _statusDescription = _statusCode.GetStatusDescription ();
           return;
         }
