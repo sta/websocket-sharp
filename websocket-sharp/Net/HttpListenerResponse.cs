@@ -557,12 +557,12 @@ namespace WebSocketSharp.Net
         }
 
         if (!value.IsText ()) {
-          var msg = "It contains invalid characters.";
+          var msg = "It contains an invalid character.";
           throw new ArgumentException (msg, "value");
         }
 
         if (value.IndexOfAny (new[] { '\r', '\n' }) > -1) {
-          var msg = "It contains invalid characters.";
+          var msg = "It contains an invalid character.";
           throw new ArgumentException (msg, "value");
         }
 
