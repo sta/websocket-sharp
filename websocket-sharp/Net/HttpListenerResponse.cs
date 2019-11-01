@@ -517,22 +517,35 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the description of the HTTP status code returned to the client.
+    /// Gets or sets the description of the HTTP status code returned to
+    /// the client.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the description of the status code. The default
-    /// value is the <see href="http://tools.ietf.org/html/rfc2616#section-10">RFC 2616</see>
-    /// description for the <see cref="HttpListenerResponse.StatusCode"/> property value,
-    /// or <see cref="String.Empty"/> if an RFC 2616 description doesn't exist.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the description of
+    ///   the HTTP status code for the response to the request.
+    ///   </para>
+    ///   <para>
+    ///   The default value is
+    ///   the <see href="http://tools.ietf.org/html/rfc2616#section-10">
+    ///   RFC 2616</see> description for the <see cref="StatusCode"/>
+    ///   property value.
+    ///   </para>
+    ///   <para>
+    ///   An empty string if an RFC 2616 description does not exist.
+    ///   </para>
     /// </value>
+    /// <exception cref="ArgumentNullException">
+    /// The value specified for a set operation is <see langword="null"/>.
+    /// </exception>
     /// <exception cref="ArgumentException">
-    /// The value specified for a set operation contains invalid characters.
+    /// The value specified for a set operation contains an invalid character.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The response has already been sent.
+    /// The response is already being sent.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// This object is closed.
+    /// This instance is closed.
     /// </exception>
     public string StatusDescription {
       get {
