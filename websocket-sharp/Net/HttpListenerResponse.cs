@@ -931,12 +931,22 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Redirect (string url)
     {
-      checkDisposedOrHeadersSent ();
+      if (_disposed)
+        throw new ObjectDisposedException (GetType ().ToString ());
+
+      if (_headersSent) {
+        var msg = "The response is already being sent.";
+        throw new InvalidOperationException (msg);
+      }
+
       if (url == null)
         throw new ArgumentNullException ("url");
 
-      Uri uri = null;
-      if (!url.MaybeUri () || !Uri.TryCreate (url, UriKind.Absolute, out uri))
+      if (!url.MaybeUri ())
+        throw new ArgumentException ("Not an absolute URL.", "url");
+
+      Uri uri;
+      if (!Uri.TryCreate (url, UriKind.Absolute, out uri))
         throw new ArgumentException ("Not an absolute URL.", "url");
 
       _location = url;
