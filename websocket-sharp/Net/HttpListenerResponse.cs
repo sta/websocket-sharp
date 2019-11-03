@@ -906,28 +906,29 @@ namespace WebSocketSharp.Net
 
     /// <summary>
     /// Configures the response to redirect the client's request to
-    /// the specified <paramref name="url"/>.
+    /// the specified URL.
     /// </summary>
     /// <remarks>
-    /// This method sets the <see cref="HttpListenerResponse.RedirectLocation"/> property to
-    /// <paramref name="url"/>, the <see cref="HttpListenerResponse.StatusCode"/> property to
-    /// <c>302</c>, and the <see cref="HttpListenerResponse.StatusDescription"/> property to
+    /// This method sets the <see cref="RedirectLocation"/> property to
+    /// <paramref name="url"/>, the <see cref="StatusCode"/> property to
+    /// <c>302</c>, and the <see cref="StatusDescription"/> property to
     /// <c>"Found"</c>.
     /// </remarks>
     /// <param name="url">
-    /// A <see cref="string"/> that represents the URL to redirect the client's request to.
+    /// A <see cref="string"/> that represents the URL to which the client is
+    /// redirected to locate a requested resource.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="url"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="url"/> isn't an absolute URL.
+    /// <paramref name="url"/> is not an absolute URL.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The response has already been sent.
+    /// The response is already being sent.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// This object is closed.
+    /// This instance is closed.
     /// </exception>
     public void Redirect (string url)
     {
