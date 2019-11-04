@@ -911,8 +911,7 @@ namespace WebSocketSharp.Net
     /// <remarks>
     /// This method sets the <see cref="RedirectLocation"/> property to
     /// <paramref name="url"/>, the <see cref="StatusCode"/> property to
-    /// <c>302</c>, and the <see cref="StatusDescription"/> property to
-    /// <c>"Found"</c>.
+    /// 302, and the <see cref="StatusDescription"/> property to "Found".
     /// </remarks>
     /// <param name="url">
     /// A <see cref="string"/> that represents the URL to which the client is
