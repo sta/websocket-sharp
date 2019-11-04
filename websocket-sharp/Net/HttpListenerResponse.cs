@@ -604,15 +604,6 @@ namespace WebSocketSharp.Net
       return false;
     }
 
-    private void checkDisposedOrHeadersSent ()
-    {
-      if (_disposed)
-        throw new ObjectDisposedException (GetType ().ToString ());
-
-      if (_headersSent)
-        throw new InvalidOperationException ("Cannot be changed after the headers are sent.");
-    }
-
     private void close (bool force)
     {
       _disposed = true;
