@@ -612,15 +612,13 @@ namespace WebSocketSharp.Net
 
     private IEnumerable<Cookie> findCookie (Cookie cookie)
     {
-      var name = cookie.Name;
-      var domain = cookie.Domain;
-      var path = cookie.Path;
-      if (_cookies != null)
-        foreach (Cookie c in _cookies)
-          if (c.Name.Equals (name, StringComparison.OrdinalIgnoreCase) &&
-              c.Domain.Equals (domain, StringComparison.OrdinalIgnoreCase) &&
-              c.Path.Equals (path, StringComparison.Ordinal))
-            yield return c;
+      if (_cookies == null)
+        yield break;
+
+      foreach (var c in _cookies) {
+        if (c.EqualsWithoutValue (cookie))
+          yield return c;
+      }
     }
 
     #endregion
