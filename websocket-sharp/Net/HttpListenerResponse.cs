@@ -616,7 +616,7 @@ namespace WebSocketSharp.Net
         yield break;
 
       foreach (var c in _cookies) {
-        if (c.EqualsWithoutValue (cookie))
+        if (c.EqualsWithoutValueAndVersion (cookie))
           yield return c;
       }
     }
