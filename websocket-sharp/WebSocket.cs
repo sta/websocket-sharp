@@ -50,6 +50,7 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
 
@@ -1529,7 +1530,7 @@ namespace WebSocketSharp
       ThreadPool.QueueUserWorkItem (state => messages (e));
     }
 
-    private void open ()
+    private async void open ()
     {
       _inMessage = true;
       startReceiving ();
@@ -1551,7 +1552,7 @@ namespace WebSocketSharp
         e = _messageEventQueue.Dequeue ();
       }
 
-      _message.BeginInvoke (e, ar => _message.EndInvoke (ar), null);
+      await Task.Run(() => _message(e));
     }
 
     private bool ping (byte[] data)

@@ -40,6 +40,7 @@
 using System;
 using System.IO;
 
+
 namespace WebSocketSharp.Net
 {
   internal class RequestStream : Stream

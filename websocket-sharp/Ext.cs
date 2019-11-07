@@ -774,66 +774,123 @@ namespace WebSocketSharp
       }
     }
 
-    internal static void ReadBytesAsync (
-      this Stream stream,
-      int length,
-      Action<byte[]> completed,
-      Action<Exception> error
-    )
-    {
-      var buff = new byte[length];
-      var offset = 0;
-      var retry = 0;
+        /// <summary>
+        /// Attempt to read at least a specific number of bytes from the stream.
+        /// </summary>
+        /// <param name="stream">Stream to read from.</param>
+        /// <param name="length">The minimum number of bytes that need to be read.</param>
+        /// <param name="completed">An action to call when teh bytes are ready.</param>
+        /// <param name="error">An action to call if an error occurs.</param>
+        internal async static void ReadBytesAsync(
+          this Stream stream,
+          int length,
+          Action<byte[]> completed,
+          Action<Exception> error
+        )
+        {
+            try
+            {
+                var buff = new byte[length];
+                var offset = 0;
+                var retry = 0;
 
-      AsyncCallback callback = null;
-      callback =
-        ar => {
-          try {
-            var nread = stream.EndRead (ar);
-            if (nread <= 0) {
-              if (retry < _retry) {
-                retry++;
-                stream.BeginRead (buff, offset, length, callback, null);
+                while (retry < _retry)
+                {
+                    retry++;
+                    var nread = await stream.ReadAsync(buff, offset, length - offset);
+                    offset += nread;
 
-                return;
-              }
-
-              if (completed != null)
-                completed (buff.SubArray (0, offset));
-
-              return;
+                    //if(nread == 0)
+                    //{
+                    //    error(new SocketException(SocketError.ConnectionReset.GetHashCode()));
+                    //}
+                    if (nread == length)
+                    {
+                        completed?.Invoke(buff);
+                        break;
+                    }
+                    else if (retry >= _retry && offset > 0)
+                    {
+                        completed?.Invoke(buff.SubArray(0, offset));
+                        break;
+                    }
+                }
             }
-
-            if (nread == length) {
-              if (completed != null)
-                completed (buff);
-
-              return;
+            catch (Exception ex)
+            {
+                error?.Invoke(ex);
             }
+        }
 
-            retry = 0;
+        //internal static void ReadBytesAsync(
+        //  this Stream stream,
+        //  int length,
+        //  Action<byte[]> completed,
+        //  Action<Exception> error
+        //)
+        //{
+        //    var buff = new byte[length];
+        //    var offset = 0;
+        //    var retry = 0;
 
-            offset += nread;
-            length -= nread;
+        //    AsyncCallback callback = null;
+        //    callback =
+        //      ar =>
+        //      {
+        //          try
+        //          {
+        //              var nread = stream.EndRead(ar);
+        //              Console.WriteLine($"Bytes read {nread}.");
+        //              if (nread <= 0)
+        //              {
+        //                  if (retry < _retry)
+        //                  {
+        //                      retry++;
+        //                      stream.BeginRead(buff, offset, length, callback, null);
 
-            stream.BeginRead (buff, offset, length, callback, null);
-          }
-          catch (Exception ex) {
-            if (error != null)
-              error (ex);
-          }
-        };
+        //                      return;
+        //                  }
 
-      try {
-        stream.BeginRead (buff, offset, length, callback, null);
-      }
-      catch (Exception ex) {
-        if (error != null)
-          error (ex);
-      }
-    }
+        //                  if (completed != null)
+        //                      completed(buff.SubArray(0, offset));
 
-    internal static void ReadBytesAsync (
+        //                  return;
+        //              }
+
+        //              if (nread == length)
+        //              {
+        //                  if (completed != null)
+        //                      completed(buff);
+
+        //                  return;
+        //              }
+
+        //              retry = 0;
+
+        //              offset += nread;
+        //              length -= nread;
+
+        //              stream.BeginRead(buff, offset, length, callback, null);
+        //          }
+        //          catch (Exception ex)
+        //          {
+        //              if (error != null)
+        //                  error(ex);
+        //          }
+        //      };
+
+        //    try
+        //    {
+        //        stream.BeginRead(buff, offset, length, callback, null);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        if (error != null)
+        //            error(ex);
+        //    }
+        //}
+
+        internal static void ReadBytesAsync (
       this Stream stream,
       long length,
       int bufferLength,
