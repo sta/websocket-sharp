@@ -612,7 +612,7 @@ namespace WebSocketSharp.Net
 
     private IEnumerable<Cookie> findCookie (Cookie cookie)
     {
-      if (_cookies == null)
+      if (_cookies == null || _cookies.Count == 0)
         yield break;
 
       foreach (var c in _cookies) {
