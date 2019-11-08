@@ -589,17 +589,17 @@ namespace WebSocketSharp.Net
 
     private bool canAddOrUpdate (Cookie cookie)
     {
-      if (_cookies == null || _cookies.Count == 0)
-        return true;
-
       var found = findCookie (cookie).ToList ();
+
       if (found.Count == 0)
         return true;
 
       var ver = cookie.Version;
-      foreach (var c in found)
+
+      foreach (var c in found) {
         if (c.Version == ver)
           return true;
+      }
 
       return false;
     }
