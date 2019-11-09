@@ -960,8 +960,10 @@ namespace WebSocketSharp.Net
       if (cookie == null)
         throw new ArgumentNullException ("cookie");
 
-      if (!canAddOrUpdate (cookie))
-        throw new ArgumentException ("Cannot be replaced.", "cookie");
+      if (!canAddOrUpdate (cookie)) {
+        var msg = "It cannot be replaced.";
+        throw new ArgumentException (msg, "cookie");
+      }
 
       Cookies.Add (cookie);
     }
