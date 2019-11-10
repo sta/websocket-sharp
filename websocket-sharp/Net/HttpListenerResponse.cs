@@ -954,7 +954,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="cookie"/> already exists in the cookies but
-    /// it can not be updated.
+    /// it cannot be updated.
     /// </exception>
     public void SetCookie (Cookie cookie)
     {
