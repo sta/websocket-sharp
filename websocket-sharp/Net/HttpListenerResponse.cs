@@ -944,7 +944,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Adds or updates a <paramref name="cookie"/> in the cookies sent with the response.
+    /// Adds or updates a cookie in the cookies sent with the response.
     /// </summary>
     /// <param name="cookie">
     /// A <see cref="Cookie"/> to set.
@@ -953,7 +953,8 @@ namespace WebSocketSharp.Net
     /// <paramref name="cookie"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="cookie"/> already exists in the cookies and couldn't be replaced.
+    /// <paramref name="cookie"/> already exists in the cookies but
+    /// it can not be updated.
     /// </exception>
     public void SetCookie (Cookie cookie)
     {
