@@ -962,7 +962,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("cookie");
 
       if (!canAddOrUpdate (cookie)) {
-        var msg = "It cannot be replaced.";
+        var msg = "It cannot be updated.";
         throw new ArgumentException (msg, "cookie");
       }
 
