@@ -587,7 +587,7 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private bool canAddOrUpdate (Cookie cookie)
+    private bool canSetCookie (Cookie cookie)
     {
       var found = findCookie (cookie).ToList ();
 
@@ -961,7 +961,7 @@ namespace WebSocketSharp.Net
       if (cookie == null)
         throw new ArgumentNullException ("cookie");
 
-      if (!canAddOrUpdate (cookie)) {
+      if (!canSetCookie (cookie)) {
         var msg = "It cannot be updated.";
         throw new ArgumentException (msg, "cookie");
       }
