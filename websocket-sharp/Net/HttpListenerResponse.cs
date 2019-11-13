@@ -234,7 +234,10 @@ namespace WebSocketSharp.Net
     /// </value>
     public CookieCollection Cookies {
       get {
-        return _cookies ?? (_cookies = new CookieCollection ());
+        if (_cookies == null)
+          _cookies = new CookieCollection ();
+
+        return _cookies;
       }
 
       set {
