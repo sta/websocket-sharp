@@ -985,7 +985,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         return;
 
-      close (true); // Same as the Abort method.
+      close (true);
     }
 
     #endregion
