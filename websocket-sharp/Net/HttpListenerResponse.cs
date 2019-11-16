@@ -978,7 +978,7 @@ namespace WebSocketSharp.Net
     #region Explicit Interface Implementations
 
     /// <summary>
-    /// Releases all resources used by the <see cref="HttpListenerResponse"/>.
+    /// Releases all resources used by this instance.
     /// </summary>
     void IDisposable.Dispose ()
     {
