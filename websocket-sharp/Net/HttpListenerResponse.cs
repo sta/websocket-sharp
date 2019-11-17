@@ -712,7 +712,7 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     /// <summary>
-    /// Closes the connection to the client without returning a response.
+    /// Closes the connection to the client without sending a response.
     /// </summary>
     public void Abort ()
     {
