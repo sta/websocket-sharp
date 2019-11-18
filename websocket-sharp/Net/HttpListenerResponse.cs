@@ -819,7 +819,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Returns the response with the specified entity body data to the client
+    /// Sends the response with the specified entity body data to the client
     /// and releases the resources used by this instance.
     /// </summary>
     /// <param name="responseEntity">
