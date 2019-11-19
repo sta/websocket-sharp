@@ -723,8 +723,8 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Adds an HTTP header with the specified <paramref name="name"/> and
-    /// <paramref name="value"/> to the headers for the response.
+    /// Adds or updates an HTTP header with the specified name and value in
+    /// the headers for the response.
     /// </summary>
     /// <param name="name">
     /// A <see cref="string"/> that represents the name of the header to add.
@@ -737,7 +737,8 @@ namespace WebSocketSharp.Net
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="name"/> or <paramref name="value"/> contains invalid characters.
+    ///   <paramref name="name"/> or <paramref name="value"/> contains
+    ///   an invalid character.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -747,7 +748,8 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="value"/> is greater than 65,535 characters.
+    /// The length of <paramref name="value"/> is greater than 65,535
+    /// characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The header cannot be allowed to add to the current headers.
