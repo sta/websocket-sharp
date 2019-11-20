@@ -774,21 +774,24 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Appends a <paramref name="value"/> to the specified HTTP header sent with the response.
+    /// Appends an HTTP header with the specified name and value to
+    /// the headers for the response.
     /// </summary>
     /// <param name="name">
-    /// A <see cref="string"/> that represents the name of the header to append
-    /// <paramref name="value"/> to.
+    /// A <see cref="string"/> that represents the name of the header to
+    /// append.
     /// </param>
     /// <param name="value">
-    /// A <see cref="string"/> that represents the value to append to the header.
+    /// A <see cref="string"/> that represents the value of the header to
+    /// append.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="name"/> is <see langword="null"/> or empty.
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="name"/> or <paramref name="value"/> contains invalid characters.
+    ///   <paramref name="name"/> or <paramref name="value"/> contains
+    ///   an invalid character.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -798,10 +801,11 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="value"/> is greater than 65,535 characters.
+    /// The length of <paramref name="value"/> is greater than 65,535
+    /// characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current headers cannot allow the header to append a value.
+    /// The header cannot be allowed to append to the current headers.
     /// </exception>
     public void AppendHeader (string name, string value)
     {
