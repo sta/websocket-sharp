@@ -257,7 +257,10 @@ namespace WebSocketSharp.Net
     /// </exception>
     public WebHeaderCollection Headers {
       get {
-        return _headers ?? (_headers = new WebHeaderCollection (HttpHeaderType.Response, false));
+        if (_headers == null)
+          _headers = new WebHeaderCollection (HttpHeaderType.Response, false);
+
+        return _headers;
       }
 
       set {
