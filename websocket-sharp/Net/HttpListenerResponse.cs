@@ -247,13 +247,14 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the HTTP headers sent to the client.
+    /// Gets or sets the collection of HTTP headers sent to the client.
     /// </summary>
     /// <value>
-    /// A <see cref="WebHeaderCollection"/> that contains the headers sent to the client.
+    /// A <see cref="WebHeaderCollection"/> that contains the headers sent to
+    /// the client.
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The value specified for a set operation isn't valid for a response.
+    /// The value specified for a set operation is not valid for a response.
     /// </exception>
     public WebHeaderCollection Headers {
       get {
