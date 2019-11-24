@@ -896,13 +896,15 @@ namespace WebSocketSharp.Net
       if (templateResponse == null)
         throw new ArgumentNullException ("templateResponse");
 
-      if (templateResponse._headers != null) {
+      var headers = templateResponse._headers;
+
+      if (headers != null) {
         if (_headers != null)
           _headers.Clear ();
 
-        Headers.Add (templateResponse._headers);
+        Headers.Add (headers);
       }
-      else if (_headers != null) {
+      else {
         _headers = null;
       }
 
