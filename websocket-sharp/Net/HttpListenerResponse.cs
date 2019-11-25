@@ -882,8 +882,8 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Copies some properties from the specified <see cref="HttpListenerResponse"/> to
-    /// this response.
+    /// Copies some properties from the specified response instance to
+    /// this instance.
     /// </summary>
     /// <param name="templateResponse">
     /// A <see cref="HttpListenerResponse"/> to copy.
