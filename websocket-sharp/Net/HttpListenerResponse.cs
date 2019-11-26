@@ -219,7 +219,12 @@ namespace WebSocketSharp.Net
         if (_disposed)
           throw new ObjectDisposedException (GetType ().ToString ());
 
-        if (value != null && value.Length == 0)
+        if (value == null) {
+          _contentType = null;
+          return;
+        }
+
+        if (value.Length == 0)
           throw new ArgumentException ("An empty string.", "value");
 
         _contentType = value;
