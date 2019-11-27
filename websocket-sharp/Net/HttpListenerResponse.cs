@@ -198,14 +198,14 @@ namespace WebSocketSharp.Net
     ///   body.
     ///   </para>
     ///   <para>
-    ///   It is used for the value of the Content-Type entity-header.
+    ///   It is used for the value of the Content-Type header.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if no media type is specified.
     ///   </para>
     /// </value>
     /// <exception cref="ArgumentException">
-    /// The value specified for a set operation is empty.
+    /// The value specified for a set operation is an empty string.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
