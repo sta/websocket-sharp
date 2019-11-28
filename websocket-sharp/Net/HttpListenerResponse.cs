@@ -629,6 +629,17 @@ namespace WebSocketSharp.Net
       _context.Connection.Close (force);
     }
 
+    private static string createContentType (string value, Encoding encoding)
+    {
+      if (value.IndexOf ("charset=", StringComparison.Ordinal) > -1)
+        return value;
+
+      if (encoding == null)
+        return value;
+
+      return String.Format ("{0}; charset={1}", value, encoding.WebName);
+    }
+
     private IEnumerable<Cookie> findCookie (Cookie cookie)
     {
       if (_cookies == null || _cookies.Count == 0)
