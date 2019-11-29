@@ -629,7 +629,9 @@ namespace WebSocketSharp.Net
       _context.Connection.Close (force);
     }
 
-    private static string createContentType (string value, Encoding encoding)
+    private static string createContentTypeHeaderText (
+      string value, Encoding encoding
+    )
     {
       if (value.IndexOf ("charset=", StringComparison.Ordinal) > -1)
         return value;
