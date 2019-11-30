@@ -660,16 +660,16 @@ namespace WebSocketSharp.Net
     internal WebHeaderCollection WriteHeadersTo (MemoryStream destination)
     {
       var headers = new WebHeaderCollection (HttpHeaderType.Response, true);
+
       if (_headers != null)
         headers.Add (_headers);
 
       if (_contentType != null) {
-        var type = _contentType.IndexOf ("charset=", StringComparison.Ordinal) == -1 &&
-                   _contentEncoding != null
-                   ? String.Format ("{0}; charset={1}", _contentType, _contentEncoding.WebName)
-                   : _contentType;
-
-        headers.InternalSet ("Content-Type", type, true);
+        headers.InternalSet (
+          "Content-Type",
+          createContentTypeHeaderText (_contentType, _contentEncoding),
+          true
+        );
       }
 
       if (headers["Server"] == null)
