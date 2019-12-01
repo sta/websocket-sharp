@@ -676,8 +676,12 @@ namespace WebSocketSharp.Net
         headers.InternalSet ("Server", "websocket-sharp/1.0", true);
 
       var prov = CultureInfo.InvariantCulture;
-      if (headers["Date"] == null)
-        headers.InternalSet ("Date", DateTime.UtcNow.ToString ("r", prov), true);
+
+      if (headers["Date"] == null) {
+        headers.InternalSet (
+          "Date", DateTime.UtcNow.ToString ("r", prov), true
+        );
+      }
 
       if (!_sendChunked)
         headers.InternalSet ("Content-Length", _contentLength.ToString (prov), true);
