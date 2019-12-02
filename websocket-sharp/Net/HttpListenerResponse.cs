@@ -683,10 +683,14 @@ namespace WebSocketSharp.Net
         );
       }
 
-      if (!_sendChunked)
-        headers.InternalSet ("Content-Length", _contentLength.ToString (prov), true);
-      else
+      if (!_sendChunked) {
+        headers.InternalSet (
+          "Content-Length", _contentLength.ToString (prov), true
+        );
+      }
+      else {
         headers.InternalSet ("Transfer-Encoding", "chunked", true);
+      }
 
       /*
        * Apache forces closing the connection for these status codes:
