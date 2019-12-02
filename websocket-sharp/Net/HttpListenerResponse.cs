@@ -683,13 +683,13 @@ namespace WebSocketSharp.Net
         );
       }
 
-      if (!_sendChunked) {
+      if (_sendChunked) {
+        headers.InternalSet ("Transfer-Encoding", "chunked", true);
+      }
+      else {
         headers.InternalSet (
           "Content-Length", _contentLength.ToString (prov), true
         );
-      }
-      else {
-        headers.InternalSet ("Transfer-Encoding", "chunked", true);
       }
 
       /*
