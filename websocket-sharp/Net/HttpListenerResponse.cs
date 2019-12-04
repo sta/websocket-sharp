@@ -704,15 +704,15 @@ namespace WebSocketSharp.Net
        * - 500 Internal Server Error
        * - 503 Service Unavailable
        */
-      var closeConn = !_context.Request.KeepAlive ||
-                      !_keepAlive ||
-                      _statusCode == 400 ||
-                      _statusCode == 408 ||
-                      _statusCode == 411 ||
-                      _statusCode == 413 ||
-                      _statusCode == 414 ||
-                      _statusCode == 500 ||
-                      _statusCode == 503;
+      var closeConn = !_context.Request.KeepAlive
+                      || !_keepAlive
+                      || _statusCode == 400
+                      || _statusCode == 408
+                      || _statusCode == 411
+                      || _statusCode == 413
+                      || _statusCode == 414
+                      || _statusCode == 500
+                      || _statusCode == 503;
 
       var reuses = _context.Connection.Reuses;
       if (closeConn || reuses >= 100) {
