@@ -715,12 +715,16 @@ namespace WebSocketSharp.Net
                       || _statusCode == 503;
 
       var reuses = _context.Connection.Reuses;
+
       if (closeConn || reuses >= 100) {
         headers.InternalSet ("Connection", "close", true);
       }
       else {
         headers.InternalSet (
-          "Keep-Alive", String.Format ("timeout=15,max={0}", 100 - reuses), true);
+          "Keep-Alive",
+          String.Format ("timeout=15,max={0}", 100 - reuses),
+          true
+        );
 
         if (_context.Request.ProtocolVersion < HttpVersion.Version11)
           headers.InternalSet ("Connection", "keep-alive", true);
