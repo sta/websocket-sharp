@@ -733,9 +733,10 @@ namespace WebSocketSharp.Net
       if (_location != null)
         headers.InternalSet ("Location", _location, true);
 
-      if (_cookies != null)
-        foreach (Cookie cookie in _cookies)
+      if (_cookies != null) {
+        foreach (var cookie in _cookies)
           headers.InternalSet ("Set-Cookie", cookie.ToResponseString (), true);
+      }
 
       var enc = _contentEncoding ?? Encoding.Default;
       var writer = new StreamWriter (destination, enc, 256);
