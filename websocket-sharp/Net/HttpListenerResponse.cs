@@ -740,7 +740,11 @@ namespace WebSocketSharp.Net
 
       var enc = _contentEncoding ?? Encoding.Default;
       var writer = new StreamWriter (destination, enc, 256);
-      writer.Write ("HTTP/{0} {1} {2}\r\n", _version, _statusCode, _statusDescription);
+
+      writer.Write (
+        "HTTP/{0} {1} {2}\r\n", _version, _statusCode, _statusDescription
+      );
+
       writer.Write (headers.ToStringMultiValue (true));
       writer.Flush ();
 
