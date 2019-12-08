@@ -738,7 +738,7 @@ namespace WebSocketSharp.Net
           headers.InternalSet ("Set-Cookie", cookie.ToResponseString (), true);
       }
 
-      var enc = _contentEncoding ?? Encoding.Default;
+      var enc = Encoding.UTF8;
       var writer = new StreamWriter (destination, enc, 256);
 
       writer.Write (
