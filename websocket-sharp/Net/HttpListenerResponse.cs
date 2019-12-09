@@ -116,6 +116,17 @@ namespace WebSocketSharp.Net
       }
     }
 
+    internal string StatusLine {
+      get {
+        return String.Format (
+                 "HTTP/{0} {1} {2}\r\n",
+                 _version,
+                 _statusCode,
+                 _statusDescription
+               );
+      }
+    }
+
     #endregion
 
     #region Public Properties
