@@ -106,6 +106,96 @@ namespace WebSocketSharp.Net
       }
     }
 
+    internal WebHeaderCollection FullHeaders {
+      get {
+        var headers = new WebHeaderCollection (HttpHeaderType.Response, true);
+
+        if (_headers != null)
+          headers.Add (_headers);
+
+        if (_contentType != null) {
+          headers.InternalSet (
+            "Content-Type",
+            createContentTypeHeaderText (_contentType, _contentEncoding),
+            true
+          );
+        }
+
+        if (headers["Server"] == null)
+          headers.InternalSet ("Server", "websocket-sharp/1.0", true);
+
+        if (headers["Date"] == null) {
+          headers.InternalSet (
+            "Date",
+            DateTime.UtcNow.ToString ("r", CultureInfo.InvariantCulture),
+            true
+          );
+        }
+
+        if (_sendChunked) {
+          headers.InternalSet ("Transfer-Encoding", "chunked", true);
+        }
+        else {
+          headers.InternalSet (
+            "Content-Length",
+            _contentLength.ToString (CultureInfo.InvariantCulture),
+            true
+          );
+        }
+
+        /*
+         * Apache forces closing the connection for these status codes:
+         * - 400 Bad Request
+         * - 408 Request Timeout
+         * - 411 Length Required
+         * - 413 Request Entity Too Large
+         * - 414 Request-Uri Too Long
+         * - 500 Internal Server Error
+         * - 503 Service Unavailable
+         */
+        var closeConn = !_context.Request.KeepAlive
+                        || !_keepAlive
+                        || _statusCode == 400
+                        || _statusCode == 408
+                        || _statusCode == 411
+                        || _statusCode == 413
+                        || _statusCode == 414
+                        || _statusCode == 500
+                        || _statusCode == 503;
+
+        var reuses = _context.Connection.Reuses;
+
+        if (closeConn || reuses >= 100) {
+          headers.InternalSet ("Connection", "close", true);
+        }
+        else {
+          headers.InternalSet (
+            "Keep-Alive",
+            String.Format ("timeout=15,max={0}", 100 - reuses),
+            true
+          );
+
+          if (_context.Request.ProtocolVersion < HttpVersion.Version11)
+            headers.InternalSet ("Connection", "keep-alive", true);
+        }
+
+        if (_location != null)
+          headers.InternalSet ("Location", _location, true);
+
+        if (_cookies != null) {
+          foreach (var cookie in _cookies) {
+            headers.InternalSet (
+              "Set-Cookie",
+              cookie.ToResponseString (),
+              true
+            );
+          }
+        }
+
+        return headers;
+      }
+    }
+
     internal bool HeadersSent {
       get {
         return _headersSent;
