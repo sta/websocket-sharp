@@ -166,20 +166,33 @@ namespace WebSocketSharp.Net
 
     private bool flushHeaders (bool closing)
     {
-      using (var buff = new MemoryStream ()) {
-        var headers = _response.WriteHeadersTo (buff);
-        var start = buff.Position;
+      if (!_response.SendChunked) {
+        if (_response.ContentLength64 != _body.Length)
+          return false;
+      }
+
+      var statusLine = _response.StatusLine;
+      var headers = _response.FullHeaders;
+
+      var buff = new MemoryStream ();
+      var enc = Encoding.UTF8;
+
+      using (var writer = new StreamWriter (buff, enc, 256)) {
+        writer.Write (statusLine);
+        writer.Write (headers.ToStringMultiValue (true));
+        writer.Flush ();
+
+        var start = enc.GetPreamble ().Length;
         var len = buff.Length - start;
+
         if (len > 32768)
           return false;
 
-        if (!_response.SendChunked && _response.ContentLength64 != _body.Length)
-          return false;
-
-        _write (buff.GetBuffer (), (int) start, (int) len);
-        _response.CloseConnection = headers["Connection"] == "close";
-        _response.HeadersSent = true;
+        _write (buff.GetBuffer (), start, (int) len);
       }
+
+      _response.CloseConnection = headers["Connection"] == "close";
+      _response.HeadersSent = true;
 
       return true;
     }
