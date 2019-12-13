@@ -770,43 +770,6 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Adds or updates an HTTP header with the specified name and value in
-    /// the headers for the response.
-    /// </summary>
-    /// <param name="name">
-    /// A <see cref="string"/> that represents the name of the header to add.
-    /// </param>
-    /// <param name="value">
-    /// A <see cref="string"/> that represents the value of the header to add.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="name"/> is <see langword="null"/> or empty.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    ///   <para>
-    ///   <paramref name="name"/> or <paramref name="value"/> contains
-    ///   an invalid character.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="name"/> is a restricted header name.
-    ///   </para>
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="value"/> is greater than 65,535
-    /// characters.
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// The header cannot be allowed to add to the current headers.
-    /// </exception>
-    public void AddHeader (string name, string value)
-    {
-      Headers.Set (name, value);
-    }
-
-    /// <summary>
     /// Appends the specified cookie to the cookies sent with the response.
     /// </summary>
     /// <param name="cookie">
@@ -1026,6 +989,43 @@ namespace WebSocketSharp.Net
       }
 
       Cookies.Add (cookie);
+    }
+
+    /// <summary>
+    /// Adds or updates an HTTP header with the specified name and value in
+    /// the headers for the response.
+    /// </summary>
+    /// <param name="name">
+    /// A <see cref="string"/> that represents the name of the header to add.
+    /// </param>
+    /// <param name="value">
+    /// A <see cref="string"/> that represents the value of the header to add.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="name"/> is <see langword="null"/> or empty.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="name"/> or <paramref name="value"/> contains
+    ///   an invalid character.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="name"/> is a restricted header name.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The length of <paramref name="value"/> is greater than 65,535
+    /// characters.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The header cannot be allowed to add to the current headers.
+    /// </exception>
+    public void SetHeader (string name, string value)
+    {
+      Headers.Set (name, value);
     }
 
     #endregion
