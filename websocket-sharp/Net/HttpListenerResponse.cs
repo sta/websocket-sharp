@@ -233,6 +233,9 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   <see langword="null"/> if no encoding is specified.
     ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
+    ///   </para>
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
