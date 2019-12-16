@@ -237,6 +237,9 @@ namespace WebSocketSharp.Net
     ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The response is already being sent.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
     /// </exception>
