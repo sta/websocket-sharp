@@ -266,8 +266,16 @@ namespace WebSocketSharp.Net
     /// the response.
     /// </summary>
     /// <value>
-    /// A <see cref="long"/> that represents the value of the Content-Length
-    /// header.
+    ///   <para>
+    ///   A <see cref="long"/> that represents the number of bytes in
+    ///   the entity body data.
+    ///   </para>
+    ///   <para>
+    ///   It is used for the value of the Content-Length header.
+    ///   </para>
+    ///   <para>
+    ///   The default value is zero.
+    ///   </para>
     /// </value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The value specified for a set operation is less than zero.
