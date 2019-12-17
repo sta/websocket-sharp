@@ -323,6 +323,9 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   <see langword="null"/> if no media type is specified.
     ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
+    ///   </para>
     /// </value>
     /// <exception cref="ArgumentException">
     /// The value specified for a set operation is an empty string.
