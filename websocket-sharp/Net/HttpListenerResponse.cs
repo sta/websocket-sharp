@@ -330,6 +330,9 @@ namespace WebSocketSharp.Net
     /// <exception cref="ArgumentException">
     /// The value specified for a set operation is an empty string.
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The response is already being sent.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
     /// </exception>
