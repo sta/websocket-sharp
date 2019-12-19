@@ -546,6 +546,9 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   <see langword="null"/> if no redirect location is specified.
     ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
+    ///   </para>
     /// </value>
     /// <exception cref="ArgumentException">
     /// The value specified for a set operation is not an absolute URL.
