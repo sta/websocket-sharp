@@ -540,8 +540,11 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents the value of the Location
-    ///   response-header.
+    ///   A <see cref="string"/> that represents the absolute URL for
+    ///   the redirect location.
+    ///   </para>
+    ///   <para>
+    ///   It is used for the value of the Location header.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if no redirect location is specified.
