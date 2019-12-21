@@ -568,6 +568,11 @@ namespace WebSocketSharp.Net
         if (_disposed)
           throw new ObjectDisposedException (GetType ().ToString ());
 
+        if (_headersSent) {
+          var msg = "The response is already being sent.";
+          throw new InvalidOperationException (msg);
+        }
+
         if (value == null) {
           _location = null;
           return;
