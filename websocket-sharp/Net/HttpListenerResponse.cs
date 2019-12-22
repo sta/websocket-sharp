@@ -581,8 +581,8 @@ namespace WebSocketSharp.Net
           return;
         }
 
-        if (!value.MaybeUri ())
-          throw new ArgumentException ("Not an absolute URL.", "value");
+        if (value.Length == 0)
+          throw new ArgumentException ("An empty string.", "value");
 
         Uri uri;
         if (!Uri.TryCreate (value, UriKind.Absolute, out uri))
