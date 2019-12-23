@@ -984,7 +984,15 @@ namespace WebSocketSharp.Net
     /// <paramref name="url"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="url"/> is not an absolute URL.
+    ///   <para>
+    ///   <paramref name="url"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="url"/> is not an absolute URL.
+    ///   </para>
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The response is already being sent.
