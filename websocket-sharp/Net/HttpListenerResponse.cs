@@ -1005,8 +1005,8 @@ namespace WebSocketSharp.Net
       if (url == null)
         throw new ArgumentNullException ("url");
 
-      if (!url.MaybeUri ())
-        throw new ArgumentException ("Not an absolute URL.", "url");
+      if (url.Length == 0)
+        throw new ArgumentException ("An empty string.", "url");
 
       Uri uri;
       if (!Uri.TryCreate (url, UriKind.Absolute, out uri))
