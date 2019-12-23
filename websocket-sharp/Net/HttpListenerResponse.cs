@@ -977,8 +977,8 @@ namespace WebSocketSharp.Net
     /// 302, and the <see cref="StatusDescription"/> property to "Found".
     /// </remarks>
     /// <param name="url">
-    /// A <see cref="string"/> that represents the URL to which the client is
-    /// redirected to locate a requested resource.
+    /// A <see cref="string"/> that represents the absolute URL to which
+    /// the client is redirected to locate a requested resource.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="url"/> is <see langword="null"/>.
