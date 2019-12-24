@@ -72,7 +72,7 @@ namespace WebSocketSharp.Net
     private WebHeaderCollection _headers;
     private bool                _headersSent;
     private bool                _keepAlive;
-    private string              _location;
+    private Uri                 _location;
     private ResponseStream      _outputStream;
     private bool                _sendChunked;
     private int                 _statusCode;
@@ -180,7 +180,7 @@ namespace WebSocketSharp.Net
         }
 
         if (_location != null)
-          headers.InternalSet ("Location", _location, true);
+          headers.InternalSet ("Location", _location.AbsoluteUri, true);
 
         if (_cookies != null) {
           foreach (var cookie in _cookies) {
@@ -572,7 +572,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public string RedirectLocation {
       get {
-        return _location;
+        return _location != null ? _location.OriginalString : null;
       }
 
       set {
@@ -596,7 +596,7 @@ namespace WebSocketSharp.Net
         if (!Uri.TryCreate (value, UriKind.Absolute, out uri))
           throw new ArgumentException ("Not an absolute URL.", "value");
 
-        _location = value;
+        _location = uri;
       }
     }
 
@@ -1020,7 +1020,7 @@ namespace WebSocketSharp.Net
       if (!Uri.TryCreate (url, UriKind.Absolute, out uri))
         throw new ArgumentException ("Not an absolute URL.", "url");
 
-      _location = url;
+      _location = uri;
       _statusCode = 302;
       _statusDescription = "Found";
     }
