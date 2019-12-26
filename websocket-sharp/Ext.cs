@@ -1321,13 +1321,19 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the description of the specified HTTP status <paramref name="code"/>.
+    /// Gets the description of the specified HTTP status code.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that represents the description of the HTTP status code.
+    /// A <see cref="string"/> that represents the description of
+    /// the HTTP status code.
     /// </returns>
     /// <param name="code">
-    /// One of <see cref="HttpStatusCode"/> enum values, indicates the HTTP status code.
+    ///   <para>
+    ///   One of the <see cref="HttpStatusCode"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It specifies the HTTP status code.
+    ///   </para>
     /// </param>
     public static string GetDescription (this HttpStatusCode code)
     {
