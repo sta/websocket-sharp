@@ -1341,13 +1341,19 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the description of the specified HTTP status <paramref name="code"/>.
+    /// Gets the description of the specified HTTP status code.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that represents the description of the HTTP status code.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the description of
+    ///   the HTTP status code.
+    ///   </para>
+    ///   <para>
+    ///   An empty string if the description is not present.
+    ///   </para>
     /// </returns>
     /// <param name="code">
-    /// An <see cref="int"/> that represents the HTTP status code.
+    /// An <see cref="int"/> that specifies the HTTP status code.
     /// </param>
     public static string GetStatusDescription (this int code)
     {
