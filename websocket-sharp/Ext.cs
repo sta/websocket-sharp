@@ -1290,10 +1290,14 @@ namespace WebSocketSharp
     /// <param name="e">
     /// A <see cref="EventArgs"/> that contains no event data.
     /// </param>
-    public static void Emit (this EventHandler eventHandler, object sender, EventArgs e)
+    public static void Emit (
+      this EventHandler eventHandler, object sender, EventArgs e
+    )
     {
-      if (eventHandler != null)
-        eventHandler (sender, e);
+      if (eventHandler == null)
+        return;
+
+      eventHandler (sender, e);
     }
 
     /// <summary>
