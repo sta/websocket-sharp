@@ -389,6 +389,16 @@ namespace WebSocketSharp
              : stream.ToByteArray ();
     }
 
+    internal static void Emit (
+      this EventHandler eventHandler, object sender, EventArgs e
+    )
+    {
+      if (eventHandler == null)
+        return;
+
+      eventHandler (sender, e);
+    }
+
     /// <summary>
     /// Determines whether the specified <see cref="int"/> equals the specified <see cref="char"/>,
     /// and invokes the specified <c>Action&lt;int&gt;</c> delegate at the same time.
@@ -1277,28 +1287,6 @@ namespace WebSocketSharp
     #endregion
 
     #region Public Methods
-
-    /// <summary>
-    /// Emits the specified <see cref="EventHandler"/> delegate if it isn't <see langword="null"/>.
-    /// </summary>
-    /// <param name="eventHandler">
-    /// A <see cref="EventHandler"/> to emit.
-    /// </param>
-    /// <param name="sender">
-    /// An <see cref="object"/> from which emits this <paramref name="eventHandler"/>.
-    /// </param>
-    /// <param name="e">
-    /// A <see cref="EventArgs"/> that contains no event data.
-    /// </param>
-    public static void Emit (
-      this EventHandler eventHandler, object sender, EventArgs e
-    )
-    {
-      if (eventHandler == null)
-        return;
-
-      eventHandler (sender, e);
-    }
 
     /// <summary>
     /// Emits the specified <c>EventHandler&lt;TEventArgs&gt;</c> delegate if it isn't
