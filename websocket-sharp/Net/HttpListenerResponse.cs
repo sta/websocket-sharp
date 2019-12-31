@@ -648,8 +648,8 @@ namespace WebSocketSharp.Net
     ///   the response to the request.
     ///   </para>
     ///   <para>
-    ///   The default value is 200. It is same as
-    ///   <see cref="HttpStatusCode.OK"/>.
+    ///   The default value is 200. It indicates that the request has
+    ///   succeeded.
     ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
