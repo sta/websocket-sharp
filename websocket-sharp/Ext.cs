@@ -652,6 +652,19 @@ namespace WebSocketSharp
       return value > 0 && value < 65536;
     }
 
+    internal static bool IsPrintable (this string value)
+    {
+      foreach (var c in value) {
+        if (c < 0x20)
+          return false;
+
+        if (c > 0x7e)
+          return false;
+      }
+
+      return true;
+    }
+
     internal static bool IsReserved (this ushort code)
     {
       return code == 1004
