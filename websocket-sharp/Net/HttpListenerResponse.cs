@@ -743,12 +743,7 @@ namespace WebSocketSharp.Net
           return;
         }
 
-        if (!value.IsText ()) {
-          var msg = "It contains an invalid character.";
-          throw new ArgumentException (msg, "value");
-        }
-
-        if (value.IndexOfAny (new[] { '\r', '\n' }) > -1) {
+        if (!value.IsPrintable ()) {
           var msg = "It contains an invalid character.";
           throw new ArgumentException (msg, "value");
         }
