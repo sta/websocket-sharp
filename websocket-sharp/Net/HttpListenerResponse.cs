@@ -358,6 +358,11 @@ namespace WebSocketSharp.Net
         if (value.Length == 0)
           throw new ArgumentException ("An empty string.", "value");
 
+        if (!value.IsPrintable ()) {
+          var msg = "It contains an invalid character.";
+          throw new ArgumentException (msg, "value");
+        }
+
         _contentType = value;
       }
     }
