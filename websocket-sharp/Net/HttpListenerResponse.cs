@@ -328,7 +328,15 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </value>
     /// <exception cref="ArgumentException">
-    /// The value specified for a set operation is an empty string.
+    ///   <para>
+    ///   The value specified for a set operation is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The value specified for a set operation contains an invalid character.
+    ///   </para>
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The response is already being sent.
