@@ -314,12 +314,13 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the media type of the entity body included in the response.
+    /// Gets or sets the media type of the entity body included in
+    /// the response.
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents the media type of the entity
-    ///   body.
+    ///   A <see cref="string"/> that represents the media type of
+    ///   the entity body.
     ///   </para>
     ///   <para>
     ///   It is used for the value of the Content-Type header.
@@ -339,7 +340,8 @@ namespace WebSocketSharp.Net
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The value specified for a set operation contains an invalid character.
+    ///   The value specified for a set operation contains
+    ///   an invalid character.
     ///   </para>
     /// </exception>
     /// <exception cref="InvalidOperationException">
