@@ -376,7 +376,7 @@ namespace WebSocketSharp.Net
           throw new ArgumentException (msg, "value");
         }
 
-        if (!value.IsPrintable ()) {
+        if (!isValidForContentType (value)) {
           var msg = "It contains an invalid character.";
           throw new ArgumentException (msg, "value");
         }
