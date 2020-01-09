@@ -826,6 +826,22 @@ namespace WebSocketSharp.Net
       }
     }
 
+    private static bool isValidForContentType (string value)
+    {
+      foreach (var c in value) {
+        if (c < 0x20)
+          return false;
+
+        if (c > 0x7e)
+          return false;
+
+        if ("()<>@:\\[]?{}".IndexOf (c) > -1)
+          return false;
+      }
+
+      return true;
+    }
+
     #endregion
 
     #region Public Methods
