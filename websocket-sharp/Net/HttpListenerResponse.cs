@@ -860,6 +860,19 @@ namespace WebSocketSharp.Net
       return true;
     }
 
+    private static bool isValidForStatusDescription (string value)
+    {
+      foreach (var c in value) {
+        if (c < 0x20)
+          return false;
+
+        if (c > 0x7e)
+          return false;
+      }
+
+      return true;
+    }
+
     #endregion
 
     #region Public Methods
