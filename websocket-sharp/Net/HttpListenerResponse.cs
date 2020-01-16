@@ -972,8 +972,10 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Close (byte[] responseEntity, bool willBlock)
     {
-      if (_disposed)
-        throw new ObjectDisposedException (GetType ().ToString ());
+      if (_disposed) {
+        var name = GetType ().ToString ();
+        throw new ObjectDisposedException (name);
+      }
 
       if (responseEntity == null)
         throw new ArgumentNullException ("responseEntity");
