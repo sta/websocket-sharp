@@ -72,8 +72,8 @@ namespace WebSocketSharp.Net
     private WebHeaderCollection _headers;
     private bool                _headersSent;
     private bool                _keepAlive;
-    private string              _location;
     private ResponseStream      _outputStream;
+    private Uri                 _redirectLocation;
     private bool                _sendChunked;
     private int                 _statusCode;
     private string              _statusDescription;
@@ -106,6 +106,96 @@ namespace WebSocketSharp.Net
       }
     }
 
+    internal WebHeaderCollection FullHeaders {
+      get {
+        var headers = new WebHeaderCollection (HttpHeaderType.Response, true);
+
+        if (_headers != null)
+          headers.Add (_headers);
+
+        if (_contentType != null) {
+          headers.InternalSet (
+            "Content-Type",
+            createContentTypeHeaderText (_contentType, _contentEncoding),
+            true
+          );
+        }
+
+        if (headers["Server"] == null)
+          headers.InternalSet ("Server", "websocket-sharp/1.0", true);
+
+        if (headers["Date"] == null) {
+          headers.InternalSet (
+            "Date",
+            DateTime.UtcNow.ToString ("r", CultureInfo.InvariantCulture),
+            true
+          );
+        }
+
+        if (_sendChunked) {
+          headers.InternalSet ("Transfer-Encoding", "chunked", true);
+        }
+        else {
+          headers.InternalSet (
+            "Content-Length",
+            _contentLength.ToString (CultureInfo.InvariantCulture),
+            true
+          );
+        }
+
+        /*
+         * Apache forces closing the connection for these status codes:
+         * - 400 Bad Request
+         * - 408 Request Timeout
+         * - 411 Length Required
+         * - 413 Request Entity Too Large
+         * - 414 Request-Uri Too Long
+         * - 500 Internal Server Error
+         * - 503 Service Unavailable
+         */
+        var closeConn = !_context.Request.KeepAlive
+                        || !_keepAlive
+                        || _statusCode == 400
+                        || _statusCode == 408
+                        || _statusCode == 411
+                        || _statusCode == 413
+                        || _statusCode == 414
+                        || _statusCode == 500
+                        || _statusCode == 503;
+
+        var reuses = _context.Connection.Reuses;
+
+        if (closeConn || reuses >= 100) {
+          headers.InternalSet ("Connection", "close", true);
+        }
+        else {
+          headers.InternalSet (
+            "Keep-Alive",
+            String.Format ("timeout=15,max={0}", 100 - reuses),
+            true
+          );
+
+          if (_context.Request.ProtocolVersion < HttpVersion.Version11)
+            headers.InternalSet ("Connection", "keep-alive", true);
+        }
+
+        if (_redirectLocation != null)
+          headers.InternalSet ("Location", _redirectLocation.AbsoluteUri, true);
+
+        if (_cookies != null) {
+          foreach (var cookie in _cookies) {
+            headers.InternalSet (
+              "Set-Cookie",
+              cookie.ToResponseString (),
+              true
+            );
+          }
+        }
+
+        return headers;
+      }
+    }
+
     internal bool HeadersSent {
       get {
         return _headersSent;
@@ -113,6 +203,17 @@ namespace WebSocketSharp.Net
 
       set {
         _headersSent = value;
+      }
+    }
+
+    internal string StatusLine {
+      get {
+        return String.Format (
+                 "HTTP/{0} {1} {2}\r\n",
+                 _version,
+                 _statusCode,
+                 _statusDescription
+               );
       }
     }
 
@@ -132,7 +233,13 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   <see langword="null"/> if no encoding is specified.
     ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
+    ///   </para>
     /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The response is already being sent.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
     /// </exception>
@@ -142,8 +249,15 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+        if (_disposed) {
+          var name = GetType ().ToString ();
+          throw new ObjectDisposedException (name);
+        }
+
+        if (_headersSent) {
+          var msg = "The response is already being sent.";
+          throw new InvalidOperationException (msg);
+        }
 
         _contentEncoding = value;
       }
@@ -154,8 +268,16 @@ namespace WebSocketSharp.Net
     /// the response.
     /// </summary>
     /// <value>
-    /// A <see cref="long"/> that represents the value of the Content-Length
-    /// header.
+    ///   <para>
+    ///   A <see cref="long"/> that represents the number of bytes in
+    ///   the entity body data.
+    ///   </para>
+    ///   <para>
+    ///   It is used for the value of the Content-Length header.
+    ///   </para>
+    ///   <para>
+    ///   The default value is zero.
+    ///   </para>
     /// </value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The value specified for a set operation is less than zero.
@@ -172,8 +294,10 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+        if (_disposed) {
+          var name = GetType ().ToString ();
+          throw new ObjectDisposedException (name);
+        }
 
         if (_headersSent) {
           var msg = "The response is already being sent.";
@@ -190,22 +314,38 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the media type of the entity body included in the response.
+    /// Gets or sets the media type of the entity body included in
+    /// the response.
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents the media type of the entity
-    ///   body.
+    ///   A <see cref="string"/> that represents the media type of
+    ///   the entity body.
     ///   </para>
     ///   <para>
-    ///   It is used for the value of the Content-Type entity-header.
+    ///   It is used for the value of the Content-Type header.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if no media type is specified.
     ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
+    ///   </para>
     /// </value>
     /// <exception cref="ArgumentException">
-    /// The value specified for a set operation is empty.
+    ///   <para>
+    ///   The value specified for a set operation is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The value specified for a set operation contains
+    ///   an invalid character.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The response is already being sent.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
@@ -216,11 +356,30 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+        if (_disposed) {
+          var name = GetType ().ToString ();
+          throw new ObjectDisposedException (name);
+        }
 
-        if (value != null && value.Length == 0)
-          throw new ArgumentException ("An empty string.", "value");
+        if (_headersSent) {
+          var msg = "The response is already being sent.";
+          throw new InvalidOperationException (msg);
+        }
+
+        if (value == null) {
+          _contentType = null;
+          return;
+        }
+
+        if (value.Length == 0) {
+          var msg = "An empty string.";
+          throw new ArgumentException (msg, "value");
+        }
+
+        if (!isValidForContentType (value)) {
+          var msg = "It contains an invalid character.";
+          throw new ArgumentException (msg, "value");
+        }
 
         _contentType = value;
       }
@@ -304,8 +463,10 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+        if (_disposed) {
+          var name = GetType ().ToString ();
+          throw new ObjectDisposedException (name);
+        }
 
         if (_headersSent) {
           var msg = "The response is already being sent.";
@@ -328,8 +489,10 @@ namespace WebSocketSharp.Net
     /// </exception>
     public Stream OutputStream {
       get {
-        if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+        if (_disposed) {
+          var name = GetType ().ToString ();
+          throw new ObjectDisposedException (name);
+        }
 
         if (_outputStream == null)
           _outputStream = _context.Connection.GetResponseStream ();
@@ -373,8 +536,10 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+        if (_disposed) {
+          var name = GetType ().ToString ();
+          throw new ObjectDisposedException (name);
+        }
 
         if (_headersSent) {
           var msg = "The response is already being sent.";
@@ -404,41 +569,71 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents the value of the Location
-    ///   response-header.
+    ///   A <see cref="string"/> that represents the absolute URL for
+    ///   the redirect location.
+    ///   </para>
+    ///   <para>
+    ///   It is used for the value of the Location header.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if no redirect location is specified.
     ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
+    ///   </para>
     /// </value>
     /// <exception cref="ArgumentException">
-    /// The value specified for a set operation is not an absolute URL.
+    ///   <para>
+    ///   The value specified for a set operation is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The value specified for a set operation is not an absolute URL.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The response is already being sent.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// This instance is closed.
     /// </exception>
     public string RedirectLocation {
       get {
-        return _location;
+        return _redirectLocation != null
+               ? _redirectLocation.OriginalString
+               : null;
       }
 
       set {
-        if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+        if (_disposed) {
+          var name = GetType ().ToString ();
+          throw new ObjectDisposedException (name);
+        }
+
+        if (_headersSent) {
+          var msg = "The response is already being sent.";
+          throw new InvalidOperationException (msg);
+        }
 
         if (value == null) {
-          _location = null;
+          _redirectLocation = null;
           return;
         }
 
-        if (!value.MaybeUri ())
-          throw new ArgumentException ("Not an absolute URL.", "value");
+        if (value.Length == 0) {
+          var msg = "An empty string.";
+          throw new ArgumentException (msg, "value");
+        }
 
         Uri uri;
-        if (!Uri.TryCreate (value, UriKind.Absolute, out uri))
-          throw new ArgumentException ("Not an absolute URL.", "value");
+        if (!Uri.TryCreate (value, UriKind.Absolute, out uri)) {
+          var msg = "Not an absolute URL.";
+          throw new ArgumentException (msg, "value");
+        }
 
-        _location = value;
+        _redirectLocation = uri;
       }
     }
 
@@ -467,8 +662,10 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+        if (_disposed) {
+          var name = GetType ().ToString ();
+          throw new ObjectDisposedException (name);
+        }
 
         if (_headersSent) {
           var msg = "The response is already being sent.";
@@ -488,8 +685,8 @@ namespace WebSocketSharp.Net
     ///   the response to the request.
     ///   </para>
     ///   <para>
-    ///   The default value is 200. It is same as
-    ///   <see cref="HttpStatusCode.OK"/>.
+    ///   The default value is 200. It indicates that the request has
+    ///   succeeded.
     ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
@@ -512,8 +709,10 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+        if (_disposed) {
+          var name = GetType ().ToString ();
+          throw new ObjectDisposedException (name);
+        }
 
         if (_headersSent) {
           var msg = "The response is already being sent.";
@@ -567,8 +766,10 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
+        if (_disposed) {
+          var name = GetType ().ToString ();
+          throw new ObjectDisposedException (name);
+        }
 
         if (_headersSent) {
           var msg = "The response is already being sent.";
@@ -583,12 +784,7 @@ namespace WebSocketSharp.Net
           return;
         }
 
-        if (!value.IsText ()) {
-          var msg = "It contains an invalid character.";
-          throw new ArgumentException (msg, "value");
-        }
-
-        if (value.IndexOfAny (new[] { '\r', '\n' }) > -1) {
+        if (!isValidForStatusDescription (value)) {
           var msg = "It contains an invalid character.";
           throw new ArgumentException (msg, "value");
         }
@@ -624,6 +820,19 @@ namespace WebSocketSharp.Net
       _context.Connection.Close (force);
     }
 
+    private static string createContentTypeHeaderText (
+      string value, Encoding encoding
+    )
+    {
+      if (value.IndexOf ("charset=", StringComparison.Ordinal) > -1)
+        return value;
+
+      if (encoding == null)
+        return value;
+
+      return String.Format ("{0}; charset={1}", value, encoding.WebName);
+    }
+
     private IEnumerable<Cookie> findCookie (Cookie cookie)
     {
       if (_cookies == null || _cookies.Count == 0)
@@ -635,86 +844,33 @@ namespace WebSocketSharp.Net
       }
     }
 
-    #endregion
-
-    #region Internal Methods
-
-    internal WebHeaderCollection WriteHeadersTo (MemoryStream destination)
+    private static bool isValidForContentType (string value)
     {
-      var headers = new WebHeaderCollection (HttpHeaderType.Response, true);
-      if (_headers != null)
-        headers.Add (_headers);
+      foreach (var c in value) {
+        if (c < 0x20)
+          return false;
 
-      if (_contentType != null) {
-        var type = _contentType.IndexOf ("charset=", StringComparison.Ordinal) == -1 &&
-                   _contentEncoding != null
-                   ? String.Format ("{0}; charset={1}", _contentType, _contentEncoding.WebName)
-                   : _contentType;
+        if (c > 0x7e)
+          return false;
 
-        headers.InternalSet ("Content-Type", type, true);
+        if ("()<>@:\\[]?{}".IndexOf (c) > -1)
+          return false;
       }
 
-      if (headers["Server"] == null)
-        headers.InternalSet ("Server", "websocket-sharp/1.0", true);
+      return true;
+    }
 
-      var prov = CultureInfo.InvariantCulture;
-      if (headers["Date"] == null)
-        headers.InternalSet ("Date", DateTime.UtcNow.ToString ("r", prov), true);
+    private static bool isValidForStatusDescription (string value)
+    {
+      foreach (var c in value) {
+        if (c < 0x20)
+          return false;
 
-      if (!_sendChunked)
-        headers.InternalSet ("Content-Length", _contentLength.ToString (prov), true);
-      else
-        headers.InternalSet ("Transfer-Encoding", "chunked", true);
-
-      /*
-       * Apache forces closing the connection for these status codes:
-       * - 400 Bad Request
-       * - 408 Request Timeout
-       * - 411 Length Required
-       * - 413 Request Entity Too Large
-       * - 414 Request-Uri Too Long
-       * - 500 Internal Server Error
-       * - 503 Service Unavailable
-       */
-      var closeConn = !_context.Request.KeepAlive ||
-                      !_keepAlive ||
-                      _statusCode == 400 ||
-                      _statusCode == 408 ||
-                      _statusCode == 411 ||
-                      _statusCode == 413 ||
-                      _statusCode == 414 ||
-                      _statusCode == 500 ||
-                      _statusCode == 503;
-
-      var reuses = _context.Connection.Reuses;
-      if (closeConn || reuses >= 100) {
-        headers.InternalSet ("Connection", "close", true);
-      }
-      else {
-        headers.InternalSet (
-          "Keep-Alive", String.Format ("timeout=15,max={0}", 100 - reuses), true);
-
-        if (_context.Request.ProtocolVersion < HttpVersion.Version11)
-          headers.InternalSet ("Connection", "keep-alive", true);
+        if (c > 0x7e)
+          return false;
       }
 
-      if (_location != null)
-        headers.InternalSet ("Location", _location, true);
-
-      if (_cookies != null)
-        foreach (Cookie cookie in _cookies)
-          headers.InternalSet ("Set-Cookie", cookie.ToResponseString (), true);
-
-      var enc = _contentEncoding ?? Encoding.Default;
-      var writer = new StreamWriter (destination, enc, 256);
-      writer.Write ("HTTP/{0} {1} {2}\r\n", _version, _statusCode, _statusDescription);
-      writer.Write (headers.ToStringMultiValue (true));
-      writer.Flush ();
-
-      // Assumes that the destination was at position 0.
-      destination.Position = enc.GetPreamble ().Length;
-
-      return headers;
+      return true;
     }
 
     #endregion
@@ -730,43 +886,6 @@ namespace WebSocketSharp.Net
         return;
 
       close (true);
-    }
-
-    /// <summary>
-    /// Adds or updates an HTTP header with the specified name and value in
-    /// the headers for the response.
-    /// </summary>
-    /// <param name="name">
-    /// A <see cref="string"/> that represents the name of the header to add.
-    /// </param>
-    /// <param name="value">
-    /// A <see cref="string"/> that represents the value of the header to add.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="name"/> is <see langword="null"/> or empty.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    ///   <para>
-    ///   <paramref name="name"/> or <paramref name="value"/> contains
-    ///   an invalid character.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="name"/> is a restricted header name.
-    ///   </para>
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="value"/> is greater than 65,535
-    /// characters.
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// The header cannot be allowed to add to the current headers.
-    /// </exception>
-    public void AddHeader (string name, string value)
-    {
-      Headers.Set (name, value);
     }
 
     /// <summary>
@@ -853,8 +972,10 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Close (byte[] responseEntity, bool willBlock)
     {
-      if (_disposed)
-        throw new ObjectDisposedException (GetType ().ToString ());
+      if (_disposed) {
+        var name = GetType ().ToString ();
+        throw new ObjectDisposedException (name);
+      }
 
       if (responseEntity == null)
         throw new ArgumentNullException ("responseEntity");
@@ -882,8 +1003,8 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Copies some properties from the specified <see cref="HttpListenerResponse"/> to
-    /// this response.
+    /// Copies some properties from the specified response instance to
+    /// this instance.
     /// </summary>
     /// <param name="templateResponse">
     /// A <see cref="HttpListenerResponse"/> to copy.
@@ -896,13 +1017,15 @@ namespace WebSocketSharp.Net
       if (templateResponse == null)
         throw new ArgumentNullException ("templateResponse");
 
-      if (templateResponse._headers != null) {
+      var headers = templateResponse._headers;
+
+      if (headers != null) {
         if (_headers != null)
           _headers.Clear ();
 
-        Headers.Add (templateResponse._headers);
+        Headers.Add (headers);
       }
-      else if (_headers != null) {
+      else {
         _headers = null;
       }
 
@@ -923,14 +1046,22 @@ namespace WebSocketSharp.Net
     /// 302, and the <see cref="StatusDescription"/> property to "Found".
     /// </remarks>
     /// <param name="url">
-    /// A <see cref="string"/> that represents the URL to which the client is
-    /// redirected to locate a requested resource.
+    /// A <see cref="string"/> that represents the absolute URL to which
+    /// the client is redirected to locate a requested resource.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="url"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="url"/> is not an absolute URL.
+    ///   <para>
+    ///   <paramref name="url"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="url"/> is not an absolute URL.
+    ///   </para>
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The response is already being sent.
@@ -951,14 +1082,14 @@ namespace WebSocketSharp.Net
       if (url == null)
         throw new ArgumentNullException ("url");
 
-      if (!url.MaybeUri ())
-        throw new ArgumentException ("Not an absolute URL.", "url");
+      if (url.Length == 0)
+        throw new ArgumentException ("An empty string.", "url");
 
       Uri uri;
       if (!Uri.TryCreate (url, UriKind.Absolute, out uri))
         throw new ArgumentException ("Not an absolute URL.", "url");
 
-      _location = url;
+      _redirectLocation = uri;
       _statusCode = 302;
       _statusDescription = "Found";
     }
@@ -987,6 +1118,43 @@ namespace WebSocketSharp.Net
       }
 
       Cookies.Add (cookie);
+    }
+
+    /// <summary>
+    /// Adds or updates an HTTP header with the specified name and value in
+    /// the headers for the response.
+    /// </summary>
+    /// <param name="name">
+    /// A <see cref="string"/> that represents the name of the header to set.
+    /// </param>
+    /// <param name="value">
+    /// A <see cref="string"/> that represents the value of the header to set.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="name"/> is <see langword="null"/> or empty.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="name"/> or <paramref name="value"/> contains
+    ///   an invalid character.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="name"/> is a restricted header name.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The length of <paramref name="value"/> is greater than 65,535
+    /// characters.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The header cannot be allowed to set in the current headers.
+    /// </exception>
+    public void SetHeader (string name, string value)
+    {
+      Headers.Set (name, value);
     }
 
     #endregion
