@@ -1090,8 +1090,10 @@ namespace WebSocketSharp.Net
       }
 
       Uri uri;
-      if (!Uri.TryCreate (url, UriKind.Absolute, out uri))
-        throw new ArgumentException ("Not an absolute URL.", "url");
+      if (!Uri.TryCreate (url, UriKind.Absolute, out uri)) {
+        var msg = "Not an absolute URL.";
+        throw new ArgumentException (msg, "url");
+      }
 
       _redirectLocation = uri;
       _statusCode = 302;
