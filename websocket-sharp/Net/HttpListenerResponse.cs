@@ -820,6 +820,25 @@ namespace WebSocketSharp.Net
       _context.Connection.Close (force);
     }
 
+    private void close (byte[] responseEntity, int bufferLength, bool willBlock)
+    {
+      var output = OutputStream;
+
+      if (willBlock) {
+        output.WriteBytes (responseEntity, bufferLength);
+        close (false);
+
+        return;
+      }
+
+      output.WriteBytesAsync (
+        responseEntity,
+        bufferLength,
+        () => close (false),
+        null
+      );
+    }
+
     private static string createContentTypeHeaderText (
       string value, Encoding encoding
     )
