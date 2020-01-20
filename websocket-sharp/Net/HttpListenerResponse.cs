@@ -999,11 +999,17 @@ namespace WebSocketSharp.Net
       if (responseEntity == null)
         throw new ArgumentNullException ("responseEntity");
 
-      var len = responseEntity.Length;
+      var len = responseEntity.LongLength;
+
+      if (len > Int32.MaxValue) {
+        close (responseEntity, 1024, willBlock);
+        return;
+      }
+
       var output = OutputStream;
 
       if (willBlock) {
-        output.Write (responseEntity, 0, len);
+        output.Write (responseEntity, 0, (int) len);
         close (false);
 
         return;
@@ -1012,7 +1018,7 @@ namespace WebSocketSharp.Net
       output.BeginWrite (
         responseEntity,
         0,
-        len,
+        (int) len,
         ar => {
           output.EndWrite (ar);
           close (false);
