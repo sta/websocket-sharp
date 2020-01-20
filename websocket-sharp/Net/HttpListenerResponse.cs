@@ -1006,21 +1006,21 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      var output = OutputStream;
+      var stream = OutputStream;
 
       if (willBlock) {
-        output.Write (responseEntity, 0, (int) len);
+        stream.Write (responseEntity, 0, (int) len);
         close (false);
 
         return;
       }
 
-      output.BeginWrite (
+      stream.BeginWrite (
         responseEntity,
         0,
         (int) len,
         ar => {
-          output.EndWrite (ar);
+          stream.EndWrite (ar);
           close (false);
         },
         null
