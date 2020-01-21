@@ -647,6 +647,12 @@ And if you would like to output a log, you should use any of the output methods.
 ws.Log.Debug ("This is a debug message.");
 ```
 
+If you would like to disable all log output, you can specify the `None` enum.
+
+```csharp
+ws.Log.Level = LogLevel.None;
+```
+
 The `WebSocketServer` and `HttpServer` classes have the same logging function.
 
 ## Examples ##
