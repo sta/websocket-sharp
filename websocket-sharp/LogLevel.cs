@@ -58,6 +58,11 @@ namespace WebSocketSharp
     /// <summary>
     /// Specifies the top logging level.
     /// </summary>
-    Fatal
+    Fatal,
+
+    /// <summary>
+    /// No log
+    /// </summary>
+    None
   }
 }

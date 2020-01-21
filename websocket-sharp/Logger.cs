@@ -263,11 +263,18 @@ namespace WebSocketSharp
     /// <summary>
     /// Outputs <paramref name="message"/> as a log with <see cref="LogLevel.Fatal"/>.
     /// </summary>
+    /// <remarks>
+    /// If the current logging level is higher than <see cref="LogLevel.Fatal"/>,
+    /// this method doesn't output <paramref name="message"/> as a log.
+    /// </remarks>
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
     /// </param>
     public void Fatal (string message)
     {
+      if (_level > LogLevel.Fatal)
+        return;
+
       output (message, LogLevel.Fatal);
     }
 
