@@ -822,16 +822,16 @@ namespace WebSocketSharp.Net
 
     private void close (byte[] responseEntity, int bufferLength, bool willBlock)
     {
-      var output = OutputStream;
+      var stream = OutputStream;
 
       if (willBlock) {
-        output.WriteBytes (responseEntity, bufferLength);
+        stream.WriteBytes (responseEntity, bufferLength);
         close (false);
 
         return;
       }
 
-      output.WriteBytesAsync (
+      stream.WriteBytesAsync (
         responseEntity,
         bufferLength,
         () => close (false),
