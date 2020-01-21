@@ -980,8 +980,8 @@ namespace WebSocketSharp.Net
     /// An array of <see cref="byte"/> that contains the entity body data.
     /// </param>
     /// <param name="willBlock">
-    /// <c>true</c> if this method blocks execution while flushing the stream to
-    /// the client; otherwise, <c>false</c>.
+    /// <c>true</c> if this method blocks execution while flushing the stream
+    /// to the client; otherwise, <c>false</c>.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="responseEntity"/> is <see langword="null"/>.
