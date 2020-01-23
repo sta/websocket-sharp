@@ -53,10 +53,11 @@ using System.Text;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Provides the access to a response to a request received by the <see cref="HttpListener"/>.
+  /// Represents an HTTP response to an HTTP request received by
+  /// a <see cref="HttpListener"/> instance.
   /// </summary>
   /// <remarks>
-  /// The HttpListenerResponse class cannot be inherited.
+  /// This class cannot be inherited.
   /// </remarks>
   public sealed class HttpListenerResponse : IDisposable
   {
