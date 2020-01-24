@@ -407,7 +407,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the collection of HTTP headers sent to the client.
+    /// Gets or sets the collection of the HTTP headers sent to the client.
     /// </summary>
     /// <value>
     /// A <see cref="WebHeaderCollection"/> that contains the headers sent to
