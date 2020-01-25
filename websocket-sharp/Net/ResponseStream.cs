@@ -327,8 +327,10 @@ namespace WebSocketSharp.Net
 
     public override void Write (byte[] buffer, int offset, int count)
     {
-      if (_disposed)
-        throw new ObjectDisposedException (GetType ().ToString ());
+      if (_disposed) {
+        var name = GetType ().ToString ();
+        throw new ObjectDisposedException (name);
+      }
 
       _body.Write (buffer, offset, count);
     }
