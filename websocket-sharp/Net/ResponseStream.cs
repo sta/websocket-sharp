@@ -306,8 +306,15 @@ namespace WebSocketSharp.Net
 
     public override void Flush ()
     {
-      if (!_disposed && (_sendChunked || _response.SendChunked))
-        flush (false);
+      if (_disposed)
+        return;
+
+      var sendChunked = _sendChunked || _response.SendChunked;
+
+      if (!sendChunked)
+        return;
+
+      flush (false);
     }
 
     public override int Read (byte[] buffer, int offset, int count)
