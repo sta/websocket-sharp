@@ -280,8 +280,10 @@ namespace WebSocketSharp.Net
       object state
     )
     {
-      if (_disposed)
-        throw new ObjectDisposedException (GetType ().ToString ());
+      if (_disposed) {
+        var name = GetType ().ToString ();
+        throw new ObjectDisposedException (name);
+      }
 
       return _body.BeginWrite (buffer, offset, count, callback, state);
     }
