@@ -273,7 +273,12 @@ namespace WebSocketSharp.Net
     }
 
     public override IAsyncResult BeginWrite (
-      byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+      byte[] buffer,
+      int offset,
+      int count,
+      AsyncCallback callback,
+      object state
+    )
     {
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
