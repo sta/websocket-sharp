@@ -267,7 +267,12 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     public override IAsyncResult BeginRead (
-      byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+      byte[] buffer,
+      int offset,
+      int count,
+      AsyncCallback callback,
+      object state
+    )
     {
       throw new NotSupportedException ();
     }
