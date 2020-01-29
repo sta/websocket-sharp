@@ -238,21 +238,27 @@ namespace WebSocketSharp.Net
         return;
 
       _disposed = true;
-      if (!force && flush (true)) {
-        _response.Close ();
-      }
-      else {
-        if (_sendChunked) {
-          var last = getChunkSizeBytes (0, true);
-          _write (last, 0, last.Length);
+
+      if (!force) {
+        if (flush (true)) {
+          _response.Close ();
+
+          _response = null;
+          _stream = null;
+
+          return;
         }
-
-        _body.Dispose ();
-        _body = null;
-
-        _response.Abort ();
       }
 
+      if (_sendChunked) {
+        var last = getChunkSizeBytes (0, true);
+        _write (last, 0, last.Length);
+      }
+
+      _body.Dispose ();
+      _response.Abort ();
+
+      _body = null;
       _response = null;
       _stream = null;
     }
