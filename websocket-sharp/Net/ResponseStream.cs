@@ -62,7 +62,10 @@ namespace WebSocketSharp.Net
     #region Internal Constructors
 
     internal ResponseStream (
-      Stream stream, HttpListenerResponse response, bool ignoreWriteExceptions)
+      Stream stream,
+      HttpListenerResponse response,
+      bool ignoreWriteExceptions
+    )
     {
       _stream = stream;
       _response = response;
