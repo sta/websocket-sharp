@@ -222,7 +222,9 @@ namespace WebSocketSharp.Net
       }
     }
 
-    private void writeWithoutThrowingException (byte[] buffer, int offset, int count)
+    private void writeWithoutThrowingException (
+      byte[] buffer, int offset, int count
+    )
     {
       try {
         _stream.Write (buffer, offset, count);
