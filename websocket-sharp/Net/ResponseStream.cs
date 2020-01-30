@@ -213,7 +213,9 @@ namespace WebSocketSharp.Net
       _stream.Write (_crlf, 0, 2);
     }
 
-    private void writeChunkedWithoutThrowingException (byte[] buffer, int offset, int count)
+    private void writeChunkedWithoutThrowingException (
+      byte[] buffer, int offset, int count
+    )
     {
       try {
         writeChunked (buffer, offset, count);
