@@ -48,7 +48,7 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private MemoryStream             _body;
-    private static readonly byte[]   _crlf = new byte[] { 13, 10 };
+    private static readonly byte[]   _crlf;
     private bool                     _disposed;
     private HttpListenerResponse     _response;
     private bool                     _sendChunked;
@@ -56,6 +56,15 @@ namespace WebSocketSharp.Net
     private Action<byte[], int, int> _write;
     private Action<byte[], int, int> _writeBody;
     private Action<byte[], int, int> _writeChunked;
+
+    #endregion
+
+    #region Static Constructor
+
+    static ResponseStream ()
+    {
+      _crlf = new byte[] { 13, 10 };
+    }
 
     #endregion
 
