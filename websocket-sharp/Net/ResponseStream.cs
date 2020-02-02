@@ -64,7 +64,7 @@ namespace WebSocketSharp.Net
 
     static ResponseStream ()
     {
-      _crlf = new byte[] { 13, 10 };
+      _crlf = new byte[] { 13, 10 }; // "\r\n"
       _lastChunk = new byte[] { 48, 13, 10, 13, 10 }; // "0\r\n\r\n"
     }
 
