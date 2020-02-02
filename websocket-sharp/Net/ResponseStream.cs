@@ -50,6 +50,7 @@ namespace WebSocketSharp.Net
     private MemoryStream             _body;
     private static readonly byte[]   _crlf;
     private bool                     _disposed;
+    private static readonly byte[]   _lastChunk;
     private HttpListenerResponse     _response;
     private bool                     _sendChunked;
     private Stream                   _stream;
@@ -64,6 +65,7 @@ namespace WebSocketSharp.Net
     static ResponseStream ()
     {
       _crlf = new byte[] { 13, 10 };
+      _lastChunk = new byte[] { 48, 13, 10, 13, 10 }; // "0\r\n\r\n"
     }
 
     #endregion
