@@ -225,7 +225,7 @@ namespace WebSocketSharp.Net
 
     private void writeChunked (byte[] buffer, int offset, int count)
     {
-      var size = getChunkSizeBytes (count, false);
+      var size = getChunkSizeBytes (count);
 
       _stream.Write (size, 0, size.Length);
       _stream.Write (buffer, offset, count);
