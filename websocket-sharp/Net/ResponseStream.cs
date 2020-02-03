@@ -211,6 +211,12 @@ namespace WebSocketSharp.Net
       return true;
     }
 
+    private static byte[] getChunkSizeBytes (int size)
+    {
+      var chunkSize = String.Format ("{0:x}\r\n", size);
+      return Encoding.ASCII.GetBytes (chunkSize);
+    }
+
     private static byte[] getChunkSizeBytes (int size, bool final)
     {
       var chunkSize = String.Format ("{0:x}\r\n{1}", size, final ? "\r\n" : "");
