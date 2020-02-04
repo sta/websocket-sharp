@@ -276,10 +276,8 @@ namespace WebSocketSharp.Net
         }
       }
 
-      if (_sendChunked) {
-        var last = getChunkSizeBytes (0, true);
-        _write (last, 0, last.Length);
-      }
+      if (_sendChunked)
+        _write (_lastChunk, 0, 5);
 
       _body.Dispose ();
       _response.Abort ();
