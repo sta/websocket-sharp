@@ -150,10 +150,8 @@ namespace WebSocketSharp.Net
       }
 
       flushBody (closing);
-      if (closing && _sendChunked) {
-        var last = getChunkSizeBytes (0, true);
-        _write (last, 0, last.Length);
-      }
+      if (closing && _sendChunked)
+        _write (_lastChunk, 0, 5);
 
       return true;
     }
