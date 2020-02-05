@@ -150,6 +150,7 @@ namespace WebSocketSharp.Net
       }
 
       flushBody (closing);
+
       if (closing && _sendChunked)
         _write (_lastChunk, 0, 5);
 
