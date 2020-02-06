@@ -161,13 +161,22 @@ namespace WebSocketSharp.Net
     {
       using (_body) {
         var len = _body.Length;
+
         if (len > Int32.MaxValue) {
           _body.Position = 0;
+
           var buffLen = 1024;
           var buff = new byte[buffLen];
           var nread = 0;
-          while ((nread = _body.Read (buff, 0, buffLen)) > 0)
+
+          while (true) {
+            nread = _body.Read (buff, 0, buffLen);
+
+            if (nread <= 0)
+              break;
+
             _writeBody (buff, 0, nread);
+          }
         }
         else if (len > 0) {
           _writeBody (_body.GetBuffer (), 0, (int) len);
