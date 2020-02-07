@@ -150,10 +150,6 @@ namespace WebSocketSharp.Net
       }
 
       flushBody (closing);
-
-      if (closing && _sendChunked)
-        _write (_lastChunk, 0, 5);
-
       return true;
     }
 
@@ -183,7 +179,15 @@ namespace WebSocketSharp.Net
         }
       }
 
-      _body = !closing ? new MemoryStream () : null;
+      if (closing) {
+        if (_sendChunked)
+          _write (_lastChunk, 0, 5);
+
+        _body = null;
+      }
+      else {
+        _body = new MemoryStream ();
+      }
     }
 
     private bool flushHeaders (bool closing)
