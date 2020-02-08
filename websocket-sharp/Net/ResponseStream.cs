@@ -179,15 +179,15 @@ namespace WebSocketSharp.Net
         }
       }
 
-      if (closing) {
-        if (_sendChunked)
-          _write (_lastChunk, 0, 5);
-
-        _body = null;
-      }
-      else {
+      if (!closing) {
         _body = new MemoryStream ();
+        return;
       }
+
+      if (_sendChunked)
+        _write (_lastChunk, 0, 5);
+
+      _body = null;
     }
 
     private bool flushHeaders (bool closing)
