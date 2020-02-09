@@ -50,10 +50,10 @@ namespace WebSocketSharp.Net
     private MemoryStream             _body;
     private static readonly byte[]   _crlf;
     private bool                     _disposed;
+    private Stream                   _innerStream;
     private static readonly byte[]   _lastChunk;
     private HttpListenerResponse     _response;
     private bool                     _sendChunked;
-    private Stream                   _stream;
     private Action<byte[], int, int> _write;
     private Action<byte[], int, int> _writeBody;
     private Action<byte[], int, int> _writeChunked;
@@ -73,12 +73,12 @@ namespace WebSocketSharp.Net
     #region Internal Constructors
 
     internal ResponseStream (
-      Stream stream,
+      Stream innerStream,
       HttpListenerResponse response,
       bool ignoreWriteExceptions
     )
     {
-      _stream = stream;
+      _innerStream = innerStream;
       _response = response;
 
       if (ignoreWriteExceptions) {
@@ -86,7 +86,7 @@ namespace WebSocketSharp.Net
         _writeChunked = writeChunkedWithoutThrowingException;
       }
       else {
-        _write = stream.Write;
+        _write = innerStream.Write;
         _writeChunked = writeChunked;
       }
 
@@ -233,9 +233,9 @@ namespace WebSocketSharp.Net
     {
       var size = getChunkSizeBytes (count);
 
-      _stream.Write (size, 0, size.Length);
-      _stream.Write (buffer, offset, count);
-      _stream.Write (_crlf, 0, 2);
+      _innerStream.Write (size, 0, size.Length);
+      _innerStream.Write (buffer, offset, count);
+      _innerStream.Write (_crlf, 0, 2);
     }
 
     private void writeChunkedWithoutThrowingException (
@@ -254,7 +254,7 @@ namespace WebSocketSharp.Net
     )
     {
       try {
-        _stream.Write (buffer, offset, count);
+        _innerStream.Write (buffer, offset, count);
       }
       catch {
       }
@@ -276,7 +276,7 @@ namespace WebSocketSharp.Net
           _response.Close ();
 
           _response = null;
-          _stream = null;
+          _innerStream = null;
 
           return;
         }
@@ -290,7 +290,7 @@ namespace WebSocketSharp.Net
 
       _body = null;
       _response = null;
-      _stream = null;
+      _innerStream = null;
     }
 
     internal void InternalWrite (byte[] buffer, int offset, int count)
