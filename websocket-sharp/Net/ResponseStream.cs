@@ -47,7 +47,7 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private MemoryStream             _body;
+    private MemoryStream             _bodyBuffer;
     private static readonly byte[]   _crlf;
     private bool                     _disposed;
     private Stream                   _innerStream;
@@ -90,7 +90,7 @@ namespace WebSocketSharp.Net
         _writeChunked = writeChunked;
       }
 
-      _body = new MemoryStream ();
+      _bodyBuffer = new MemoryStream ();
     }
 
     #endregion
@@ -155,18 +155,18 @@ namespace WebSocketSharp.Net
 
     private void flushBody (bool closing)
     {
-      using (_body) {
-        var len = _body.Length;
+      using (_bodyBuffer) {
+        var len = _bodyBuffer.Length;
 
         if (len > Int32.MaxValue) {
-          _body.Position = 0;
+          _bodyBuffer.Position = 0;
 
           var buffLen = 1024;
           var buff = new byte[buffLen];
           var nread = 0;
 
           while (true) {
-            nread = _body.Read (buff, 0, buffLen);
+            nread = _bodyBuffer.Read (buff, 0, buffLen);
 
             if (nread <= 0)
               break;
@@ -175,25 +175,25 @@ namespace WebSocketSharp.Net
           }
         }
         else if (len > 0) {
-          _writeBody (_body.GetBuffer (), 0, (int) len);
+          _writeBody (_bodyBuffer.GetBuffer (), 0, (int) len);
         }
       }
 
       if (!closing) {
-        _body = new MemoryStream ();
+        _bodyBuffer = new MemoryStream ();
         return;
       }
 
       if (_sendChunked)
         _write (_lastChunk, 0, 5);
 
-      _body = null;
+      _bodyBuffer = null;
     }
 
     private bool flushHeaders (bool closing)
     {
       if (!_response.SendChunked) {
-        if (_response.ContentLength64 != _body.Length)
+        if (_response.ContentLength64 != _bodyBuffer.Length)
           return false;
       }
 
@@ -285,10 +285,10 @@ namespace WebSocketSharp.Net
       if (_sendChunked)
         _write (_lastChunk, 0, 5);
 
-      _body.Dispose ();
+      _bodyBuffer.Dispose ();
       _response.Abort ();
 
-      _body = null;
+      _bodyBuffer = null;
       _response = null;
       _innerStream = null;
     }
@@ -326,7 +326,7 @@ namespace WebSocketSharp.Net
         throw new ObjectDisposedException (name);
       }
 
-      return _body.BeginWrite (buffer, offset, count, callback, state);
+      return _bodyBuffer.BeginWrite (buffer, offset, count, callback, state);
     }
 
     public override void Close ()
@@ -351,7 +351,7 @@ namespace WebSocketSharp.Net
         throw new ObjectDisposedException (name);
       }
 
-      _body.EndWrite (asyncResult);
+      _bodyBuffer.EndWrite (asyncResult);
     }
 
     public override void Flush ()
@@ -389,7 +389,7 @@ namespace WebSocketSharp.Net
         throw new ObjectDisposedException (name);
       }
 
-      _body.Write (buffer, offset, count);
+      _bodyBuffer.Write (buffer, offset, count);
     }
 
     #endregion
