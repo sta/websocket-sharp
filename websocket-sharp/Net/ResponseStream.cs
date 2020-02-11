@@ -138,12 +138,8 @@ namespace WebSocketSharp.Net
     private bool flush (bool closing)
     {
       if (!_response.HeadersSent) {
-        if (!flushHeaders (closing)) {
-          if (closing)
-            _response.CloseConnection = true;
-
+        if (!flushHeaders (closing))
           return false;
-        }
 
         _sendChunked = _response.SendChunked;
         _writeBody = _sendChunked ? _writeChunked : _write;
@@ -280,6 +276,8 @@ namespace WebSocketSharp.Net
 
           return;
         }
+
+        _response.CloseConnection = true;
       }
 
       if (_sendChunked)
