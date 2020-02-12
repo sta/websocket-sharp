@@ -138,7 +138,7 @@ namespace WebSocketSharp.Net
     private bool flush (bool closing)
     {
       if (!_response.HeadersSent) {
-        if (!flushHeaders (closing))
+        if (!flushHeaders ())
           return false;
 
         _response.HeadersSent = true;
@@ -188,7 +188,7 @@ namespace WebSocketSharp.Net
       _bodyBuffer = null;
     }
 
-    private bool flushHeaders (bool closing)
+    private bool flushHeaders ()
     {
       if (!_response.SendChunked) {
         if (_response.ContentLength64 != _bodyBuffer.Length)
