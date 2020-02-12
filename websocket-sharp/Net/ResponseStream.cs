@@ -141,6 +141,8 @@ namespace WebSocketSharp.Net
         if (!flushHeaders (closing))
           return false;
 
+        _response.HeadersSent = true;
+
         _sendChunked = _response.SendChunked;
         _writeBody = _sendChunked ? _writeChunked : _write;
       }
@@ -214,8 +216,6 @@ namespace WebSocketSharp.Net
       }
 
       _response.CloseConnection = headers["Connection"] == "close";
-      _response.HeadersSent = true;
-
       return true;
     }
 
