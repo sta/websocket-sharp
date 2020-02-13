@@ -211,7 +211,7 @@ namespace WebSocketSharp.Net
         var start = enc.GetPreamble ().Length;
         var len = buff.Length - start;
 
-        if (len > 32768)
+        if (len > _maxHeadersLength)
           return false;
 
         _write (buff.GetBuffer (), start, (int) len);
