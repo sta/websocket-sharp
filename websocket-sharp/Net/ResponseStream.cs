@@ -52,6 +52,7 @@ namespace WebSocketSharp.Net
     private bool                     _disposed;
     private Stream                   _innerStream;
     private static readonly byte[]   _lastChunk;
+    private static readonly int      _maxHeadersLength;
     private HttpListenerResponse     _response;
     private bool                     _sendChunked;
     private Action<byte[], int, int> _write;
@@ -66,6 +67,7 @@ namespace WebSocketSharp.Net
     {
       _crlf = new byte[] { 13, 10 }; // "\r\n"
       _lastChunk = new byte[] { 48, 13, 10, 13, 10 }; // "0\r\n\r\n"
+      _maxHeadersLength = 32768;
     }
 
     #endregion
