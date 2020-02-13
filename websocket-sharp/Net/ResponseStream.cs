@@ -218,6 +218,7 @@ namespace WebSocketSharp.Net
       }
 
       _response.CloseConnection = headers["Connection"] == "close";
+
       return true;
     }
 
