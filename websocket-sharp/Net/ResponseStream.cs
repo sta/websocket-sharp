@@ -150,6 +150,7 @@ namespace WebSocketSharp.Net
       }
 
       flushBody (closing);
+
       return true;
     }
 
