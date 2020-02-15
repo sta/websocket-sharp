@@ -352,6 +352,7 @@ namespace WebSocketSharp.Net
     {
       if (_disposed) {
         var name = GetType ().ToString ();
+
         throw new ObjectDisposedException (name);
       }
 
