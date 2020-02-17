@@ -79,7 +79,10 @@ namespace WebSocketSharp.Net
             "Accept",
             new HttpHeaderInfo (
               "Accept",
-              HttpHeaderType.Request | HttpHeaderType.Restricted | HttpHeaderType.MultiValue)
+              HttpHeaderType.Request
+              | HttpHeaderType.Restricted
+              | HttpHeaderType.MultiValue
+            )
           },
           {
             "AcceptCharset",
