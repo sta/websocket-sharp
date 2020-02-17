@@ -88,7 +88,8 @@ namespace WebSocketSharp.Net
             "AcceptCharset",
             new HttpHeaderInfo (
               "Accept-Charset",
-              HttpHeaderType.Request | HttpHeaderType.MultiValue)
+              HttpHeaderType.Request | HttpHeaderType.MultiValue
+            )
           },
           {
             "AcceptEncoding",
