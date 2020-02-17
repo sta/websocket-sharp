@@ -71,7 +71,10 @@ namespace WebSocketSharp.Net
     static WebHeaderCollection ()
     {
       _headers =
-        new Dictionary<string, HttpHeaderInfo> (StringComparer.InvariantCultureIgnoreCase) {
+        new Dictionary<string, HttpHeaderInfo> (
+          StringComparer.InvariantCultureIgnoreCase
+        )
+        {
           {
             "Accept",
             new HttpHeaderInfo (
