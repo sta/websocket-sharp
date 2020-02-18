@@ -95,7 +95,8 @@ namespace WebSocketSharp.Net
             "AcceptEncoding",
             new HttpHeaderInfo (
               "Accept-Encoding",
-              HttpHeaderType.Request | HttpHeaderType.MultiValue)
+              HttpHeaderType.Request | HttpHeaderType.MultiValue
+            )
           },
           {
             "AcceptLanguage",
