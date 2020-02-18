@@ -148,10 +148,11 @@ namespace WebSocketSharp.Net
             "Connection",
             new HttpHeaderInfo (
               "Connection",
-              HttpHeaderType.Request |
-              HttpHeaderType.Response |
-              HttpHeaderType.Restricted |
-              HttpHeaderType.MultiValue)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.Restricted
+              | HttpHeaderType.MultiValue
+            )
           },
           {
             "ContentEncoding",
