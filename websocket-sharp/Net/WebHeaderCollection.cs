@@ -109,7 +109,8 @@ namespace WebSocketSharp.Net
             "AcceptRanges",
             new HttpHeaderInfo (
               "Accept-Ranges",
-              HttpHeaderType.Response | HttpHeaderType.MultiValue)
+              HttpHeaderType.Response | HttpHeaderType.MultiValue
+            )
           },
           {
             "Age",
