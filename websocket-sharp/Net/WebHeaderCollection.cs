@@ -116,7 +116,8 @@ namespace WebSocketSharp.Net
             "Age",
             new HttpHeaderInfo (
               "Age",
-              HttpHeaderType.Response)
+              HttpHeaderType.Response
+            )
           },
           {
             "Allow",
