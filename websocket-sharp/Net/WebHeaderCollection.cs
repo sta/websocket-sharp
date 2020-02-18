@@ -139,7 +139,10 @@ namespace WebSocketSharp.Net
             "CacheControl",
             new HttpHeaderInfo (
               "Cache-Control",
-              HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.MultiValue
+            )
           },
           {
             "Connection",
