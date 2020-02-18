@@ -123,7 +123,10 @@ namespace WebSocketSharp.Net
             "Allow",
             new HttpHeaderInfo (
               "Allow",
-              HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.MultiValue
+            )
           },
           {
             "Authorization",
