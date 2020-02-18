@@ -102,7 +102,8 @@ namespace WebSocketSharp.Net
             "AcceptLanguage",
             new HttpHeaderInfo (
               "Accept-Language",
-              HttpHeaderType.Request | HttpHeaderType.MultiValue)
+              HttpHeaderType.Request | HttpHeaderType.MultiValue
+            )
           },
           {
             "AcceptRanges",
