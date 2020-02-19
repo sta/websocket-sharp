@@ -185,7 +185,8 @@ namespace WebSocketSharp.Net
             "ContentLocation",
             new HttpHeaderInfo (
               "Content-Location",
-              HttpHeaderType.Request | HttpHeaderType.Response)
+              HttpHeaderType.Request | HttpHeaderType.Response
+            )
           },
           {
             "ContentMd5",
