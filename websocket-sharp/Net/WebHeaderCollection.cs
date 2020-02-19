@@ -167,7 +167,10 @@ namespace WebSocketSharp.Net
             "ContentLanguage",
             new HttpHeaderInfo (
               "Content-Language",
-              HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.MultiValue
+            )
           },
           {
             "ContentLength",
