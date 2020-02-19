@@ -176,7 +176,10 @@ namespace WebSocketSharp.Net
             "ContentLength",
             new HttpHeaderInfo (
               "Content-Length",
-              HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.Restricted
+            )
           },
           {
             "ContentLocation",
