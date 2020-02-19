@@ -158,7 +158,10 @@ namespace WebSocketSharp.Net
             "ContentEncoding",
             new HttpHeaderInfo (
               "Content-Encoding",
-              HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.MultiValue
+            )
           },
           {
             "ContentLanguage",
