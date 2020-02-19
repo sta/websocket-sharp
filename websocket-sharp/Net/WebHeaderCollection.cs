@@ -192,7 +192,8 @@ namespace WebSocketSharp.Net
             "ContentMd5",
             new HttpHeaderInfo (
               "Content-MD5",
-              HttpHeaderType.Request | HttpHeaderType.Response)
+              HttpHeaderType.Request | HttpHeaderType.Response
+            )
           },
           {
             "ContentRange",
