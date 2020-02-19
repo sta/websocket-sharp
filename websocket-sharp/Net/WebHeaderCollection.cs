@@ -206,7 +206,10 @@ namespace WebSocketSharp.Net
             "ContentType",
             new HttpHeaderInfo (
               "Content-Type",
-              HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.Restricted
+            )
           },
           {
             "Cookie",
