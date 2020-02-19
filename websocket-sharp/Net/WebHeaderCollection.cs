@@ -199,7 +199,8 @@ namespace WebSocketSharp.Net
             "ContentRange",
             new HttpHeaderInfo (
               "Content-Range",
-              HttpHeaderType.Request | HttpHeaderType.Response)
+              HttpHeaderType.Request | HttpHeaderType.Response
+            )
           },
           {
             "ContentType",
