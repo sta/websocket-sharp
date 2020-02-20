@@ -247,7 +247,8 @@ namespace WebSocketSharp.Net
             "Expires",
             new HttpHeaderInfo (
               "Expires",
-              HttpHeaderType.Request | HttpHeaderType.Response)
+              HttpHeaderType.Request | HttpHeaderType.Response
+            )
           },
           {
             "ETag",
