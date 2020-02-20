@@ -275,7 +275,8 @@ namespace WebSocketSharp.Net
             "IfMatch",
             new HttpHeaderInfo (
               "If-Match",
-              HttpHeaderType.Request | HttpHeaderType.MultiValue)
+              HttpHeaderType.Request | HttpHeaderType.MultiValue
+            )
           },
           {
             "IfModifiedSince",
