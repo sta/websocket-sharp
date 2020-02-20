@@ -229,7 +229,10 @@ namespace WebSocketSharp.Net
             "Date",
             new HttpHeaderInfo (
               "Date",
-              HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.Restricted
+            )
           },
           {
             "Expect",
