@@ -261,7 +261,8 @@ namespace WebSocketSharp.Net
             "From",
             new HttpHeaderInfo (
               "From",
-              HttpHeaderType.Request)
+              HttpHeaderType.Request
+            )
           },
           {
             "Host",
