@@ -268,7 +268,8 @@ namespace WebSocketSharp.Net
             "Host",
             new HttpHeaderInfo (
               "Host",
-              HttpHeaderType.Request | HttpHeaderType.Restricted)
+              HttpHeaderType.Request | HttpHeaderType.Restricted
+            )
           },
           {
             "IfMatch",
