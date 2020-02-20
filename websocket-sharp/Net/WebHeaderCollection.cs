@@ -303,7 +303,8 @@ namespace WebSocketSharp.Net
             "IfUnmodifiedSince",
             new HttpHeaderInfo (
               "If-Unmodified-Since",
-              HttpHeaderType.Request)
+              HttpHeaderType.Request
+            )
           },
           {
             "KeepAlive",
