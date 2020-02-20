@@ -310,7 +310,10 @@ namespace WebSocketSharp.Net
             "KeepAlive",
             new HttpHeaderInfo (
               "Keep-Alive",
-              HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.MultiValue
+            )
           },
           {
             "LastModified",
