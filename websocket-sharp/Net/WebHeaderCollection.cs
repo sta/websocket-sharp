@@ -238,7 +238,10 @@ namespace WebSocketSharp.Net
             "Expect",
             new HttpHeaderInfo (
               "Expect",
-              HttpHeaderType.Request | HttpHeaderType.Restricted | HttpHeaderType.MultiValue)
+              HttpHeaderType.Request
+              | HttpHeaderType.Restricted
+              | HttpHeaderType.MultiValue
+            )
           },
           {
             "Expires",
