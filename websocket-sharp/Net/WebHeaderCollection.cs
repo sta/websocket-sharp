@@ -254,7 +254,8 @@ namespace WebSocketSharp.Net
             "ETag",
             new HttpHeaderInfo (
               "ETag",
-              HttpHeaderType.Response)
+              HttpHeaderType.Response
+            )
           },
           {
             "From",
