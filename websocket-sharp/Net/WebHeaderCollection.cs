@@ -296,7 +296,8 @@ namespace WebSocketSharp.Net
             "IfRange",
             new HttpHeaderInfo (
               "If-Range",
-              HttpHeaderType.Request)
+              HttpHeaderType.Request
+            )
           },
           {
             "IfUnmodifiedSince",
