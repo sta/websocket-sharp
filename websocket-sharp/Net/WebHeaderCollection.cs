@@ -289,7 +289,8 @@ namespace WebSocketSharp.Net
             "IfNoneMatch",
             new HttpHeaderInfo (
               "If-None-Match",
-              HttpHeaderType.Request | HttpHeaderType.MultiValue)
+              HttpHeaderType.Request | HttpHeaderType.MultiValue
+            )
           },
           {
             "IfRange",
