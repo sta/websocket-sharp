@@ -282,7 +282,8 @@ namespace WebSocketSharp.Net
             "IfModifiedSince",
             new HttpHeaderInfo (
               "If-Modified-Since",
-              HttpHeaderType.Request | HttpHeaderType.Restricted)
+              HttpHeaderType.Request | HttpHeaderType.Restricted
+            )
           },
           {
             "IfNoneMatch",
