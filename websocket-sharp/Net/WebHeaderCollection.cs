@@ -424,7 +424,10 @@ namespace WebSocketSharp.Net
             "SecWebSocketProtocol",
             new HttpHeaderInfo (
               "Sec-WebSocket-Protocol",
-              HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValueInRequest)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.MultiValueInRequest
+            )
           },
           {
             "SecWebSocketVersion",
