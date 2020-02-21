@@ -319,7 +319,8 @@ namespace WebSocketSharp.Net
             "LastModified",
             new HttpHeaderInfo (
               "Last-Modified",
-              HttpHeaderType.Request | HttpHeaderType.Response)
+              HttpHeaderType.Request | HttpHeaderType.Response
+            )
           },
           {
             "Location",
