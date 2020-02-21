@@ -407,10 +407,11 @@ namespace WebSocketSharp.Net
             "SecWebSocketExtensions",
             new HttpHeaderInfo (
               "Sec-WebSocket-Extensions",
-              HttpHeaderType.Request |
-              HttpHeaderType.Response |
-              HttpHeaderType.Restricted |
-              HttpHeaderType.MultiValueInRequest)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.Restricted
+              | HttpHeaderType.MultiValueInRequest
+            )
           },
           {
             "SecWebSocketKey",
