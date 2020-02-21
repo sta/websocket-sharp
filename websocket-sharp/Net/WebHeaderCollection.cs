@@ -333,7 +333,8 @@ namespace WebSocketSharp.Net
             "MaxForwards",
             new HttpHeaderInfo (
               "Max-Forwards",
-              HttpHeaderType.Request)
+              HttpHeaderType.Request
+            )
           },
           {
             "Pragma",
