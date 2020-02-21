@@ -354,7 +354,8 @@ namespace WebSocketSharp.Net
             "ProxyAuthorization",
             new HttpHeaderInfo (
               "Proxy-Authorization",
-              HttpHeaderType.Request)
+              HttpHeaderType.Request
+            )
           },
           {
             "ProxyConnection",
