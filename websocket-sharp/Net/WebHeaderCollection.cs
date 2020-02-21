@@ -340,7 +340,8 @@ namespace WebSocketSharp.Net
             "Pragma",
             new HttpHeaderInfo (
               "Pragma",
-              HttpHeaderType.Request | HttpHeaderType.Response)
+              HttpHeaderType.Request | HttpHeaderType.Response
+            )
           },
           {
             "ProxyAuthenticate",
