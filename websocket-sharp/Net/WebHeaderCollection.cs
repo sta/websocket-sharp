@@ -370,7 +370,8 @@ namespace WebSocketSharp.Net
             "Public",
             new HttpHeaderInfo (
               "Public",
-              HttpHeaderType.Response | HttpHeaderType.MultiValue)
+              HttpHeaderType.Response | HttpHeaderType.MultiValue
+            )
           },
           {
             "Range",
