@@ -417,7 +417,8 @@ namespace WebSocketSharp.Net
             "SecWebSocketKey",
             new HttpHeaderInfo (
               "Sec-WebSocket-Key",
-              HttpHeaderType.Request | HttpHeaderType.Restricted)
+              HttpHeaderType.Request | HttpHeaderType.Restricted
+            )
           },
           {
             "SecWebSocketProtocol",
