@@ -433,10 +433,11 @@ namespace WebSocketSharp.Net
             "SecWebSocketVersion",
             new HttpHeaderInfo (
               "Sec-WebSocket-Version",
-              HttpHeaderType.Request |
-              HttpHeaderType.Response |
-              HttpHeaderType.Restricted |
-              HttpHeaderType.MultiValueInResponse)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.Restricted
+              | HttpHeaderType.MultiValueInResponse
+            )
           },
           {
             "Server",
