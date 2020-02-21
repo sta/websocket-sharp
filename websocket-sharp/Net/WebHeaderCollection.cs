@@ -386,7 +386,8 @@ namespace WebSocketSharp.Net
             "Referer",
             new HttpHeaderInfo (
               "Referer",
-              HttpHeaderType.Request | HttpHeaderType.Restricted)
+              HttpHeaderType.Request | HttpHeaderType.Restricted
+            )
           },
           {
             "RetryAfter",
