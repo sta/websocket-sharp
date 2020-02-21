@@ -326,7 +326,8 @@ namespace WebSocketSharp.Net
             "Location",
             new HttpHeaderInfo (
               "Location",
-              HttpHeaderType.Response)
+              HttpHeaderType.Response
+            )
           },
           {
             "MaxForwards",
