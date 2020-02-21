@@ -361,7 +361,10 @@ namespace WebSocketSharp.Net
             "ProxyConnection",
             new HttpHeaderInfo (
               "Proxy-Connection",
-              HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.Restricted
+            )
           },
           {
             "Public",
