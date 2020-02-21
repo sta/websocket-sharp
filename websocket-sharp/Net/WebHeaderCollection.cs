@@ -393,7 +393,8 @@ namespace WebSocketSharp.Net
             "RetryAfter",
             new HttpHeaderInfo (
               "Retry-After",
-              HttpHeaderType.Response)
+              HttpHeaderType.Response
+            )
           },
           {
             "SecWebSocketAccept",
