@@ -400,7 +400,8 @@ namespace WebSocketSharp.Net
             "SecWebSocketAccept",
             new HttpHeaderInfo (
               "Sec-WebSocket-Accept",
-              HttpHeaderType.Response | HttpHeaderType.Restricted)
+              HttpHeaderType.Response | HttpHeaderType.Restricted
+            )
           },
           {
             "SecWebSocketExtensions",
