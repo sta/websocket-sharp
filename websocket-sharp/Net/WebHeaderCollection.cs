@@ -377,7 +377,10 @@ namespace WebSocketSharp.Net
             "Range",
             new HttpHeaderInfo (
               "Range",
-              HttpHeaderType.Request | HttpHeaderType.Restricted | HttpHeaderType.MultiValue)
+              HttpHeaderType.Request
+              | HttpHeaderType.Restricted
+              | HttpHeaderType.MultiValue
+            )
           },
           {
             "Referer",
