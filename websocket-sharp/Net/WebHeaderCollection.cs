@@ -518,7 +518,10 @@ namespace WebSocketSharp.Net
             "Via",
             new HttpHeaderInfo (
               "Via",
-              HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.MultiValue
+            )
           },
           {
             "Warning",
