@@ -511,7 +511,8 @@ namespace WebSocketSharp.Net
             "Vary",
             new HttpHeaderInfo (
               "Vary",
-              HttpHeaderType.Response | HttpHeaderType.MultiValue)
+              HttpHeaderType.Response | HttpHeaderType.MultiValue
+            )
           },
           {
             "Via",
