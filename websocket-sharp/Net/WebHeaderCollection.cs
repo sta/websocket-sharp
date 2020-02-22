@@ -504,7 +504,8 @@ namespace WebSocketSharp.Net
             "UserAgent",
             new HttpHeaderInfo (
               "User-Agent",
-              HttpHeaderType.Request | HttpHeaderType.Restricted)
+              HttpHeaderType.Request | HttpHeaderType.Restricted
+            )
           },
           {
             "Vary",
