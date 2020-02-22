@@ -443,7 +443,8 @@ namespace WebSocketSharp.Net
             "Server",
             new HttpHeaderInfo (
               "Server",
-              HttpHeaderType.Response)
+              HttpHeaderType.Response
+            )
           },
           {
             "SetCookie",
