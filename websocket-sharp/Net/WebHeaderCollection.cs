@@ -478,10 +478,11 @@ namespace WebSocketSharp.Net
             "TransferEncoding",
             new HttpHeaderInfo (
               "Transfer-Encoding",
-              HttpHeaderType.Request |
-              HttpHeaderType.Response |
-              HttpHeaderType.Restricted |
-              HttpHeaderType.MultiValue)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.Restricted
+              | HttpHeaderType.MultiValue
+            )
           },
           {
             "Translate",
