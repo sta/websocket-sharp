@@ -488,7 +488,8 @@ namespace WebSocketSharp.Net
             "Translate",
             new HttpHeaderInfo (
               "Translate",
-              HttpHeaderType.Request)
+              HttpHeaderType.Request
+            )
           },
           {
             "Upgrade",
