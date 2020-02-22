@@ -471,7 +471,8 @@ namespace WebSocketSharp.Net
             "Trailer",
             new HttpHeaderInfo (
               "Trailer",
-              HttpHeaderType.Request | HttpHeaderType.Response)
+              HttpHeaderType.Request | HttpHeaderType.Response
+            )
           },
           {
             "TransferEncoding",
