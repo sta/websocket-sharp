@@ -495,7 +495,10 @@ namespace WebSocketSharp.Net
             "Upgrade",
             new HttpHeaderInfo (
               "Upgrade",
-              HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.MultiValue
+            )
           },
           {
             "UserAgent",
