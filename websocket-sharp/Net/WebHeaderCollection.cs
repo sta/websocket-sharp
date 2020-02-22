@@ -464,7 +464,8 @@ namespace WebSocketSharp.Net
             "Te",
             new HttpHeaderInfo (
               "TE",
-              HttpHeaderType.Request)
+              HttpHeaderType.Request
+            )
           },
           {
             "Trailer",
