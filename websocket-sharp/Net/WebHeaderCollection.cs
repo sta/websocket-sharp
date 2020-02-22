@@ -527,7 +527,10 @@ namespace WebSocketSharp.Net
             "Warning",
             new HttpHeaderInfo (
               "Warning",
-              HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue)
+              HttpHeaderType.Request
+              | HttpHeaderType.Response
+              | HttpHeaderType.MultiValue
+            )
           },
           {
             "WwwAuthenticate",
