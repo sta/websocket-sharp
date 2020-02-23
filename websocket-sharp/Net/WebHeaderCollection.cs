@@ -575,7 +575,8 @@ namespace WebSocketSharp.Net
     /// An element with the specified name isn't found in <paramref name="serializationInfo"/>.
     /// </exception>
     protected WebHeaderCollection (
-      SerializationInfo serializationInfo, StreamingContext streamingContext)
+      SerializationInfo serializationInfo, StreamingContext streamingContext
+    )
     {
       if (serializationInfo == null)
         throw new ArgumentNullException ("serializationInfo");
@@ -585,10 +586,12 @@ namespace WebSocketSharp.Net
         _state = (HttpHeaderType) serializationInfo.GetInt32 ("State");
 
         var cnt = serializationInfo.GetInt32 ("Count");
+
         for (var i = 0; i < cnt; i++) {
           base.Add (
             serializationInfo.GetString (i.ToString ()),
-            serializationInfo.GetString ((cnt + i).ToString ()));
+            serializationInfo.GetString ((cnt + i).ToString ())
+          );
         }
       }
       catch (SerializationException ex) {
