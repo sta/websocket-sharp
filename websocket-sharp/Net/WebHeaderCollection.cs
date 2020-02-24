@@ -559,20 +559,24 @@ namespace WebSocketSharp.Net
     #region Protected Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebHeaderCollection"/> class from
-    /// the specified <see cref="SerializationInfo"/> and <see cref="StreamingContext"/>.
+    /// Initializes a new instance of the <see cref="WebHeaderCollection"/>
+    /// class from the specified <see cref="SerializationInfo"/> and
+    /// <see cref="StreamingContext"/>.
     /// </summary>
     /// <param name="serializationInfo">
-    /// A <see cref="SerializationInfo"/> that contains the serialized object data.
+    /// A <see cref="SerializationInfo"/> that contains the serialized
+    /// object data.
     /// </param>
     /// <param name="streamingContext">
-    /// A <see cref="StreamingContext"/> that specifies the source for the deserialization.
+    /// A <see cref="StreamingContext"/> that specifies the source for
+    /// the deserialization.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="serializationInfo"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// An element with the specified name isn't found in <paramref name="serializationInfo"/>.
+    /// An element with the specified name is not found in
+    /// <paramref name="serializationInfo"/>.
     /// </exception>
     protected WebHeaderCollection (
       SerializationInfo serializationInfo, StreamingContext streamingContext
