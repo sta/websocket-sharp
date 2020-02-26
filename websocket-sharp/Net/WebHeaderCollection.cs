@@ -1262,10 +1262,15 @@ namespace WebSocketSharp.Net
     /// <exception cref="ArgumentNullException">
     /// <paramref name="serializationInfo"/> is <see langword="null"/>.
     /// </exception>
-    [SecurityPermission (
-      SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+    [
+      SecurityPermission (
+        SecurityAction.LinkDemand,
+        Flags = SecurityPermissionFlag.SerializationFormatter
+      )
+    ]
     public override void GetObjectData (
-      SerializationInfo serializationInfo, StreamingContext streamingContext)
+      SerializationInfo serializationInfo, StreamingContext streamingContext
+    )
     {
       if (serializationInfo == null)
         throw new ArgumentNullException ("serializationInfo");
@@ -1274,12 +1279,15 @@ namespace WebSocketSharp.Net
       serializationInfo.AddValue ("State", (int) _state);
 
       var cnt = Count;
+
       serializationInfo.AddValue ("Count", cnt);
+
       cnt.Times (
         i => {
           serializationInfo.AddValue (i.ToString (), GetKey (i));
           serializationInfo.AddValue ((cnt + i).ToString (), Get (i));
-        });
+        }
+      );
     }
 
     /// <summary>
