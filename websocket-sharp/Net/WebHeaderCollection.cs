@@ -1282,12 +1282,10 @@ namespace WebSocketSharp.Net
 
       serializationInfo.AddValue ("Count", cnt);
 
-      cnt.Times (
-        i => {
-          serializationInfo.AddValue (i.ToString (), GetKey (i));
-          serializationInfo.AddValue ((cnt + i).ToString (), Get (i));
-        }
-      );
+      for (var i = 0; i < cnt; i++) {
+        serializationInfo.AddValue (i.ToString (), GetKey (i));
+        serializationInfo.AddValue ((cnt + i).ToString (), Get (i));
+      }
     }
 
     /// <summary>
