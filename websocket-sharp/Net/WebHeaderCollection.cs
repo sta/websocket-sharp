@@ -1250,14 +1250,15 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Populates the specified <see cref="SerializationInfo"/> with the data needed to serialize
-    /// the <see cref="WebHeaderCollection"/>.
+    /// Populates a <see cref="SerializationInfo"/> instance with the data
+    /// needed to serialize this instance.
     /// </summary>
     /// <param name="serializationInfo">
-    /// A <see cref="SerializationInfo"/> that holds the serialized object data.
+    /// A <see cref="SerializationInfo"/> to populate with the data.
     /// </param>
     /// <param name="streamingContext">
-    /// A <see cref="StreamingContext"/> that specifies the destination for the serialization.
+    /// A <see cref="StreamingContext"/> that specifies the destination for
+    /// the serialization.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="serializationInfo"/> is <see langword="null"/>.
