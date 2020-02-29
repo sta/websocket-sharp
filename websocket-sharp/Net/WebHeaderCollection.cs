@@ -608,7 +608,8 @@ namespace WebSocketSharp.Net
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebHeaderCollection"/> class.
+    /// Initializes a new instance of the <see cref="WebHeaderCollection"/>
+    /// class.
     /// </summary>
     public WebHeaderCollection ()
     {
