@@ -52,7 +52,8 @@ using System.Text;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Provides a collection of the HTTP headers associated with a request or response.
+  /// Provides a collection of the HTTP headers associated with a request or
+  /// response.
   /// </summary>
   [Serializable]
   [ComVisible (true)]
