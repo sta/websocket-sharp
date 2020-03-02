@@ -793,8 +793,12 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("name");
 
       name = name.Trim ();
-      if (!IsHeaderName (name))
-        throw new ArgumentException ("Contains invalid characters.", "name");
+
+      if (!IsHeaderName (name)) {
+        var msg = "It contains an invalid character.";
+
+        throw new ArgumentException (msg, "name");
+      }
 
       return name;
     }
