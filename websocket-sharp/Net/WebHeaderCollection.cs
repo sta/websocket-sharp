@@ -789,8 +789,11 @@ namespace WebSocketSharp.Net
 
     private static string checkName (string name)
     {
-      if (name == null || name.Length == 0)
+      if (name == null)
         throw new ArgumentNullException ("name");
+
+      if (name.Length == 0)
+        throw new ArgumentException ("An empty string.", "name");
 
       name = name.Trim ();
 
