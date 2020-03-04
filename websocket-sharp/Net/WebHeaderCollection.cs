@@ -797,6 +797,9 @@ namespace WebSocketSharp.Net
 
       name = name.Trim ();
 
+      if (name.Length == 0)
+        throw new ArgumentException ("A string of spaces.", "name");
+
       if (!IsHeaderName (name)) {
         var msg = "It contains an invalid character.";
 
