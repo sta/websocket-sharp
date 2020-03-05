@@ -939,7 +939,7 @@ namespace WebSocketSharp.Net
 
     internal static bool IsHeaderName (string name)
     {
-      return name != null && name.Length > 0 && name.IsToken ();
+      return name.IsToken ();
     }
 
     internal static bool IsHeaderValue (string value)
