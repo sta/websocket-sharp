@@ -800,7 +800,7 @@ namespace WebSocketSharp.Net
       if (name.Length == 0)
         throw new ArgumentException ("A string of spaces.", "name");
 
-      if (!IsHeaderName (name)) {
+      if (!name.IsToken ()) {
         var msg = "It contains an invalid character.";
 
         throw new ArgumentException (msg, "name");
