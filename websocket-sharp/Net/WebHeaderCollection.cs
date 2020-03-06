@@ -937,11 +937,6 @@ namespace WebSocketSharp.Net
         base.Set (name, value);
     }
 
-    internal static bool IsHeaderName (string name)
-    {
-      return name.IsToken ();
-    }
-
     internal static bool IsHeaderValue (string value)
     {
       return value.IsText ();
