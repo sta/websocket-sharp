@@ -842,8 +842,11 @@ namespace WebSocketSharp.Net
         throw new ArgumentOutOfRangeException ("value", msg);
       }
 
-      if (!IsHeaderValue (value))
-        throw new ArgumentException ("Contains invalid characters.", "value");
+      if (!IsHeaderValue (value)) {
+        var msg = "It contains an invalid character.";
+
+        throw new ArgumentException (msg, "value");
+      }
 
       return value;
     }
