@@ -831,8 +831,11 @@ namespace WebSocketSharp.Net
 
     private static string checkValue (string value)
     {
-      if (value == null || value.Length == 0)
+      if (value == null)
         return String.Empty;
+
+      if (value.Length == 0)
+        return value;
 
       value = value.Trim ();
 
