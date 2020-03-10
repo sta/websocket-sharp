@@ -839,7 +839,12 @@ namespace WebSocketSharp.Net
 
       value = value.Trim ();
 
-      if (value.Length > 65535) {
+      var len = value.Length;
+
+      if (len == 0)
+        return value;
+
+      if (len > 65535) {
         var msg = "The length is greater than 65,535 characters.";
 
         throw new ArgumentOutOfRangeException ("value", msg);
