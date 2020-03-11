@@ -834,9 +834,6 @@ namespace WebSocketSharp.Net
       if (value == null)
         return String.Empty;
 
-      if (value.Length == 0)
-        return value;
-
       value = value.Trim ();
 
       var len = value.Length;
