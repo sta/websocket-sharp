@@ -949,11 +949,6 @@ namespace WebSocketSharp.Net
         base.Set (name, value);
     }
 
-    internal static bool IsHeaderValue (string value)
-    {
-      return value.IsText ();
-    }
-
     internal static bool IsMultiValue (string headerName, bool response)
     {
       if (headerName == null || headerName.Length == 0)
