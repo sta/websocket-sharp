@@ -814,8 +814,11 @@ namespace WebSocketSharp.Net
       if (_internallyUsed)
         return;
 
-      if (isRestricted (name, true))
-        throw new ArgumentException ("This header must be modified with the appropiate property.");
+      if (isRestricted (name, true)) {
+        var msg = "This header must be modified with the appropiate property.";
+
+        throw new ArgumentException (msg);
+      }
     }
 
     private void checkState (bool response)
