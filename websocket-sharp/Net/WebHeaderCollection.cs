@@ -826,13 +826,20 @@ namespace WebSocketSharp.Net
       if (_state == HttpHeaderType.Unspecified)
         return;
 
-      if (response && _state == HttpHeaderType.Request)
-        throw new InvalidOperationException (
-          "This collection has already been used to store the request headers.");
+      if (response) {
+        if (_state == HttpHeaderType.Response)
+          return;
 
-      if (!response && _state == HttpHeaderType.Response)
-        throw new InvalidOperationException (
-          "This collection has already been used to store the response headers.");
+        var msg = "This collection has already been used for the request headers.";
+
+        throw new InvalidOperationException (msg);
+      }
+
+      if (_state == HttpHeaderType.Response) {
+        var msg = "This collection has already been used for the response headers.";
+
+        throw new InvalidOperationException (msg);
+      }
     }
 
     private static string checkValue (string value)
