@@ -836,7 +836,7 @@ namespace WebSocketSharp.Net
       }
 
       if (_state == HttpHeaderType.Response) {
-        var msg = "This collection has already been used for the response headers.";
+        var msg = "This collection is already in use for the response headers.";
 
         throw new InvalidOperationException (msg);
       }
