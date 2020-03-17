@@ -888,12 +888,22 @@ namespace WebSocketSharp.Net
     }
 
     private void doWithCheckingState (
-      Action <string, string> action, string name, string value, bool response, bool setState)
+      Action <string, string> action,
+      string name,
+      string value,
+      bool response,
+      bool setState
+    )
     {
       checkState (response);
       action (name, value);
-      if (setState && _state == HttpHeaderType.Unspecified)
-        _state = response ? HttpHeaderType.Response : HttpHeaderType.Request;
+
+      setState = setState && _state == HttpHeaderType.Unspecified;
+
+      if (!setState)
+        return;
+
+      _state = response ? HttpHeaderType.Response : HttpHeaderType.Request;
     }
 
     private void doWithoutCheckingName (Action <string, string> action, string name, string value)
