@@ -923,9 +923,12 @@ namespace WebSocketSharp.Net
 
     private static HttpHeaderInfo getHeaderInfo (string name)
     {
-      foreach (var info in _headers.Values)
-        if (info.Name.Equals (name, StringComparison.InvariantCultureIgnoreCase))
-          return info;
+      var comparison = StringComparison.InvariantCultureIgnoreCase;
+
+      foreach (var headerInfo in _headers.Values) {
+        if (headerInfo.Name.Equals (name, comparison))
+          return headerInfo;
+      }
 
       return null;
     }
