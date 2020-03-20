@@ -935,8 +935,9 @@ namespace WebSocketSharp.Net
 
     private static bool isRestricted (string name, bool response)
     {
-      var info = getHeaderInfo (name);
-      return info != null && info.IsRestricted (response);
+      var headerInfo = getHeaderInfo (name);
+
+      return headerInfo != null && headerInfo.IsRestricted (response);
     }
 
     private void removeWithoutCheckingName (string name, string unuse)
