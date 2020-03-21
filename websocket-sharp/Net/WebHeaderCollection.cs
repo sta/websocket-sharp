@@ -915,7 +915,9 @@ namespace WebSocketSharp.Net
       _state = response ? HttpHeaderType.Response : HttpHeaderType.Request;
     }
 
-    private void doWithoutCheckingName (Action <string, string> action, string name, string value)
+    private void doWithoutCheckingName (
+      Action <string, string> action, string name, string value
+    )
     {
       checkRestricted (name);
       action (name, checkValue (value));
