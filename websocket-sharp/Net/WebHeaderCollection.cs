@@ -920,7 +920,8 @@ namespace WebSocketSharp.Net
     )
     {
       checkRestricted (name);
-      action (name, checkValue (value));
+      value = checkValue (value);
+      action (name, value);
     }
 
     private static HttpHeaderInfo getHeaderInfo (string name)
