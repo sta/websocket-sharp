@@ -1392,7 +1392,9 @@ namespace WebSocketSharp.Net
     /// </exception>
     public static bool IsRestricted (string headerName, bool response)
     {
-      return isRestricted (checkName (headerName), response);
+      headerName = checkName (headerName);
+
+      return isRestricted (headerName, response);
     }
 
     /// <summary>
