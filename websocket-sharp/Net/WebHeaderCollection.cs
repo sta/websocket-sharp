@@ -1373,7 +1373,8 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Determines whether the specified header can be set for the request or the response.
+    /// Determines whether the specified HTTP header can be set for the request
+    /// or the response.
     /// </summary>
     /// <returns>
     /// <c>true</c> if the header is restricted; otherwise, <c>false</c>.
@@ -1382,13 +1383,22 @@ namespace WebSocketSharp.Net
     /// A <see cref="string"/> that represents the name of the header to test.
     /// </param>
     /// <param name="response">
-    /// <c>true</c> if does the test for the response; for the request, <c>false</c>.
+    /// A <see cref="bool"/>: <c>true</c> if the test is for the response;
+    /// otherwise, <c>false</c>.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="headerName"/> is <see langword="null"/> or empty.
+    /// <paramref name="headerName"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="headerName"/> contains invalid characters.
+    ///   <para>
+    ///   <paramref name="headerName"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="headerName"/> contains an invalid character.
+    ///   </para>
     /// </exception>
     public static bool IsRestricted (string headerName, bool response)
     {
