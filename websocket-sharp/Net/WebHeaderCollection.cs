@@ -1346,7 +1346,7 @@ namespace WebSocketSharp.Net
     /// Determines whether the specified HTTP header can be set for the request.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the header is restricted; otherwise, <c>false</c>.
+    /// <c>true</c> if the header cannot be set; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="headerName">
     /// A <see cref="string"/> that represents the name of the header to test.
