@@ -634,7 +634,8 @@ namespace WebSocketSharp.Net
     /// Gets all header names in the collection.
     /// </summary>
     /// <value>
-    /// An array of <see cref="string"/> that contains all header names in the collection.
+    /// An array of <see cref="string"/> that contains all header names in
+    /// the collection.
     /// </value>
     public override string[] AllKeys {
       get {
