@@ -699,14 +699,18 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the specified response <paramref name="header"/> in the collection.
+    /// Gets or sets the specified response header in the collection.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the response <paramref name="header"/>.
+    /// A <see cref="string"/> that represents the value of the response header.
     /// </value>
     /// <param name="header">
-    /// One of the <see cref="HttpResponseHeader"/> enum values, represents
-    /// the response header to get or set.
+    ///   <para>
+    ///   One of the <see cref="HttpResponseHeader"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It represents the response header to get or set.
+    ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
@@ -716,15 +720,15 @@ namespace WebSocketSharp.Net
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="value"/> contains invalid characters.
+    ///   <paramref name="value"/> contains an invalid character.
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
-    /// the response <paramref name="header"/>.
+    /// The current <see cref="WebHeaderCollection"/> instance does not allow
+    /// the response header.
     /// </exception>
     public string this[HttpResponseHeader header] {
       get {
