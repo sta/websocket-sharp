@@ -949,6 +949,15 @@ namespace WebSocketSharp.Net
       return null;
     }
 
+    private static string getHeaderName (string key)
+    {
+      HttpHeaderInfo headerInfo;
+
+      return _headers.TryGetValue (key, out headerInfo)
+             ? headerInfo.Name
+             : null;
+    }
+
     private static bool isRestricted (string name, bool response)
     {
       var headerInfo = getHeaderInfo (name);
