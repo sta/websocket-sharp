@@ -685,8 +685,7 @@ namespace WebSocketSharp.Net
     /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance does not allow
-    /// the request header.
+    /// This instance does not allow the request header.
     /// </exception>
     public string this[HttpRequestHeader header] {
       get {
