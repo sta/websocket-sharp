@@ -690,7 +690,10 @@ namespace WebSocketSharp.Net
     /// </exception>
     public string this[HttpRequestHeader header] {
       get {
-        return Get (Convert (header));
+        var key = header.ToString ();
+        var name = getHeaderName (key);
+
+        return Get (name);
       }
 
       set {
