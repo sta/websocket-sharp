@@ -657,7 +657,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the specified request header in the collection.
+    /// Gets or sets the specified request header.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the value of the request header.
