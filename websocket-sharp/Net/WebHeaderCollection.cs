@@ -702,7 +702,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the specified response header in the collection.
+    /// Gets or sets the specified response header.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the value of the response header.
