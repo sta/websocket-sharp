@@ -1130,11 +1130,11 @@ namespace WebSocketSharp.Net
     ///   One of the <see cref="HttpRequestHeader"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It represents the request header to add.
+    ///   It specifies the request header to add.
     ///   </para>
     /// </param>
     /// <param name="value">
-    /// A <see cref="string"/> that represents the value of the header to add.
+    /// A <see cref="string"/> that specifies the value of the header to add.
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
