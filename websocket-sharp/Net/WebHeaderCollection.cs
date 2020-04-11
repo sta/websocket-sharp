@@ -1193,7 +1193,10 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Add (HttpResponseHeader header, string value)
     {
-      doWithCheckingState (addWithoutCheckingName, Convert (header), value, true, true);
+      var key = header.ToString ();
+      var name = getHeaderName (key);
+
+      doWithCheckingState (addWithoutCheckingName, name, value, true, true);
     }
 
     /// <summary>
