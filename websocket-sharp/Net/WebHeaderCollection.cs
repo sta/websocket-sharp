@@ -1163,15 +1163,19 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Adds the specified response <paramref name="header"/> with
-    /// the specified <paramref name="value"/> to the collection.
+    /// Adds the specified response header with the specified value to
+    /// the collection.
     /// </summary>
     /// <param name="header">
-    /// One of the <see cref="HttpResponseHeader"/> enum values, represents
-    /// the response header to add.
+    ///   <para>
+    ///   One of the <see cref="HttpResponseHeader"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It specifies the response header to add.
+    ///   </para>
     /// </param>
     /// <param name="value">
-    /// A <see cref="string"/> that represents the value of the header to add.
+    /// A <see cref="string"/> that specifies the value of the header to add.
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
@@ -1181,15 +1185,15 @@ namespace WebSocketSharp.Net
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="value"/> contains invalid characters.
+    ///   <paramref name="value"/> contains an invalid character.
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="value"/> is greater than 65,535 characters.
+    /// The length of <paramref name="value"/> is greater than 65,535
+    /// characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
-    /// the response <paramref name="header"/>.
+    /// This instance does not allow the response header.
     /// </exception>
     public void Add (HttpResponseHeader header, string value)
     {
