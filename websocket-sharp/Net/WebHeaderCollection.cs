@@ -1526,7 +1526,10 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Remove (HttpResponseHeader header)
     {
-      doWithCheckingState (removeWithoutCheckingName, Convert (header), null, true, false);
+      var key = header.ToString ();
+      var name = getHeaderName (key);
+
+      doWithCheckingState (removeWithoutCheckingName, name, null, true, false);
     }
 
     /// <summary>
