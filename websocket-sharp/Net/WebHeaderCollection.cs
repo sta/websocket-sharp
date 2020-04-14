@@ -1511,18 +1511,21 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Removes the specified response <paramref name="header"/> from the collection.
+    /// Removes the specified response header from the collection.
     /// </summary>
     /// <param name="header">
-    /// One of the <see cref="HttpResponseHeader"/> enum values, represents
-    /// the response header to remove.
+    ///   <para>
+    ///   One of the <see cref="HttpResponseHeader"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It specifies the response header to remove.
+    ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
     /// <paramref name="header"/> is a restricted header.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
-    /// the response <paramref name="header"/>.
+    /// This instance does not allow the response header.
     /// </exception>
     public void Remove (HttpResponseHeader header)
     {
