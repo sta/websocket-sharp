@@ -1594,7 +1594,10 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Set (HttpRequestHeader header, string value)
     {
-      doWithCheckingState (setWithoutCheckingName, Convert (header), value, false, true);
+      var key = header.ToString ();
+      var name = getHeaderName (key);
+
+      doWithCheckingState (setWithoutCheckingName, name, value, false, true);
     }
 
     /// <summary>
