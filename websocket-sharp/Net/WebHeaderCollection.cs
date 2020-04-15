@@ -1565,14 +1565,19 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Sets the specified request <paramref name="header"/> to the specified value.
+    /// Sets the specified request header to the specified value.
     /// </summary>
     /// <param name="header">
-    /// One of the <see cref="HttpRequestHeader"/> enum values, represents
-    /// the request header to set.
+    ///   <para>
+    ///   One of the <see cref="HttpRequestHeader"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It specifies the request header to set.
+    ///   </para>
     /// </param>
     /// <param name="value">
-    /// A <see cref="string"/> that represents the value of the request header to set.
+    /// A <see cref="string"/> that specifies the value of the request header
+    /// to set.
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
@@ -1582,15 +1587,15 @@ namespace WebSocketSharp.Net
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="value"/> contains invalid characters.
+    ///   <paramref name="value"/> contains an invalid character.
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="value"/> is greater than 65,535 characters.
+    /// The length of <paramref name="value"/> is greater than 65,535
+    /// characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
-    /// the request <paramref name="header"/>.
+    /// This instance does not allow the request header.
     /// </exception>
     public void Set (HttpRequestHeader header, string value)
     {
