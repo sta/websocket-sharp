@@ -885,15 +885,6 @@ namespace WebSocketSharp.Net
       return value;
     }
 
-    private static string convert (string key)
-    {
-      HttpHeaderInfo headerInfo;
-
-      return _headers.TryGetValue (key, out headerInfo)
-             ? headerInfo.Name
-             : String.Empty;
-    }
-
     private void doWithCheckingState (
       Action <string, string> action, string name, string value, bool setState
     )
