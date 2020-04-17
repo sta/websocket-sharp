@@ -986,11 +986,6 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    internal static string Convert (HttpRequestHeader header)
-    {
-      return convert (header.ToString ());
-    }
-
     internal static string Convert (HttpResponseHeader header)
     {
       return convert (header.ToString ());
