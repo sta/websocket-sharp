@@ -955,6 +955,13 @@ namespace WebSocketSharp.Net
              : null;
     }
 
+    private static bool isMultiValue (string name, bool response)
+    {
+      var headerInfo = getHeaderInfo (name);
+
+      return headerInfo != null && headerInfo.IsMultiValue (response);
+    }
+
     private static bool isRestricted (string name, bool response)
     {
       var headerInfo = getHeaderInfo (name);
