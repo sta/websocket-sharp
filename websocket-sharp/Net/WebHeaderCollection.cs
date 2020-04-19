@@ -998,10 +998,14 @@ namespace WebSocketSharp.Net
     internal void InternalSet (string name, string value, bool response)
     {
       value = checkValue (value);
-      if (IsMultiValue (name, response))
+
+      if (IsMultiValue (name, response)) {
         base.Add (name, value);
-      else
-        base.Set (name, value);
+
+        return;
+      }
+
+      base.Set (name, value);
     }
 
     internal static bool IsMultiValue (string headerName, bool response)
