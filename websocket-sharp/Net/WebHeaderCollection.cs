@@ -1695,9 +1695,15 @@ namespace WebSocketSharp.Net
     public override string ToString ()
     {
       var buff = new StringBuilder ();
-      Count.Times (i => buff.AppendFormat ("{0}: {1}\r\n", GetKey (i), Get (i)));
 
-      return buff.Append ("\r\n").ToString ();
+      var cnt = Count;
+
+      for (var i = 0; i < cnt; i++)
+        buff.AppendFormat ("{0}: {1}\r\n", GetKey (i), Get (i));
+
+      buff.Append ("\r\n");
+
+      return buff.ToString ();
     }
 
     #endregion
