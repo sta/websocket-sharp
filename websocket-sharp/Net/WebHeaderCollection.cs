@@ -1694,9 +1694,12 @@ namespace WebSocketSharp.Net
     /// </returns>
     public override string ToString ()
     {
-      var buff = new StringBuilder ();
-
       var cnt = Count;
+
+      if (cnt == 0)
+        return "\r\n";
+
+      var buff = new StringBuilder ();
 
       for (var i = 0; i < cnt; i++)
         buff.AppendFormat ("{0}: {1}\r\n", GetKey (i), Get (i));
