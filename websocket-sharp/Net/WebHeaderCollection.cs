@@ -1686,11 +1686,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Returns a <see cref="string"/> that represents the current
-    /// <see cref="WebHeaderCollection"/>.
+    /// Returns a string that represents the current instance.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that represents the current <see cref="WebHeaderCollection"/>.
+    /// A <see cref="string"/> that represents all headers in the collection.
     /// </returns>
     public override string ToString ()
     {
