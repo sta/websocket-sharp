@@ -1674,11 +1674,11 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Converts the current <see cref="WebHeaderCollection"/> to an array of <see cref="byte"/>.
+    /// Converts the current instance to an array of byte.
     /// </summary>
     /// <returns>
-    /// An array of <see cref="byte"/> that receives the converted current
-    /// <see cref="WebHeaderCollection"/>.
+    /// An array of <see cref="byte"/> converted from a string that represents
+    /// the current instance.
     /// </returns>
     public byte[] ToByteArray ()
     {
