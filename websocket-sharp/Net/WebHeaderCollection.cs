@@ -1019,18 +1019,29 @@ namespace WebSocketSharp.Net
 
     internal string ToStringMultiValue (bool response)
     {
-      var buff = new StringBuilder ();
-      Count.Times (
-        i => {
-          var key = GetKey (i);
-          if (IsMultiValue (key, response))
-            foreach (var val in GetValues (i))
-              buff.AppendFormat ("{0}: {1}\r\n", key, val);
-          else
-            buff.AppendFormat ("{0}: {1}\r\n", key, Get (i));
-        });
+      var cnt = Count;
 
-      return buff.Append ("\r\n").ToString ();
+      if (cnt == 0)
+        return "\r\n";
+
+      var buff = new StringBuilder ();
+
+      for (var i = 0; i < cnt; i++) {
+        var name = GetKey (i);
+
+        if (IsMultiValue (name, response)) {
+          foreach (var val in GetValues (i))
+            buff.AppendFormat ("{0}: {1}\r\n", name, val);
+
+          continue;
+        }
+
+        buff.AppendFormat ("{0}: {1}\r\n", name, Get (i));
+      }
+
+      buff.Append ("\r\n");
+
+      return buff.ToString ();
     }
 
     #endregion
