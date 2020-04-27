@@ -1029,7 +1029,7 @@ namespace WebSocketSharp.Net
       for (var i = 0; i < cnt; i++) {
         var name = GetKey (i);
 
-        if (IsMultiValue (name, response)) {
+        if (isMultiValue (name, response)) {
           foreach (var val in GetValues (i))
             buff.AppendFormat ("{0}: {1}\r\n", name, val);
 
