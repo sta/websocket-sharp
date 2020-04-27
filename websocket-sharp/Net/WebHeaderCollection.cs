@@ -999,7 +999,7 @@ namespace WebSocketSharp.Net
     {
       value = checkValue (value);
 
-      if (IsMultiValue (name, response)) {
+      if (isMultiValue (name, response)) {
         base.Add (name, value);
 
         return;
