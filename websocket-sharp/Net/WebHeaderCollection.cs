@@ -1008,15 +1008,6 @@ namespace WebSocketSharp.Net
       base.Set (name, value);
     }
 
-    internal static bool IsMultiValue (string headerName, bool response)
-    {
-      if (headerName == null || headerName.Length == 0)
-        return false;
-
-      var info = getHeaderInfo (headerName);
-      return info != null && info.IsMultiValue (response);
-    }
-
     internal string ToStringMultiValue (bool response)
     {
       var cnt = Count;
