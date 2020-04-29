@@ -785,8 +785,12 @@ namespace WebSocketSharp.Net
     private static int checkColonSeparated (string header)
     {
       var idx = header.IndexOf (':');
-      if (idx == -1)
-        throw new ArgumentException ("No colon could be found.", "header");
+
+      if (idx == -1) {
+        var msg = "No colon could be found.";
+
+        throw new ArgumentException (msg, "header");
+      }
 
       return idx;
     }
