@@ -1112,11 +1112,17 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Add (string header)
     {
-      if (header == null || header.Length == 0)
+      if (header == null)
         throw new ArgumentNullException ("header");
 
+      if (header.Length == 0)
+        throw new ArgumentException ("An empty string.", "header");
+
       var pos = checkColonSeparated (header);
-      add (header.Substring (0, pos), header.Substring (pos + 1), false);
+      var name = header.Substring (0, pos);
+      var val = header.Substring (pos + 1);
+
+      add (name, val, false);
     }
 
     /// <summary>
