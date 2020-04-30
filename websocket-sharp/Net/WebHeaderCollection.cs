@@ -1118,9 +1118,16 @@ namespace WebSocketSharp.Net
       if (header.Length == 0)
         throw new ArgumentException ("An empty string.", "header");
 
-      var pos = checkColonSeparated (header);
-      var name = header.Substring (0, pos);
-      var val = header.Substring (pos + 1);
+      var idx = header.IndexOf (':');
+
+      if (idx == -1) {
+        var msg = "No colon could be found.";
+
+        throw new ArgumentException (msg, "header");
+      }
+
+      var name = header.Substring (0, idx);
+      var val = header.Substring (idx + 1);
 
       add (name, val, false);
     }
