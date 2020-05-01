@@ -1076,19 +1076,28 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     /// <summary>
-    /// Adds the specified <paramref name="header"/> to the collection.
+    /// Adds the specified header to the collection.
     /// </summary>
     /// <param name="header">
-    /// A <see cref="string"/> that represents the header with the name and value separated by
-    /// a colon (<c>':'</c>).
+    ///   <para>
+    ///   A <see cref="string"/> that specifies the header to add.
+    ///   </para>
+    ///   <para>
+    ///   It has the name and value separated by a colon character (':').
+    ///   </para>
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="header"/> is <see langword="null"/>, empty, or the name part of
-    /// <paramref name="header"/> is empty.
+    /// <paramref name="header"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="header"/> doesn't contain a colon.
+    ///   <paramref name="header"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="header"/> does not contain a colon character.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -1100,15 +1109,29 @@ namespace WebSocketSharp.Net
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The name or value part of <paramref name="header"/> contains invalid characters.
+    ///   The name part of <paramref name="header"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The name part of <paramref name="header"/> contains an invalid
+    ///   character.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The value part of <paramref name="header"/> contains an invalid
+    ///   character.
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of the value part of <paramref name="header"/> is greater than 65,535 characters.
+    /// The length of the value part of <paramref name="header"/> is greater
+    /// than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
-    /// the <paramref name="header"/>.
+    /// This instance does not allow the header.
     /// </exception>
     public void Add (string header)
     {
