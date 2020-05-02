@@ -1144,7 +1144,7 @@ namespace WebSocketSharp.Net
       var idx = header.IndexOf (':');
 
       if (idx == -1) {
-        var msg = "No colon could be found.";
+        var msg = "It does not contain a colon character.";
 
         throw new ArgumentException (msg, "header");
       }
