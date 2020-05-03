@@ -1138,8 +1138,11 @@ namespace WebSocketSharp.Net
       if (header == null)
         throw new ArgumentNullException ("header");
 
-      if (header.Length == 0)
-        throw new ArgumentException ("An empty string.", "header");
+      if (header.Length == 0) {
+        var msg = "An empty string.";
+
+        throw new ArgumentException (msg, "header");
+      }
 
       var idx = header.IndexOf (':');
 
