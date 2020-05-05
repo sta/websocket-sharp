@@ -995,8 +995,18 @@ namespace WebSocketSharp.Net
 
     internal void InternalSet (string header, bool response)
     {
-      var pos = checkColonSeparated (header);
-      InternalSet (header.Substring (0, pos), header.Substring (pos + 1), response);
+      var idx = header.IndexOf (':');
+
+      if (idx == -1) {
+        var msg = "It does not contain a colon character.";
+
+        throw new ArgumentException (msg, "header");
+      }
+
+      var name = header.Substring (0, idx);
+      var val = header.Substring (idx + 1);
+
+      InternalSet (name, val, response);
     }
 
     internal void InternalSet (string name, string value, bool response)
