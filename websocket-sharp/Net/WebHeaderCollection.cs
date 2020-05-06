@@ -782,19 +782,6 @@ namespace WebSocketSharp.Net
       base.Add (name, checkValue (value));
     }
 
-    private static int checkColonSeparated (string header)
-    {
-      var idx = header.IndexOf (':');
-
-      if (idx == -1) {
-        var msg = "No colon could be found.";
-
-        throw new ArgumentException (msg, "header");
-      }
-
-      return idx;
-    }
-
     private static HttpHeaderType checkHeaderType (string name)
     {
       var info = getHeaderInfo (name);
