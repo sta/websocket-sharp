@@ -991,7 +991,9 @@ namespace WebSocketSharp.Net
       }
 
       var name = header.Substring (0, idx);
-      var val = header.Substring (idx + 1);
+      var val = idx < header.Length - 1
+                ? header.Substring (idx + 1)
+                : String.Empty;
 
       InternalSet (name, val, response);
     }
