@@ -1133,7 +1133,9 @@ namespace WebSocketSharp.Net
       if (header == null)
         throw new ArgumentNullException ("header");
 
-      if (header.Length == 0) {
+      var len = header.Length;
+
+      if (len == 0) {
         var msg = "An empty string.";
 
         throw new ArgumentException (msg, "header");
@@ -1148,7 +1150,9 @@ namespace WebSocketSharp.Net
       }
 
       var name = header.Substring (0, idx);
-      var val = header.Substring (idx + 1);
+      var val = idx < len - 1
+                ? header.Substring (idx + 1)
+                : String.Empty;
 
       add (name, val, false);
     }
