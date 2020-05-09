@@ -1047,23 +1047,37 @@ namespace WebSocketSharp.Net
     /// the restricted header list.
     /// </summary>
     /// <param name="headerName">
-    /// A <see cref="string"/> that represents the name of the header to add.
+    /// A <see cref="string"/> that specifies the name of the header to add.
     /// </param>
     /// <param name="headerValue">
-    /// A <see cref="string"/> that represents the value of the header to add.
+    /// A <see cref="string"/> that specifies the value of the header to add.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="headerName"/> is <see langword="null"/> or empty.
+    /// <paramref name="headerName"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="headerName"/> or <paramref name="headerValue"/> contains invalid characters.
+    ///   <para>
+    ///   <paramref name="headerName"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="headerName"/> contains an invalid character.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="headerValue"/> contains an invalid character.
+    ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="headerValue"/> is greater than 65,535 characters.
+    /// The length of <paramref name="headerValue"/> is greater than 65,535
+    /// characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
-    /// the <paramref name="headerName"/>.
+    /// This instance does not allow the header.
     /// </exception>
     protected void AddWithoutValidate (string headerName, string headerValue)
     {
