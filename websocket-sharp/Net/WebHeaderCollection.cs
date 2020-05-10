@@ -946,6 +946,22 @@ namespace WebSocketSharp.Net
              : null;
     }
 
+    private static HttpHeaderType getHeaderType (string name)
+    {
+      var headerInfo = getHeaderInfo (name);
+
+      if (headerInfo == null)
+        return HttpHeaderType.Unspecified;
+
+      if (headerInfo.IsRequest && !headerInfo.IsResponse)
+        return HttpHeaderType.Request;
+
+      if (!headerInfo.IsRequest && headerInfo.IsResponse)
+        return HttpHeaderType.Response;
+
+      return HttpHeaderType.Unspecified;
+    }
+
     private static bool isMultiValue (string name, bool response)
     {
       var headerInfo = getHeaderInfo (name);
