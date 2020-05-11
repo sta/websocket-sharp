@@ -953,10 +953,14 @@ namespace WebSocketSharp.Net
       if (headerInfo == null)
         return HttpHeaderType.Unspecified;
 
-      if (headerInfo.IsRequest && !headerInfo.IsResponse)
-        return HttpHeaderType.Request;
+      if (headerInfo.IsRequest) {
+        if (headerInfo.IsResponse)
+          return HttpHeaderType.Unspecified;
 
-      if (!headerInfo.IsRequest && headerInfo.IsResponse)
+        return HttpHeaderType.Request;
+      }
+
+      if (headerInfo.IsResponse)
         return HttpHeaderType.Response;
 
       return HttpHeaderType.Unspecified;
