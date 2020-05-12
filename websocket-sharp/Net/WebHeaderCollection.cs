@@ -954,16 +954,14 @@ namespace WebSocketSharp.Net
         return HttpHeaderType.Unspecified;
 
       if (headerInfo.IsRequest) {
-        if (headerInfo.IsResponse)
-          return HttpHeaderType.Unspecified;
-
-        return HttpHeaderType.Request;
+        return !headerInfo.IsResponse
+               ? HttpHeaderType.Request
+               : HttpHeaderType.Unspecified;
       }
 
-      if (headerInfo.IsResponse)
-        return HttpHeaderType.Response;
-
-      return HttpHeaderType.Unspecified;
+      return headerInfo.IsResponse
+             ? HttpHeaderType.Response
+             : HttpHeaderType.Unspecified;
     }
 
     private static bool isMultiValue (string name, bool response)
