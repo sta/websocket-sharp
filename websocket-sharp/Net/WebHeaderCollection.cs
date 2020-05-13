@@ -782,18 +782,6 @@ namespace WebSocketSharp.Net
       base.Add (name, checkValue (value));
     }
 
-    private static HttpHeaderType checkHeaderType (string name)
-    {
-      var info = getHeaderInfo (name);
-      return info == null
-             ? HttpHeaderType.Unspecified
-             : info.IsRequest && !info.IsResponse
-               ? HttpHeaderType.Request
-               : !info.IsRequest && info.IsResponse
-                 ? HttpHeaderType.Response
-                 : HttpHeaderType.Unspecified;
-    }
-
     private static string checkName (string name)
     {
       if (name == null)
