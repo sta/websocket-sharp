@@ -880,7 +880,7 @@ namespace WebSocketSharp.Net
       Action <string, string> action, string name, string value, bool setState
     )
     {
-      var headerType = checkHeaderType (name);
+      var headerType = getHeaderType (name);
 
       if (headerType == HttpHeaderType.Response) {
         doWithCheckingState (action, name, value, true, setState);
