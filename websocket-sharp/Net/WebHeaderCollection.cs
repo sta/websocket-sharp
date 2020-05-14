@@ -1617,7 +1617,9 @@ namespace WebSocketSharp.Net
     /// </exception>
     public override void Remove (string name)
     {
-      doWithCheckingState (removeWithoutCheckingName, checkName (name), null, false);
+      name = checkName (name);
+
+      doWithCheckingState (removeWithoutCheckingName, name, null, false);
     }
 
     /// <summary>
