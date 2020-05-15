@@ -1595,14 +1595,20 @@ namespace WebSocketSharp.Net
     /// Removes the specified header from the collection.
     /// </summary>
     /// <param name="name">
-    /// A <see cref="string"/> that represents the name of the header to remove.
+    /// A <see cref="string"/> that specifies the name of the header to remove.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="name"/> is <see langword="null"/> or empty.
+    /// <paramref name="name"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="name"/> contains invalid characters.
+    ///   <paramref name="name"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="name"/> contains an invalid character.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -1612,8 +1618,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
-    /// the header <paramref name="name"/>.
+    /// This instance does not allow the header.
     /// </exception>
     public override void Remove (string name)
     {
