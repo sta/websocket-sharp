@@ -792,7 +792,7 @@ namespace WebSocketSharp.Net
       if (headerType == HttpHeaderType.Unspecified)
         return;
 
-      if (_state != headerType) {
+      if (headerType != _state) {
         var msg = "This collection does not allow the header.";
 
         throw new InvalidOperationException (msg);
