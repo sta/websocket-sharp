@@ -849,6 +849,18 @@ namespace WebSocketSharp.Net
       }
     }
 
+    private void checkRestricted (string name, bool response)
+    {
+      if (_internallyUsed)
+        return;
+
+      if (isRestricted (name, response)) {
+        var msg = "The header is a restricted header.";
+
+        throw new ArgumentException (msg);
+      }
+    }
+
     private void checkState (bool response)
     {
       if (_state == HttpHeaderType.Unspecified)
