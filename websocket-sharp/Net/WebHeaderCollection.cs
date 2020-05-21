@@ -846,7 +846,7 @@ namespace WebSocketSharp.Net
       var res = headerType == HttpHeaderType.Response;
 
       if (isRestricted (name, res)) {
-        var msg = "This header must be modified with the appropiate property.";
+        var msg = "The header is a restricted header.";
 
         throw new ArgumentException (msg);
       }
