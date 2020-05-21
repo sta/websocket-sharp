@@ -842,7 +842,10 @@ namespace WebSocketSharp.Net
       if (_internallyUsed)
         return;
 
-      if (isRestricted (name, true)) {
+      var headerType = getHeaderType (name);
+      var res = headerType == HttpHeaderType.Response;
+
+      if (isRestricted (name, res)) {
         var msg = "This header must be modified with the appropiate property.";
 
         throw new ArgumentException (msg);
