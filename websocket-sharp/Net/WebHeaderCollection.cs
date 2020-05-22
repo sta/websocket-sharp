@@ -1611,7 +1611,9 @@ namespace WebSocketSharp.Net
       var key = header.ToString ();
       var name = getHeaderName (key);
 
-      doWithCheckingState (removeWithoutCheckingName, name, null, false, false);
+      checkRestricted (name, false);
+      checkAllowed (false);
+      base.Remove (name);
     }
 
     /// <summary>
