@@ -1682,7 +1682,9 @@ namespace WebSocketSharp.Net
     {
       name = checkName (name);
 
-      doWithCheckingState (removeWithoutCheckingName, name, null, false);
+      checkRestricted (name);
+      checkAllowed (name);
+      base.Remove (name);
     }
 
     /// <summary>
