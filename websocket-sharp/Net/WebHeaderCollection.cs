@@ -1014,12 +1014,6 @@ namespace WebSocketSharp.Net
       return headerInfo != null && headerInfo.IsRestricted (response);
     }
 
-    private void removeWithoutCheckingName (string name, string unuse)
-    {
-      checkRestricted (name);
-      base.Remove (name);
-    }
-
     private void setWithoutCheckingName (string name, string value)
     {
       doWithoutCheckingName (base.Set, name, value);
