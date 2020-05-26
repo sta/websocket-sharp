@@ -1770,7 +1770,17 @@ namespace WebSocketSharp.Net
       var key = header.ToString ();
       var name = getHeaderName (key);
 
-      doWithCheckingState (setWithoutCheckingName, name, value, true, true);
+      value = checkValue (value);
+
+      checkRestricted (name, true);
+      checkAllowed (true);
+
+      base.Set (name, value);
+
+      if (_state != HttpHeaderType.Unspecified)
+        return;
+
+      _state = HttpHeaderType.Response;
     }
 
     /// <summary>
