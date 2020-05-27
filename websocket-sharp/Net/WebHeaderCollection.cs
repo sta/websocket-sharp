@@ -1815,7 +1815,23 @@ namespace WebSocketSharp.Net
     /// </exception>
     public override void Set (string name, string value)
     {
-      doWithCheckingState (setWithoutCheckingName, checkName (name), value, true);
+      name = checkName (name);
+      value = checkValue (value);
+
+      checkRestricted (name);
+      checkAllowed (name);
+
+      base.Set (name, value);
+
+      if (_state != HttpHeaderType.Unspecified)
+        return;
+
+      var headerType = getHeaderType (name);
+
+      if (headerType == HttpHeaderType.Unspecified)
+        return;
+
+      _state = headerType;
     }
 
     /// <summary>
