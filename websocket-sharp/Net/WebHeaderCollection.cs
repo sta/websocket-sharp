@@ -1014,6 +1014,19 @@ namespace WebSocketSharp.Net
       return headerInfo != null && headerInfo.IsRestricted (response);
     }
 
+    private void set (string name, string value, HttpHeaderType headerType)
+    {
+      base.Set (name, value);
+
+      if (_state != HttpHeaderType.Unspecified)
+        return;
+
+      if (headerType == HttpHeaderType.Unspecified)
+        return;
+
+      _state = headerType;
+    }
+
     private void setWithoutCheckingName (string name, string value)
     {
       doWithoutCheckingName (base.Set, name, value);
