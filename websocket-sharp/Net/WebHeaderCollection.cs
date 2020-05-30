@@ -1872,11 +1872,10 @@ namespace WebSocketSharp.Net
       name = checkName (name);
       value = checkValue (value);
 
-      checkRestricted (name);
-      checkAllowed (name);
-
       var headerType = getHeaderType (name);
 
+      checkRestricted (name, headerType);
+      checkAllowed (name);
       set (name, value, headerType);
     }
 
