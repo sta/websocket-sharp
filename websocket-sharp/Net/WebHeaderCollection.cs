@@ -1815,7 +1815,7 @@ namespace WebSocketSharp.Net
       value = checkValue (value);
 
       checkRestricted (name, HttpHeaderType.Response);
-      checkAllowed (true);
+      checkAllowed (HttpHeaderType.Response);
       set (name, value, HttpHeaderType.Response);
     }
 
