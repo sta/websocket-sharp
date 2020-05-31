@@ -1809,10 +1809,10 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Set (HttpResponseHeader header, string value)
     {
+      value = checkValue (value);
+
       var key = header.ToString ();
       var name = getHeaderName (key);
-
-      value = checkValue (value);
 
       checkRestricted (name, HttpHeaderType.Response);
       checkAllowed (HttpHeaderType.Response);
