@@ -1765,13 +1765,7 @@ namespace WebSocketSharp.Net
 
       checkRestricted (name, false);
       checkAllowed (false);
-
-      base.Set (name, value);
-
-      if (_state != HttpHeaderType.Unspecified)
-        return;
-
-      _state = HttpHeaderType.Request;
+      set (name, value, HttpHeaderType.Request);
     }
 
     /// <summary>
