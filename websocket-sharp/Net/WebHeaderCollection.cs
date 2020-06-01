@@ -1758,10 +1758,10 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Set (HttpRequestHeader header, string value)
     {
+      value = checkValue (value);
+
       var key = header.ToString ();
       var name = getHeaderName (key);
-
-      value = checkValue (value);
 
       checkRestricted (name, HttpHeaderType.Request);
       checkAllowed (HttpHeaderType.Request);
