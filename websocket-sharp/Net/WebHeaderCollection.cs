@@ -1763,7 +1763,7 @@ namespace WebSocketSharp.Net
 
       value = checkValue (value);
 
-      checkRestricted (name, false);
+      checkRestricted (name, HttpHeaderType.Request);
       checkAllowed (false);
       set (name, value, HttpHeaderType.Request);
     }
