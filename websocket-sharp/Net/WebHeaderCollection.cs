@@ -1056,11 +1056,6 @@ namespace WebSocketSharp.Net
       _state = headerType;
     }
 
-    private void setWithoutCheckingName (string name, string value)
-    {
-      doWithoutCheckingName (base.Set, name, value);
-    }
-
     #endregion
 
     #region Internal Methods
