@@ -1642,7 +1642,7 @@ namespace WebSocketSharp.Net
       var key = header.ToString ();
       var name = getHeaderName (key);
 
-      checkRestricted (name, false);
+      checkRestricted (name, HttpHeaderType.Request);
       checkAllowed (false);
       base.Remove (name);
     }
