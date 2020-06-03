@@ -1643,7 +1643,7 @@ namespace WebSocketSharp.Net
       var name = getHeaderName (key);
 
       checkRestricted (name, HttpHeaderType.Request);
-      checkAllowed (false);
+      checkAllowed (HttpHeaderType.Request);
       base.Remove (name);
     }
 
