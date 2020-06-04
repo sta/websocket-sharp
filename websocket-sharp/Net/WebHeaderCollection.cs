@@ -1713,7 +1713,9 @@ namespace WebSocketSharp.Net
     {
       name = checkName (name);
 
-      checkRestricted (name);
+      var headerType = getHeaderType (name);
+
+      checkRestricted (name, headerType);
       checkAllowed (name);
       base.Remove (name);
     }
