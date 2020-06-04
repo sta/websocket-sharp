@@ -1716,7 +1716,7 @@ namespace WebSocketSharp.Net
       var headerType = getHeaderType (name);
 
       checkRestricted (name, headerType);
-      checkAllowed (name);
+      checkAllowed (headerType);
       base.Remove (name);
     }
 
