@@ -797,23 +797,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    private void checkAllowed (string name)
-    {
-      if (_state == HttpHeaderType.Unspecified)
-        return;
-
-      var headerType = getHeaderType (name);
-
-      if (headerType == HttpHeaderType.Unspecified)
-        return;
-
-      if (headerType != _state) {
-        var msg = "This instance does not allow the header.";
-
-        throw new InvalidOperationException (msg);
-      }
-    }
-
     private static string checkName (string name)
     {
       if (name == null)
