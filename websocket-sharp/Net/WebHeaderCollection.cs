@@ -782,22 +782,6 @@ namespace WebSocketSharp.Net
       base.Add (name, checkValue (value));
     }
 
-    private void checkAllowed (bool response)
-    {
-      if (_state == HttpHeaderType.Unspecified)
-        return;
-
-      var headerType = response
-                       ? HttpHeaderType.Response
-                       : HttpHeaderType.Request;
-
-      if (headerType != _state) {
-        var msg = "This instance does not allow the header.";
-
-        throw new InvalidOperationException (msg);
-      }
-    }
-
     private void checkAllowed (HttpHeaderType headerType)
     {
       if (_state == HttpHeaderType.Unspecified)
