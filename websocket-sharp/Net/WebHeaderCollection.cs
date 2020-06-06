@@ -772,6 +772,19 @@ namespace WebSocketSharp.Net
       doWithCheckingState (act, checkName (name), value, true);
     }
 
+    private void add (string name, string value, HttpHeaderType headerType)
+    {
+      base.Add (name, value);
+
+      if (_state != HttpHeaderType.Unspecified)
+        return;
+
+      if (headerType == HttpHeaderType.Unspecified)
+        return;
+
+      _state = headerType;
+    }
+
     private void addWithoutCheckingName (string name, string value)
     {
       doWithoutCheckingName (base.Add, name, value);
