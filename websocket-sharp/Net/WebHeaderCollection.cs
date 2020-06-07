@@ -1146,7 +1146,13 @@ namespace WebSocketSharp.Net
     /// </exception>
     protected void AddWithoutValidate (string headerName, string headerValue)
     {
-      add (headerName, headerValue, true);
+      headerName = checkName (headerName);
+      headerValue = checkValue (headerValue);
+
+      var headerType = getHeaderType (headerName);
+
+      checkAllowed (headerType);
+      add (headerName, headerValue, headerType);
     }
 
     #endregion
