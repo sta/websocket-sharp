@@ -1239,7 +1239,14 @@ namespace WebSocketSharp.Net
                 ? header.Substring (idx + 1)
                 : String.Empty;
 
-      add (name, val, false);
+      name = checkName (name);
+      val = checkValue (val);
+
+      var headerType = getHeaderType (name);
+
+      checkRestricted (name, headerType);
+      checkAllowed (headerType);
+      add (name, val, headerType);
     }
 
     /// <summary>
