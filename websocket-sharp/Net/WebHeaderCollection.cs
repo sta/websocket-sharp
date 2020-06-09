@@ -1284,10 +1284,14 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Add (HttpRequestHeader header, string value)
     {
+      value = checkValue (value);
+
       var key = header.ToString ();
       var name = getHeaderName (key);
 
-      doWithCheckingState (addWithoutCheckingName, name, value, false, true);
+      checkRestricted (name, HttpHeaderType.Request);
+      checkAllowed (HttpHeaderType.Request);
+      add (name, value, HttpHeaderType.Request);
     }
 
     /// <summary>
