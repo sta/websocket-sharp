@@ -1329,10 +1329,14 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Add (HttpResponseHeader header, string value)
     {
+      value = checkValue (value);
+
       var key = header.ToString ();
       var name = getHeaderName (key);
 
-      doWithCheckingState (addWithoutCheckingName, name, value, true, true);
+      checkRestricted (name, HttpHeaderType.Response);
+      checkAllowed (HttpHeaderType.Response);
+      add (name, value, HttpHeaderType.Response);
     }
 
     /// <summary>
