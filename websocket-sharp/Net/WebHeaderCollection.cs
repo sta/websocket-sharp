@@ -1372,7 +1372,14 @@ namespace WebSocketSharp.Net
     /// </exception>
     public override void Add (string name, string value)
     {
-      add (name, value, false);
+      name = checkName (name);
+      value = checkValue (value);
+
+      var headerType = getHeaderType (name);
+
+      checkRestricted (name, headerType);
+      checkAllowed (headerType);
+      add (name, value, headerType);
     }
 
     /// <summary>
