@@ -1340,21 +1340,32 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Adds a header with the specified <paramref name="name"/> and
-    /// <paramref name="value"/> to the collection.
+    /// Adds a header with the specified name and value to the collection.
     /// </summary>
     /// <param name="name">
-    /// A <see cref="string"/> that represents the name of the header to add.
+    /// A <see cref="string"/> that specifies the name of the header to add.
     /// </param>
     /// <param name="value">
-    /// A <see cref="string"/> that represents the value of the header to add.
+    /// A <see cref="string"/> that specifies the value of the header to add.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="name"/> is <see langword="null"/> or empty.
+    /// <paramref name="name"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="name"/> or <paramref name="value"/> contains invalid characters.
+    ///   <paramref name="name"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="name"/> contains an invalid character.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="value"/> contains an invalid character.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -1364,11 +1375,11 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="value"/> is greater than 65,535 characters.
+    /// The length of <paramref name="value"/> is greater than 65,535
+    /// characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
-    /// the header <paramref name="name"/>.
+    /// This instance does not allow the header.
     /// </exception>
     public override void Add (string name, string value)
     {
