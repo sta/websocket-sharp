@@ -776,11 +776,6 @@ namespace WebSocketSharp.Net
       _state = headerType;
     }
 
-    private void addWithoutCheckingName (string name, string value)
-    {
-      doWithoutCheckingName (base.Add, name, value);
-    }
-
     private void addWithoutCheckingNameAndRestricted (string name, string value)
     {
       base.Add (name, checkValue (value));
