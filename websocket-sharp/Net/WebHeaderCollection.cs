@@ -776,11 +776,6 @@ namespace WebSocketSharp.Net
       _state = headerType;
     }
 
-    private void addWithoutCheckingNameAndRestricted (string name, string value)
-    {
-      base.Add (name, checkValue (value));
-    }
-
     private void checkAllowed (HttpHeaderType headerType)
     {
       if (_state == HttpHeaderType.Unspecified)
