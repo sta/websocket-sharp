@@ -763,15 +763,6 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private void add (string name, string value, bool ignoreRestricted)
-    {
-      var act = ignoreRestricted
-                ? (Action <string, string>) addWithoutCheckingNameAndRestricted
-                : addWithoutCheckingName;
-
-      doWithCheckingState (act, checkName (name), value, true);
-    }
-
     private void add (string name, string value, HttpHeaderType headerType)
     {
       base.Add (name, value);
