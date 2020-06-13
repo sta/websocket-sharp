@@ -902,15 +902,6 @@ namespace WebSocketSharp.Net
       return value;
     }
 
-    private void doWithoutCheckingName (
-      Action <string, string> action, string name, string value
-    )
-    {
-      checkRestricted (name);
-      value = checkValue (value);
-      action (name, value);
-    }
-
     private static HttpHeaderInfo getHeaderInfo (string name)
     {
       var comparison = StringComparison.InvariantCultureIgnoreCase;
