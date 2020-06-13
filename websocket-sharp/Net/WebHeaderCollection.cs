@@ -903,27 +903,6 @@ namespace WebSocketSharp.Net
     }
 
     private void doWithCheckingState (
-      Action <string, string> action, string name, string value, bool setState
-    )
-    {
-      var headerType = getHeaderType (name);
-
-      if (headerType == HttpHeaderType.Response) {
-        doWithCheckingState (action, name, value, true, setState);
-
-        return;
-      }
-
-      if (headerType == HttpHeaderType.Request) {
-        doWithCheckingState (action, name, value, false, setState);
-
-        return;
-      }
-
-      action (name, value);
-    }
-
-    private void doWithCheckingState (
       Action <string, string> action,
       string name,
       string value,
