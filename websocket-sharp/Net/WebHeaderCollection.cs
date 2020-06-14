@@ -813,21 +813,6 @@ namespace WebSocketSharp.Net
       return name;
     }
 
-    private void checkRestricted (string name)
-    {
-      if (_internallyUsed)
-        return;
-
-      var headerType = getHeaderType (name);
-      var res = headerType == HttpHeaderType.Response;
-
-      if (isRestricted (name, res)) {
-        var msg = "The header is a restricted header.";
-
-        throw new ArgumentException (msg);
-      }
-    }
-
     private void checkRestricted (string name, bool response)
     {
       if (_internallyUsed)
