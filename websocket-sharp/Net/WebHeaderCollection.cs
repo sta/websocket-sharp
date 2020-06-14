@@ -827,27 +827,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    private void checkState (bool response)
-    {
-      if (_state == HttpHeaderType.Unspecified)
-        return;
-
-      if (response) {
-        if (_state == HttpHeaderType.Response)
-          return;
-
-        var msg = "This collection is already in use for the request headers.";
-
-        throw new InvalidOperationException (msg);
-      }
-
-      if (_state == HttpHeaderType.Response) {
-        var msg = "This collection is already in use for the response headers.";
-
-        throw new InvalidOperationException (msg);
-      }
-    }
-
     private static string checkValue (string value)
     {
       if (value == null)
