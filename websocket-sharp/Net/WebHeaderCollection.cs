@@ -801,8 +801,11 @@ namespace WebSocketSharp.Net
 
       name = name.Trim ();
 
-      if (name.Length == 0)
-        throw new ArgumentException ("A string of spaces.", "name");
+      if (name.Length == 0) {
+        var msg = "The name is a string of spaces.";
+
+        throw new ArgumentException (msg, "name");
+      }
 
       if (!name.IsToken ()) {
         var msg = "It contains an invalid character.";
