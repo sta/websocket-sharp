@@ -793,8 +793,11 @@ namespace WebSocketSharp.Net
 
     private static string checkName (string name)
     {
-      if (name == null)
-        throw new ArgumentNullException ("name");
+      if (name == null) {
+        var msg = "The name is null.";
+
+        throw new ArgumentNullException ("name", msg);
+      }
 
       if (name.Length == 0) {
         var msg = "The name is an empty string.";
