@@ -796,8 +796,11 @@ namespace WebSocketSharp.Net
       if (name == null)
         throw new ArgumentNullException ("name");
 
-      if (name.Length == 0)
-        throw new ArgumentException ("An empty string.", "name");
+      if (name.Length == 0) {
+        var msg = "The name is an empty string.";
+
+        throw new ArgumentException (msg, "name");
+      }
 
       name = name.Trim ();
 
