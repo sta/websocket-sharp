@@ -855,7 +855,7 @@ namespace WebSocketSharp.Net
       }
 
       if (!value.IsText ()) {
-        var msg = "It contains an invalid character.";
+        var msg = "The value contains an invalid character.";
 
         throw new ArgumentException (msg, "value");
       }
