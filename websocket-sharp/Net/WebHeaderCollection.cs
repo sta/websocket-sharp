@@ -1021,6 +1021,12 @@ namespace WebSocketSharp.Net
     ///   -or-
     ///   </para>
     ///   <para>
+    ///   <paramref name="headerName"/> is a string of spaces.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
     ///   <paramref name="headerName"/> contains an invalid character.
     ///   </para>
     ///   <para>
