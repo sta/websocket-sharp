@@ -822,6 +822,37 @@ namespace WebSocketSharp.Net
       return name;
     }
 
+    private static string checkName (string name, string paramName)
+    {
+      if (name == null) {
+        var msg = "The name is null.";
+
+        throw new ArgumentNullException (paramName, msg);
+      }
+
+      if (name.Length == 0) {
+        var msg = "The name is an empty string.";
+
+        throw new ArgumentException (msg, paramName);
+      }
+
+      name = name.Trim ();
+
+      if (name.Length == 0) {
+        var msg = "The name is a string of spaces.";
+
+        throw new ArgumentException (msg, paramName);
+      }
+
+      if (!name.IsToken ()) {
+        var msg = "The name contains an invalid character.";
+
+        throw new ArgumentException (msg, paramName);
+      }
+
+      return name;
+    }
+
     private void checkRestricted (string name, HttpHeaderType headerType)
     {
       if (_internallyUsed)
