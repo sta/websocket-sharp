@@ -894,6 +894,33 @@ namespace WebSocketSharp.Net
       return value;
     }
 
+    private static string checkValue (string value, string paramName)
+    {
+      if (value == null)
+        return String.Empty;
+
+      value = value.Trim ();
+
+      var len = value.Length;
+
+      if (len == 0)
+        return value;
+
+      if (len > 65535) {
+        var msg = "The length of the value is greater than 65,535 characters.";
+
+        throw new ArgumentOutOfRangeException (paramName, msg);
+      }
+
+      if (!value.IsText ()) {
+        var msg = "The value contains an invalid character.";
+
+        throw new ArgumentException (msg, paramName);
+      }
+
+      return value;
+    }
+
     private static HttpHeaderInfo getHeaderInfo (string name)
     {
       var comparison = StringComparison.InvariantCultureIgnoreCase;
