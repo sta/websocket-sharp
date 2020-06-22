@@ -1104,7 +1104,7 @@ namespace WebSocketSharp.Net
     protected void AddWithoutValidate (string headerName, string headerValue)
     {
       headerName = checkName (headerName, "headerName");
-      headerValue = checkValue (headerValue);
+      headerValue = checkValue (headerValue, "headerValue");
 
       var headerType = getHeaderType (headerName);
 
