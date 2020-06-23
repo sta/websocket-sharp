@@ -1196,7 +1196,7 @@ namespace WebSocketSharp.Net
                 ? header.Substring (idx + 1)
                 : String.Empty;
 
-      name = checkName (name);
+      name = checkName (name, "header");
       val = checkValue (val);
 
       var headerType = getHeaderType (name);
