@@ -1140,12 +1140,6 @@ namespace WebSocketSharp.Net
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="header"/> is a restricted header.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
     ///   The name part of <paramref name="header"/> is an empty string.
     ///   </para>
     ///   <para>
@@ -1167,6 +1161,12 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   The value part of <paramref name="header"/> contains an invalid
     ///   character.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="header"/> is a restricted header.
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
