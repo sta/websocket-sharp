@@ -1292,7 +1292,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Add (HttpResponseHeader header, string value)
     {
-      value = checkValue (value);
+      value = checkValue (value, "value");
 
       var key = header.ToString ();
       var name = getHeaderName (key);
