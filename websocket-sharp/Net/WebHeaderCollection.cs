@@ -1372,16 +1372,18 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Get the value of the header at the specified <paramref name="index"/> in the collection.
+    /// Get the value of the header at the specified index in the collection.
     /// </summary>
     /// <returns>
     /// A <see cref="string"/> that receives the value of the header.
     /// </returns>
     /// <param name="index">
-    /// An <see cref="int"/> that represents the zero-based index of the header to find.
+    /// An <see cref="int"/> that specifies the zero-based index of the header
+    /// to find.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="index"/> is out of allowable range of indexes for the collection.
+    /// <paramref name="index"/> is out of allowable range of indexes for
+    /// the collection.
     /// </exception>
     public override string Get (int index)
     {
