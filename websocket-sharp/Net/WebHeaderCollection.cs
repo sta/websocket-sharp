@@ -1391,14 +1391,18 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Get the value of the header with the specified <paramref name="name"/> in the collection.
+    /// Get the value of the header with the specified name in the collection.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that receives the value of the header if found;
-    /// otherwise, <see langword="null"/>.
+    ///   <para>
+    ///   A <see cref="string"/> that receives the value of the header.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not found.
+    ///   </para>
     /// </returns>
     /// <param name="name">
-    /// A <see cref="string"/> that represents the name of the header to find.
+    /// A <see cref="string"/> that specifies the name of the header to find.
     /// </param>
     public override string Get (string name)
     {
