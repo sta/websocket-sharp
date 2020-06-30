@@ -1441,18 +1441,24 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets an array of header values stored in the specified <paramref name="index"/> position of
-    /// the collection.
+    /// Get the values of the header at the specified index in the collection.
     /// </summary>
     /// <returns>
-    /// An array of <see cref="string"/> that receives the header values if found;
-    /// otherwise, <see langword="null"/>.
+    ///   <para>
+    ///   An array of <see cref="string"/> that receives the values of
+    ///   the header.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not present.
+    ///   </para>
     /// </returns>
     /// <param name="index">
-    /// An <see cref="int"/> that represents the zero-based index of the header to find.
+    /// An <see cref="int"/> that specifies the zero-based index of the header
+    /// to find.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="index"/> is out of allowable range of indexes for the collection.
+    /// <paramref name="index"/> is out of allowable range of indexes for
+    /// the collection.
     /// </exception>
     public override string[] GetValues (int index)
     {
