@@ -1467,11 +1467,16 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets an array of header values stored in the specified <paramref name="header"/>.
+    /// Get the values of the header with the specified name in the collection.
     /// </summary>
     /// <returns>
-    /// An array of <see cref="string"/> that receives the header values if found;
-    /// otherwise, <see langword="null"/>.
+    ///   <para>
+    ///   An array of <see cref="string"/> that receives the values of
+    ///   the header.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not present.
+    ///   </para>
     /// </returns>
     /// <param name="header">
     /// A <see cref="string"/> that represents the name of the header to find.
