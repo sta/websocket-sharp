@@ -1478,8 +1478,8 @@ namespace WebSocketSharp.Net
     ///   <see langword="null"/> if not present.
     ///   </para>
     /// </returns>
-    /// <param name="header">
-    /// A <see cref="string"/> that represents the name of the header to find.
+    /// <param name="name">
+    /// A <see cref="string"/> that specifies the name of the header to find.
     /// </param>
     public override string[] GetValues (string name)
     {
