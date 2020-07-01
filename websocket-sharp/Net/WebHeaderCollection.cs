@@ -1484,6 +1484,7 @@ namespace WebSocketSharp.Net
     public override string[] GetValues (string name)
     {
       var vals = base.GetValues (name);
+
       return vals != null && vals.Length > 0 ? vals : null;
     }
 
