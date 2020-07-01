@@ -1481,9 +1481,9 @@ namespace WebSocketSharp.Net
     /// <param name="header">
     /// A <see cref="string"/> that represents the name of the header to find.
     /// </param>
-    public override string[] GetValues (string header)
+    public override string[] GetValues (string name)
     {
-      var vals = base.GetValues (header);
+      var vals = base.GetValues (name);
       return vals != null && vals.Length > 0 ? vals : null;
     }
 
