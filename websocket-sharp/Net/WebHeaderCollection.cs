@@ -1463,6 +1463,7 @@ namespace WebSocketSharp.Net
     public override string[] GetValues (int index)
     {
       var vals = base.GetValues (index);
+
       return vals != null && vals.Length > 0 ? vals : null;
     }
 
