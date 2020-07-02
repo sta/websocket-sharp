@@ -1599,22 +1599,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public static bool IsRestricted (string headerName, bool response)
     {
-      if (headerName == null)
-        throw new ArgumentNullException ("headerName");
-
-      if (headerName.Length == 0)
-        throw new ArgumentException ("An empty string.", "headerName");
-
-      headerName = headerName.Trim ();
-
-      if (headerName.Length == 0)
-        throw new ArgumentException ("A string of spaces.", "headerName");
-
-      if (!headerName.IsToken ()) {
-        var msg = "It contains an invalid character.";
-
-        throw new ArgumentException (msg, "headerName");
-      }
+      headerName = checkName (headerName, "headerName");
 
       return isRestricted (headerName, response);
     }
