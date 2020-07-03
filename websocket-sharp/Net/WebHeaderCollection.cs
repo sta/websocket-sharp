@@ -1605,11 +1605,12 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Implements the <see cref="ISerializable"/> interface and raises the deserialization event
-    /// when the deserialization is complete.
+    /// Implements the <see cref="ISerializable"/> interface and raises
+    /// the deserialization event when the deserialization is complete.
     /// </summary>
     /// <param name="sender">
-    /// An <see cref="object"/> that represents the source of the deserialization event.
+    /// An <see cref="object"/> instance that represents the source of
+    /// the deserialization event.
     /// </param>
     public override void OnDeserialization (object sender)
     {
