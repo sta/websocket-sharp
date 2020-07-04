@@ -1707,7 +1707,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public override void Remove (string name)
     {
-      name = checkName (name);
+      name = checkName (name, "name");
 
       var headerType = getHeaderType (name);
 
