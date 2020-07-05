@@ -1733,13 +1733,13 @@ namespace WebSocketSharp.Net
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="header"/> is a restricted header.
+    ///   <paramref name="value"/> contains an invalid character.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="value"/> contains an invalid character.
+    ///   <paramref name="header"/> is a restricted header.
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
