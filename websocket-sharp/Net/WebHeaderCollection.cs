@@ -1796,7 +1796,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Set (HttpResponseHeader header, string value)
     {
-      value = checkValue (value);
+      value = checkValue (value, "value");
 
       var key = header.ToString ();
       var name = getHeaderName (key);
