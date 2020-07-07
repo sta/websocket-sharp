@@ -1851,7 +1851,7 @@ namespace WebSocketSharp.Net
     public override void Set (string name, string value)
     {
       name = checkName (name, "name");
-      value = checkValue (value);
+      value = checkValue (value, "value");
 
       var headerType = getHeaderType (name);
 
