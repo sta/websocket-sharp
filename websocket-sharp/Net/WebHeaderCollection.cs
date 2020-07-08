@@ -791,37 +791,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    private static string checkName (string name)
-    {
-      if (name == null) {
-        var msg = "The name is null.";
-
-        throw new ArgumentNullException ("name", msg);
-      }
-
-      if (name.Length == 0) {
-        var msg = "The name is an empty string.";
-
-        throw new ArgumentException (msg, "name");
-      }
-
-      name = name.Trim ();
-
-      if (name.Length == 0) {
-        var msg = "The name is a string of spaces.";
-
-        throw new ArgumentException (msg, "name");
-      }
-
-      if (!name.IsToken ()) {
-        var msg = "The name contains an invalid character.";
-
-        throw new ArgumentException (msg, "name");
-      }
-
-      return name;
-    }
-
     private static string checkName (string name, string paramName)
     {
       if (name == null) {
