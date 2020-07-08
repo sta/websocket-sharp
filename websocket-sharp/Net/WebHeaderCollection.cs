@@ -836,33 +836,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    private static string checkValue (string value)
-    {
-      if (value == null)
-        return String.Empty;
-
-      value = value.Trim ();
-
-      var len = value.Length;
-
-      if (len == 0)
-        return value;
-
-      if (len > 65535) {
-        var msg = "The length of the value is greater than 65,535 characters.";
-
-        throw new ArgumentOutOfRangeException ("value", msg);
-      }
-
-      if (!value.IsText ()) {
-        var msg = "The value contains an invalid character.";
-
-        throw new ArgumentException (msg, "value");
-      }
-
-      return value;
-    }
-
     private static string checkValue (string value, string paramName)
     {
       if (value == null)
