@@ -985,7 +985,7 @@ namespace WebSocketSharp.Net
 
     internal void InternalSet (string name, string value, bool response)
     {
-      value = checkValue (value);
+      value = checkValue (value, "value");
 
       if (isMultiValue (name, response)) {
         base.Add (name, value);
