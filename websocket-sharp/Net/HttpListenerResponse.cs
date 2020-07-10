@@ -971,7 +971,7 @@ namespace WebSocketSharp.Net
     /// characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The header cannot be allowed to append to the current headers.
+    /// The current headers do not allow the header.
     /// </exception>
     public void AppendHeader (string name, string value)
     {
