@@ -927,11 +927,11 @@ namespace WebSocketSharp.Net
     /// the headers for the response.
     /// </summary>
     /// <param name="name">
-    /// A <see cref="string"/> that represents the name of the header to
+    /// A <see cref="string"/> that specifies the name of the header to
     /// append.
     /// </param>
     /// <param name="value">
-    /// A <see cref="string"/> that represents the value of the header to
+    /// A <see cref="string"/> that specifies the value of the header to
     /// append.
     /// </param>
     /// <exception cref="ArgumentNullException">
