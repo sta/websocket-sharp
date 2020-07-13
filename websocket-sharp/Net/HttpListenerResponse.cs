@@ -1174,10 +1174,10 @@ namespace WebSocketSharp.Net
     /// the headers for the response.
     /// </summary>
     /// <param name="name">
-    /// A <see cref="string"/> that represents the name of the header to set.
+    /// A <see cref="string"/> that specifies the name of the header to set.
     /// </param>
     /// <param name="value">
-    /// A <see cref="string"/> that represents the value of the header to set.
+    /// A <see cref="string"/> that specifies the value of the header to set.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="name"/> is <see langword="null"/>.
