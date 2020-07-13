@@ -1089,7 +1089,7 @@ namespace WebSocketSharp.Net
     /// 302, and the <see cref="StatusDescription"/> property to "Found".
     /// </remarks>
     /// <param name="url">
-    /// A <see cref="string"/> that represents the absolute URL to which
+    /// A <see cref="string"/> that specifies the absolute URL to which
     /// the client is redirected to locate a requested resource.
     /// </param>
     /// <exception cref="ArgumentNullException">
