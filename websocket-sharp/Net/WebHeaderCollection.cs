@@ -712,7 +712,7 @@ namespace WebSocketSharp.Net
     ///   One of the <see cref="HttpResponseHeader"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It represents the response header to get or set.
+    ///   It specifies the response header to get or set.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
