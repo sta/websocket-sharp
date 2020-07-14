@@ -667,7 +667,7 @@ namespace WebSocketSharp.Net
     ///   One of the <see cref="HttpRequestHeader"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It represents the request header to get or set.
+    ///   It specifies the request header to get or set.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
