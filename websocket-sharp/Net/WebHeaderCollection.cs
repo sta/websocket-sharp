@@ -953,7 +953,16 @@ namespace WebSocketSharp.Net
                 ? header.Substring (idx + 1)
                 : String.Empty;
 
-      InternalSet (name, val, response);
+      name = checkName (name, "header");
+      val = checkValue (val, "header");
+
+      if (isMultiValue (name, response)) {
+        base.Add (name, val);
+
+        return;
+      }
+
+      base.Set (name, val);
     }
 
     internal void InternalSet (string name, string value, bool response)
