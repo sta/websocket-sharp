@@ -41,9 +41,9 @@ namespace WebSocketSharp.Net
 
     #region Internal Constructors
 
-    internal HttpHeaderInfo (string name, HttpHeaderType type)
+    internal HttpHeaderInfo (string headerName, HttpHeaderType type)
     {
-      _name = name;
+      _name = headerName;
       _type = type;
     }
 
