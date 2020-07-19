@@ -41,10 +41,10 @@ namespace WebSocketSharp.Net
 
     #region Internal Constructors
 
-    internal HttpHeaderInfo (string headerName, HttpHeaderType type)
+    internal HttpHeaderInfo (string headerName, HttpHeaderType headerType)
     {
       _name = headerName;
-      _type = type;
+      _type = headerType;
     }
 
     #endregion
