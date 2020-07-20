@@ -35,7 +35,7 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private string         _headerName;
-    private HttpHeaderType _type;
+    private HttpHeaderType _headerType;
 
     #endregion
 
@@ -44,7 +44,7 @@ namespace WebSocketSharp.Net
     internal HttpHeaderInfo (string headerName, HttpHeaderType headerType)
     {
       _headerName = headerName;
-      _type = headerType;
+      _headerType = headerType;
     }
 
     #endregion
@@ -53,14 +53,14 @@ namespace WebSocketSharp.Net
 
     internal bool IsMultiValueInRequest {
       get {
-        return (_type & HttpHeaderType.MultiValueInRequest)
+        return (_headerType & HttpHeaderType.MultiValueInRequest)
                == HttpHeaderType.MultiValueInRequest;
       }
     }
 
     internal bool IsMultiValueInResponse {
       get {
-        return (_type & HttpHeaderType.MultiValueInResponse)
+        return (_headerType & HttpHeaderType.MultiValueInResponse)
                == HttpHeaderType.MultiValueInResponse;
       }
     }
@@ -71,13 +71,13 @@ namespace WebSocketSharp.Net
 
     public bool IsRequest {
       get {
-        return (_type & HttpHeaderType.Request) == HttpHeaderType.Request;
+        return (_headerType & HttpHeaderType.Request) == HttpHeaderType.Request;
       }
     }
 
     public bool IsResponse {
       get {
-        return (_type & HttpHeaderType.Response) == HttpHeaderType.Response;
+        return (_headerType & HttpHeaderType.Response) == HttpHeaderType.Response;
       }
     }
 
@@ -89,7 +89,7 @@ namespace WebSocketSharp.Net
 
     public HttpHeaderType Type {
       get {
-        return _type;
+        return _headerType;
       }
     }
 
@@ -99,14 +99,14 @@ namespace WebSocketSharp.Net
 
     public bool IsMultiValue (bool response)
     {
-      return (_type & HttpHeaderType.MultiValue) == HttpHeaderType.MultiValue
+      return (_headerType & HttpHeaderType.MultiValue) == HttpHeaderType.MultiValue
              ? (response ? IsResponse : IsRequest)
              : (response ? IsMultiValueInResponse : IsMultiValueInRequest);
     }
 
     public bool IsRestricted (bool response)
     {
-      return (_type & HttpHeaderType.Restricted) == HttpHeaderType.Restricted
+      return (_headerType & HttpHeaderType.Restricted) == HttpHeaderType.Restricted
              ? (response ? IsResponse : IsRequest)
              : false;
     }
