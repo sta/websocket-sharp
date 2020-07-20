@@ -34,7 +34,7 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private string         _name;
+    private string         _headerName;
     private HttpHeaderType _type;
 
     #endregion
@@ -43,7 +43,7 @@ namespace WebSocketSharp.Net
 
     internal HttpHeaderInfo (string headerName, HttpHeaderType headerType)
     {
-      _name = headerName;
+      _headerName = headerName;
       _type = headerType;
     }
 
@@ -83,7 +83,7 @@ namespace WebSocketSharp.Net
 
     public string Name {
       get {
-        return _name;
+        return _headerName;
       }
     }
 
