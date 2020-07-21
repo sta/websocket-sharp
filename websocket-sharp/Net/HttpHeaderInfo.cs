@@ -69,6 +69,12 @@ namespace WebSocketSharp.Net
 
     #region Public Properties
 
+    public string HeaderName {
+      get {
+        return _headerName;
+      }
+    }
+
     public bool IsRequest {
       get {
         return (_headerType & HttpHeaderType.Request) == HttpHeaderType.Request;
@@ -78,12 +84,6 @@ namespace WebSocketSharp.Net
     public bool IsResponse {
       get {
         return (_headerType & HttpHeaderType.Response) == HttpHeaderType.Response;
-      }
-    }
-
-    public string Name {
-      get {
-        return _headerName;
       }
     }
 

@@ -868,7 +868,7 @@ namespace WebSocketSharp.Net
       var comparison = StringComparison.InvariantCultureIgnoreCase;
 
       foreach (var headerInfo in _headers.Values) {
-        if (headerInfo.Name.Equals (name, comparison))
+        if (headerInfo.HeaderName.Equals (name, comparison))
           return headerInfo;
       }
 
@@ -880,7 +880,7 @@ namespace WebSocketSharp.Net
       HttpHeaderInfo headerInfo;
 
       return _headers.TryGetValue (key, out headerInfo)
-             ? headerInfo.Name
+             ? headerInfo.HeaderName
              : null;
     }
 
