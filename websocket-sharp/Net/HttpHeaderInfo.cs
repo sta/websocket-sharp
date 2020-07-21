@@ -75,6 +75,12 @@ namespace WebSocketSharp.Net
       }
     }
 
+    public HttpHeaderType HeaderType {
+      get {
+        return _headerType;
+      }
+    }
+
     public bool IsRequest {
       get {
         return (_headerType & HttpHeaderType.Request) == HttpHeaderType.Request;
@@ -84,12 +90,6 @@ namespace WebSocketSharp.Net
     public bool IsResponse {
       get {
         return (_headerType & HttpHeaderType.Response) == HttpHeaderType.Response;
-      }
-    }
-
-    public HttpHeaderType Type {
-      get {
-        return _headerType;
       }
     }
 
