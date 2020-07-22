@@ -91,7 +91,9 @@ namespace WebSocketSharp.Net
 
     public bool IsResponse {
       get {
-        return (_headerType & HttpHeaderType.Response) == HttpHeaderType.Response;
+        var headerType = _headerType & HttpHeaderType.Response;
+
+        return headerType == HttpHeaderType.Response;
       }
     }
 
