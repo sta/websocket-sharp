@@ -53,8 +53,9 @@ namespace WebSocketSharp.Net
 
     internal bool IsMultiValueInRequest {
       get {
-        return (_headerType & HttpHeaderType.MultiValueInRequest)
-               == HttpHeaderType.MultiValueInRequest;
+        var headerType = _headerType & HttpHeaderType.MultiValueInRequest;
+
+        return headerType == HttpHeaderType.MultiValueInRequest;
       }
     }
 
