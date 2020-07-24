@@ -112,7 +112,9 @@ namespace WebSocketSharp.Net
 
     public bool IsRestricted (bool response)
     {
-      return (_headerType & HttpHeaderType.Restricted) == HttpHeaderType.Restricted
+      var headerType = _headerType & HttpHeaderType.Restricted;
+
+      return headerType == HttpHeaderType.Restricted
              ? (response ? IsResponse : IsRequest)
              : false;
     }
