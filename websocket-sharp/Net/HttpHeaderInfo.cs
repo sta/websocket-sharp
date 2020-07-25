@@ -114,9 +114,10 @@ namespace WebSocketSharp.Net
     {
       var headerType = _headerType & HttpHeaderType.Restricted;
 
-      return headerType == HttpHeaderType.Restricted
-             ? (response ? IsResponse : IsRequest)
-             : false;
+      if (headerType != HttpHeaderType.Restricted)
+        return false;
+
+      return response ? IsResponse : IsRequest;
     }
 
     #endregion
