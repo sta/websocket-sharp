@@ -105,9 +105,12 @@ namespace WebSocketSharp.Net
 
     public bool IsMultiValue (bool response)
     {
-      return (_headerType & HttpHeaderType.MultiValue) == HttpHeaderType.MultiValue
-             ? (response ? IsResponse : IsRequest)
-             : (response ? IsMultiValueInResponse : IsMultiValueInRequest);
+      var headerType = _headerType & HttpHeaderType.MultiValue;
+
+      if (headerType != HttpHeaderType.MultiValue)
+        return response ? IsMultiValueInResponse : IsMultiValueInRequest;
+
+      return response ? IsResponse : IsRequest;
     }
 
     public bool IsRestricted (bool response)
