@@ -40,12 +40,12 @@
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Contains the HTTP headers that may be specified in a client request.
+  /// Indicates the HTTP header that may be specified in a client request.
   /// </summary>
   /// <remarks>
-  /// The HttpRequestHeader enumeration contains the HTTP request headers defined in
-  /// <see href="http://tools.ietf.org/html/rfc2616#section-14">RFC 2616</see> for the HTTP/1.1 and
-  /// <see href="http://tools.ietf.org/html/rfc6455#section-11.3">RFC 6455</see> for the WebSocket.
+  /// The headers of this enumeration are defined in
+  /// <see href="http://tools.ietf.org/html/rfc2616#section-14">RFC 2616</see> or
+  /// <see href="http://tools.ietf.org/html/rfc6455#section-11.3">RFC 6455</see>.
   /// </remarks>
   public enum HttpRequestHeader
   {
