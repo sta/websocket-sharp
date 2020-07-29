@@ -2,7 +2,7 @@
 /*
  * HttpRequestHeader.cs
  *
- * This code is derived from System.Net.HttpRequestHeader.cs of Mono
+ * This code is derived from HttpRequestHeader.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
