@@ -48,8 +48,8 @@ namespace WebSocketSharp.Net
   public enum HttpStatusCode
   {
     /// <summary>
-    /// Equivalent to status code 100.
-    /// Indicates that the client should continue with its request.
+    /// Equivalent to status code 100. Indicates that the client should continue
+    /// with its request.
     /// </summary>
     Continue = 100,
     /// <summary>
