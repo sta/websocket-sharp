@@ -68,9 +68,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     Created = 201,
     /// <summary>
-    /// Equivalent to status code 202.
-    /// Indicates that the client's request has been accepted for processing, but the processing
-    /// hasn't been completed.
+    /// Equivalent to status code 202. Indicates that the client's request has
+    /// been accepted for processing, but the processing has not been completed.
     /// </summary>
     Accepted = 202,
     /// <summary>
