@@ -73,9 +73,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     Accepted = 202,
     /// <summary>
-    /// Equivalent to status code 203.
-    /// Indicates that the returned metainformation is from a local or a third-party copy instead of
-    /// the origin server.
+    /// Equivalent to status code 203. Indicates that the returned metainformation
+    /// is from a local or a third-party copy instead of the origin server.
     /// </summary>
     NonAuthoritativeInformation = 203,
     /// <summary>
