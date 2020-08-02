@@ -78,9 +78,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     NonAuthoritativeInformation = 203,
     /// <summary>
-    /// Equivalent to status code 204.
-    /// Indicates that the server has fulfilled the client's request but doesn't need to return
-    /// an entity-body.
+    /// Equivalent to status code 204. Indicates that the server has fulfilled
+    /// the client's request but does not need to return an entity-body.
     /// </summary>
     NoContent = 204,
     /// <summary>
