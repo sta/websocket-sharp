@@ -63,9 +63,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     OK = 200,
     /// <summary>
-    /// Equivalent to status code 201.
-    /// Indicates that the client's request has been fulfilled and resulted in a new resource being
-    /// created.
+    /// Equivalent to status code 201. Indicates that the client's request has
+    /// been fulfilled and resulted in a new resource being created.
     /// </summary>
     Created = 201,
     /// <summary>
