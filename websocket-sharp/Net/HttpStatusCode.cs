@@ -58,8 +58,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     SwitchingProtocols = 101,
     /// <summary>
-    /// Equivalent to status code 200.
-    /// Indicates that the client's request has succeeded.
+    /// Equivalent to status code 200. Indicates that the client's request has
+    /// succeeded.
     /// </summary>
     OK = 200,
     /// <summary>
