@@ -53,8 +53,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     Continue = 100,
     /// <summary>
-    /// Equivalent to status code 101.
-    /// Indicates that the server is switching the HTTP version or protocol on the connection.
+    /// Equivalent to status code 101. Indicates that the server is switching
+    /// the HTTP version or protocol on the connection.
     /// </summary>
     SwitchingProtocols = 101,
     /// <summary>
