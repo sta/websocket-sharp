@@ -105,8 +105,8 @@ namespace WebSocketSharp.Net
     MultipleChoices = 300,
     /// <summary>
     ///   <para>
-    ///   Equivalent to status code 300.
-    ///   Indicates that the requested resource corresponds to any of multiple representations.
+    ///   Equivalent to status code 300. Indicates that the requested resource
+    ///   corresponds to any of multiple representations.
     ///   </para>
     ///   <para>
     ///   Ambiguous is a synonym for MultipleChoices.
