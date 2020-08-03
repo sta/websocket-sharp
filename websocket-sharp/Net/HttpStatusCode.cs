@@ -83,9 +83,9 @@ namespace WebSocketSharp.Net
     /// </summary>
     NoContent = 204,
     /// <summary>
-    /// Equivalent to status code 205.
-    /// Indicates that the server has fulfilled the client's request, and the user agent should
-    /// reset the document view which caused the request to be sent.
+    /// Equivalent to status code 205. Indicates that the server has fulfilled
+    /// the client's request, and the user agent should reset the document view
+    /// which caused the request to be sent.
     /// </summary>
     ResetContent = 205,
     /// <summary>
