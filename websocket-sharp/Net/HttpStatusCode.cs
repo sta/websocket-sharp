@@ -115,9 +115,9 @@ namespace WebSocketSharp.Net
     Ambiguous = 300,
     /// <summary>
     ///   <para>
-    ///   Equivalent to status code 301.
-    ///   Indicates that the requested resource has been assigned a new permanent URI and
-    ///   any future references to this resource should use one of the returned URIs.
+    ///   Equivalent to status code 301. Indicates that the requested resource
+    ///   has been assigned a new permanent URI and any future references to
+    ///   this resource should use one of the returned URIs.
     ///   </para>
     ///   <para>
     ///   MovedPermanently is a synonym for Moved.
