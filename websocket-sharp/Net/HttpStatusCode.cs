@@ -89,8 +89,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     ResetContent = 205,
     /// <summary>
-    /// Equivalent to status code 206.
-    /// Indicates that the server has fulfilled the partial GET request for the resource.
+    /// Equivalent to status code 206. Indicates that the server has fulfilled
+    /// the partial GET request for the resource.
     /// </summary>
     PartialContent = 206,
     /// <summary>
