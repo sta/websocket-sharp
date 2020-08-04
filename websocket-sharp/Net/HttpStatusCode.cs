@@ -157,9 +157,9 @@ namespace WebSocketSharp.Net
     Redirect = 302,
     /// <summary>
     ///   <para>
-    ///   Equivalent to status code 303.
-    ///   Indicates that the response to the request can be found under a different URI and
-    ///   should be retrieved using a GET method on that resource.
+    ///   Equivalent to status code 303. Indicates that the response to
+    ///   the request can be found under a different URI and should be
+    ///   retrieved using a GET method on that resource.
     ///   </para>
     ///   <para>
     ///   SeeOther is a synonym for RedirectMethod.
