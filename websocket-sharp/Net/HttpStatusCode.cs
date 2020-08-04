@@ -147,8 +147,8 @@ namespace WebSocketSharp.Net
     Found = 302,
     /// <summary>
     ///   <para>
-    ///   Equivalent to status code 302.
-    ///   Indicates that the requested resource is located temporarily under a different URI.
+    ///   Equivalent to status code 302. Indicates that the requested resource
+    ///   is located temporarily under a different URI.
     ///   </para>
     ///   <para>
     ///   Redirect is a synonym for Found.
