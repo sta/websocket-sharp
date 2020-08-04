@@ -178,9 +178,9 @@ namespace WebSocketSharp.Net
     /// </summary>
     RedirectMethod = 303,
     /// <summary>
-    /// Equivalent to status code 304.
-    /// Indicates that the client has performed a conditional GET request and access is allowed,
-    /// but the document hasn't been modified.
+    /// Equivalent to status code 304. Indicates that the client has performed
+    /// a conditional GET request and access is allowed, but the document has
+    /// not been modified.
     /// </summary>
     NotModified = 304,
     /// <summary>
