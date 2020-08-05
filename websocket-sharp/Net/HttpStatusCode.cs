@@ -215,9 +215,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     RedirectKeepVerb = 307,
     /// <summary>
-    /// Equivalent to status code 400.
-    /// Indicates that the client's request couldn't be understood by the server due to
-    /// malformed syntax.
+    /// Equivalent to status code 400. Indicates that the client's request could
+    /// not be understood by the server due to malformed syntax.
     /// </summary>
     BadRequest = 400,
     /// <summary>
