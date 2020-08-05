@@ -189,9 +189,9 @@ namespace WebSocketSharp.Net
     /// </summary>
     UseProxy = 305,
     /// <summary>
-    /// Equivalent to status code 306.
-    /// This status code was used in a previous version of the specification, is no longer used,
-    /// and is reserved for future use.
+    /// Equivalent to status code 306. This status code was used in a previous
+    /// version of the specification, is no longer used, and is reserved for
+    /// future use.
     /// </summary>
     Unused = 306,
     /// <summary>
