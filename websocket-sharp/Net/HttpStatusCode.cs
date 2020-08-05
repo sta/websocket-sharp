@@ -206,8 +206,8 @@ namespace WebSocketSharp.Net
     TemporaryRedirect = 307,
     /// <summary>
     ///   <para>
-    ///   Equivalent to status code 307.
-    ///   Indicates that the requested resource is located temporarily under a different URI.
+    ///   Equivalent to status code 307. Indicates that the requested resource
+    ///   is located temporarily under a different URI.
     ///   </para>
     ///   <para>
     ///   RedirectKeepVerb is a synonym for TemporaryRedirect.
