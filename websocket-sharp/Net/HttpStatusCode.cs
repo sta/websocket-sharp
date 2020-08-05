@@ -220,8 +220,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     BadRequest = 400,
     /// <summary>
-    /// Equivalent to status code 401.
-    /// Indicates that the client's request requires user authentication.
+    /// Equivalent to status code 401. Indicates that the client's request
+    /// requires user authentication.
     /// </summary>
     Unauthorized = 401,
     /// <summary>
