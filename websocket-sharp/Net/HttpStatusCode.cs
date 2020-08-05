@@ -184,9 +184,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     NotModified = 304,
     /// <summary>
-    /// Equivalent to status code 305.
-    /// Indicates that the requested resource must be accessed through the proxy given by
-    /// the Location field.
+    /// Equivalent to status code 305. Indicates that the requested resource
+    /// must be accessed through the proxy given by the Location field.
     /// </summary>
     UseProxy = 305,
     /// <summary>
