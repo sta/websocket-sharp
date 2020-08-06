@@ -240,9 +240,9 @@ namespace WebSocketSharp.Net
     /// </summary>
     NotFound = 404,
     /// <summary>
-    /// Equivalent to status code 405.
-    /// Indicates that the method specified in the request line isn't allowed for the resource
-    /// identified by the request URI.
+    /// Equivalent to status code 405. Indicates that the method specified
+    /// in the request line is not allowed for the resource identified by
+    /// the request URI.
     /// </summary>
     MethodNotAllowed = 405,
     /// <summary>
