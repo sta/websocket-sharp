@@ -225,8 +225,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     Unauthorized = 401,
     /// <summary>
-    /// Equivalent to status code 402.
-    /// This status code is reserved for future use.
+    /// Equivalent to status code 402. This status code is reserved for future
+    /// use.
     /// </summary>
     PaymentRequired = 402,
     /// <summary>
