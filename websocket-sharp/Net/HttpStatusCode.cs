@@ -230,8 +230,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     PaymentRequired = 402,
     /// <summary>
-    /// Equivalent to status code 403.
-    /// Indicates that the server understood the client's request but is refusing to fulfill it.
+    /// Equivalent to status code 403. Indicates that the server understood
+    /// the client's request but is refusing to fulfill it.
     /// </summary>
     Forbidden = 403,
     /// <summary>
