@@ -235,8 +235,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     Forbidden = 403,
     /// <summary>
-    /// Equivalent to status code 404.
-    /// Indicates that the server hasn't found anything matching the request URI.
+    /// Equivalent to status code 404. Indicates that the server has not found
+    /// anything matching the request URI.
     /// </summary>
     NotFound = 404,
     /// <summary>
