@@ -252,8 +252,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     NotAcceptable = 406,
     /// <summary>
-    /// Equivalent to status code 407.
-    /// Indicates that the client must first authenticate itself with the proxy.
+    /// Equivalent to status code 407. Indicates that the client must first
+    /// authenticate itself with the proxy.
     /// </summary>
     ProxyAuthenticationRequired = 407,
     /// <summary>
