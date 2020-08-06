@@ -246,9 +246,9 @@ namespace WebSocketSharp.Net
     /// </summary>
     MethodNotAllowed = 405,
     /// <summary>
-    /// Equivalent to status code 406.
-    /// Indicates that the server doesn't have the appropriate resource to respond to the Accept
-    /// headers in the client's request.
+    /// Equivalent to status code 406. Indicates that the server does not
+    /// have the appropriate resource to respond to the Accept headers in
+    /// the client's request.
     /// </summary>
     NotAcceptable = 406,
     /// <summary>
