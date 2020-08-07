@@ -267,9 +267,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     Conflict = 409,
     /// <summary>
-    /// Equivalent to status code 410.
-    /// Indicates that the requested resource is no longer available at the server and
-    /// no forwarding address is known.
+    /// Equivalent to status code 410. Indicates that the requested resource is
+    /// no longer available at the server and no forwarding address is known.
     /// </summary>
     Gone = 410,
     /// <summary>
