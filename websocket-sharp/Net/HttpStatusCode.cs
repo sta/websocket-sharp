@@ -272,9 +272,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     Gone = 410,
     /// <summary>
-    /// Equivalent to status code 411.
-    /// Indicates that the server refuses to accept the client's request without a defined
-    /// Content-Length.
+    /// Equivalent to status code 411. Indicates that the server refuses to
+    /// accept the client's request without a defined Content-Length.
     /// </summary>
     LengthRequired = 411,
     /// <summary>
