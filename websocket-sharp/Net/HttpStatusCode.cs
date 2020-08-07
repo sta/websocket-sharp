@@ -277,9 +277,9 @@ namespace WebSocketSharp.Net
     /// </summary>
     LengthRequired = 411,
     /// <summary>
-    /// Equivalent to status code 412.
-    /// Indicates that the precondition given in one or more of the request headers evaluated to
-    /// false when it was tested on the server.
+    /// Equivalent to status code 412. Indicates that the precondition given in
+    /// one or more of the request headers evaluated to false when it was tested
+    /// on the server.
     /// </summary>
     PreconditionFailed = 412,
     /// <summary>
