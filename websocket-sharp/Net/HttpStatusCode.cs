@@ -283,9 +283,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     PreconditionFailed = 412,
     /// <summary>
-    /// Equivalent to status code 413.
-    /// Indicates that the entity of the client's request is larger than the server is willing or
-    /// able to process.
+    /// Equivalent to status code 413. Indicates that the entity of the client's
+    /// request is larger than the server is willing or able to process.
     /// </summary>
     RequestEntityTooLarge = 413,
     /// <summary>
