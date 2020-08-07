@@ -262,8 +262,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     RequestTimeout = 408,
     /// <summary>
-    /// Equivalent to status code 409.
-    /// Indicates that the client's request couldn't be completed due to a conflict on the server.
+    /// Equivalent to status code 409. Indicates that the client's request could
+    /// not be completed due to a conflict on the server.
     /// </summary>
     Conflict = 409,
     /// <summary>
