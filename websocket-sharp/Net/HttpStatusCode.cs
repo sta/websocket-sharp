@@ -257,9 +257,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     ProxyAuthenticationRequired = 407,
     /// <summary>
-    /// Equivalent to status code 408.
-    /// Indicates that the client didn't produce a request within the time that the server was
-    /// prepared to wait.
+    /// Equivalent to status code 408. Indicates that the client did not produce
+    /// a request within the time that the server was prepared to wait.
     /// </summary>
     RequestTimeout = 408,
     /// <summary>
