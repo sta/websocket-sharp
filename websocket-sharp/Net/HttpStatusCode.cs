@@ -299,9 +299,9 @@ namespace WebSocketSharp.Net
     /// </summary>
     UnsupportedMediaType = 415,
     /// <summary>
-    /// Equivalent to status code 416.
-    /// Indicates that none of the range specifier values in a Range request header overlap
-    /// the current extent of the selected resource.
+    /// Equivalent to status code 416. Indicates that none of the range
+    /// specifier values in a Range request header overlap the current
+    /// extent of the selected resource.
     /// </summary>
     RequestedRangeNotSatisfiable = 416,
     /// <summary>
