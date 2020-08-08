@@ -288,8 +288,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     RequestEntityTooLarge = 413,
     /// <summary>
-    /// Equivalent to status code 414.
-    /// Indicates that the request URI is longer than the server is willing to interpret.
+    /// Equivalent to status code 414. Indicates that the request URI is longer
+    /// than the server is willing to interpret.
     /// </summary>
     RequestUriTooLong = 414,
     /// <summary>
