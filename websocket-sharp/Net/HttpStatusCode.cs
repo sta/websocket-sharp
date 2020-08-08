@@ -293,9 +293,9 @@ namespace WebSocketSharp.Net
     /// </summary>
     RequestUriTooLong = 414,
     /// <summary>
-    /// Equivalent to status code 415.
-    /// Indicates that the entity of the client's request is in a format not supported by
-    /// the requested resource for the requested method.
+    /// Equivalent to status code 415. Indicates that the entity of the client's
+    /// request is in a format not supported by the requested resource for the
+    /// requested method.
     /// </summary>
     UnsupportedMediaType = 415,
     /// <summary>
