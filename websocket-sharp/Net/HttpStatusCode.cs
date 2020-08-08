@@ -310,9 +310,9 @@ namespace WebSocketSharp.Net
     /// </summary>
     ExpectationFailed = 417,
     /// <summary>
-    /// Equivalent to status code 500.
-    /// Indicates that the server encountered an unexpected condition which prevented it from
-    /// fulfilling the client's request.
+    /// Equivalent to status code 500. Indicates that the server encountered
+    /// an unexpected condition which prevented it from fulfilling the client's
+    /// request.
     /// </summary>
     InternalServerError = 500,
     /// <summary>
