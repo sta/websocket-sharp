@@ -305,9 +305,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     RequestedRangeNotSatisfiable = 416,
     /// <summary>
-    /// Equivalent to status code 417.
-    /// Indicates that the expectation given in an Expect request header couldn't be met by
-    /// the server.
+    /// Equivalent to status code 417. Indicates that the expectation given in
+    /// an Expect request header could not be met by the server.
     /// </summary>
     ExpectationFailed = 417,
     /// <summary>
