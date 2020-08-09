@@ -316,9 +316,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     InternalServerError = 500,
     /// <summary>
-    /// Equivalent to status code 501.
-    /// Indicates that the server doesn't support the functionality required to fulfill the client's
-    /// request.
+    /// Equivalent to status code 501. Indicates that the server does not
+    /// support the functionality required to fulfill the client's request.
     /// </summary>
     NotImplemented = 501,
     /// <summary>
