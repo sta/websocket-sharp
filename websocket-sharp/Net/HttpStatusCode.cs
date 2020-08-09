@@ -326,9 +326,9 @@ namespace WebSocketSharp.Net
     /// </summary>
     BadGateway = 502,
     /// <summary>
-    /// Equivalent to status code 503.
-    /// Indicates that the server is currently unable to handle the client's request due to
-    /// a temporary overloading or maintenance of the server.
+    /// Equivalent to status code 503. Indicates that the server is currently
+    /// unable to handle the client's request due to a temporary overloading
+    /// or maintenance of the server.
     /// </summary>
     ServiceUnavailable = 503,
     /// <summary>
