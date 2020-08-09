@@ -321,9 +321,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     NotImplemented = 501,
     /// <summary>
-    /// Equivalent to status code 502.
-    /// Indicates that a gateway or proxy server received an invalid response from the upstream
-    /// server.
+    /// Equivalent to status code 502. Indicates that a gateway or proxy server
+    /// received an invalid response from the upstream server.
     /// </summary>
     BadGateway = 502,
     /// <summary>
