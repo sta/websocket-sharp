@@ -332,9 +332,9 @@ namespace WebSocketSharp.Net
     /// </summary>
     ServiceUnavailable = 503,
     /// <summary>
-    /// Equivalent to status code 504.
-    /// Indicates that a gateway or proxy server didn't receive a timely response from the upstream
-    /// server or some other auxiliary server.
+    /// Equivalent to status code 504. Indicates that a gateway or proxy server
+    /// did not receive a timely response from the upstream server or some other
+    /// auxiliary server.
     /// </summary>
     GatewayTimeout = 504,
     /// <summary>
