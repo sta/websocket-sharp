@@ -2,7 +2,7 @@
 /*
  * HttpStatusCode.cs
  *
- * This code is derived from System.Net.HttpStatusCode.cs of Mono
+ * This code is derived from HttpStatusCode.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * It was automatically generated from ECMA CLI XML Library Specification.
