@@ -338,8 +338,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     GatewayTimeout = 504,
     /// <summary>
-    /// Equivalent to status code 505.
-    /// Indicates that the server doesn't support the HTTP version used in the client's request.
+    /// Equivalent to status code 505. Indicates that the server does not
+    /// support the HTTP version used in the client's request.
     /// </summary>
     HttpVersionNotSupported = 505,
   }
