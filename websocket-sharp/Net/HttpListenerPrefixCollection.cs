@@ -44,11 +44,12 @@ using System.Collections.Generic;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Provides the collection used to store the URI prefixes for the <see cref="HttpListener"/>.
+  /// Provides a collection used to store the URI prefixes for a instance of
+  /// the <see cref="HttpListener"/> class.
   /// </summary>
   /// <remarks>
-  /// The <see cref="HttpListener"/> responds to the request which has a requested URI that
-  /// the prefixes most closely match.
+  /// The <see cref="HttpListener"/> instance responds to the request which has
+  /// a requested URI that the prefixes most closely match.
   /// </remarks>
   public class HttpListenerPrefixCollection
     : ICollection<string>, IEnumerable<string>, IEnumerable
