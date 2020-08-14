@@ -99,7 +99,8 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the access to the collection is synchronized.
+    /// Gets a value indicating whether the access to the collection is
+    /// synchronized.
     /// </summary>
     /// <value>
     /// Always returns <c>false</c>.
