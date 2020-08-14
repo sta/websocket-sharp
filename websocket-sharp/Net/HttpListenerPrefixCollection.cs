@@ -86,7 +86,8 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the access to the collection is read-only.
+    /// Gets a value indicating whether the access to the collection is
+    /// read-only.
     /// </summary>
     /// <value>
     /// Always returns <c>false</c>.
