@@ -134,13 +134,18 @@ namespace WebSocketSharp.Net
     public void Add (string uriPrefix)
     {
       _listener.CheckDisposed ();
+
       HttpListenerPrefix.CheckPrefix (uriPrefix);
+
       if (_prefixes.Contains (uriPrefix))
         return;
 
       _prefixes.Add (uriPrefix);
-      if (_listener.IsListening)
-        EndPointManager.AddPrefix (uriPrefix, _listener);
+
+      if (!_listener.IsListening)
+        return;
+
+      EndPointManager.AddPrefix (uriPrefix, _listener);
     }
 
     /// <summary>
