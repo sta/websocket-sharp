@@ -139,9 +139,8 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Add (string uriPrefix)
     {
-      _listener.CheckDisposed ();
-
       HttpListenerPrefix.CheckPrefix (uriPrefix);
+      _listener.CheckDisposed ();
 
       if (_prefixes.Contains (uriPrefix))
         return;
