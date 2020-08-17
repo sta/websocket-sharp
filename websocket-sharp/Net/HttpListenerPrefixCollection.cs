@@ -163,8 +163,11 @@ namespace WebSocketSharp.Net
     {
       _listener.CheckDisposed ();
       _prefixes.Clear ();
-      if (_listener.IsListening)
-        EndPointManager.RemoveListener (_listener);
+
+      if (!_listener.IsListening)
+        return;
+
+      EndPointManager.RemoveListener (_listener);
     }
 
     /// <summary>
