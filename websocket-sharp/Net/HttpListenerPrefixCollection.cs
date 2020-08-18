@@ -190,9 +190,10 @@ namespace WebSocketSharp.Net
     /// </exception>
     public bool Contains (string uriPrefix)
     {
-      _listener.CheckDisposed ();
       if (uriPrefix == null)
         throw new ArgumentNullException ("uriPrefix");
+
+      _listener.CheckDisposed ();
 
       return _prefixes.Contains (uriPrefix);
     }
