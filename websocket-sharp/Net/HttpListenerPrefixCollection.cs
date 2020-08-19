@@ -173,20 +173,21 @@ namespace WebSocketSharp.Net
 
     /// <summary>
     /// Returns a value indicating whether the collection contains the specified
-    /// <paramref name="uriPrefix"/>.
+    /// URI prefix.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the collection contains <paramref name="uriPrefix"/>;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the collection contains the URI prefix; otherwise,
+    /// <c>false</c>.
     /// </returns>
     /// <param name="uriPrefix">
-    /// A <see cref="string"/> that represents the URI prefix to test.
+    /// A <see cref="string"/> that specifies the URI prefix to test.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="uriPrefix"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// The <see cref="HttpListener"/> associated with this collection is closed.
+    /// The <see cref="HttpListener"/> instance associated with this collection
+    /// is closed.
     /// </exception>
     public bool Contains (string uriPrefix)
     {
