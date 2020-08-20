@@ -221,17 +221,19 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Copies the contents of the collection to the specified array of <see cref="string"/>.
+    /// Copies the contents of the collection to the specified array of string.
     /// </summary>
     /// <param name="array">
-    /// An array of <see cref="string"/> that receives the URI prefix strings in the collection.
+    /// An array of <see cref="string"/> that receives the URI prefix strings in
+    /// the collection.
     /// </param>
     /// <param name="offset">
-    /// An <see cref="int"/> that represents the zero-based index in <paramref name="array"/>
-    /// at which copying begins.
+    /// An <see cref="int"/> that represents the zero-based index in
+    /// the array at which copying begins.
     /// </param>
     /// <exception cref="ObjectDisposedException">
-    /// The <see cref="HttpListener"/> associated with this collection is closed.
+    /// The <see cref="HttpListener"/> instance associated with
+    /// this collection is closed.
     /// </exception>
     public void CopyTo (string[] array, int offset)
     {
