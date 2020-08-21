@@ -242,11 +242,11 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the enumerator used to iterate through the <see cref="HttpListenerPrefixCollection"/>.
+    /// Gets the enumerator that iterates through the collection.
     /// </summary>
     /// <returns>
-    /// An <see cref="T:System.Collections.Generic.IEnumerator{string}"/> instance used to iterate
-    /// through the collection.
+    /// An <see cref="T:System.Collections.Generic.IEnumerator{string}"/>
+    /// instance that can be used to iterate through the collection.
     /// </returns>
     public IEnumerator<string> GetEnumerator ()
     {
