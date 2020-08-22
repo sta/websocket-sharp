@@ -272,12 +272,19 @@ namespace WebSocketSharp.Net
     public bool Remove (string uriPrefix)
     {
       _listener.CheckDisposed ();
+
       if (uriPrefix == null)
         throw new ArgumentNullException ("uriPrefix");
 
       var ret = _prefixes.Remove (uriPrefix);
-      if (ret && _listener.IsListening)
-        EndPointManager.RemovePrefix (uriPrefix, _listener);
+
+      if (!ret)
+        return ret;
+
+      if (!_listener.IsListening)
+        return ret;
+
+      EndPointManager.RemovePrefix (uriPrefix, _listener);
 
       return ret;
     }
