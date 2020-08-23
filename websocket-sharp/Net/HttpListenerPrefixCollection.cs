@@ -254,20 +254,21 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Removes the specified <paramref name="uriPrefix"/> from the collection.
+    /// Removes the specified URI prefix from the collection.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if <paramref name="uriPrefix"/> is successfully found and removed;
+    /// <c>true</c> if the URI prefix is successfully found and removed;
     /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="uriPrefix">
-    /// A <see cref="string"/> that represents the URI prefix to remove.
+    /// A <see cref="string"/> that specifies the URI prefix to remove.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="uriPrefix"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// The <see cref="HttpListener"/> associated with this collection is closed.
+    /// The <see cref="HttpListener"/> instance associated with this collection
+    /// is closed.
     /// </exception>
     public bool Remove (string uriPrefix)
     {
