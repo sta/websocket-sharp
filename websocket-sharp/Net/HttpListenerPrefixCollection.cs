@@ -295,10 +295,11 @@ namespace WebSocketSharp.Net
     #region Explicit Interface Implementations
 
     /// <summary>
-    /// Gets the enumerator used to iterate through the <see cref="HttpListenerPrefixCollection"/>.
+    /// Gets the enumerator that iterates through the collection.
     /// </summary>
     /// <returns>
-    /// An <see cref="IEnumerator"/> instance used to iterate through the collection.
+    /// An <see cref="IEnumerator"/> instance that can be used to iterate
+    /// through the collection.
     /// </returns>
     IEnumerator IEnumerable.GetEnumerator ()
     {
