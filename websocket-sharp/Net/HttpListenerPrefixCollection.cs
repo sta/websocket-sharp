@@ -200,27 +200,6 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Copies the contents of the collection to the specified array.
-    /// </summary>
-    /// <param name="array">
-    /// An <see cref="Array"/> that receives the URI prefix strings in
-    /// the collection.
-    /// </param>
-    /// <param name="offset">
-    /// An <see cref="int"/> that specifies the zero-based index in
-    /// the array at which copying begins.
-    /// </param>
-    /// <exception cref="ObjectDisposedException">
-    /// The <see cref="HttpListener"/> instance associated with
-    /// this collection is closed.
-    /// </exception>
-    public void CopyTo (Array array, int offset)
-    {
-      _listener.CheckDisposed ();
-      ((ICollection) _prefixes).CopyTo (array, offset);
-    }
-
-    /// <summary>
     /// Copies the contents of the collection to the specified array of string.
     /// </summary>
     /// <param name="array">
