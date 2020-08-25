@@ -257,8 +257,8 @@ namespace WebSocketSharp.Net
     /// Removes the specified URI prefix from the collection.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the URI prefix is successfully found and removed;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the URI prefix is successfully removed; otherwise,
+    /// <c>false</c>.
     /// </returns>
     /// <param name="uriPrefix">
     /// A <see cref="string"/> that specifies the URI prefix to remove.
