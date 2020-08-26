@@ -203,13 +203,23 @@ namespace WebSocketSharp.Net
     /// Copies the contents of the collection to the specified array of string.
     /// </summary>
     /// <param name="array">
-    /// An array of <see cref="string"/> that receives the URI prefix strings in
-    /// the collection.
+    /// An array of <see cref="string"/> that specifies the destination of
+    /// the URI prefix strings copied from the collection.
     /// </param>
     /// <param name="offset">
-    /// An <see cref="int"/> that represents the zero-based index in
+    /// An <see cref="int"/> that specifies the zero-based index in
     /// the array at which copying begins.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="array"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="offset"/> is less than zero.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The space from <paramref name="offset"/> to the end of
+    /// <paramref name="array"/> is not enough to copy to.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// The <see cref="HttpListener"/> instance associated with
     /// this collection is closed.
