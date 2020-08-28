@@ -138,8 +138,10 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Add (string uriPrefix)
     {
+      if (_listener.IsDisposed)
+        throw new ObjectDisposedException (_listener.GetType ().ToString ());
+
       HttpListenerPrefix.CheckPrefix (uriPrefix);
-      _listener.CheckDisposed ();
 
       if (_prefixes.Contains (uriPrefix))
         return;
