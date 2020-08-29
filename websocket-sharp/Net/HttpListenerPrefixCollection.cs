@@ -163,7 +163,9 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Clear ()
     {
-      _listener.CheckDisposed ();
+      if (_listener.IsDisposed)
+        throw new ObjectDisposedException (_listener.GetType ().ToString ());
+
       _prefixes.Clear ();
 
       if (!_listener.IsListening)
