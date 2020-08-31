@@ -230,7 +230,9 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void CopyTo (string[] array, int offset)
     {
-      _listener.CheckDisposed ();
+      if (_listener.IsDisposed)
+        throw new ObjectDisposedException (_listener.GetType ().ToString ());
+
       _prefixes.CopyTo (array, offset);
     }
 
