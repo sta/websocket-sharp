@@ -267,7 +267,8 @@ namespace WebSocketSharp.Net
     /// </exception>
     public bool Remove (string uriPrefix)
     {
-      _listener.CheckDisposed ();
+      if (_listener.IsDisposed)
+        throw new ObjectDisposedException (_listener.GetType ().ToString ());
 
       if (uriPrefix == null)
         throw new ArgumentNullException ("uriPrefix");
