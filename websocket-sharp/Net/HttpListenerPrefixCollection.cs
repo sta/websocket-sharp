@@ -262,8 +262,8 @@ namespace WebSocketSharp.Net
     /// <paramref name="uriPrefix"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// The <see cref="HttpListener"/> instance associated with this collection
-    /// is closed.
+    /// The <see cref="HttpListener"/> instance associated with this
+    /// collection is closed.
     /// </exception>
     public bool Remove (string uriPrefix)
     {
