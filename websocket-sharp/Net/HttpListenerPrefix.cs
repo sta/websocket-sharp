@@ -158,31 +158,67 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("uriPrefix");
 
       var len = uriPrefix.Length;
-      if (len == 0)
-        throw new ArgumentException ("An empty string.", "uriPrefix");
 
-      if (!(uriPrefix.StartsWith ("http://") || uriPrefix.StartsWith ("https://")))
-        throw new ArgumentException ("The scheme isn't 'http' or 'https'.", "uriPrefix");
+      if (len == 0) {
+        var msg = "An empty string.";
+
+        throw new ArgumentException (msg, "uriPrefix");
+      }
+
+      var schm = uriPrefix.StartsWith ("http://")
+                 || uriPrefix.StartsWith ("https://");
+
+      if (!schm) {
+        var msg = "The scheme is not 'http' or 'https'.";
+
+        throw new ArgumentException (msg, "uriPrefix");
+      }
 
       var startHost = uriPrefix.IndexOf (':') + 3;
-      if (startHost >= len)
-        throw new ArgumentException ("No host is specified.", "uriPrefix");
 
-      if (uriPrefix[startHost] == ':')
-        throw new ArgumentException ("No host is specified.", "uriPrefix");
+      if (startHost >= len) {
+        var msg = "No host is specified.";
+
+        throw new ArgumentException (msg, "uriPrefix");
+      }
+
+      if (uriPrefix[startHost] == ':') {
+        var msg = "No host is specified.";
+
+        throw new ArgumentException (msg, "uriPrefix");
+      }
 
       var root = uriPrefix.IndexOf ('/', startHost, len - startHost);
-      if (root == startHost)
-        throw new ArgumentException ("No host is specified.", "uriPrefix");
 
-      if (root == -1 || uriPrefix[len - 1] != '/')
-        throw new ArgumentException ("Ends without '/'.", "uriPrefix");
+      if (root == startHost) {
+        var msg = "No host is specified.";
 
-      if (uriPrefix[root - 1] == ':')
-        throw new ArgumentException ("No port is specified.", "uriPrefix");
+        throw new ArgumentException (msg, "uriPrefix");
+      }
 
-      if (root == len - 2)
-        throw new ArgumentException ("No path is specified.", "uriPrefix");
+      if (root == -1) {
+        var msg = "Ends without '/'.";
+
+        throw new ArgumentException (msg, "uriPrefix");
+      }
+
+      if (uriPrefix[len - 1] != '/') {
+        var msg = "Ends without '/'.";
+
+        throw new ArgumentException (msg, "uriPrefix");
+      }
+
+      if (uriPrefix[root - 1] == ':') {
+        var msg = "No port is specified.";
+
+        throw new ArgumentException (msg, "uriPrefix");
+      }
+
+      if (root == len - 2) {
+        var msg = "No path is specified.";
+
+        throw new ArgumentException (msg, "uriPrefix");
+      }
     }
 
     /// <summary>
