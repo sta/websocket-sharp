@@ -197,7 +197,7 @@ namespace WebSocketSharp.Net
       }
 
       if (uriPrefix[len - 1] != '/') {
-        var msg = "Ends without '/'.";
+        var msg = "It ends without '/'.";
 
         throw new ArgumentException (msg, "uriPrefix");
       }
