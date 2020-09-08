@@ -175,8 +175,9 @@ namespace WebSocketSharp.Net
       }
 
       var host = uriPrefix.IndexOf (':') + 3;
+      var end = len - 1;
 
-      if (host >= len) {
+      if (host > end) {
         var msg = "No host is specified.";
 
         throw new ArgumentException (msg, "uriPrefix");
@@ -196,7 +197,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentException (msg, "uriPrefix");
       }
 
-      if (uriPrefix[len - 1] != '/') {
+      if (uriPrefix[end] != '/') {
         var msg = "It ends without '/'.";
 
         throw new ArgumentException (msg, "uriPrefix");
