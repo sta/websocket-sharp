@@ -209,7 +209,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentException (msg, "uriPrefix");
       }
 
-      if (root == len - 2) {
+      if (root == end - 1) {
         var msg = "No path is specified.";
 
         throw new ArgumentException (msg, "uriPrefix");
