@@ -60,14 +60,14 @@ namespace WebSocketSharp.Net
     #region Internal Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HttpListenerPrefix"/> class with
-    /// the specified <paramref name="uriPrefix"/>.
+    /// Initializes a new instance of the <see cref="HttpListenerPrefix"/> class
+    /// with the specified URI prefix.
     /// </summary>
     /// <remarks>
     /// This constructor must be called after calling the CheckPrefix method.
     /// </remarks>
     /// <param name="uriPrefix">
-    /// A <see cref="string"/> that represents the URI prefix.
+    /// A <see cref="string"/> that specifies the URI prefix.
     /// </param>
     internal HttpListenerPrefix (string uriPrefix)
     {
