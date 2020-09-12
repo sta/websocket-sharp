@@ -133,6 +133,7 @@ namespace WebSocketSharp.Net
       var root = uriPrefix.IndexOf ('/', startHost + 1, len - startHost - 1);
 
       var colon = uriPrefix.LastIndexOf (':', root - 1, root - startHost - 1);
+
       if (uriPrefix[root - 1] != ']' && colon > startHost) {
         _host = uriPrefix.Substring (startHost, colon - startHost);
         _port = uriPrefix.Substring (colon + 1, root - colon - 1);
@@ -144,8 +145,13 @@ namespace WebSocketSharp.Net
 
       _path = uriPrefix.Substring (root);
 
-      _prefix =
-        String.Format ("http{0}://{1}:{2}{3}", _secure ? "s" : "", _host, _port, _path);
+      _prefix = String.Format (
+                  "http{0}://{1}:{2}{3}",
+                  _secure ? "s" : "",
+                  _host,
+                  _port,
+                  _path
+                );
     }
 
     #endregion
