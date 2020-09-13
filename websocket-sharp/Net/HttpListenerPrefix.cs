@@ -129,17 +129,17 @@ namespace WebSocketSharp.Net
         _secure = true;
 
       var len = uriPrefix.Length;
-      var startHost = uriPrefix.IndexOf (':') + 3;
-      var root = uriPrefix.IndexOf ('/', startHost + 1, len - startHost - 1);
+      var host = uriPrefix.IndexOf (':') + 3;
+      var root = uriPrefix.IndexOf ('/', host + 1, len - host - 1);
 
-      var colon = uriPrefix.LastIndexOf (':', root - 1, root - startHost - 1);
+      var colon = uriPrefix.LastIndexOf (':', root - 1, root - host - 1);
 
-      if (uriPrefix[root - 1] != ']' && colon > startHost) {
-        _host = uriPrefix.Substring (startHost, colon - startHost);
+      if (uriPrefix[root - 1] != ']' && colon > host) {
+        _host = uriPrefix.Substring (host, colon - host);
         _port = uriPrefix.Substring (colon + 1, root - colon - 1);
       }
       else {
-        _host = uriPrefix.Substring (startHost, root - startHost);
+        _host = uriPrefix.Substring (host, root - host);
         _port = _secure ? "443" : "80";
       }
 
