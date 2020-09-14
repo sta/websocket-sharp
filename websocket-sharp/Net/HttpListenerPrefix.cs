@@ -204,6 +204,12 @@ namespace WebSocketSharp.Net
 
       var root = uriPrefix.IndexOf ('/', host, len - host);
 
+      if (root == host) {
+        var msg = "No host is specified.";
+
+        throw new ArgumentException (msg, "uriPrefix");
+      }
+
       if (uriPrefix[root - 1] == ':') {
         var msg = "No port is specified.";
 
