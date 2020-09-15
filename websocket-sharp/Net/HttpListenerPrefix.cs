@@ -239,6 +239,7 @@ namespace WebSocketSharp.Net
     public override bool Equals (Object obj)
     {
       var pref = obj as HttpListenerPrefix;
+
       return pref != null && pref._prefix == _prefix;
     }
 
