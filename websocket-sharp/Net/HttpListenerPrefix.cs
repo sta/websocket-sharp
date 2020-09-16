@@ -242,7 +242,7 @@ namespace WebSocketSharp.Net
     /// <c>true</c> if the current instance is equal to <paramref name="obj"/>;
     /// otherwise, <c>false</c>.
     /// </returns>
-    public override bool Equals (Object obj)
+    public override bool Equals (object obj)
     {
       var pref = obj as HttpListenerPrefix;
 
