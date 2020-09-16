@@ -225,14 +225,14 @@ namespace WebSocketSharp.Net
 
     /// <summary>
     /// Determines whether the current instance is equal to the specified
-    /// <see cref="Object"/> instance.
+    /// <see cref="object"/> instance.
     /// </summary>
     /// <remarks>
     /// This method will be required to detect duplicates in any collection.
     /// </remarks>
     /// <param name="obj">
     ///   <para>
-    ///   An <see cref="Object"/> instance to compare to the current instance.
+    ///   An <see cref="object"/> instance to compare to the current instance.
     ///   </para>
     ///   <para>
     ///   An reference to a <see cref="HttpListenerPrefix"/> instance.
