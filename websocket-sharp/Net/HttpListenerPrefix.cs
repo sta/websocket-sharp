@@ -239,8 +239,8 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </param>
     /// <returns>
-    /// <c>true</c> if the current instance is equal to <paramref name="obj"/>;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the current instance and <paramref name="obj"/> have
+    /// the same URI prefix; otherwise, <c>false</c>.
     /// </returns>
     public override bool Equals (object obj)
     {
