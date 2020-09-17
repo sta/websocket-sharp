@@ -246,7 +246,7 @@ namespace WebSocketSharp.Net
     {
       var pref = obj as HttpListenerPrefix;
 
-      return pref != null && pref._prefix == _prefix;
+      return pref != null && _prefix.Equals (pref._prefix);
     }
 
     /// <summary>
