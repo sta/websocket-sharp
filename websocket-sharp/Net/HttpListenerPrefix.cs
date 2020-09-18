@@ -250,7 +250,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the hash code for this instance.
+    /// Gets the hash code for the current instance.
     /// </summary>
     /// <remarks>
     /// This method will be required to detect duplicates in any collection.
