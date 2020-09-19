@@ -146,8 +146,8 @@ namespace WebSocketSharp.Net
       _path = uriPrefix.Substring (root);
 
       _prefix = String.Format (
-                  "http{0}://{1}:{2}{3}",
-                  _secure ? "s" : "",
+                  "{0}://{1}:{2}{3}",
+                  _secure ? "https" : "http",
                   _host,
                   _port,
                   _path
