@@ -39,7 +39,6 @@
 #endregion
 
 using System;
-using System.Net;
 
 namespace WebSocketSharp.Net
 {
