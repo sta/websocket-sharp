@@ -390,6 +390,65 @@ namespace WebSocketSharp.Net
 
     #region Public Methods
 
+    public void AddPrefix (HttpListenerPrefix prefix)
+    {
+      List<HttpListenerPrefix> current, future;
+
+      if (prefix.Host == "*") {
+        do {
+          current = _unhandled;
+          future = current != null
+                   ? new List<HttpListenerPrefix> (current)
+                   : new List<HttpListenerPrefix> ();
+
+          addSpecial (future, prefix);
+        }
+        while (
+          Interlocked.CompareExchange (ref _unhandled, future, current) != current
+        );
+
+        return;
+      }
+
+      if (prefix.Host == "+") {
+        do {
+          current = _all;
+          future = current != null
+                   ? new List<HttpListenerPrefix> (current)
+                   : new List<HttpListenerPrefix> ();
+
+          addSpecial (future, prefix);
+        }
+        while (
+          Interlocked.CompareExchange (ref _all, future, current) != current
+        );
+
+        return;
+      }
+
+      Dictionary<HttpListenerPrefix, HttpListener> prefs, prefs2;
+
+      do {
+        prefs = _prefixes;
+
+        if (prefs.ContainsKey (prefix)) {
+          if (prefs[prefix] != prefix.Listener) {
+            throw new HttpListenerException (
+              87, String.Format ("There's another listener for {0}.", prefix)
+            );
+          }
+
+          return;
+        }
+
+        prefs2 = new Dictionary<HttpListenerPrefix, HttpListener> (prefs);
+        prefs2[prefix] = prefix.Listener;
+      }
+      while (
+        Interlocked.CompareExchange (ref _prefixes, prefs2, prefs) != prefs
+      );
+    }
+
     public void AddPrefix (HttpListenerPrefix prefix, HttpListener listener)
     {
       List<HttpListenerPrefix> current, future;
