@@ -153,12 +153,18 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private static void addSpecial (List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
+    private static void addSpecial (
+      List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix
+    )
     {
       var path = prefix.Path;
+
       foreach (var pref in prefixes) {
-        if (pref.Path == path)
-          throw new HttpListenerException (87, "The prefix is already in use.");
+        if (pref.Path == path) {
+          var msg = "The prefix is already in use.";
+
+          throw new HttpListenerException (87, msg);
+        }
       }
 
       prefixes.Add (prefix);
