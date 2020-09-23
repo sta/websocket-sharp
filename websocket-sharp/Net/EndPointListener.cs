@@ -433,9 +433,11 @@ namespace WebSocketSharp.Net
 
         if (prefs.ContainsKey (prefix)) {
           if (prefs[prefix] != prefix.Listener) {
-            throw new HttpListenerException (
-              87, String.Format ("There's another listener for {0}.", prefix)
-            );
+            var msg = String.Format (
+                        "There is another listener for {0}.", prefix
+                      );
+
+            throw new HttpListenerException (87, msg);
           }
 
           return;
