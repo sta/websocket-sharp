@@ -528,6 +528,70 @@ namespace WebSocketSharp.Net
         conns[i].Close (true);
     }
 
+    public void RemovePrefix (HttpListenerPrefix prefix)
+    {
+      List<HttpListenerPrefix> current, future;
+
+      if (prefix.Host == "*") {
+        do {
+          current = _unhandled;
+
+          if (current == null)
+            break;
+
+          future = new List<HttpListenerPrefix> (current);
+
+          if (!removeSpecial (future, prefix))
+            break;
+        }
+        while (
+          Interlocked.CompareExchange (ref _unhandled, future, current) != current
+        );
+
+        leaveIfNoPrefix ();
+
+        return;
+      }
+
+      if (prefix.Host == "+") {
+        do {
+          current = _all;
+
+          if (current == null)
+            break;
+
+          future = new List<HttpListenerPrefix> (current);
+
+          if (!removeSpecial (future, prefix))
+            break;
+        }
+        while (
+          Interlocked.CompareExchange (ref _all, future, current) != current
+        );
+
+        leaveIfNoPrefix ();
+
+        return;
+      }
+
+      Dictionary<HttpListenerPrefix, HttpListener> prefs, prefs2;
+
+      do {
+        prefs = _prefixes;
+
+        if (!prefs.ContainsKey (prefix))
+          break;
+
+        prefs2 = new Dictionary<HttpListenerPrefix, HttpListener> (prefs);
+        prefs2.Remove (prefix);
+      }
+      while (
+        Interlocked.CompareExchange (ref _prefixes, prefs2, prefs) != prefs
+      );
+
+      leaveIfNoPrefix ();
+    }
+
     public void RemovePrefix (HttpListenerPrefix prefix, HttpListener listener)
     {
       List<HttpListenerPrefix> current, future;
