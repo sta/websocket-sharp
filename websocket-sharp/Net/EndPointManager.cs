@@ -171,7 +171,7 @@ namespace WebSocketSharp.Net
       if (lsnr.IsSecure ^ pref.IsSecure)
         return;
 
-      lsnr.RemovePrefix (pref, listener);
+      lsnr.RemovePrefix (pref);
     }
 
     #endregion
