@@ -274,13 +274,17 @@ namespace WebSocketSharp.Net
       }
     }
 
-    private static bool removeSpecial (List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
+    private static bool removeSpecial (
+      List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix
+    )
     {
       var path = prefix.Path;
       var cnt = prefixes.Count;
+
       for (var i = 0; i < cnt; i++) {
         if (prefixes[i].Path == path) {
           prefixes.RemoveAt (i);
+
           return true;
         }
       }
