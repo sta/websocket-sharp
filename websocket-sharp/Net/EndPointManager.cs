@@ -142,6 +142,7 @@ namespace WebSocketSharp.Net
       var pref = new HttpListenerPrefix (uriPrefix);
 
       var addr = convertToIPAddress (pref.Host);
+
       if (addr == null)
         return;
 
@@ -149,6 +150,7 @@ namespace WebSocketSharp.Net
         return;
 
       int port;
+
       if (!Int32.TryParse (pref.Port, out port))
         return;
 
@@ -156,6 +158,7 @@ namespace WebSocketSharp.Net
         return;
 
       var path = pref.Path;
+
       if (path.IndexOf ('%') != -1)
         return;
 
@@ -165,6 +168,7 @@ namespace WebSocketSharp.Net
       var endpoint = new IPEndPoint (addr, port);
 
       EndPointListener lsnr;
+
       if (!_endpoints.TryGetValue (endpoint, out lsnr))
         return;
 
