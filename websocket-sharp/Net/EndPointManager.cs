@@ -139,7 +139,7 @@ namespace WebSocketSharp.Net
 
     private static void removePrefix (string uriPrefix, HttpListener listener)
     {
-      var pref = new HttpListenerPrefix (uriPrefix);
+      var pref = new HttpListenerPrefix (uriPrefix, listener);
 
       var addr = convertToIPAddress (pref.Host);
 
