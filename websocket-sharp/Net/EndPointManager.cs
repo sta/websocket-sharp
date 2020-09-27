@@ -186,6 +186,7 @@ namespace WebSocketSharp.Net
     {
       lock (((ICollection) _endpoints).SyncRoot) {
         EndPointListener lsnr;
+
         if (!_endpoints.TryGetValue (endpoint, out lsnr))
           return false;
 
