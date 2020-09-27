@@ -203,6 +203,7 @@ namespace WebSocketSharp.Net
     public static void AddListener (HttpListener listener)
     {
       var added = new List<string> ();
+
       lock (((ICollection) _endpoints).SyncRoot) {
         try {
           foreach (var pref in listener.Prefixes) {
