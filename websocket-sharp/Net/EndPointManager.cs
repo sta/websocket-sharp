@@ -83,6 +83,7 @@ namespace WebSocketSharp.Net
       var pref = new HttpListenerPrefix (uriPrefix);
 
       var addr = convertToIPAddress (pref.Host);
+
       if (addr == null)
         throw new HttpListenerException (87, "Includes an invalid host.");
 
@@ -90,6 +91,7 @@ namespace WebSocketSharp.Net
         throw new HttpListenerException (87, "Includes an invalid host.");
 
       int port;
+
       if (!Int32.TryParse (pref.Port, out port))
         throw new HttpListenerException (87, "Includes an invalid port.");
 
@@ -97,6 +99,7 @@ namespace WebSocketSharp.Net
         throw new HttpListenerException (87, "Includes an invalid port.");
 
       var path = pref.Path;
+
       if (path.IndexOf ('%') != -1)
         throw new HttpListenerException (87, "Includes an invalid path.");
 
@@ -106,19 +109,19 @@ namespace WebSocketSharp.Net
       var endpoint = new IPEndPoint (addr, port);
 
       EndPointListener lsnr;
+
       if (_endpoints.TryGetValue (endpoint, out lsnr)) {
         if (lsnr.IsSecure ^ pref.IsSecure)
           throw new HttpListenerException (87, "Includes an invalid scheme.");
       }
       else {
-        lsnr =
-          new EndPointListener (
-            endpoint,
-            pref.IsSecure,
-            listener.CertificateFolderPath,
-            listener.SslConfiguration,
-            listener.ReuseAddress
-          );
+        lsnr = new EndPointListener (
+                 endpoint,
+                 pref.IsSecure,
+                 listener.CertificateFolderPath,
+                 listener.SslConfiguration,
+                 listener.ReuseAddress
+               );
 
         _endpoints.Add (endpoint, lsnr);
       }
