@@ -84,8 +84,11 @@ namespace WebSocketSharp.Net
 
       var addr = convertToIPAddress (pref.Host);
 
-      if (addr == null)
-        throw new HttpListenerException (87, "Includes an invalid host.");
+      if (addr == null) {
+        var msg = "The URI prefix includes an invalid host.";
+
+        throw new HttpListenerException (87, msg);
+      }
 
       if (!addr.IsLocal ())
         throw new HttpListenerException (87, "Includes an invalid host.");
