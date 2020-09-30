@@ -104,8 +104,11 @@ namespace WebSocketSharp.Net
         throw new HttpListenerException (87, msg);
       }
 
-      if (!port.IsPortNumber ())
-        throw new HttpListenerException (87, "Includes an invalid port.");
+      if (!port.IsPortNumber ()) {
+        var msg = "The URI prefix includes an invalid port.";
+
+        throw new HttpListenerException (87, msg);
+      }
 
       var path = pref.Path;
 
