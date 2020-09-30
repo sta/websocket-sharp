@@ -90,8 +90,11 @@ namespace WebSocketSharp.Net
         throw new HttpListenerException (87, msg);
       }
 
-      if (!addr.IsLocal ())
-        throw new HttpListenerException (87, "Includes an invalid host.");
+      if (!addr.IsLocal ()) {
+        var msg = "The URI prefix includes an invalid host.";
+
+        throw new HttpListenerException (87, msg);
+      }
 
       int port;
 
