@@ -129,8 +129,11 @@ namespace WebSocketSharp.Net
       EndPointListener lsnr;
 
       if (_endpoints.TryGetValue (endpoint, out lsnr)) {
-        if (lsnr.IsSecure ^ pref.IsSecure)
-          throw new HttpListenerException (87, "Includes an invalid scheme.");
+        if (lsnr.IsSecure ^ pref.IsSecure) {
+          var msg = "The URI prefix includes an invalid scheme.";
+
+          throw new HttpListenerException (87, msg);
+        }
       }
       else {
         lsnr = new EndPointListener (
