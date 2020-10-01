@@ -118,8 +118,11 @@ namespace WebSocketSharp.Net
         throw new HttpListenerException (87, msg);
       }
 
-      if (path.IndexOf ("//", StringComparison.Ordinal) != -1)
-        throw new HttpListenerException (87, "Includes an invalid path.");
+      if (path.IndexOf ("//", StringComparison.Ordinal) != -1) {
+        var msg = "The URI prefix includes an invalid path.";
+
+        throw new HttpListenerException (87, msg);
+      }
 
       var endpoint = new IPEndPoint (addr, port);
 
