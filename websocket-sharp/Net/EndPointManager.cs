@@ -147,7 +147,7 @@ namespace WebSocketSharp.Net
         _endpoints.Add (endpoint, lsnr);
       }
 
-      lsnr.AddPrefix (pref, listener);
+      lsnr.AddPrefix (pref);
     }
 
     private static IPAddress convertToIPAddress (string hostname)
