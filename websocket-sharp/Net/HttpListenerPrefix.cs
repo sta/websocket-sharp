@@ -99,10 +99,6 @@ namespace WebSocketSharp.Net
       get {
         return _listener;
       }
-
-      set {
-        _listener = value;
-      }
     }
 
     public string Original {
