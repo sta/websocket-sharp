@@ -166,12 +166,10 @@ namespace WebSocketSharp.Net
       if (_listener.IsDisposed)
         throw new ObjectDisposedException (_listener.GetType ().ToString ());
 
+      if (_listener.IsListening)
+        EndPointManager.RemoveListener (_listener);
+
       _prefixes.Clear ();
-
-      if (!_listener.IsListening)
-        return;
-
-      EndPointManager.RemoveListener (_listener);
     }
 
     /// <summary>
