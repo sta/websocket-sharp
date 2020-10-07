@@ -271,17 +271,13 @@ namespace WebSocketSharp.Net
       if (uriPrefix == null)
         throw new ArgumentNullException ("uriPrefix");
 
-      var ret = _prefixes.Remove (uriPrefix);
+      if (!_prefixes.Contains (uriPrefix))
+        return false;
 
-      if (!ret)
-        return ret;
+      if (_listener.IsListening)
+        EndPointManager.RemovePrefix (uriPrefix, _listener);
 
-      if (!_listener.IsListening)
-        return ret;
-
-      EndPointManager.RemovePrefix (uriPrefix, _listener);
-
-      return ret;
+      return _prefixes.Remove (uriPrefix);
     }
 
     #endregion
