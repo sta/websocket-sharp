@@ -213,10 +213,12 @@ namespace WebSocketSharp.Net
         return;
 
       var prefs = _unhandled;
+
       if (prefs != null && prefs.Count > 0)
         return;
 
       prefs = _all;
+
       if (prefs != null && prefs.Count > 0)
         return;
 
