@@ -468,12 +468,14 @@ namespace WebSocketSharp.Net
       _socket.Close ();
 
       HttpConnection[] conns = null;
+
       lock (_unregisteredSync) {
         if (_unregistered.Count == 0)
           return;
 
         var keys = _unregistered.Keys;
         conns = new HttpConnection[keys.Count];
+
         keys.CopyTo (conns, 0);
         _unregistered.Clear ();
       }
