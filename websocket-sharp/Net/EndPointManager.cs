@@ -214,10 +214,9 @@ namespace WebSocketSharp.Net
         if (!_endpoints.TryGetValue (endpoint, out lsnr))
           return false;
 
-        _endpoints.Remove (endpoint);
         lsnr.Close ();
 
-        return true;
+        return _endpoints.Remove (endpoint);
       }
     }
 
