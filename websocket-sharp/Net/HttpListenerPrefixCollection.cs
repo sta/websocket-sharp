@@ -146,12 +146,10 @@ namespace WebSocketSharp.Net
       if (_prefixes.Contains (uriPrefix))
         return;
 
+      if (_listener.IsListening)
+        EndPointManager.AddPrefix (uriPrefix, _listener);
+
       _prefixes.Add (uriPrefix);
-
-      if (!_listener.IsListening)
-        return;
-
-      EndPointManager.AddPrefix (uriPrefix, _listener);
     }
 
     /// <summary>
