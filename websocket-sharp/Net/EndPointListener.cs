@@ -356,19 +356,24 @@ namespace WebSocketSharp.Net
 
       if (host != null && host.Length > 0) {
         var bestLen = -1;
+
         foreach (var pref in _prefixes.Keys) {
           if (dns) {
             var prefHost = pref.Host;
-            if (Uri.CheckHostName (prefHost) == UriHostNameType.Dns && prefHost != host)
-              continue;
+            var prefDns = Uri.CheckHostName (prefHost) == UriHostNameType.Dns;
+
+            if (prefDns) {
+              if (prefHost != host)
+                continue;
+            }
           }
 
           if (pref.Port != port)
             continue;
 
           var prefPath = pref.Path;
-
           var len = prefPath.Length;
+
           if (len < bestLen)
             continue;
 
@@ -384,6 +389,7 @@ namespace WebSocketSharp.Net
 
       var prefs = _unhandled;
       listener = searchHttpListenerFromSpecial (path, prefs);
+
       if (listener == null && pathSlash != path)
         listener = searchHttpListenerFromSpecial (pathSlash, prefs);
 
@@ -392,6 +398,7 @@ namespace WebSocketSharp.Net
 
       prefs = _all;
       listener = searchHttpListenerFromSpecial (path, prefs);
+
       if (listener == null && pathSlash != path)
         listener = searchHttpListenerFromSpecial (pathSlash, prefs);
 
