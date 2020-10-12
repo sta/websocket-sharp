@@ -301,23 +301,24 @@ namespace WebSocketSharp.Net
       if (prefixes == null)
         return null;
 
-      HttpListener bestMatch = null;
+      HttpListener ret = null;
 
       var bestLen = -1;
+
       foreach (var pref in prefixes) {
         var prefPath = pref.Path;
-
         var len = prefPath.Length;
+
         if (len < bestLen)
           continue;
 
         if (path.StartsWith (prefPath)) {
           bestLen = len;
-          bestMatch = pref.Listener;
+          ret = pref.Listener;
         }
       }
 
-      return bestMatch;
+      return ret;
     }
 
     #endregion
