@@ -380,7 +380,7 @@ namespace WebSocketSharp.Net
 
           if (path.StartsWith (prefPath) || pathSlash.StartsWith (prefPath)) {
             bestLen = len;
-            listener = _prefixes[pref];
+            listener = pref.Listener;
           }
         }
 
