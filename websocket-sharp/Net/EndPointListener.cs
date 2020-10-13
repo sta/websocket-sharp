@@ -390,14 +390,12 @@ namespace WebSocketSharp.Net
           return true;
       }
 
-      var prefs = _unhandled;
-      listener = searchHttpListenerFromSpecial (path, prefs);
+      listener = searchHttpListenerFromSpecial (path, _unhandled);
 
       if (listener != null)
         return true;
 
-      prefs = _all;
-      listener = searchHttpListenerFromSpecial (path, prefs);
+      listener = searchHttpListenerFromSpecial (path, _all);
 
       return listener != null;
     }
