@@ -353,7 +353,9 @@ namespace WebSocketSharp.Net
       var dns = Uri.CheckHostName (host) == UriHostNameType.Dns;
       var port = uri.Port.ToString ();
       var path = HttpUtility.UrlDecode (uri.AbsolutePath);
-      var pathSlash = path[path.Length - 1] != '/' ? path + "/" : path;
+
+      if (path[path.Length - 1] != '/')
+        path += "/";
 
       if (host != null && host.Length > 0) {
         var bestLen = -1;
@@ -378,7 +380,7 @@ namespace WebSocketSharp.Net
           if (len < bestLen)
             continue;
 
-          if (path.StartsWith (prefPath) || pathSlash.StartsWith (prefPath)) {
+          if (path.StartsWith (prefPath)) {
             bestLen = len;
             listener = pref.Listener;
           }
@@ -391,17 +393,11 @@ namespace WebSocketSharp.Net
       var prefs = _unhandled;
       listener = searchHttpListenerFromSpecial (path, prefs);
 
-      if (listener == null && pathSlash != path)
-        listener = searchHttpListenerFromSpecial (pathSlash, prefs);
-
       if (listener != null)
         return true;
 
       prefs = _all;
       listener = searchHttpListenerFromSpecial (path, prefs);
-
-      if (listener == null && pathSlash != path)
-        listener = searchHttpListenerFromSpecial (pathSlash, prefs);
 
       return listener != null;
     }
