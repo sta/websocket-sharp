@@ -222,7 +222,7 @@ namespace WebSocketSharp.Net
       if (prefs != null && prefs.Count > 0)
         return;
 
-      EndPointManager.RemoveEndPoint (_endpoint);
+      Close ();
     }
 
     private static void onAccept (IAsyncResult asyncResult)
@@ -484,6 +484,8 @@ namespace WebSocketSharp.Net
 
       for (var i = conns.Length - 1; i >= 0; i--)
         conns[i].Close (true);
+
+      EndPointManager.RemoveEndPoint (_endpoint);
     }
 
     public void RemovePrefix (HttpListenerPrefix prefix)

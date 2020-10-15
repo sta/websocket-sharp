@@ -208,16 +208,8 @@ namespace WebSocketSharp.Net
 
     internal static bool RemoveEndPoint (IPEndPoint endpoint)
     {
-      lock (((ICollection) _endpoints).SyncRoot) {
-        EndPointListener lsnr;
-
-        if (!_endpoints.TryGetValue (endpoint, out lsnr))
-          return false;
-
-        lsnr.Close ();
-
+      lock (((ICollection) _endpoints).SyncRoot)
         return _endpoints.Remove (endpoint);
-      }
     }
 
     #endregion
