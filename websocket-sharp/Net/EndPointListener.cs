@@ -210,6 +210,7 @@ namespace WebSocketSharp.Net
       try {
         var cer = Path.Combine (folderPath, String.Format ("{0}.cer", port));
         var key = Path.Combine (folderPath, String.Format ("{0}.key", port));
+
         if (File.Exists (cer) && File.Exists (key)) {
           var cert = new X509Certificate2 (cer);
           cert.PrivateKey = createRSAFromFile (key);
