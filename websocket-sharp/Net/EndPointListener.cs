@@ -188,13 +188,9 @@ namespace WebSocketSharp.Net
 
     private static RSACryptoServiceProvider createRSAFromFile (string filename)
     {
-      byte[] pvk = null;
-      using (var fs = File.Open (filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-        pvk = new byte[fs.Length];
-        fs.Read (pvk, 0, pvk.Length);
-      }
-
       var rsa = new RSACryptoServiceProvider ();
+
+      var pvk = File.ReadAllBytes (filename);
       rsa.ImportCspBlob (pvk);
 
       return rsa;
