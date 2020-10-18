@@ -243,11 +243,12 @@ namespace WebSocketSharp.Net
       var lsnr = (EndPointListener) asyncResult.AsyncState;
 
       Socket sock = null;
+
       try {
         sock = lsnr._socket.EndAccept (asyncResult);
       }
       catch (SocketException) {
-        // TODO: Should log the error code when this class has a logging.
+        // TODO: Logging.
       }
       catch (ObjectDisposedException) {
         return;
