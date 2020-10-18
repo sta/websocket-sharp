@@ -270,11 +270,15 @@ namespace WebSocketSharp.Net
       processAccepted (sock, lsnr);
     }
 
-    private static void processAccepted (Socket socket, EndPointListener listener)
+    private static void processAccepted (
+      Socket socket, EndPointListener listener
+    )
     {
       HttpConnection conn = null;
+
       try {
         conn = new HttpConnection (socket, listener);
+
         lock (listener._unregisteredSync)
           listener._unregistered[conn] = conn;
 
@@ -283,6 +287,7 @@ namespace WebSocketSharp.Net
       catch {
         if (conn != null) {
           conn.Close (true);
+
           return;
         }
 
