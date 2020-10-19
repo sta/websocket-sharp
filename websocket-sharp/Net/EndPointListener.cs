@@ -64,7 +64,7 @@ namespace WebSocketSharp.Net
     private List<HttpListenerPrefix>                     _all; // host == '+'
     private static readonly string                       _defaultCertFolderPath;
     private IPEndPoint                                   _endpoint;
-    private Dictionary<HttpListenerPrefix, HttpListener> _prefixes;
+    private List<HttpListenerPrefix>                     _prefixes;
     private bool                                         _secure;
     private Socket                                       _socket;
     private ServerSslConfiguration                       _sslConfig;
@@ -114,7 +114,7 @@ namespace WebSocketSharp.Net
         _sslConfig.ServerCertificate = cert;
       }
 
-      _prefixes = new Dictionary<HttpListenerPrefix, HttpListener> ();
+      _prefixes = new List<HttpListenerPrefix> ();
       _unregistered = new Dictionary<HttpConnection, HttpConnection> ();
       _unregisteredSync = ((ICollection) _unregistered).SyncRoot;
 
@@ -377,9 +377,10 @@ namespace WebSocketSharp.Net
         path += "/";
 
       if (host != null && host.Length > 0) {
+        var prefs = _prefixes;
         var bestLen = -1;
 
-        foreach (var pref in _prefixes.Keys) {
+        foreach (var pref in prefs) {
           if (dns) {
             var prefHost = pref.Host;
             var prefDns = Uri.CheckHostName (prefHost) == UriHostNameType.Dns;
@@ -459,13 +460,14 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      Dictionary<HttpListenerPrefix, HttpListener> prefs, prefs2;
+      List<HttpListenerPrefix> prefs, prefs2;
 
       do {
         prefs = _prefixes;
+        var idx = prefs.IndexOf (prefix);
 
-        if (prefs.ContainsKey (prefix)) {
-          if (prefs[prefix] != prefix.Listener) {
+        if (idx > -1) {
+          if (prefs[idx].Listener != prefix.Listener) {
             var msg = String.Format (
                         "There is another listener for {0}.", prefix
                       );
@@ -476,8 +478,8 @@ namespace WebSocketSharp.Net
           return;
         }
 
-        prefs2 = new Dictionary<HttpListenerPrefix, HttpListener> (prefs);
-        prefs2[prefix] = prefix.Listener;
+        prefs2 = new List<HttpListenerPrefix> (prefs);
+        prefs2.Add (prefix);
       }
       while (
         Interlocked.CompareExchange (ref _prefixes, prefs2, prefs) != prefs
@@ -553,15 +555,15 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      Dictionary<HttpListenerPrefix, HttpListener> prefs, prefs2;
+      List<HttpListenerPrefix> prefs, prefs2;
 
       do {
         prefs = _prefixes;
 
-        if (!prefs.ContainsKey (prefix))
+        if (!prefs.Contains (prefix))
           break;
 
-        prefs2 = new Dictionary<HttpListenerPrefix, HttpListener> (prefs);
+        prefs2 = new List<HttpListenerPrefix> (prefs);
         prefs2.Remove (prefix);
       }
       while (
