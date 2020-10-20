@@ -460,14 +460,12 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      List<HttpListenerPrefix> prefs, prefs2;
-
       do {
-        prefs = _prefixes;
-        var idx = prefs.IndexOf (prefix);
+        current = _prefixes;
+        var idx = current.IndexOf (prefix);
 
         if (idx > -1) {
-          if (prefs[idx].Listener != prefix.Listener) {
+          if (current[idx].Listener != prefix.Listener) {
             var msg = String.Format (
                         "There is another listener for {0}.", prefix
                       );
@@ -478,11 +476,11 @@ namespace WebSocketSharp.Net
           return;
         }
 
-        prefs2 = new List<HttpListenerPrefix> (prefs);
-        prefs2.Add (prefix);
+        future = new List<HttpListenerPrefix> (current);
+        future.Add (prefix);
       }
       while (
-        Interlocked.CompareExchange (ref _prefixes, prefs2, prefs) != prefs
+        Interlocked.CompareExchange (ref _prefixes, future, current) != current
       );
     }
 
