@@ -553,19 +553,17 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      List<HttpListenerPrefix> prefs, prefs2;
-
       do {
-        prefs = _prefixes;
+        current = _prefixes;
 
-        if (!prefs.Contains (prefix))
+        if (!current.Contains (prefix))
           break;
 
-        prefs2 = new List<HttpListenerPrefix> (prefs);
-        prefs2.Remove (prefix);
+        future = new List<HttpListenerPrefix> (current);
+        future.Remove (prefix);
       }
       while (
-        Interlocked.CompareExchange (ref _prefixes, prefs2, prefs) != prefs
+        Interlocked.CompareExchange (ref _prefixes, future, current) != current
       );
 
       leaveIfNoPrefix ();
