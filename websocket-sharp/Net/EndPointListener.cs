@@ -78,8 +78,9 @@ namespace WebSocketSharp.Net
 
     static EndPointListener ()
     {
-      _defaultCertFolderPath =
-        Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData);
+      _defaultCertFolderPath = Environment.GetFolderPath (
+                                 Environment.SpecialFolder.ApplicationData
+                               );
     }
 
     #endregion
