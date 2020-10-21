@@ -187,11 +187,11 @@ namespace WebSocketSharp.Net
       prefixes.Add (prefix);
     }
 
-    private static RSACryptoServiceProvider createRSAFromFile (string filename)
+    private static RSACryptoServiceProvider createRSAFromFile (string path)
     {
       var rsa = new RSACryptoServiceProvider ();
 
-      var pvk = File.ReadAllBytes (filename);
+      var pvk = File.ReadAllBytes (path);
       rsa.ImportCspBlob (pvk);
 
       return rsa;
