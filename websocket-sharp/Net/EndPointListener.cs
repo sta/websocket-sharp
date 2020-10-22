@@ -191,8 +191,8 @@ namespace WebSocketSharp.Net
     {
       var rsa = new RSACryptoServiceProvider ();
 
-      var pvk = File.ReadAllBytes (path);
-      rsa.ImportCspBlob (pvk);
+      var key = File.ReadAllBytes (path);
+      rsa.ImportCspBlob (key);
 
       return rsa;
     }
