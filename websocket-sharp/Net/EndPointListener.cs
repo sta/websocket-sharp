@@ -187,6 +187,28 @@ namespace WebSocketSharp.Net
       prefixes.Add (prefix);
     }
 
+    private void clearConnections ()
+    {
+      HttpConnection[] conns = null;
+
+      var cnt = 0;
+
+      lock (_unregisteredSync) {
+        cnt = _unregistered.Count;
+
+        if (cnt == 0)
+          return;
+
+        conns = new HttpConnection[cnt];
+
+        _unregistered.CopyTo (conns, 0);
+        _unregistered.Clear ();
+      }
+
+      for (var i = cnt - 1; i >= 0; i--)
+        conns[i].Close (true);
+    }
+
     private static RSACryptoServiceProvider createRSAFromFile (string path)
     {
       var rsa = new RSACryptoServiceProvider ();
