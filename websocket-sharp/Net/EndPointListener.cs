@@ -511,23 +511,7 @@ namespace WebSocketSharp.Net
     {
       _socket.Close ();
 
-      HttpConnection[] conns = null;
-
-      lock (_unregisteredSync) {
-        var cnt = _unregistered.Count;
-
-        if (cnt == 0)
-          return;
-
-        conns = new HttpConnection[cnt];
-
-        _unregistered.CopyTo (conns, 0);
-        _unregistered.Clear ();
-      }
-
-      for (var i = conns.Length - 1; i >= 0; i--)
-        conns[i].Close (true);
-
+      clearConnections ();
       EndPointManager.RemoveEndPoint (_endpoint);
     }
 
