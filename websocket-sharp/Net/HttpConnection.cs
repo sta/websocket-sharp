@@ -254,6 +254,7 @@ namespace WebSocketSharp.Net
     private static void onRead (IAsyncResult asyncResult)
     {
       var conn = (HttpConnection) asyncResult.AsyncState;
+
       if (conn._socket == null)
         return;
 
@@ -263,29 +264,35 @@ namespace WebSocketSharp.Net
 
         var nread = -1;
         var len = 0;
+
         try {
           var current = conn._reuses;
+
           if (!conn._timeoutCanceled[current]) {
             conn._timer.Change (Timeout.Infinite, Timeout.Infinite);
             conn._timeoutCanceled[current] = true;
           }
 
           nread = conn._stream.EndRead (asyncResult);
+
           conn._requestBuffer.Write (conn._buffer, 0, nread);
           len = (int) conn._requestBuffer.Length;
         }
         catch (Exception ex) {
           if (conn._requestBuffer != null && conn._requestBuffer.Length > 0) {
             conn.SendError (ex.Message, 400);
+
             return;
           }
 
           conn.close ();
+
           return;
         }
 
         if (nread <= 0) {
           conn.close ();
+
           return;
         }
 
@@ -295,19 +302,24 @@ namespace WebSocketSharp.Net
 
           if (conn._context.HasError) {
             conn.SendError ();
+
             return;
           }
 
           HttpListener lsnr;
+
           if (!conn._listener.TrySearchHttpListener (conn._context.Request.Url, out lsnr)) {
             conn.SendError (null, 404);
+
             return;
           }
 
           if (conn._lastListener != lsnr) {
             conn.removeConnection ();
+
             if (!lsnr.AddConnection (conn)) {
               conn.close ();
+
               return;
             }
 
@@ -315,6 +327,7 @@ namespace WebSocketSharp.Net
           }
 
           conn._context.Listener = lsnr;
+
           if (!conn._context.Authenticate ())
             return;
 
