@@ -275,6 +275,12 @@ namespace WebSocketSharp.Net
 
           nread = conn._stream.EndRead (asyncResult);
 
+          if (nread <= 0) {
+            conn.close ();
+
+            return;
+          }
+
           conn._requestBuffer.Write (conn._buffer, 0, nread);
           len = (int) conn._requestBuffer.Length;
         }
@@ -285,12 +291,6 @@ namespace WebSocketSharp.Net
             return;
           }
 
-          conn.close ();
-
-          return;
-        }
-
-        if (nread <= 0) {
           conn.close ();
 
           return;
