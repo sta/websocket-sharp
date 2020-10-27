@@ -119,6 +119,8 @@ namespace WebSocketSharp
     private Uri                            _uri;
     private const string                   _version = "13";
     private TimeSpan                       _waitTime;
+    private int                            _connectTimeout = 5000;
+    private int                            _readWriteTimeout = 5000;
 
     #endregion
 
@@ -329,6 +331,37 @@ namespace WebSocketSharp
     #endregion
 
     #region Public Properties
+
+    /// <summary>
+    /// Gets or sets underlying socket connect timeout.
+    /// </summary>
+    public int ConnectTimeout {
+      get {
+        return _connectTimeout;
+      }
+
+      set {
+        _connectTimeout = value;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets underlying socket read or write timeout.
+    /// </summary>
+    public int ReadWriteTimeout { 
+      get {
+        return _readWriteTimeout;
+      }
+
+      set {
+        _readWriteTimeout = value;
+
+        if (_tcpClient!= null) {
+          _tcpClient.ReceiveTimeout = value;
+          _tcpClient.SendTimeout = value;
+        }
+      }
+    }
 
     /// <summary>
     /// Gets or sets the compression method used to compress a message.
@@ -1803,7 +1836,9 @@ namespace WebSocketSharp
     private void releaseClientResources ()
     {
       if (_stream != null) {
-        _stream.Dispose ();
+        try {
+          _stream.Dispose();
+        } catch { }
         _stream = null;
       }
 
@@ -1875,9 +1910,13 @@ namespace WebSocketSharp
           error ("An error has occurred during a send.", ex);
         }
         finally {
-          if (compressed)
-            stream.Dispose ();
-
+          if (compressed) {
+            try {
+              stream.Dispose ();
+            }
+            catch { }
+          }
+                        
           src.Dispose ();
         }
 
@@ -2092,8 +2131,11 @@ namespace WebSocketSharp
         if (_proxyCredentials != null) {
           if (res.HasConnectionClose) {
             releaseClientResources ();
-            _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-            _stream = _tcpClient.GetStream ();
+            //_tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+            _tcpClient = connectTcpClient(_proxyUri.DnsSafeHost, _proxyUri.Port, _connectTimeout);
+            _tcpClient.ReceiveTimeout = _readWriteTimeout;
+            _tcpClient.SendTimeout = _readWriteTimeout;
+            _stream = _tcpClient.GetStream();
           }
 
           var authRes = new AuthenticationResponse (authChal, _proxyCredentials, 0);
@@ -2114,12 +2156,18 @@ namespace WebSocketSharp
     private void setClientStream ()
     {
       if (_proxyUri != null) {
-        _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+        //_tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+        _tcpClient = connectTcpClient(_proxyUri.DnsSafeHost, _proxyUri.Port, _connectTimeout);
+        _tcpClient.ReceiveTimeout = _readWriteTimeout;
+        _tcpClient.SendTimeout = _readWriteTimeout;
         _stream = _tcpClient.GetStream ();
         sendProxyConnectRequest ();
       }
       else {
-        _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
+        //_tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
+        _tcpClient = connectTcpClient(_uri.DnsSafeHost, _uri.Port, _connectTimeout);
+        _tcpClient.ReceiveTimeout = _readWriteTimeout;
+        _tcpClient.SendTimeout = _readWriteTimeout;
         _stream = _tcpClient.GetStream ();
       }
 
@@ -2149,6 +2197,33 @@ namespace WebSocketSharp
           throw new WebSocketException (CloseStatusCode.TlsHandshakeFailure, ex);
         }
       }
+    }
+
+    private static TcpClient connectTcpClient(string hostname, int port, int connectTimeout) {
+      var client = new TcpClient(AddressFamily.InterNetworkV6);
+      var result = client.BeginConnect(hostname, port, onEndConnect, client);
+      bool success = result.AsyncWaitHandle.WaitOne(connectTimeout, true);
+
+      if (!client.Connected) {
+        client.Close();
+        throw new TimeoutException("Failed to connect server.");
+      }
+
+      return client;
+    }
+
+    private static void onEndConnect(IAsyncResult asyncResult) {
+      TcpClient client = (TcpClient)asyncResult.AsyncState;
+
+      try {
+      client.EndConnect(asyncResult);
+      }
+      catch { }
+
+      try {
+      asyncResult.AsyncWaitHandle.Close();
+      }
+      catch { }
     }
 
     private void startReceiving ()
