@@ -345,6 +345,7 @@ namespace WebSocketSharp.Net
     {
       var conn = (HttpConnection) state;
       var current = conn._reuses;
+
       if (conn._socket == null)
         return;
 
