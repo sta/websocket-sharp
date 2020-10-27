@@ -262,7 +262,6 @@ namespace WebSocketSharp.Net
         if (conn._socket == null)
           return;
 
-        var nread = -1;
         var len = 0;
 
         try {
@@ -273,7 +272,7 @@ namespace WebSocketSharp.Net
             conn._timeoutCanceled[current] = true;
           }
 
-          nread = conn._stream.EndRead (asyncResult);
+          var nread = conn._stream.EndRead (asyncResult);
 
           if (nread <= 0) {
             conn.close ();
