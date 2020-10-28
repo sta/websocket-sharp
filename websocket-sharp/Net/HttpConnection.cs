@@ -533,6 +533,7 @@ namespace WebSocketSharp.Net
         var buff = _requestBuffer.GetBuffer ();
         var len = (int) _requestBuffer.Length;
         var cnt = len - _position;
+
         disposeRequestBuffer ();
 
         _inputStream = chunked
