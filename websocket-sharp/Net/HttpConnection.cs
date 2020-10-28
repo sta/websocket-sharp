@@ -284,7 +284,7 @@ namespace WebSocketSharp.Net
           len = (int) conn._requestBuffer.Length;
         }
         catch (Exception ex) {
-          if (conn._requestBuffer != null && conn._requestBuffer.Length > 0) {
+          if (conn._requestBuffer.Length > 0) {
             conn.SendError (ex.Message, 400);
 
             return;
