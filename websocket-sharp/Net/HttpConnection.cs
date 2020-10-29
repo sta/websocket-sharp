@@ -212,6 +212,7 @@ namespace WebSocketSharp.Net
         return;
 
       _requestBuffer.Dispose ();
+
       _requestBuffer = null;
     }
 
