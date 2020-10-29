@@ -94,6 +94,7 @@ namespace WebSocketSharp.Net
       _listener = listener;
 
       var netStream = new NetworkStream (socket, false);
+
       if (listener.IsSecure) {
         var sslConf = listener.SslConfiguration;
         var sslStream = new SslStream (
