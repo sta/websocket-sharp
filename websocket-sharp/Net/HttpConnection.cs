@@ -202,6 +202,7 @@ namespace WebSocketSharp.Net
       }
 
       _socket.Close ();
+
       _socket = null;
     }
 
