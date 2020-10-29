@@ -241,6 +241,7 @@ namespace WebSocketSharp.Net
       }
 
       _timer.Dispose ();
+
       _timer = null;
     }
 
