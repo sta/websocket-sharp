@@ -420,31 +420,41 @@ namespace WebSocketSharp.Net
       return false;
     }
 
-    private string readLineFrom (byte[] buffer, int offset, int length, out int read)
+    private string readLineFrom (
+      byte[] buffer, int offset, int length, out int read
+    )
     {
       read = 0;
 
-      for (var i = offset; i < length && _lineState != LineState.Lf; i++) {
+      for (var i = offset; i < length; i++) {
         read++;
 
         var b = buffer[i];
-        if (b == 13)
+
+        if (b == 13) {
           _lineState = LineState.Cr;
-        else if (b == 10)
+
+          continue;
+        }
+
+        if (b == 10) {
           _lineState = LineState.Lf;
-        else
-          _currentLine.Append ((char) b);
+
+          break;
+        }
+
+        _currentLine.Append ((char) b);
       }
 
       if (_lineState != LineState.Lf)
         return null;
 
-      var line = _currentLine.ToString ();
+      var ret = _currentLine.ToString ();
 
       _currentLine.Length = 0;
       _lineState = LineState.None;
 
-      return line;
+      return ret;
     }
 
     private void removeConnection ()
