@@ -364,10 +364,12 @@ namespace WebSocketSharp.Net
       }
     }
 
-    // true -> Done processing.
-    // false -> Need more input.
     private bool processInput (byte[] data, int length)
     {
+      // This method returns a bool:
+      // - true  Done processing
+      // - false Need more input
+
       if (_currentLine == null)
         _currentLine = new StringBuilder (64);
 
