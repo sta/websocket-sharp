@@ -423,13 +423,13 @@ namespace WebSocketSharp.Net
     }
 
     private string readLineFrom (
-      byte[] buffer, int offset, int length, out int read
+      byte[] buffer, int offset, int length, out int nread
     )
     {
-      read = 0;
+      nread = 0;
 
       for (var i = offset; i < length; i++) {
-        read++;
+        nread++;
 
         var b = buffer[i];
 
