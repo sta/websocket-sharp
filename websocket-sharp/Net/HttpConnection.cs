@@ -476,6 +476,7 @@ namespace WebSocketSharp.Net
         return;
 
       _context.Unregister ();
+
       _contextRegistered = false;
     }
 
