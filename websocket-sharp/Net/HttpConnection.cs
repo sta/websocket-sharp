@@ -461,10 +461,13 @@ namespace WebSocketSharp.Net
 
     private void removeConnection ()
     {
-      if (_lastListener != null)
-        _lastListener.RemoveConnection (this);
-      else
+      if (_lastListener == null) {
         _listener.RemoveConnection (this);
+
+        return;
+      }
+
+      _lastListener.RemoveConnection (this);
     }
 
     private void unregisterContext ()
