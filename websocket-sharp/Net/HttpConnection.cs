@@ -498,6 +498,7 @@ namespace WebSocketSharp.Net
             _outputStream.Close (true);
 
           close ();
+
           return;
         }
 
@@ -505,11 +506,13 @@ namespace WebSocketSharp.Net
 
         if (_context.Response.CloseConnection) {
           close ();
+
           return;
         }
 
         if (!_context.Request.FlushInput ()) {
           close ();
+
           return;
         }
 
@@ -518,6 +521,7 @@ namespace WebSocketSharp.Net
         init ();
 
         _reuses++;
+
         BeginReadRequest ();
       }
     }
