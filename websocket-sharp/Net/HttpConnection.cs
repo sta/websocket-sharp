@@ -619,7 +619,10 @@ namespace WebSocketSharp.Net
           res.ContentType = "text/html";
 
           var content = new StringBuilder (64);
-          content.AppendFormat ("<html><body><h1>{0} {1}", status, res.StatusDescription);
+          content.AppendFormat (
+            "<html><body><h1>{0} {1}", status, res.StatusDescription
+          );
+
           if (message != null && message.Length > 0)
             content.AppendFormat (" ({0})</h1></body></html>", message);
           else
