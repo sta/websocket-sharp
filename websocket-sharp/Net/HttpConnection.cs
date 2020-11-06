@@ -310,9 +310,10 @@ namespace WebSocketSharp.Net
             return;
           }
 
+          var url = conn._context.Request.Url;
           HttpListener lsnr;
 
-          if (!conn._listener.TrySearchHttpListener (conn._context.Request.Url, out lsnr)) {
+          if (!conn._listener.TrySearchHttpListener (url, out lsnr)) {
             conn.SendError (null, 404);
 
             return;
