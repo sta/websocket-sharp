@@ -460,6 +460,31 @@ namespace WebSocketSharp.Net
       return ret;
     }
 
+    private void registerContext (HttpListener listener)
+    {
+      if (_lastListener != listener) {
+        removeConnection ();
+
+        if (!listener.AddConnection (this)) {
+          close ();
+
+          return;
+        }
+
+        _lastListener = listener;
+      }
+
+      _context.Listener = listener;
+
+      if (!_context.Authenticate ())
+        return;
+
+      if (!_context.Register ())
+        return;
+
+      _contextRegistered = true;
+    }
+
     private void removeConnection ()
     {
       if (_lastListener == null) {
