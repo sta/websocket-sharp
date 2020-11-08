@@ -313,31 +313,13 @@ namespace WebSocketSharp.Net
           var url = conn._context.Request.Url;
           HttpListener lsnr;
 
-          if (!conn._listener.TrySearchHttpListener (url, out lsnr)) {
-            conn.SendError (null, 404);
+          if (conn._listener.TrySearchHttpListener (url, out lsnr)) {
+            conn.registerContext (lsnr);
 
             return;
           }
 
-          if (conn._lastListener != lsnr) {
-            conn.removeConnection ();
-
-            if (!lsnr.AddConnection (conn)) {
-              conn.close ();
-
-              return;
-            }
-
-            conn._lastListener = lsnr;
-          }
-
-          conn._context.Listener = lsnr;
-
-          if (!conn._context.Authenticate ())
-            return;
-
-          if (conn._context.Register ())
-            conn._contextRegistered = true;
+          conn.SendError (null, 404);
 
           return;
         }
