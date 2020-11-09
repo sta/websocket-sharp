@@ -248,6 +248,7 @@ namespace WebSocketSharp.Net
     private void init ()
     {
       _context = new HttpListenerContext (this);
+      _currentLine = new StringBuilder (64);
       _inputState = InputState.RequestLine;
       _inputStream = null;
       _lineState = LineState.None;
@@ -353,9 +354,6 @@ namespace WebSocketSharp.Net
       // - true  Done processing
       // - false Need more input
 
-      if (_currentLine == null)
-        _currentLine = new StringBuilder (64);
-
       try {
         while (true) {
           int nread;
@@ -372,8 +370,6 @@ namespace WebSocketSharp.Net
 
             if (_position > 32768)
               _context.ErrorMessage = "Headers too long";
-
-            _currentLine = null;
 
             return true;
           }
