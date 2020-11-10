@@ -221,9 +221,6 @@ namespace WebSocketSharp.Net
       if (_stream == null)
         return;
 
-      _inputStream = null;
-      _outputStream = null;
-
       _stream.Dispose ();
 
       _stream = null;
