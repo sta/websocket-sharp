@@ -286,12 +286,8 @@ namespace WebSocketSharp.Net
           conn._requestBuffer.Write (conn._buffer, 0, nread);
           len = (int) conn._requestBuffer.Length;
         }
-        catch (Exception ex) {
-          if (conn._requestBuffer.Length > 0) {
-            conn.SendError (ex.Message, 400);
-
-            return;
-          }
+        catch (Exception) {
+          // TODO: Logging.
 
           conn.close ();
 
