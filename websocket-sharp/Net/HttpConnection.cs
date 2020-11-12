@@ -371,7 +371,7 @@ namespace WebSocketSharp.Net
             if (_inputState == InputState.RequestLine)
               continue;
 
-            if (_position > 32768)
+            if (_position > _maxInputLength)
               _context.ErrorMessage = "Headers too long";
 
             return true;
@@ -395,7 +395,7 @@ namespace WebSocketSharp.Net
         return true;
       }
 
-      if (_position >= 32768) {
+      if (_position >= _maxInputLength) {
         _context.ErrorMessage = "Headers too long";
 
         return true;
