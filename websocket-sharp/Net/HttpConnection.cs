@@ -71,6 +71,7 @@ namespace WebSocketSharp.Net
     private LineState             _lineState;
     private EndPointListener      _listener;
     private EndPoint              _localEndPoint;
+    private static readonly int   _maxInputLength;
     private ResponseStream        _outputStream;
     private int                   _position;
     private EndPoint              _remoteEndPoint;
@@ -83,6 +84,15 @@ namespace WebSocketSharp.Net
     private int                   _timeout;
     private Dictionary<int, bool> _timeoutCanceled;
     private Timer                 _timer;
+
+    #endregion
+
+    #region Static Constructor
+
+    static HttpConnection ()
+    {
+      _maxInputLength = 32768;
+    }
 
     #endregion
 
