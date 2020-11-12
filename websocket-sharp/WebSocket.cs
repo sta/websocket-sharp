@@ -119,6 +119,7 @@ namespace WebSocketSharp
     private Uri                            _uri;
     private const string                   _version = "13";
     private TimeSpan                       _waitTime;
+    private readonly System.Net.IPEndPoint _localEndPoint;
 
     #endregion
 
@@ -279,6 +280,69 @@ namespace WebSocketSharp
       _waitTime = TimeSpan.FromSeconds (5);
 
       init ();
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WebSocket"/> class with
+    /// <paramref name="url"/> and optionally <paramref name="protocols"/>.
+    /// Allows to use provide <paramref name="localEndPoint"/> for the underlying TCP connection.
+    /// </summary>        
+    /// <param name="localEndPoint">
+    ///   <para>
+    ///   IPEndPoint to be used by the underlying TCP connection.
+    ///   </para>
+    /// </param>        
+    /// <param name="url">
+    ///   <para>
+    ///   A <see cref="string"/> that specifies the URL to which to connect.
+    ///   </para>
+    ///   <para>
+    ///   The scheme of the URL must be ws or wss.
+    ///   </para>
+    ///   <para>
+    ///   The new instance uses a secure connection if the scheme is wss.
+    ///   </para>
+    /// </param>
+    /// <param name="protocols">
+    ///   <para>
+    ///   An array of <see cref="string"/> that specifies the names of
+    ///   the subprotocols if necessary.
+    ///   </para>
+    ///   <para>
+    ///   Each value of the array must be a token defined in
+    ///   <see href="http://tools.ietf.org/html/rfc2616#section-2.2">
+    ///   RFC 2616</see>.
+    ///   </para>
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="url"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="url"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="url"/> is an invalid WebSocket URL string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="protocols"/> contains a value that is not a token.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="protocols"/> contains a value twice.
+    ///   </para>
+    /// </exception>
+    public WebSocket(System.Net.IPEndPoint localEndPoint, string url, params string[] protocols) : this(url, protocols)
+    {
+        _localEndPoint = localEndPoint;
     }
 
     #endregion
@@ -773,6 +837,16 @@ namespace WebSocketSharp
         }
       }
     }
+
+    /// <summary>
+    /// Gets remote EndPoint of the underlying TCP connection.
+    /// </summary>
+    public System.Net.EndPoint RemoteEndPoint => _tcpClient.Client.RemoteEndPoint;
+
+    /// <summary>
+    /// Gets local EndPoint of the underlying TCP connection.
+    /// </summary>     
+    public System.Net.EndPoint LocalEndPoint => _tcpClient.Client.LocalEndPoint;
 
     #endregion
 
@@ -2092,7 +2166,7 @@ namespace WebSocketSharp
         if (_proxyCredentials != null) {
           if (res.HasConnectionClose) {
             releaseClientResources ();
-            _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+            _tcpClient = CreateAndConnectTcpClient(_proxyUri.DnsSafeHost, _proxyUri.Port);
             _stream = _tcpClient.GetStream ();
           }
 
@@ -2114,12 +2188,12 @@ namespace WebSocketSharp
     private void setClientStream ()
     {
       if (_proxyUri != null) {
-        _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+        _tcpClient = CreateAndConnectTcpClient(_proxyUri.DnsSafeHost, _proxyUri.Port);
         _stream = _tcpClient.GetStream ();
         sendProxyConnectRequest ();
       }
       else {
-        _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
+        _tcpClient = CreateAndConnectTcpClient(_uri.DnsSafeHost, _uri.Port);
         _stream = _tcpClient.GetStream ();
       }
 
@@ -2149,6 +2223,16 @@ namespace WebSocketSharp
           throw new WebSocketException (CloseStatusCode.TlsHandshakeFailure, ex);
         }
       }
+    }
+
+    // As client
+    private TcpClient CreateAndConnectTcpClient(string host, int port)
+    {
+      if (_localEndPoint == null) return new TcpClient (host, port);
+
+      var client = new TcpClient(_localEndPoint);
+      client.Connect(host, port);
+      return client;
     }
 
     private void startReceiving ()
