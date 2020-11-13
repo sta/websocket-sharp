@@ -61,7 +61,7 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private byte[]                _buffer;
-    private const int             _bufferLength = 8192;
+    private static readonly int   _bufferLength;
     private HttpListenerContext   _context;
     private bool                  _contextRegistered;
     private StringBuilder         _currentLine;
@@ -91,6 +91,7 @@ namespace WebSocketSharp.Net
 
     static HttpConnection ()
     {
+      _bufferLength = 8192;
       _maxInputLength = 32768;
     }
 
