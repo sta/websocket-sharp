@@ -128,6 +128,7 @@ namespace WebSocketSharp.Net
         _stream = netStream;
       }
 
+      _buffer = new byte[_bufferLength];
       _localEndPoint = socket.LocalEndPoint;
       _remoteEndPoint = socket.RemoteEndPoint;
       _sync = new object ();
@@ -540,9 +541,6 @@ namespace WebSocketSharp.Net
 
     public void BeginReadRequest ()
     {
-      if (_buffer == null)
-        _buffer = new byte[_bufferLength];
-
       if (_reuses == 1)
         _timeout = 15000;
 
