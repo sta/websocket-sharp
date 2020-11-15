@@ -266,6 +266,20 @@ namespace WebSocketSharp.Net
       _requestBuffer = new MemoryStream ();
     }
 
+    private void init (int timeout)
+    {
+      _timeout = timeout;
+
+      _context = new HttpListenerContext (this);
+      _currentLine = new StringBuilder (64);
+      _inputState = InputState.RequestLine;
+      _inputStream = null;
+      _lineState = LineState.None;
+      _outputStream = null;
+      _position = 0;
+      _requestBuffer = new MemoryStream ();
+    }
+
     private static void onRead (IAsyncResult asyncResult)
     {
       var conn = (HttpConnection) asyncResult.AsyncState;
