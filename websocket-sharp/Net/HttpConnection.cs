@@ -132,11 +132,10 @@ namespace WebSocketSharp.Net
       _localEndPoint = socket.LocalEndPoint;
       _remoteEndPoint = socket.RemoteEndPoint;
       _sync = new object ();
-      _timeout = 90000; // 90k ms for first request, 15k ms from then on.
       _timeoutCanceled = new Dictionary<int, bool> ();
       _timer = new Timer (onTimeout, this, Timeout.Infinite, Timeout.Infinite);
 
-      init ();
+      init (90000); // 90k ms for first request, 15k ms from then on.
     }
 
     #endregion
@@ -541,10 +540,10 @@ namespace WebSocketSharp.Net
 
         disposeRequestBuffer ();
         unregisterContext ();
-        init ();
 
         _reuses++;
 
+        init (15000);
         BeginReadRequest ();
       }
     }
@@ -555,9 +554,6 @@ namespace WebSocketSharp.Net
 
     public void BeginReadRequest ()
     {
-      if (_reuses == 1)
-        _timeout = 15000;
-
       try {
         _timeoutCanceled.Add (_reuses, false);
         _timer.Change (_timeout, Timeout.Infinite);
