@@ -253,18 +253,6 @@ namespace WebSocketSharp.Net
       _timer = null;
     }
 
-    private void init ()
-    {
-      _context = new HttpListenerContext (this);
-      _currentLine = new StringBuilder (64);
-      _inputState = InputState.RequestLine;
-      _inputStream = null;
-      _lineState = LineState.None;
-      _outputStream = null;
-      _position = 0;
-      _requestBuffer = new MemoryStream ();
-    }
-
     private void init (int timeout)
     {
       _timeout = timeout;
