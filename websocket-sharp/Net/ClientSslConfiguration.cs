@@ -64,7 +64,7 @@ namespace WebSocketSharp.Net
     /// </summary>
     public ClientSslConfiguration ()
     {
-      _enabledSslProtocols = SslProtocols.Default;
+      _enabledSslProtocols = SslProtocols.None;
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ namespace WebSocketSharp.Net
     public ClientSslConfiguration (string targetHost)
     {
       _targetHost = targetHost;
-      _enabledSslProtocols = SslProtocols.Default;
+      _enabledSslProtocols = SslProtocols.None;
     }
 
     /// <summary>
