@@ -278,7 +278,7 @@ namespace WebSocketSharp.Net
         if (conn._socket == null)
           return;
 
-        var len = 0;
+        var nread = 0;
 
         try {
           var current = conn._reuses;
@@ -288,16 +288,7 @@ namespace WebSocketSharp.Net
             conn._timeoutCanceled[current] = true;
           }
 
-          var nread = conn._stream.EndRead (asyncResult);
-
-          if (nread <= 0) {
-            conn.close ();
-
-            return;
-          }
-
-          conn._requestBuffer.Write (conn._buffer, 0, nread);
-          len = (int) conn._requestBuffer.Length;
+          nread = conn._stream.EndRead (asyncResult);
         }
         catch (Exception) {
           // TODO: Logging.
@@ -306,6 +297,15 @@ namespace WebSocketSharp.Net
 
           return;
         }
+
+        if (nread <= 0) {
+          conn.close ();
+
+          return;
+        }
+
+        conn._requestBuffer.Write (conn._buffer, 0, nread);
+        var len = (int) conn._requestBuffer.Length;
 
         if (conn.processInput (conn._requestBuffer.GetBuffer (), len)) {
           if (!conn._context.HasError)
