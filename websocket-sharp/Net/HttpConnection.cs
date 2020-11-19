@@ -270,6 +270,7 @@ namespace WebSocketSharp.Net
     private static void onRead (IAsyncResult asyncResult)
     {
       var conn = (HttpConnection) asyncResult.AsyncState;
+      var current = conn._reuses;
 
       if (conn._socket == null)
         return;
@@ -278,16 +279,14 @@ namespace WebSocketSharp.Net
         if (conn._socket == null)
           return;
 
+        if (!conn._timeoutCanceled[current]) {
+          conn._timer.Change (Timeout.Infinite, Timeout.Infinite);
+          conn._timeoutCanceled[current] = true;
+        }
+
         var nread = 0;
 
         try {
-          var current = conn._reuses;
-
-          if (!conn._timeoutCanceled[current]) {
-            conn._timer.Change (Timeout.Infinite, Timeout.Infinite);
-            conn._timeoutCanceled[current] = true;
-          }
-
           nread = conn._stream.EndRead (asyncResult);
         }
         catch (Exception) {
