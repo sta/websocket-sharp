@@ -548,12 +548,15 @@ namespace WebSocketSharp.Net
 
     public void BeginReadRequest ()
     {
+      _timeoutCanceled.Add (_reuses, false);
+      _timer.Change (_timeout, Timeout.Infinite);
+
       try {
-        _timeoutCanceled.Add (_reuses, false);
-        _timer.Change (_timeout, Timeout.Infinite);
         _stream.BeginRead (_buffer, 0, _bufferLength, onRead, this);
       }
       catch {
+        // TODO: Logging.
+
         close ();
       }
     }
