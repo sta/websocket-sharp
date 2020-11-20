@@ -500,6 +500,21 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
+    internal void BeginReadRequest ()
+    {
+      _timeoutCanceled.Add (_reuses, false);
+      _timer.Change (_timeout, Timeout.Infinite);
+
+      try {
+        _stream.BeginRead (_buffer, 0, _bufferLength, onRead, this);
+      }
+      catch {
+        // TODO: Logging.
+
+        close ();
+      }
+    }
+
     internal void Close (bool force)
     {
       if (_socket == null)
@@ -545,21 +560,6 @@ namespace WebSocketSharp.Net
     #endregion
 
     #region Public Methods
-
-    public void BeginReadRequest ()
-    {
-      _timeoutCanceled.Add (_reuses, false);
-      _timer.Change (_timeout, Timeout.Infinite);
-
-      try {
-        _stream.BeginRead (_buffer, 0, _bufferLength, onRead, this);
-      }
-      catch {
-        // TODO: Logging.
-
-        close ();
-      }
-    }
 
     public void Close ()
     {
