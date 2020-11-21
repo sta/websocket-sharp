@@ -301,21 +301,19 @@ namespace WebSocketSharp.Net
 
       try {
         conn = new HttpConnection (socket, listener);
-
-        lock (listener._unregisteredSync)
-          listener._unregistered.Add (conn);
-
-        conn.BeginReadRequest ();
       }
-      catch {
-        if (conn != null) {
-          conn.Close (true);
-
-          return;
-        }
+      catch (Exception) {
+        // TODO: Logging.
 
         socket.Close ();
+
+        return;
       }
+
+      lock (listener._unregisteredSync)
+        listener._unregistered.Add (conn);
+
+      conn.BeginReadRequest ();
     }
 
     private static bool removeSpecial (
