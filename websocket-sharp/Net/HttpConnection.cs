@@ -508,7 +508,7 @@ namespace WebSocketSharp.Net
       try {
         _stream.BeginRead (_buffer, 0, _bufferLength, onRead, this);
       }
-      catch {
+      catch (Exception) {
         // TODO: Logging.
 
         close ();
