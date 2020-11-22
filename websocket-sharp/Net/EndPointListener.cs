@@ -270,17 +270,19 @@ namespace WebSocketSharp.Net
       try {
         sock = lsnr._socket.EndAccept (asyncResult);
       }
-      catch (SocketException) {
-        // TODO: Logging.
-      }
       catch (ObjectDisposedException) {
         return;
+      }
+      catch (Exception) {
+        // TODO: Logging.
       }
 
       try {
         lsnr._socket.BeginAccept (onAccept, lsnr);
       }
-      catch {
+      catch (Exception) {
+        // TODO: Logging.
+
         if (sock != null)
           sock.Close ();
 
