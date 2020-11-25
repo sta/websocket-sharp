@@ -76,7 +76,11 @@ namespace WebSocketSharp.Net
     /// </param>
     public ClientSslConfiguration (string targetHost)
     {
+      if (targetHost == null)
+        throw new ArgumentNullException ("targetHost");
+
       _targetHost = targetHost;
+
       _enabledSslProtocols = SslProtocols.None;
     }
 
