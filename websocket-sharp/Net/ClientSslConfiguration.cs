@@ -68,11 +68,11 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ClientSslConfiguration"/> class
-    /// with the specified <paramref name="targetHost"/>.
+    /// Initializes a new instance of the <see cref="ClientSslConfiguration"/>
+    /// class with the specified target host server name.
     /// </summary>
     /// <param name="targetHost">
-    /// A <see cref="string"/> that represents the target host server name.
+    /// A <see cref="string"/> that specifies the target host server name.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="targetHost"/> is <see langword="null"/>.
