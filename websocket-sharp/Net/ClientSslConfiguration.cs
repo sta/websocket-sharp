@@ -77,6 +77,9 @@ namespace WebSocketSharp.Net
     /// <exception cref="ArgumentNullException">
     /// <paramref name="targetHost"/> is <see langword="null"/>.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="targetHost"/> is an empty string.
+    /// </exception>
     public ClientSslConfiguration (string targetHost)
     {
       if (targetHost == null)
