@@ -82,6 +82,9 @@ namespace WebSocketSharp.Net
       if (targetHost == null)
         throw new ArgumentNullException ("targetHost");
 
+      if (targetHost.Length == 0)
+        throw new ArgumentException ("An empty string.", "targetHost");
+
       _targetHost = targetHost;
 
       _enabledSslProtocols = SslProtocols.None;
