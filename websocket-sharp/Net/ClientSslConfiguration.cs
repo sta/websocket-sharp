@@ -60,14 +60,6 @@ namespace WebSocketSharp.Net
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ClientSslConfiguration"/> class.
-    /// </summary>
-    public ClientSslConfiguration ()
-    {
-      _enabledSslProtocols = SslProtocols.None;
-    }
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="ClientSslConfiguration"/>
     /// class with the specified target host server name.
     /// </summary>
