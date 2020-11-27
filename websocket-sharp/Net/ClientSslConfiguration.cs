@@ -270,6 +270,12 @@ namespace WebSocketSharp.Net
       }
 
       set {
+        if (value == null)
+          throw new ArgumentNullException ("value");
+
+        if (value.Length == 0)
+          throw new ArgumentException ("An empty string.", "value");
+
         _targetHost = value;
       }
     }
