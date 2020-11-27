@@ -264,6 +264,12 @@ namespace WebSocketSharp.Net
     ///   will share a secure connection with a client.
     ///   </para>
     /// </value>
+    /// <exception cref="ArgumentNullException">
+    /// The value specified for a set operation is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The value specified for a set operation is an empty string.
+    /// </exception>
     public string TargetHost {
       get {
         return _targetHost;
