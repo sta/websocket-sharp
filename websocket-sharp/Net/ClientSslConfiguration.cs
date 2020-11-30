@@ -161,12 +161,11 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the callback used to select the certificate to
-    /// supply to the server.
+    /// Gets or sets the callback used to select the certificate to supply to
+    /// the server.
     /// </summary>
     /// <remarks>
-    /// No certificate is supplied if the callback returns
-    /// <see langword="null"/>.
+    /// No certificate is supplied if the callback returns <see langword="null"/>.
     /// </remarks>
     /// <value>
     ///   <para>
@@ -174,8 +173,8 @@ namespace WebSocketSharp.Net
     ///   invokes the method called for selecting the certificate.
     ///   </para>
     ///   <para>
-    ///   The default value is a delegate that invokes a method that
-    ///   only returns <see langword="null"/>.
+    ///   The default value is a delegate that invokes a method that only
+    ///   returns <see langword="null"/>.
     ///   </para>
     /// </value>
     public LocalCertificateSelectionCallback ClientCertificateSelectionCallback {
