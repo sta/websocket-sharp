@@ -195,8 +195,10 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   The <see cref="SslProtocols"/> enum values that represent
-    ///   the protocols used for authentication.
+    ///   Any of the <see cref="SslProtocols"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It represent the protocols used for authentication.
     ///   </para>
     ///   <para>
     ///   The default value is <see cref="SslProtocols.None"/>.
