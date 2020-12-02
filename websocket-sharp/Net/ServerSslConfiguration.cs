@@ -153,8 +153,8 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the callback used to validate the certificate
-    /// supplied by the client.
+    /// Gets or sets the callback used to validate the certificate supplied by
+    /// the client.
     /// </summary>
     /// <remarks>
     /// The certificate is valid if the callback returns <c>true</c>.
@@ -165,8 +165,8 @@ namespace WebSocketSharp.Net
     ///   invokes the method called for validating the certificate.
     ///   </para>
     ///   <para>
-    ///   The default value is a delegate that invokes a method that
-    ///   only returns <c>true</c>.
+    ///   The default value is a delegate that invokes a method that only
+    ///   returns <c>true</c>.
     ///   </para>
     /// </value>
     public RemoteCertificateValidationCallback ClientCertificateValidationCallback {
