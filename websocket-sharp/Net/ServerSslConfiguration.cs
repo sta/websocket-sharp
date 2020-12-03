@@ -202,6 +202,9 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   The certificate represents an X.509 certificate.
     ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
+    ///   </para>
     /// </value>
     public X509Certificate2 ServerCertificate {
       get {
