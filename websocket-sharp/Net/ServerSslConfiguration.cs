@@ -59,7 +59,8 @@ namespace WebSocketSharp.Net
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class.
+    /// Initializes a new instance of the <see cref="ServerSslConfiguration"/>
+    /// class.
     /// </summary>
     public ServerSslConfiguration ()
     {
