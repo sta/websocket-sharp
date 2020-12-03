@@ -67,20 +67,6 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class
-    /// with the specified <paramref name="serverCertificate"/>.
-    /// </summary>
-    /// <param name="serverCertificate">
-    /// A <see cref="X509Certificate2"/> that represents the certificate used to
-    /// authenticate the server.
-    /// </param>
-    public ServerSslConfiguration (X509Certificate2 serverCertificate)
-    {
-      _serverCert = serverCertificate;
-      _enabledSslProtocols = SslProtocols.None;
-    }
-
-    /// <summary>
     /// Copies the parameters from the specified <paramref name="configuration"/> to
     /// a new instance of the <see cref="ServerSslConfiguration"/> class.
     /// </summary>
