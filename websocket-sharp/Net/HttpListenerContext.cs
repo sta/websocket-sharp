@@ -39,6 +39,7 @@
 
 using System;
 using System.Security.Principal;
+using System.Text;
 using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Net
@@ -198,6 +199,34 @@ namespace WebSocketSharp.Net
     internal bool Register ()
     {
       return _listener.RegisterContext (this);
+    }
+
+    internal void SendError ()
+    {
+      try {
+        _response.StatusCode = _errorStatus;
+        _response.ContentType = "text/html";
+
+        var content = new StringBuilder (64);
+        content.AppendFormat (
+          "<html><body><h1>{0} {1}", _errorStatus, _response.StatusDescription
+        );
+
+        if (_error != null && _error.Length > 0)
+          content.AppendFormat (" ({0})</h1></body></html>", _error);
+        else
+          content.Append ("</h1></body></html>");
+
+        var enc = Encoding.UTF8;
+        var entity = enc.GetBytes (content.ToString ());
+        _response.ContentEncoding = enc;
+        _response.ContentLength64 = entity.LongLength;
+
+        _response.Close (entity, true);
+      }
+      catch {
+        _connection.Close (true);
+      }
     }
 
     internal void Unregister ()
