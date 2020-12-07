@@ -311,7 +311,7 @@ namespace WebSocketSharp.Net
             conn._context.Request.FinishInitialization ();
 
           if (conn._context.HasError) {
-            conn.SendError ();
+            conn._context.SendError ();
 
             return;
           }
