@@ -325,7 +325,9 @@ namespace WebSocketSharp.Net
             return;
           }
 
-          conn.SendError (null, 404);
+          conn._context.ErrorStatus = 404;
+
+          conn._context.SendError ();
 
           return;
         }
