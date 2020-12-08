@@ -614,43 +614,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    public void SendError (string message, int status)
-    {
-      if (_socket == null)
-        return;
-
-      lock (_sync) {
-        if (_socket == null)
-          return;
-
-        try {
-          var res = _context.Response;
-          res.StatusCode = status;
-          res.ContentType = "text/html";
-
-          var content = new StringBuilder (64);
-          content.AppendFormat (
-            "<html><body><h1>{0} {1}", status, res.StatusDescription
-          );
-
-          if (message != null && message.Length > 0)
-            content.AppendFormat (" ({0})</h1></body></html>", message);
-          else
-            content.Append ("</h1></body></html>");
-
-          var enc = Encoding.UTF8;
-          var entity = enc.GetBytes (content.ToString ());
-          res.ContentEncoding = enc;
-          res.ContentLength64 = entity.LongLength;
-
-          res.Close (entity, true);
-        }
-        catch {
-          Close (true);
-        }
-      }
-    }
-
     #endregion
   }
 }
