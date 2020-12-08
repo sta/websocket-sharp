@@ -105,7 +105,9 @@ namespace WebSocketSharp.Net
         base.BeginRead (ares.Buffer, ares.Offset, ares.Count, onRead, rstate);
       }
       catch (Exception ex) {
-        _context.Connection.SendError (ex.Message, 400);
+        _context.ErrorMessage = ex.Message;
+        _context.SendError ();
+
         ares.Complete (ex);
       }
     }
