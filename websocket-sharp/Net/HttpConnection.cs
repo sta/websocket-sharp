@@ -614,11 +614,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    public void SendError ()
-    {
-      SendError (_context.ErrorMessage, _context.ErrorStatus);
-    }
-
     public void SendError (string message, int status)
     {
       if (_socket == null)
