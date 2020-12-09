@@ -106,7 +106,7 @@ namespace WebSocketSharp.Net
       }
     }
 
-    internal bool HasError {
+    internal bool HasErrorMessage {
       get {
         return _errorMessage != null;
       }

@@ -307,10 +307,10 @@ namespace WebSocketSharp.Net
         var len = (int) conn._requestBuffer.Length;
 
         if (conn.processInput (conn._requestBuffer.GetBuffer (), len)) {
-          if (!conn._context.HasError)
+          if (!conn._context.HasErrorMessage)
             conn._context.Request.FinishInitialization ();
 
-          if (conn._context.HasError) {
+          if (conn._context.HasErrorMessage) {
             conn._context.SendError ();
 
             return;
@@ -398,7 +398,7 @@ namespace WebSocketSharp.Net
             _context.Request.AddHeader (line);
           }
 
-          if (_context.HasError)
+          if (_context.HasErrorMessage)
             return true;
         }
       }
