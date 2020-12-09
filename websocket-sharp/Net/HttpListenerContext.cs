@@ -56,7 +56,7 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private HttpConnection               _connection;
-    private string                       _error;
+    private string                       _errorMessage;
     private int                          _errorStatus;
     private HttpListener                 _listener;
     private HttpListenerRequest          _request;
@@ -88,11 +88,11 @@ namespace WebSocketSharp.Net
 
     internal string ErrorMessage {
       get {
-        return _error;
+        return _errorMessage;
       }
 
       set {
-        _error = value;
+        _errorMessage = value;
       }
     }
 
@@ -108,7 +108,7 @@ namespace WebSocketSharp.Net
 
     internal bool HasError {
       get {
-        return _error != null;
+        return _errorMessage != null;
       }
     }
 
@@ -212,8 +212,8 @@ namespace WebSocketSharp.Net
           "<html><body><h1>{0} {1}", _errorStatus, _response.StatusDescription
         );
 
-        if (_error != null && _error.Length > 0)
-          content.AppendFormat (" ({0})</h1></body></html>", _error);
+        if (_errorMessage != null && _errorMessage.Length > 0)
+          content.AppendFormat (" ({0})</h1></body></html>", _errorMessage);
         else
           content.Append ("</h1></body></html>");
 
