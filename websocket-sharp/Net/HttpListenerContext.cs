@@ -229,15 +229,11 @@ namespace WebSocketSharp.Net
         _response.StatusCode = _errorStatus;
         _response.ContentType = "text/html";
 
-        var content = new StringBuilder (64);
-        content.AppendFormat (
-          "<html><body><h1>{0} {1}", _errorStatus, _response.StatusDescription
-        );
-
-        if (_errorMessage != null && _errorMessage.Length > 0)
-          content.AppendFormat (" ({0})</h1></body></html>", _errorMessage);
-        else
-          content.Append ("</h1></body></html>");
+        var content = createErrorContent (
+                        _errorStatus,
+                        _response.StatusDescription,
+                        _errorMessage
+                      );
 
         var enc = Encoding.UTF8;
         var entity = enc.GetBytes (content.ToString ());
