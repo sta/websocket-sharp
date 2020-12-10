@@ -164,6 +164,28 @@ namespace WebSocketSharp.Net
 
     #endregion
 
+    #region Private Methods
+
+    private static string createErrorContent (
+      int statusCode, string statusDescription, string message
+    )
+    {
+      return message != null && message.Length > 0
+             ? String.Format (
+                 "<html><body><h1>{0} {1} ({2})</h1></body></html>",
+                 statusCode,
+                 statusDescription,
+                 message
+               )
+             : String.Format (
+                 "<html><body><h1>{0} {1}</h1></body></html>",
+                 statusCode,
+                 statusDescription
+               );
+    }
+
+    #endregion
+
     #region Internal Methods
 
     internal bool Authenticate ()
