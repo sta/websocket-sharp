@@ -57,7 +57,7 @@ namespace WebSocketSharp.Net
 
     private HttpConnection               _connection;
     private string                       _errorMessage;
-    private int                          _errorStatus;
+    private int                          _errorStatusCode;
     private HttpListener                 _listener;
     private HttpListenerRequest          _request;
     private HttpListenerResponse         _response;
@@ -71,7 +71,7 @@ namespace WebSocketSharp.Net
     internal HttpListenerContext (HttpConnection connection)
     {
       _connection = connection;
-      _errorStatus = 400;
+      _errorStatusCode = 400;
       _request = new HttpListenerRequest (this);
       _response = new HttpListenerResponse (this);
     }
@@ -98,11 +98,11 @@ namespace WebSocketSharp.Net
 
     internal int ErrorStatus {
       get {
-        return _errorStatus;
+        return _errorStatusCode;
       }
 
       set {
-        _errorStatus = value;
+        _errorStatusCode = value;
       }
     }
 
@@ -226,11 +226,11 @@ namespace WebSocketSharp.Net
     internal void SendError ()
     {
       try {
-        _response.StatusCode = _errorStatus;
+        _response.StatusCode = _errorStatusCode;
         _response.ContentType = "text/html";
 
         var content = createErrorContent (
-                        _errorStatus,
+                        _errorStatusCode,
                         _response.StatusDescription,
                         _errorMessage
                       );
