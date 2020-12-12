@@ -325,7 +325,7 @@ namespace WebSocketSharp.Net
             return;
           }
 
-          conn._context.ErrorStatus = 404;
+          conn._context.ErrorStatusCode = 404;
 
           conn._context.SendError ();
 
@@ -358,7 +358,7 @@ namespace WebSocketSharp.Net
         if (conn._timeoutCanceled[current])
           return;
 
-        conn._context.ErrorStatus = 408;
+        conn._context.ErrorStatusCode = 408;
 
         conn._context.SendError ();
       }

@@ -705,7 +705,7 @@ namespace WebSocketSharp.Net
         var comparison = StringComparison.OrdinalIgnoreCase;
         if (!transferEnc.Equals ("chunked", comparison)) {
           _context.ErrorMessage = String.Empty;
-          _context.ErrorStatus = 501;
+          _context.ErrorStatusCode = 501;
 
           return;
         }
@@ -716,7 +716,7 @@ namespace WebSocketSharp.Net
       if (_httpMethod == "POST" || _httpMethod == "PUT") {
         if (_contentLength <= 0 && !_chunked) {
           _context.ErrorMessage = String.Empty;
-          _context.ErrorStatus = 411;
+          _context.ErrorStatusCode = 411;
 
           return;
         }

@@ -96,7 +96,7 @@ namespace WebSocketSharp.Net
       }
     }
 
-    internal int ErrorStatus {
+    internal int ErrorStatusCode {
       get {
         return _errorStatusCode;
       }
