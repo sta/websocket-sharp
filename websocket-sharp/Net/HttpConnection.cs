@@ -359,7 +359,6 @@ namespace WebSocketSharp.Net
           return;
 
         conn._context.ErrorStatusCode = 408;
-
         conn._context.SendError ();
       }
     }
