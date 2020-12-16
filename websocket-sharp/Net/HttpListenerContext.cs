@@ -268,8 +268,8 @@ namespace WebSocketSharp.Net
     /// the WebSocket handshake request.
     /// </returns>
     /// <param name="protocol">
-    /// A <see cref="string"/> that represents the subprotocol supported on
-    /// this WebSocket connection.
+    /// A <see cref="string"/> that specifies the subprotocol supported on
+    /// the WebSocket connection.
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
