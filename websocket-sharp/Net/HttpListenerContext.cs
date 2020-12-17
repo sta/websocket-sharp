@@ -46,7 +46,7 @@ namespace WebSocketSharp.Net
 {
   /// <summary>
   /// Provides the access to the HTTP request and response objects used by
-  /// the <see cref="HttpListener"/>.
+  /// the <see cref="HttpListener"/> class.
   /// </summary>
   /// <remarks>
   /// This class cannot be inherited.
