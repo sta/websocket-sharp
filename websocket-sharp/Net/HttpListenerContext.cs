@@ -142,7 +142,8 @@ namespace WebSocketSharp.Net
     /// Gets the HTTP response object used to send a response to the client.
     /// </summary>
     /// <value>
-    /// A <see cref="HttpListenerResponse"/> that represents a response to the client request.
+    /// A <see cref="HttpListenerResponse"/> that represents a response to
+    /// the client request.
     /// </value>
     public HttpListenerResponse Response {
       get {
