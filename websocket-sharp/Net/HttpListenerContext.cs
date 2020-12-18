@@ -155,7 +155,13 @@ namespace WebSocketSharp.Net
     /// Gets the client information (identity, authentication, and security roles).
     /// </summary>
     /// <value>
-    /// A <see cref="IPrincipal"/> instance that represents the client information.
+    ///   <para>
+    ///   A <see cref="IPrincipal"/> instance or <see langword="null"/> if not
+    ///   authenticated.
+    ///   </para>
+    ///   <para>
+    ///   The instance describes the client.
+    ///   </para>
     /// </value>
     public IPrincipal User {
       get {
