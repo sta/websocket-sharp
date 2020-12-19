@@ -203,7 +203,9 @@ namespace WebSocketSharp.Net
         return true;
 
       if (schm == AuthenticationSchemes.None) {
-        _response.Close (HttpStatusCode.Forbidden);
+        _errorStatusCode = 403;
+        _errorMessage = "Authentication not allowed";
+        SendError ();
 
         return false;
       }
