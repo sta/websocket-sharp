@@ -50,6 +50,7 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
 
@@ -119,15 +120,18 @@ namespace WebSocketSharp
     private Uri                            _uri;
     private const string                   _version = "13";
     private TimeSpan                       _waitTime;
+#if __PING_ASYNC
+    private bool                           _isAlive = true;
+    private bool                           _isPinged = true;
+#endif
+#endregion
 
-    #endregion
+#region Internal Fields
 
-    #region Internal Fields
-
-    /// <summary>
-    /// Represents the empty array of <see cref="byte"/> used internally.
-    /// </summary>
-    internal static readonly byte[] EmptyBytes;
+        /// <summary>
+        /// Represents the empty array of <see cref="byte"/> used internally.
+        /// </summary>
+        internal static readonly byte[] EmptyBytes;
 
     /// <summary>
     /// Represents the length used to determine whether the data should be fragmented in sending.
@@ -148,9 +152,9 @@ namespace WebSocketSharp
     /// </summary>
     internal static readonly RandomNumberGenerator RandomNumber;
 
-    #endregion
+#endregion
 
-    #region Static Constructor
+#region Static Constructor
 
     static WebSocket ()
     {
@@ -160,9 +164,9 @@ namespace WebSocketSharp
       RandomNumber = new RNGCryptoServiceProvider ();
     }
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     // As server
     internal WebSocket (HttpListenerWebSocketContext context, string protocol)
@@ -196,9 +200,9 @@ namespace WebSocketSharp
       init ();
     }
 
-    #endregion
+#endregion
 
-    #region Public Constructors
+#region Public Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocket"/> class with
@@ -281,9 +285,9 @@ namespace WebSocketSharp
       init ();
     }
 
-    #endregion
+#endregion
 
-    #region Internal Properties
+#region Internal Properties
 
     internal CookieCollection CookieCollection {
       get {
@@ -326,9 +330,9 @@ namespace WebSocketSharp
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets or sets the compression method used to compress a message.
@@ -516,12 +520,23 @@ namespace WebSocketSharp
     /// <value>
     /// <c>true</c> if the connection is alive; otherwise, <c>false</c>.
     /// </value>
-    public bool IsAlive {
-      get {
-        return ping (EmptyBytes);
-      }
-    }
-
+#if __PING_ASYNC
+     public bool IsAlive
+     {
+         get
+         {
+             return _isAlive;
+         }
+     }
+#else
+        public bool IsAlive
+     {
+         get
+         {
+            return ping(EmptyBytes);
+         }
+     }
+#endif
     /// <summary>
     /// Gets a value indicating whether a secure connection is used.
     /// </summary>
@@ -529,7 +544,7 @@ namespace WebSocketSharp
     /// <c>true</c> if this instance uses a secure connection; otherwise,
     /// <c>false</c>.
     /// </value>
-    public bool IsSecure {
+        public bool IsSecure {
       get {
         return _secure;
       }
@@ -774,9 +789,9 @@ namespace WebSocketSharp
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Events
+#region Public Events
 
     /// <summary>
     /// Occurs when the WebSocket connection has been closed.
@@ -798,9 +813,9 @@ namespace WebSocketSharp
     /// </summary>
     public event EventHandler OnOpen;
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     // As server
     private bool accept ()
@@ -1267,7 +1282,7 @@ namespace WebSocketSharp
           doHandshake ();
         }
         catch (Exception ex) {
-          _retryCountForConnect++;
+          //_retryCountForConnect++;
 
           _logger.Fatal (ex.Message);
           _logger.Debug (ex.ToString ());
@@ -1468,7 +1483,11 @@ namespace WebSocketSharp
       _messageEventQueue = new Queue<MessageEventArgs> ();
       _forMessageEventQueue = ((ICollection) _messageEventQueue).SyncRoot;
       _readyState = WebSocketState.Connecting;
-    }
+#if __PING_ASYNC
+      _isAlive = true;
+      _isPinged = true;
+#endif
+     }
 
     private void message ()
     {
@@ -1850,6 +1869,7 @@ namespace WebSocketSharp
 
       _closeContext ();
       _closeContext = null;
+      //_stream.Dispose();
       _stream = null;
       _context = null;
     }
@@ -2183,7 +2203,7 @@ namespace WebSocketSharp
               message ();
             },
             ex => {
-              _logger.Fatal (ex.ToString ());
+              _logger.Error (ex.ToString ());
               fatal ("An exception has occurred while receiving.", ex);
             }
           );
@@ -2261,9 +2281,9 @@ namespace WebSocketSharp
       return value == null || value == _version;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     // As server
     internal void Close (HttpResponse response)
@@ -2374,6 +2394,46 @@ namespace WebSocketSharp
     }
 
     // As server
+    internal async void PingAsync(byte[] frameAsBytes, TimeSpan timeout,Action<bool> callback)
+    {
+       _isPinged = false;
+       var b = await pingAsync(frameAsBytes, timeout);
+       if (b == true) _isAlive = true;
+       else b = false;
+       _isPinged = true;
+       //Console.WriteLine("{0} iiiiiiiii{1}iiiiiiiiiiiiiiiiiiiii",DateTime.Now.ToString("hh:MM:ss"), _isAlive);
+       if(null != callback) callback(b);
+     }
+    private async Task<bool> pingAsync (byte[] frameAsBytes, TimeSpan timeout)
+    {
+      if (_readyState != WebSocketState.Open)
+      return false;
+      if(_isPinged == false)return false;
+      var pongReceived = _pongReceived;
+      if (pongReceived == null)
+        return false;
+      return await Task<bool>.Run(()=> { 
+      lock (_forPing) {
+        try {
+          pongReceived.Reset ();
+
+          lock (_forState) {
+            if (_readyState != WebSocketState.Open)
+              return false;
+
+            if (!sendBytes (frameAsBytes))
+              return false;
+          }
+
+          return pongReceived.WaitOne (timeout);
+        }
+        catch (ObjectDisposedException) {
+          return false;
+        }
+      }
+      });
+
+    }
     internal bool Ping (byte[] frameAsBytes, TimeSpan timeout)
     {
       if (_readyState != WebSocketState.Open)
@@ -2402,7 +2462,6 @@ namespace WebSocketSharp
         }
       }
     }
-
     // As server
     internal void Send (
       Opcode opcode, byte[] data, Dictionary<CompressionMethod, byte[]> cache
@@ -2453,9 +2512,9 @@ namespace WebSocketSharp
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     /// <summary>
     /// Accepts the handshake request.
@@ -4067,9 +4126,9 @@ namespace WebSocketSharp
       }
     }
 
-    #endregion
+#endregion
 
-    #region Explicit Interface Implementations
+#region Explicit Interface Implementations
 
     /// <summary>
     /// Closes the connection and releases all associated resources.
@@ -4088,6 +4147,6 @@ namespace WebSocketSharp
       close (1001, String.Empty);
     }
 
-    #endregion
+#endregion
   }
 }
