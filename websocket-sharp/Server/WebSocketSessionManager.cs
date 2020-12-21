@@ -457,6 +457,7 @@ namespace WebSocketSharp.Server
               state => broadcast(opcode, stream, completed)
             );
         }
+#if __PING_ASYNC
         private void broadpingAsync(byte[] frameAsBytes)
         {
 
@@ -471,6 +472,7 @@ namespace WebSocketSharp.Server
                 session.Context.WebSocket.PingAsync(frameAsBytes, _waitTime, null);
             }
         }
+#endif
         private Dictionary<string, bool> broadping(byte[] frameAsBytes)
         {
             var ret = new Dictionary<string, bool>();

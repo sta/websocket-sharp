@@ -2609,6 +2609,7 @@ namespace WebSocketSharp
         }
 
         // As server
+#if __PING_ASYNC
         internal async void PingAsync(byte[] frameAsBytes, TimeSpan timeout, Action<bool> callback)
         {
             var b = await pingAsync(frameAsBytes, timeout);
@@ -2657,6 +2658,7 @@ namespace WebSocketSharp
             });
 
         }
+#endif
         internal bool Ping(byte[] frameAsBytes, TimeSpan timeout)
         {
             if (_readyState != WebSocketState.Open)
