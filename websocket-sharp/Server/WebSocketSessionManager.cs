@@ -61,7 +61,7 @@ namespace WebSocketSharp.Server
 #if __PING_ASYNC
         private System.Timers.Timer _broadTimer;
 #endif
-#endregion
+        #endregion
 
         #region Internal Constructors
 
@@ -79,15 +79,15 @@ namespace WebSocketSharp.Server
             setSweepTimer(60000);
 #if __PING_ASYNC
             _broadTimer = new System.Timers.Timer(10000);
+            _broadTimer.Elapsed += (sender, e) => broadpingAsync(WebSocketFrame.EmptyPingBytes);
             _broadTimer.Enabled = true;
             _broadTimer.Start();
-            _broadTimer.Elapsed += (sender, e) => broadpingAsync(WebSocketFrame.EmptyPingBytes);
 #endif
         }
 
-#endregion
+        #endregion
 
-#region Internal Properties
+        #region Internal Properties
 
         internal ServerState State
         {
@@ -97,9 +97,9 @@ namespace WebSocketSharp.Server
             }
         }
 
-#endregion
+        #endregion
 
-#region Public Properties
+        #region Public Properties
 
         /// <summary>
         /// Gets the IDs for the active sessions in the WebSocket service.
@@ -114,7 +114,7 @@ namespace WebSocketSharp.Server
         ///   </para>
         /// </value>
 #if __PING_ASYNC
-       public IEnumerable<string> ActiveIDs
+        public IEnumerable<string> ActiveIDs
         {
             get
             {
@@ -202,7 +202,7 @@ namespace WebSocketSharp.Server
                 foreach (var res in Sessions)
                 {
                     if (!res.Context.WebSocket.IsAlive)
-                        yield return res.ID ;
+                        yield return res.ID;
                 }
             }
         }
@@ -375,9 +375,9 @@ namespace WebSocketSharp.Server
             }
         }
 
-#endregion
+        #endregion
 
-#region Private Methods
+        #region Private Methods
 
         private void broadcast(Opcode opcode, byte[] data, Action completed)
         {
@@ -468,7 +468,7 @@ namespace WebSocketSharp.Server
                     break;
                 }
 
-               session.Context.WebSocket.PingAsync(frameAsBytes, _waitTime,null);
+                session.Context.WebSocket.PingAsync(frameAsBytes, _waitTime, null);
             }
         }
         private Dictionary<string, bool> broadping(byte[] frameAsBytes)
@@ -554,9 +554,9 @@ namespace WebSocketSharp.Server
             }
         }
 
-#endregion
+        #endregion
 
-#region Internal Methods
+        #region Internal Methods
 
         internal string Add(IWebSocketSession session)
         {
@@ -652,9 +652,9 @@ namespace WebSocketSharp.Server
             stop(new PayloadData(code, reason), !code.IsReserved());
         }
 
-#endregion
+        #endregion
 
-#region Public Methods
+        #region Public Methods
 
         /// <summary>
         /// Sends <paramref name="data"/> to every client in the WebSocket service.
@@ -1832,6 +1832,6 @@ namespace WebSocketSharp.Server
             return tryGetSession(id, out session);
         }
 
-#endregion
+        #endregion
     }
 }
