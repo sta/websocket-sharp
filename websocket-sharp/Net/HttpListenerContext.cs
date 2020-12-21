@@ -229,7 +229,7 @@ namespace WebSocketSharp.Net
 
       if (user == null || !user.Identity.IsAuthenticated) {
         var chal = new AuthenticationChallenge (schm, realm).ToString ();
-        _response.CloseWithAuthChallenge (chal);
+        sendAuthenticationChallenge (chal);
 
         return false;
       }
