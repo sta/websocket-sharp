@@ -177,14 +177,6 @@ namespace WebSocketSharp
       return buff.ToArray ();
     }
 
-    internal static void Close (
-      this HttpListenerResponse response, HttpStatusCode code
-    )
-    {
-      response.StatusCode = (int) code;
-      response.OutputStream.Close ();
-    }
-
     internal static byte[] Compress (this byte[] data, CompressionMethod method)
     {
       return method == CompressionMethod.Deflate
