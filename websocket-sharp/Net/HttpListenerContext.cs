@@ -71,6 +71,7 @@ namespace WebSocketSharp.Net
     internal HttpListenerContext (HttpConnection connection)
     {
       _connection = connection;
+
       _errorStatusCode = 400;
       _request = new HttpListenerRequest (this);
       _response = new HttpListenerResponse (this);
