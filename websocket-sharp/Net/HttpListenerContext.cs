@@ -240,6 +240,16 @@ namespace WebSocketSharp.Net
       return true;
     }
 
+    internal HttpListenerWebSocketContext GetWebSocketContext ()
+    {
+      if (_websocketContext != null)
+        return _websocketContext;
+
+      _websocketContext = new HttpListenerWebSocketContext (this, null);
+
+      return _websocketContext;
+    }
+
     internal HttpListenerWebSocketContext GetWebSocketContext (string protocol)
     {
       if (_websocketContext != null)
