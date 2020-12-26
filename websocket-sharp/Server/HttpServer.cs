@@ -936,13 +936,16 @@ namespace WebSocketSharp.Server
     {
       while (true) {
         HttpListenerContext ctx = null;
+
         try {
           ctx = _listener.GetContext ();
+
           ThreadPool.QueueUserWorkItem (
             state => {
               try {
                 if (ctx.Request.IsUpgradeRequest ("websocket")) {
                   processRequest (ctx.AcceptWebSocket (null));
+
                   return;
                 }
 
@@ -959,10 +962,12 @@ namespace WebSocketSharp.Server
         }
         catch (HttpListenerException) {
           _log.Info ("The underlying listener is stopped.");
+
           break;
         }
         catch (InvalidOperationException) {
           _log.Info ("The underlying listener is stopped.");
+
           break;
         }
         catch (Exception ex) {
