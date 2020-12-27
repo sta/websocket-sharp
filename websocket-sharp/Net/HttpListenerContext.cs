@@ -252,23 +252,6 @@ namespace WebSocketSharp.Net
 
     internal HttpListenerWebSocketContext GetWebSocketContext (string protocol)
     {
-      if (_websocketContext != null)
-        return _websocketContext;
-
-      if (protocol != null) {
-        if (protocol.Length == 0) {
-          var msg = "An empty string.";
-
-          throw new ArgumentException (msg, "protocol");
-        }
-
-        if (!protocol.IsToken ()) {
-          var msg = "It contains an invalid character.";
-
-          throw new ArgumentException (msg, "protocol");
-        }
-      }
-
       _websocketContext = new HttpListenerWebSocketContext (this, protocol);
 
       return _websocketContext;
