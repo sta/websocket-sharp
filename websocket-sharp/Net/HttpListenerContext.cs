@@ -342,9 +342,7 @@ namespace WebSocketSharp.Net
         }
       }
 
-      _websocketContext = new HttpListenerWebSocketContext (this, protocol);
-
-      return _websocketContext;
+      return GetWebSocketContext (protocol);
     }
 
     #endregion
