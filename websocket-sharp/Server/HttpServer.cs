@@ -944,7 +944,7 @@ namespace WebSocketSharp.Server
             state => {
               try {
                 if (ctx.Request.IsUpgradeRequest ("websocket")) {
-                  processRequest (ctx.AcceptWebSocket (null));
+                  processRequest (ctx.GetWebSocketContext (null));
 
                   return;
                 }
