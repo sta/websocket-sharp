@@ -692,17 +692,21 @@ namespace WebSocketSharp.Net
     {
       if (_protocolVersion == HttpVersion.Version10) {
         finishInitialization10 ();
+
         return;
       }
 
       if (_userHostName == null) {
         _context.ErrorMessage = "Host header required";
+
         return;
       }
 
       var transferEnc = _headers["Transfer-Encoding"];
+
       if (transferEnc != null) {
         var comparison = StringComparison.OrdinalIgnoreCase;
+
         if (!transferEnc.Equals ("chunked", comparison)) {
           _context.ErrorMessage = String.Empty;
           _context.ErrorStatusCode = 501;
@@ -723,10 +727,13 @@ namespace WebSocketSharp.Net
       }
 
       var expect = _headers["Expect"];
+
       if (expect != null) {
         var comparison = StringComparison.OrdinalIgnoreCase;
+
         if (!expect.Equals ("100-continue", comparison)) {
           _context.ErrorMessage = "Invalid Expect header";
+
           return;
         }
 
