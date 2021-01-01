@@ -784,47 +784,60 @@ namespace WebSocketSharp.Net
     internal void SetRequestLine (string requestLine)
     {
       var parts = requestLine.Split (new[] { ' ' }, 3);
+
       if (parts.Length < 3) {
         _context.ErrorMessage = "Invalid request line (parts)";
+
         return;
       }
 
       var method = parts[0];
+
       if (method.Length == 0) {
         _context.ErrorMessage = "Invalid request line (method)";
+
         return;
       }
 
       var target = parts[1];
+
       if (target.Length == 0) {
         _context.ErrorMessage = "Invalid request line (target)";
+
         return;
       }
 
       var rawVer = parts[2];
+
       if (rawVer.Length != 8) {
         _context.ErrorMessage = "Invalid request line (version)";
+
         return;
       }
 
       if (rawVer.IndexOf ("HTTP/") != 0) {
         _context.ErrorMessage = "Invalid request line (version)";
+
         return;
       }
 
       Version ver;
+
       if (!rawVer.Substring (5).TryCreateVersion (out ver)) {
         _context.ErrorMessage = "Invalid request line (version)";
+
         return;
       }
 
       if (ver.Major < 1) {
         _context.ErrorMessage = "Invalid request line (version)";
+
         return;
       }
 
       if (!method.IsHttpMethod (ver)) {
         _context.ErrorMessage = "Invalid request line (method)";
+
         return;
       }
 
