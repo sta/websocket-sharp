@@ -631,20 +631,26 @@ namespace WebSocketSharp.Net
     internal void AddHeader (string headerField)
     {
       var start = headerField[0];
+
       if (start == ' ' || start == '\t') {
         _context.ErrorMessage = "Invalid header field";
+
         return;
       }
 
       var colon = headerField.IndexOf (':');
+
       if (colon < 1) {
         _context.ErrorMessage = "Invalid header field";
+
         return;
       }
 
       var name = headerField.Substring (0, colon).Trim ();
+
       if (name.Length == 0 || !name.IsToken ()) {
         _context.ErrorMessage = "Invalid header name";
+
         return;
       }
 
@@ -655,39 +661,48 @@ namespace WebSocketSharp.Net
       _headers.InternalSet (name, val, false);
 
       var lower = name.ToLower (CultureInfo.InvariantCulture);
+
       if (lower == "host") {
         if (_userHostName != null) {
           _context.ErrorMessage = "Invalid Host header";
+
           return;
         }
 
         if (val.Length == 0) {
           _context.ErrorMessage = "Invalid Host header";
+
           return;
         }
 
         _userHostName = val;
+
         return;
       }
 
       if (lower == "content-length") {
         if (_contentLength > -1) {
           _context.ErrorMessage = "Invalid Content-Length header";
+
           return;
         }
 
         long len;
+
         if (!Int64.TryParse (val, out len)) {
           _context.ErrorMessage = "Invalid Content-Length header";
+
           return;
         }
 
         if (len < 0) {
           _context.ErrorMessage = "Invalid Content-Length header";
+
           return;
         }
 
         _contentLength = len;
+
         return;
       }
     }
