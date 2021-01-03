@@ -764,10 +764,12 @@ namespace WebSocketSharp.Net
     internal bool FlushInput ()
     {
       var input = InputStream;
+
       if (input == Stream.Null)
         return true;
 
       var len = 2048;
+
       if (_contentLength > 0 && _contentLength < len)
         len = (int) _contentLength;
 
@@ -776,8 +778,10 @@ namespace WebSocketSharp.Net
       while (true) {
         try {
           var ares = input.BeginRead (buff, 0, len, null, null);
+
           if (!ares.IsCompleted) {
             var timeout = 100;
+
             if (!ares.AsyncWaitHandle.WaitOne (timeout))
               return false;
           }
