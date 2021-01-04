@@ -608,6 +608,7 @@ namespace WebSocketSharp.Net
     private Encoding getContentEncoding ()
     {
       var val = _headers["Content-Type"];
+
       if (val == null)
         return null;
 
