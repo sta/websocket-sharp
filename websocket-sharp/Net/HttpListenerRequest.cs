@@ -282,8 +282,12 @@ namespace WebSocketSharp.Net
     /// </value>
     public Stream InputStream {
       get {
-        if (_inputStream == null)
-          _inputStream = getInputStream () ?? Stream.Null;
+        if (_inputStream == null) {
+          _inputStream = _contentLength > 0 || _chunked
+                         ? _connection
+                           .GetRequestStream (_contentLength, _chunked)
+                         : Stream.Null;
+        }
 
         return _inputStream;
       }
