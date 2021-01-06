@@ -622,13 +622,6 @@ namespace WebSocketSharp.Net
       return ret;
     }
 
-    private RequestStream getInputStream ()
-    {
-      return _contentLength > 0 || _chunked
-             ? _connection.GetRequestStream (_contentLength, _chunked)
-             : null;
-    }
-
     #endregion
 
     #region Internal Methods
