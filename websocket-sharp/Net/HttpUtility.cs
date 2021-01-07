@@ -815,10 +815,12 @@ namespace WebSocketSharp.Net
 
       foreach (var elm in contentType.SplitHeaderValue (';')) {
         var part = elm.Trim ();
+
         if (part.IndexOf (name, compType) != 0)
           continue;
 
         var val = part.GetValue ('=', true);
+
         if (val == null || val.Length == 0)
           return null;
 
