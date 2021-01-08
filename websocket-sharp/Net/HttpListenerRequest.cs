@@ -614,12 +614,13 @@ namespace WebSocketSharp.Net
       var val = _headers["Content-Type"];
 
       if (val == null)
-        return null;
+        return Encoding.UTF8;
 
       Encoding ret;
-      HttpUtility.TryGetEncoding (val, out ret);
 
-      return ret;
+      return HttpUtility.TryGetEncoding (val, out ret)
+             ? ret
+             : Encoding.UTF8;
     }
 
     #endregion
