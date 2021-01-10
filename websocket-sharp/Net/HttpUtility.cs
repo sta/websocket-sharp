@@ -816,7 +816,7 @@ namespace WebSocketSharp.Net
       foreach (var elm in contentType.SplitHeaderValue (';')) {
         var part = elm.Trim ();
 
-        if (part.IndexOf (name, compType) != 0)
+        if (!part.StartsWith (name, compType))
           continue;
 
         var val = part.GetValue ('=', true);
