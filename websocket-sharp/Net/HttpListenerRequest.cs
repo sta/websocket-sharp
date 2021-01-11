@@ -121,6 +121,7 @@ namespace WebSocketSharp.Net
     public string[] AcceptTypes {
       get {
         var val = _headers["Accept"];
+
         if (val == null)
           return null;
 
