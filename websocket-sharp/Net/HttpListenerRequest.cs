@@ -404,7 +404,9 @@ namespace WebSocketSharp.Net
       get {
         if (_queryString == null) {
           var url = Url;
-          _queryString = QueryStringCollection.Parse (
+
+          _queryString = QueryStringCollection
+                         .Parse (
                            url != null ? url.Query : null,
                            Encoding.UTF8
                          );
