@@ -497,6 +497,7 @@ namespace WebSocketSharp.Net
     public Uri UrlReferrer {
       get {
         var val = _headers["Referer"];
+
         if (val == null)
           return null;
 
