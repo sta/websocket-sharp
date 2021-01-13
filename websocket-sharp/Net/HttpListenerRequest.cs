@@ -468,7 +468,8 @@ namespace WebSocketSharp.Net
     public Uri Url {
       get {
         if (!_urlSet) {
-          _url = HttpUtility.CreateRequestUrl (
+          _url = HttpUtility
+                 .CreateRequestUrl (
                    _rawUrl,
                    _userHostName ?? UserHostAddress,
                    IsWebSocketRequest,
