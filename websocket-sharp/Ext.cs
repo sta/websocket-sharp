@@ -876,7 +876,6 @@ namespace WebSocketSharp
                     completed (dest.ToArray ());
                   }
 
-                  dest.Dispose ();
                   return;
                 }
 
@@ -888,7 +887,6 @@ namespace WebSocketSharp
                     completed (dest.ToArray ());
                   }
 
-                  dest.Dispose ();
                   return;
                 }
 
@@ -897,9 +895,11 @@ namespace WebSocketSharp
                 read (len - nread);
               }
               catch (Exception ex) {
-                dest.Dispose ();
                 if (error != null)
                   error (ex);
+              }
+              finally{
+                dest.Dispose ();
               }
             },
             null
