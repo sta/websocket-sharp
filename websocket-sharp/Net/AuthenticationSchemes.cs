@@ -39,28 +39,26 @@
 
 using System;
 
-namespace WebSocketSharp.Net
-{
-  /// <summary>
-  /// Specifies the scheme for authentication.
-  /// </summary>
-  public enum AuthenticationSchemes
-  {
+namespace WebSocketSharp.Net {
     /// <summary>
-    /// No authentication is allowed.
+    /// Specifies the scheme for authentication.
     /// </summary>
-    None,
-    /// <summary>
-    /// Specifies digest authentication.
-    /// </summary>
-    Digest = 1,
-    /// <summary>
-    /// Specifies basic authentication.
-    /// </summary>
-    Basic = 8,
-    /// <summary>
-    /// Specifies anonymous authentication.
-    /// </summary>
-    Anonymous = 0x8000
-  }
+    public enum AuthenticationSchemes {
+        /// <summary>
+        /// No authentication is allowed.
+        /// </summary>
+        None,
+        /// <summary>
+        /// Specifies digest authentication.
+        /// </summary>
+        Digest = 1,
+        /// <summary>
+        /// Specifies basic authentication.
+        /// </summary>
+        Basic = 8,
+        /// <summary>
+        /// Specifies anonymous authentication.
+        /// </summary>
+        Anonymous = 0x8000
+    }
 }
