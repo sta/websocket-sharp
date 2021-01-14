@@ -786,9 +786,6 @@ namespace WebSocketSharp
       Action<Exception> error
     )
     {
-      if(!stream.CanRead){
-        return;
-      }
       var buff = new byte[length];
       var offset = 0;
       var retry = 0;
@@ -835,6 +832,8 @@ namespace WebSocketSharp
       try {
         stream.BeginRead (buff, offset, length, callback, null);
       }
+      catch(ObjectDisposedException){
+      }
       catch (Exception ex) {
         if (error != null)
           error (ex);
@@ -849,9 +848,6 @@ namespace WebSocketSharp
       Action<Exception> error
     )
     {
-      if(!stream.CanRead){
-        return;
-      }
       var buff = new byte[bufferLength];
       var retry = 0;
 
@@ -914,6 +910,8 @@ namespace WebSocketSharp
 
       try {
         read (length);
+      }
+      catch(ObjectDisposedException){
       }
       catch (Exception ex) {
         if (error != null)
