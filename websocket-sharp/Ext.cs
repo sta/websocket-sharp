@@ -823,7 +823,7 @@ namespace WebSocketSharp {
                               if (nread == len) {
                                   if (completed != null) {
                                       byte[] data = new byte[nread];
-                                      Array.Copy(buff, data, nread);
+                                      Array.Copy(buff, 0, data, 0, nread);
                                       completed(data);
                                   }
 
