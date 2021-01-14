@@ -794,58 +794,53 @@ namespace WebSocketSharp {
             Action<long> read = null;
             read =
               len => {
-                  if (len < bufferLength)
+                  if (len < bufferLength) {
                       bufferLength = (int)len;
+                  }
 
                   stream.BeginRead(
-              buff,
-              0,
-              bufferLength,
-              ar => {
-                      var dest = new MemoryStream();
-                      try {
-                          var nread = stream.EndRead(ar);
-                          if (nread <= 0) {
-                              if (retry < _retry) {
-                                  retry++;
-                                  read(len);
+                      buff,
+                      0,
+                      bufferLength,
+                      ar => {
+                          try {
+                              var nread = stream.EndRead(ar);
+                              if (nread <= 0) {
+                                  if (retry < _retry) {
+                                      retry++;
+                                      read(len);
+
+                                      return;
+                                  }
+
+                                  if (completed != null) {
+                                      completed?.Invoke(new byte[0]);
+                                  }
 
                                   return;
                               }
 
-                              if (completed != null) {
-                                  dest.Close();
-                                  completed(dest.ToArray());
+                              if (nread == len) {
+                                  if (completed != null) {
+                                      byte[] data = new byte[nread];
+                                      Array.Copy(buff, data, nread);
+                                      completed(data);
+                                  }
+
+                                  return;
                               }
 
-                              return;
+                              retry = 0;
+
+                              read(len - nread);
                           }
-
-                          dest.Write(buff, 0, nread);
-
-                          if (nread == len) {
-                              if (completed != null) {
-                                  dest.Close();
-                                  completed(dest.ToArray());
-                              }
-
-                              return;
+                          catch (Exception ex) {
+                              if (error != null)
+                                  error(ex);
                           }
-
-                          retry = 0;
-
-                          read(len - nread);
-                      }
-                      catch (Exception ex) {
-                          if (error != null)
-                              error(ex);
-                      }
-                      finally {
-                          dest.Dispose();
-                      }
-                  },
-              null
-            );
+                      },
+                      null
+                    );
               };
 
             try {
