@@ -179,7 +179,7 @@ namespace WebSocketSharp {
             var msg = timeout
                       ? "A timeout has occurred while reading an HTTP request/response."
                       : exception != null
-                        ? "An exception has occurred while reading an HTTP request/response."
+                        ? $"An exception has occurred while reading an HTTP request/response: {exception.Message}"
                         : null;
 
             if (msg != null)
