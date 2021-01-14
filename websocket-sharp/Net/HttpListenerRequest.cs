@@ -575,6 +575,7 @@ namespace WebSocketSharp.Net
     public string[] UserLanguages {
       get {
         var val = _headers["Accept-Language"];
+
         if (val == null)
           return null;
 
