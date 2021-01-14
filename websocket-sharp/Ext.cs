@@ -786,6 +786,9 @@ namespace WebSocketSharp
       Action<Exception> error
     )
     {
+      if(!stream.CanRead){
+        return;
+      }
       var buff = new byte[length];
       var offset = 0;
       var retry = 0;
@@ -846,7 +849,9 @@ namespace WebSocketSharp
       Action<Exception> error
     )
     {
-      var dest = new MemoryStream ();
+      if(!stream.CanRead){
+        return;
+      }
       var buff = new byte[bufferLength];
       var retry = 0;
 
@@ -855,12 +860,13 @@ namespace WebSocketSharp
         len => {
           if (len < bufferLength)
             bufferLength = (int) len;
-
+          
           stream.BeginRead (
             buff,
             0,
             bufferLength,
             ar => {
+              var dest = new MemoryStream ();
               try {
                 var nread = stream.EndRead (ar);
                 if (nread <= 0) {
@@ -910,7 +916,6 @@ namespace WebSocketSharp
         read (length);
       }
       catch (Exception ex) {
-        dest.Dispose ();
         if (error != null)
           error (ex);
       }
