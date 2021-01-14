@@ -832,8 +832,6 @@ namespace WebSocketSharp
       try {
         stream.BeginRead (buff, offset, length, callback, null);
       }
-      catch(ObjectDisposedException){
-      }
       catch (Exception ex) {
         if (error != null)
           error (ex);
@@ -910,8 +908,6 @@ namespace WebSocketSharp
 
       try {
         read (length);
-      }
-      catch(ObjectDisposedException){
       }
       catch (Exception ex) {
         if (error != null)
