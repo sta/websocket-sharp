@@ -1067,6 +1067,14 @@ namespace WebSocketSharp
         yield return elm.Trim ();
     }
 
+    internal static IEnumerable<string> TrimEach (
+      this IEnumerable<string> source
+    )
+    {
+      foreach (var elm in source)
+        yield return elm.Trim ();
+    }
+
     internal static string TrimSlashFromEnd (this string value)
     {
       var ret = value.TrimEnd ('/');
