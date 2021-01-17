@@ -128,7 +128,7 @@ namespace WebSocketSharp.Net
         if (_acceptTypes == null) {
           _acceptTypes = val
                          .SplitHeaderValue (',')
-                         .Trim ()
+                         .TrimEach ()
                          .ToList ()
                          .ToArray ();
         }
