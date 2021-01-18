@@ -1061,12 +1061,6 @@ namespace WebSocketSharp
       return BitConverter.ToUInt64 (source.ToHostOrder (sourceOrder), 0);
     }
 
-    internal static IEnumerable<string> Trim (this IEnumerable<string> source)
-    {
-      foreach (var elm in source)
-        yield return elm.Trim ();
-    }
-
     internal static IEnumerable<string> TrimEach (
       this IEnumerable<string> source
     )
