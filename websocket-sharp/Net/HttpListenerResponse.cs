@@ -503,64 +503,15 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the HTTP version used for the response.
+    /// Gets the HTTP version used for the response.
     /// </summary>
     /// <value>
     /// A <see cref="Version"/> that represents the HTTP version used for
     /// the response.
     /// </value>
-    /// <exception cref="ArgumentNullException">
-    /// The value specified for a set operation is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    ///   <para>
-    ///   The value specified for a set operation does not have its Major
-    ///   property set to 1.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The value specified for a set operation does not have its Minor
-    ///   property set to either 0 or 1.
-    ///   </para>
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// The response is already being sent.
-    /// </exception>
-    /// <exception cref="ObjectDisposedException">
-    /// This instance is closed.
-    /// </exception>
     public Version ProtocolVersion {
       get {
         return _version;
-      }
-
-      set {
-        if (_disposed) {
-          var name = GetType ().ToString ();
-          throw new ObjectDisposedException (name);
-        }
-
-        if (_headersSent) {
-          var msg = "The response is already being sent.";
-          throw new InvalidOperationException (msg);
-        }
-
-        if (value == null)
-          throw new ArgumentNullException ("value");
-
-        if (value.Major != 1) {
-          var msg = "Its Major property is not 1.";
-          throw new ArgumentException (msg, "value");
-        }
-
-        if (value.Minor < 0 || value.Minor > 1) {
-          var msg = "Its Minor property is not 0 or 1.";
-          throw new ArgumentException (msg, "value");
-        }
-
-        _version = value;
       }
     }
 
