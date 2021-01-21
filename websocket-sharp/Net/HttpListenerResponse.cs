@@ -506,8 +506,13 @@ namespace WebSocketSharp.Net
     /// Gets the HTTP version used for the response.
     /// </summary>
     /// <value>
-    /// A <see cref="Version"/> that represents the HTTP version used for
-    /// the response.
+    ///   <para>
+    ///   A <see cref="Version"/> that represents the HTTP version used for
+    ///   the response.
+    ///   </para>
+    ///   <para>
+    ///   Always returns same as 1.1.
+    ///   </para>
     /// </value>
     public Version ProtocolVersion {
       get {
