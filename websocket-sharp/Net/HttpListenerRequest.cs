@@ -343,9 +343,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public bool IsWebSocketRequest {
       get {
-        return _httpMethod == "GET"
-               && _protocolVersion > HttpVersion.Version10
-               && _headers.Upgrades ("websocket");
+        return _httpMethod == "GET" && _headers.Upgrades ("websocket");
       }
     }
 
@@ -714,12 +712,6 @@ namespace WebSocketSharp.Net
 
     internal void FinishInitialization ()
     {
-      if (_protocolVersion == HttpVersion.Version10) {
-        finishInitialization10 ();
-
-        return;
-      }
-
       if (_userHostName == null) {
         _context.ErrorMessage = "Host header required";
 
@@ -853,8 +845,9 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      if (ver.Major < 1) {
+      if (ver != HttpVersion.Version11) {
         _context.ErrorMessage = "Invalid request line (version)";
+        _context.ErrorStatusCode = 505;
 
         return;
       }
