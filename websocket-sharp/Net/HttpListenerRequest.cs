@@ -588,31 +588,6 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private void finishInitialization10 ()
-    {
-      var transferEnc = _headers["Transfer-Encoding"];
-
-      if (transferEnc != null) {
-        _context.ErrorMessage = "Invalid Transfer-Encoding header";
-
-        return;
-      }
-
-      if (_httpMethod == "POST") {
-        if (_contentLength == -1) {
-          _context.ErrorMessage = "Content-Length header required";
-
-          return;
-        }
-
-        if (_contentLength == 0) {
-          _context.ErrorMessage = "Invalid Content-Length header";
-
-          return;
-        }
-      }
-    }
-
     private Encoding getContentEncoding ()
     {
       var val = _headers["Content-Type"];
