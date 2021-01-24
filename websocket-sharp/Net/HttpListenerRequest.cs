@@ -806,7 +806,7 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      if (rawVer.IndexOf ("HTTP/") != 0) {
+      if (!rawVer.StartsWith ("HTTP/", StringComparison.Ordinal)) {
         _context.ErrorMessage = "Invalid request line (version)";
 
         return;
