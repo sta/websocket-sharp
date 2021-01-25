@@ -699,7 +699,7 @@ namespace WebSocketSharp.Net
         var comparison = StringComparison.OrdinalIgnoreCase;
 
         if (!transferEnc.Equals ("chunked", comparison)) {
-          _context.ErrorMessage = String.Empty;
+          _context.ErrorMessage = "Invalid Transfer-Encoding header";
           _context.ErrorStatusCode = 501;
 
           return;
