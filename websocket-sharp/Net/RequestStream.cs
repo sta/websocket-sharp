@@ -63,7 +63,8 @@ namespace WebSocketSharp.Net
     }
 
     internal RequestStream (
-      Stream stream, byte[] buffer, int offset, int count, long contentLength)
+      Stream stream, byte[] buffer, int offset, int count, long contentLength
+    )
     {
       _stream = stream;
       _buffer = buffer;
