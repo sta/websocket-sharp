@@ -115,11 +115,13 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    // Returns 0 if we can keep reading from the base stream,
-    // > 0 if we read something from the buffer,
-    // -1 if we had a content length set and we finished reading that many bytes.
     private int fillFromBuffer (byte[] buffer, int offset, int count)
     {
+      // This method returns a int:
+      // - > 0 If we read something from the buffer
+      // - 0   If we can keep reading from the base stream
+      // - -1  If we had a content length set and we finished reading that many bytes
+
       if (buffer == null)
         throw new ArgumentNullException ("buffer");
 
@@ -130,9 +132,12 @@ namespace WebSocketSharp.Net
         throw new ArgumentOutOfRangeException ("count", "A negative value.");
 
       var len = buffer.Length;
-      if (offset + count > len)
-        throw new ArgumentException (
-          "The sum of 'offset' and 'count' is greater than 'buffer' length.");
+
+      if (offset + count > len) {
+        var msg = "The sum of 'offset' and 'count' is greater than the length of 'buffer'.";
+
+        throw new ArgumentException (msg);
+      }
 
       if (_bodyLeft == 0)
         return -1;
@@ -147,8 +152,10 @@ namespace WebSocketSharp.Net
         count = (int) _bodyLeft;
 
       Buffer.BlockCopy (_buffer, _offset, buffer, offset, count);
+
       _offset += count;
       _count -= count;
+
       if (_bodyLeft > 0)
         _bodyLeft -= count;
 
