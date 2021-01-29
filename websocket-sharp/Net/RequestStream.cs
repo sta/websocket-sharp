@@ -148,7 +148,7 @@ namespace WebSocketSharp.Net
       if (count > _count)
         count = _count;
 
-      if (_bodyLeft > 0 && count > _bodyLeft)
+      if (_bodyLeft > 0 && _bodyLeft < count)
         count = (int) _bodyLeft;
 
       Buffer.BlockCopy (_buffer, _offset, buffer, offset, count);
