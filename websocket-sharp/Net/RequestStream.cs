@@ -118,9 +118,9 @@ namespace WebSocketSharp.Net
     private int fillFromBuffer (byte[] buffer, int offset, int count)
     {
       // This method returns a int:
-      // - > 0 If we read something from the buffer
-      // - 0   If we can keep reading from the base stream
-      // - -1  If we had a content length set and we finished reading that many bytes
+      // - > 0 The number of bytes read from the internal buffer
+      // - 0   0 byte read from the internal buffer
+      // - -1  No more content data
 
       if (buffer == null)
         throw new ArgumentNullException ("buffer");
