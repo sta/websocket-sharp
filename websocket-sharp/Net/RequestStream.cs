@@ -131,8 +131,11 @@ namespace WebSocketSharp.Net
         throw new ArgumentOutOfRangeException ("offset", msg);
       }
 
-      if (count < 0)
-        throw new ArgumentOutOfRangeException ("count", "A negative value.");
+      if (count < 0) {
+        var msg = "A negative value.";
+
+        throw new ArgumentOutOfRangeException ("count", msg);
+      }
 
       var len = buffer.Length;
 
