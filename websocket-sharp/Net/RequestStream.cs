@@ -246,15 +246,16 @@ namespace WebSocketSharp.Net
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
 
-      // Call the fillFromBuffer method to check for buffer boundaries even when _bodyLeft is 0.
       var nread = fillFromBuffer (buffer, offset, count);
-      if (nread == -1) // No more bytes available (Content-Length).
+
+      if (nread == -1)
         return 0;
 
       if (nread > 0)
         return nread;
 
       nread = _stream.Read (buffer, offset, count);
+
       if (nread > 0 && _bodyLeft > 0)
         _bodyLeft -= nread;
 
