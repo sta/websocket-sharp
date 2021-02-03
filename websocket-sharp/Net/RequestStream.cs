@@ -218,14 +218,15 @@ namespace WebSocketSharp.Net
 
       if (asyncResult is HttpStreamAsyncResult) {
         var ares = (HttpStreamAsyncResult) asyncResult;
+
         if (!ares.IsCompleted)
           ares.AsyncWaitHandle.WaitOne ();
 
         return ares.SyncRead;
       }
 
-      // Close on exception?
       var nread = _stream.EndRead (asyncResult);
+
       if (nread > 0 && _bodyLeft > 0)
         _bodyLeft -= nread;
 
