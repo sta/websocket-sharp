@@ -173,13 +173,15 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     public override IAsyncResult BeginRead (
-      byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+      byte[] buffer, int offset, int count, AsyncCallback callback, object state
+    )
     {
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
 
       var nread = fillFromBuffer (buffer, offset, count);
-      if (nread > 0 || nread == -1) {
+
+      if (nread != 0) {
         var ares = new HttpStreamAsyncResult (callback, state);
         ares.Buffer = buffer;
         ares.Offset = offset;
@@ -190,8 +192,7 @@ namespace WebSocketSharp.Net
         return ares;
       }
 
-      // Avoid reading past the end of the request to allow for HTTP pipelining.
-      if (_bodyLeft >= 0 && count > _bodyLeft)
+      if (_bodyLeft >= 0 && _bodyLeft < count)
         count = (int) _bodyLeft;
 
       return _stream.BeginRead (buffer, offset, count, callback, state);
