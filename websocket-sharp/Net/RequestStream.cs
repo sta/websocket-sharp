@@ -122,33 +122,10 @@ namespace WebSocketSharp.Net
       // - 0   0 byte read from the internal buffer
       // - -1  No more content data
 
-      if (buffer == null)
-        throw new ArgumentNullException ("buffer");
-
-      if (offset < 0) {
-        var msg = "A negative value.";
-
-        throw new ArgumentOutOfRangeException ("offset", msg);
-      }
-
-      if (count < 0) {
-        var msg = "A negative value.";
-
-        throw new ArgumentOutOfRangeException ("count", msg);
-      }
-
-      var len = buffer.Length;
-
-      if (offset + count > len) {
-        var msg = "The sum of 'offset' and 'count' is greater than the length of 'buffer'.";
-
-        throw new ArgumentException (msg);
-      }
-
       if (_bodyLeft == 0)
         return -1;
 
-      if (_count == 0 || count == 0)
+      if (_count == 0)
         return 0;
 
       if (count > _count)
@@ -178,6 +155,32 @@ namespace WebSocketSharp.Net
     {
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
+
+      if (buffer == null)
+        throw new ArgumentNullException ("buffer");
+
+      if (offset < 0) {
+        var msg = "A negative value.";
+
+        throw new ArgumentOutOfRangeException ("offset", msg);
+      }
+
+      if (count < 0) {
+        var msg = "A negative value.";
+
+        throw new ArgumentOutOfRangeException ("count", msg);
+      }
+
+      var len = buffer.Length;
+
+      if (offset + count > len) {
+        var msg = "The sum of 'offset' and 'count' is greater than the length of 'buffer'.";
+
+        throw new ArgumentException (msg);
+      }
+
+      if (count == 0)
+        return _stream.BeginRead (buffer, offset, count, callback, state);
 
       var nread = fillFromBuffer (buffer, offset, count);
 
@@ -248,6 +251,32 @@ namespace WebSocketSharp.Net
     {
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
+
+      if (buffer == null)
+        throw new ArgumentNullException ("buffer");
+
+      if (offset < 0) {
+        var msg = "A negative value.";
+
+        throw new ArgumentOutOfRangeException ("offset", msg);
+      }
+
+      if (count < 0) {
+        var msg = "A negative value.";
+
+        throw new ArgumentOutOfRangeException ("count", msg);
+      }
+
+      var len = buffer.Length;
+
+      if (offset + count > len) {
+        var msg = "The sum of 'offset' and 'count' is greater than the length of 'buffer'.";
+
+        throw new ArgumentException (msg);
+      }
+
+      if (count == 0)
+        return 0;
 
       var nread = fillFromBuffer (buffer, offset, count);
 
