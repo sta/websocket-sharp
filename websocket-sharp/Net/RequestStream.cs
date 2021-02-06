@@ -180,7 +180,7 @@ namespace WebSocketSharp.Net
       }
 
       if (count == 0)
-        return _stream.BeginRead (buffer, offset, count, callback, state);
+        return _stream.BeginRead (buffer, offset, 0, callback, state);
 
       var nread = fillFromBuffer (buffer, offset, count);
 
