@@ -119,7 +119,7 @@ namespace WebSocketSharp.Net
     {
       // This method returns a int:
       // - > 0 The number of bytes read from the internal buffer
-      // - 0   0 byte read from the internal buffer
+      // - 0   No more bytes read from the internal buffer
       // - -1  No more content data
 
       if (_bodyLeft == 0)
