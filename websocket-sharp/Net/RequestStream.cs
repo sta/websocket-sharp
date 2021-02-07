@@ -153,8 +153,11 @@ namespace WebSocketSharp.Net
       byte[] buffer, int offset, int count, AsyncCallback callback, object state
     )
     {
-      if (_disposed)
-        throw new ObjectDisposedException (GetType ().ToString ());
+      if (_disposed) {
+        var name = GetType ().ToString ();
+
+        throw new ObjectDisposedException (name);
+      }
 
       if (buffer == null)
         throw new ArgumentNullException ("buffer");
