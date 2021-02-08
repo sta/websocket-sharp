@@ -218,8 +218,11 @@ namespace WebSocketSharp.Net
 
     public override int EndRead (IAsyncResult asyncResult)
     {
-      if (_disposed)
-        throw new ObjectDisposedException (GetType ().ToString ());
+      if (_disposed) {
+        var name = GetType ().ToString ();
+
+        throw new ObjectDisposedException (name);
+      }
 
       if (asyncResult == null)
         throw new ArgumentNullException ("asyncResult");
