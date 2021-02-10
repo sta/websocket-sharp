@@ -65,6 +65,7 @@ namespace WebSocketSharp.Net
     {
       _callback = callback;
       _state = state;
+
       _sync = new object ();
     }
 
