@@ -414,7 +414,7 @@ namespace WebSocketSharp.Net
             }
           }
 
-          if (pref.Port != port)
+          if (pref.Port != port && !_prefixes[pref].AllowForwardedRequest)
             continue;
 
           var prefPath = pref.Path;
