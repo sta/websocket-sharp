@@ -165,6 +165,7 @@ namespace WebSocketSharp.Net
           return;
 
         _completed = true;
+
         if (_waitHandle != null)
           _waitHandle.Set ();
 
