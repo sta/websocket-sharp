@@ -933,9 +933,9 @@ namespace WebSocketSharp
     )
     {
       var len = value.Length;
+      var end = len - 1;
 
       var buff = new StringBuilder (32);
-      var end = len - 1;
       var escaped = false;
       var quoted = false;
 
@@ -946,10 +946,12 @@ namespace WebSocketSharp
         if (c == '"') {
           if (escaped) {
             escaped = false;
+
             continue;
           }
 
           quoted = !quoted;
+
           continue;
         }
 
@@ -968,9 +970,11 @@ namespace WebSocketSharp
             continue;
 
           buff.Length -= 1;
+
           yield return buff.ToString ();
 
           buff.Length = 0;
+
           continue;
         }
       }

@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2018 sta.blockhead
+ * Copyright (c) 2012-2021 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -343,9 +343,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public bool IsWebSocketRequest {
       get {
-        return _httpMethod == "GET"
-               && _protocolVersion > HttpVersion.Version10
-               && _headers.Upgrades ("websocket");
+        return _httpMethod == "GET" && _headers.Upgrades ("websocket");
       }
     }
 
@@ -590,31 +588,6 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private void finishInitialization10 ()
-    {
-      var transferEnc = _headers["Transfer-Encoding"];
-
-      if (transferEnc != null) {
-        _context.ErrorMessage = "Invalid Transfer-Encoding header";
-
-        return;
-      }
-
-      if (_httpMethod == "POST") {
-        if (_contentLength == -1) {
-          _context.ErrorMessage = "Content-Length header required";
-
-          return;
-        }
-
-        if (_contentLength == 0) {
-          _context.ErrorMessage = "Invalid Content-Length header";
-
-          return;
-        }
-      }
-    }
-
     private Encoding getContentEncoding ()
     {
       var val = _headers["Content-Type"];
@@ -714,12 +687,6 @@ namespace WebSocketSharp.Net
 
     internal void FinishInitialization ()
     {
-      if (_protocolVersion == HttpVersion.Version10) {
-        finishInitialization10 ();
-
-        return;
-      }
-
       if (_userHostName == null) {
         _context.ErrorMessage = "Host header required";
 
@@ -732,7 +699,7 @@ namespace WebSocketSharp.Net
         var comparison = StringComparison.OrdinalIgnoreCase;
 
         if (!transferEnc.Equals ("chunked", comparison)) {
-          _context.ErrorMessage = String.Empty;
+          _context.ErrorMessage = "Invalid Transfer-Encoding header";
           _context.ErrorStatusCode = 501;
 
           return;
@@ -839,7 +806,7 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      if (rawVer.IndexOf ("HTTP/") != 0) {
+      if (!rawVer.StartsWith ("HTTP/", StringComparison.Ordinal)) {
         _context.ErrorMessage = "Invalid request line (version)";
 
         return;
@@ -853,14 +820,16 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      if (ver.Major < 1) {
+      if (ver != HttpVersion.Version11) {
         _context.ErrorMessage = "Invalid request line (version)";
+        _context.ErrorStatusCode = 505;
 
         return;
       }
 
       if (!method.IsHttpMethod (ver)) {
         _context.ErrorMessage = "Invalid request line (method)";
+        _context.ErrorStatusCode = 501;
 
         return;
       }
