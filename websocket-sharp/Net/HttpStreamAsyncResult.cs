@@ -181,8 +181,19 @@ namespace WebSocketSharp.Net
 
     internal void Complete (Exception exception)
     {
-      _exception = exception;
-      Complete ();
+      lock (_sync) {
+        if (_completed)
+          return;
+
+        _completed = true;
+        _exception = exception;
+
+        if (_waitHandle != null)
+          _waitHandle.Set ();
+
+        if (_callback != null)
+          _callback.BeginInvoke (this, ar => _callback.EndInvoke (ar), null);
+      }
     }
 
     #endregion
