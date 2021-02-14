@@ -205,6 +205,7 @@ namespace WebSocketSharp.Net
     public override int Read (byte[] buffer, int offset, int count)
     {
       var ares = BeginRead (buffer, offset, count, null, null);
+
       return EndRead (ares);
     }
 
