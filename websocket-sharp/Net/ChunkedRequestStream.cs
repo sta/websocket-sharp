@@ -183,22 +183,31 @@ namespace WebSocketSharp.Net
 
     public override int EndRead (IAsyncResult asyncResult)
     {
-      if (_disposed)
-        throw new ObjectDisposedException (GetType ().ToString ());
+      if (_disposed) {
+        var name = GetType ().ToString ();
+
+        throw new ObjectDisposedException (name);
+      }
 
       if (asyncResult == null)
         throw new ArgumentNullException ("asyncResult");
 
       var ares = asyncResult as HttpStreamAsyncResult;
 
-      if (ares == null)
-        throw new ArgumentException ("A wrong IAsyncResult.", "asyncResult");
+      if (ares == null) {
+        var msg = "A wrong IAsyncResult instance.";
+
+        throw new ArgumentException (msg, "asyncResult");
+      }
 
       if (!ares.IsCompleted)
         ares.AsyncWaitHandle.WaitOne ();
 
-      if (ares.HasException)
-        throw new HttpListenerException (400, "I/O operation aborted.");
+      if (ares.HasException) {
+        var msg = "I/O operation aborted.";
+
+        throw new HttpListenerException (400, msg);
+      }
 
       return ares.Count;
     }
