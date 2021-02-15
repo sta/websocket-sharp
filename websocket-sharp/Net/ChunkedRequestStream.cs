@@ -190,6 +190,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("asyncResult");
 
       var ares = asyncResult as HttpStreamAsyncResult;
+
       if (ares == null)
         throw new ArgumentException ("A wrong IAsyncResult.", "asyncResult");
 
