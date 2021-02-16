@@ -178,6 +178,7 @@ namespace WebSocketSharp.Net
         return;
 
       _disposed = true;
+
       base.Close ();
     }
 
