@@ -117,7 +117,8 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     public override IAsyncResult BeginRead (
-      byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+      byte[] buffer, int offset, int count, AsyncCallback callback, object state
+    )
     {
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
@@ -132,21 +133,27 @@ namespace WebSocketSharp.Net
         throw new ArgumentOutOfRangeException ("count", "A negative value.");
 
       var len = buffer.Length;
-      if (offset + count > len)
-        throw new ArgumentException (
-          "The sum of 'offset' and 'count' is greater than 'buffer' length.");
+
+      if (offset + count > len) {
+        var msg = "The sum of 'offset' and 'count' is greater than the length of 'buffer'.";
+
+        throw new ArgumentException (msg);
+      }
 
       var ares = new HttpStreamAsyncResult (callback, state);
+
       if (_noMoreData) {
         ares.Complete ();
+
         return ares;
       }
 
       var nread = _decoder.Read (buffer, offset, count);
+
       offset += nread;
       count -= nread;
+
       if (count == 0) {
-        // Got all we wanted, no need to bother the decoder yet.
         ares.Count = nread;
         ares.Complete ();
 
@@ -155,6 +162,7 @@ namespace WebSocketSharp.Net
 
       if (!_decoder.WantMore) {
         _noMoreData = nread == 0;
+
         ares.Count = nread;
         ares.Complete ();
 
@@ -167,6 +175,7 @@ namespace WebSocketSharp.Net
 
       var rstate = new ReadBufferState (buffer, offset, count, ares);
       rstate.InitialCount += nread;
+
       base.BeginRead (ares.Buffer, ares.Offset, ares.Count, onRead, rstate);
 
       return ares;
