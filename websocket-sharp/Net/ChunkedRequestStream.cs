@@ -120,17 +120,26 @@ namespace WebSocketSharp.Net
       byte[] buffer, int offset, int count, AsyncCallback callback, object state
     )
     {
-      if (_disposed)
-        throw new ObjectDisposedException (GetType ().ToString ());
+      if (_disposed) {
+        var name = GetType ().ToString ();
+
+        throw new ObjectDisposedException (name);
+      }
 
       if (buffer == null)
         throw new ArgumentNullException ("buffer");
 
-      if (offset < 0)
-        throw new ArgumentOutOfRangeException ("offset", "A negative value.");
+      if (offset < 0) {
+        var msg = "A negative value.";
 
-      if (count < 0)
-        throw new ArgumentOutOfRangeException ("count", "A negative value.");
+        throw new ArgumentOutOfRangeException ("offset", msg);
+      }
+
+      if (count < 0) {
+        var msg = "A negative value.";
+
+        throw new ArgumentOutOfRangeException ("count", msg);
+      }
 
       var len = buffer.Length;
 
