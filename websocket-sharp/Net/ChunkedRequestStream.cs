@@ -86,14 +86,19 @@ namespace WebSocketSharp.Net
     {
       var rstate = (ReadBufferState) asyncResult.AsyncState;
       var ares = rstate.AsyncResult;
+
       try {
         var nread = base.EndRead (asyncResult);
+
         _decoder.Write (ares.Buffer, ares.Offset, nread);
         nread = _decoder.Read (rstate.Buffer, rstate.Offset, rstate.Count);
+
         rstate.Offset += nread;
         rstate.Count -= nread;
+
         if (rstate.Count == 0 || !_decoder.WantMore || nread == 0) {
           _noMoreData = !_decoder.WantMore && nread == 0;
+
           ares.Count = rstate.InitialCount - rstate.Count;
           ares.Complete ();
 
@@ -102,6 +107,7 @@ namespace WebSocketSharp.Net
 
         ares.Offset = 0;
         ares.Count = Math.Min (_bufferLength, _decoder.ChunkLeft + 6);
+
         base.BeginRead (ares.Buffer, ares.Offset, ares.Count, onRead, rstate);
       }
       catch (Exception ex) {
