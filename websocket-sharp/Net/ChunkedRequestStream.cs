@@ -63,7 +63,7 @@ namespace WebSocketSharp.Net
       int count,
       HttpListenerContext context
     )
-      : base (stream, buffer, offset, count)
+      : base (stream, buffer, offset, count, -1)
     {
       _context = context;
 
