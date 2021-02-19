@@ -57,11 +57,6 @@ namespace WebSocketSharp.Net
 
     #region Internal Constructors
 
-    internal RequestStream (Stream stream, byte[] buffer, int offset, int count)
-      : this (stream, buffer, offset, count, -1)
-    {
-    }
-
     internal RequestStream (
       Stream stream, byte[] buffer, int offset, int count, long contentLength
     )
