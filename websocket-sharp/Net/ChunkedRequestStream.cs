@@ -119,7 +119,7 @@ namespace WebSocketSharp.Net
         base.BeginRead (ares.Buffer, ares.Offset, ares.Count, onRead, rstate);
       }
       catch (Exception ex) {
-        _context.ErrorMessage = ex.Message;
+        _context.ErrorMessage = "I/O operation aborted";
         _context.SendError ();
 
         ares.Complete (ex);
