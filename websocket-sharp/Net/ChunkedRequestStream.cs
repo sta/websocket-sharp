@@ -46,11 +46,20 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private const int           _bufferLength = 8192;
+    private static readonly int _bufferLength;
     private HttpListenerContext _context;
     private ChunkStream         _decoder;
     private bool                _disposed;
     private bool                _noMoreData;
+
+    #endregion
+
+    #region Static Constructor
+
+    static ChunkedRequestStream ()
+    {
+      _bufferLength = 8192;
+    }
 
     #endregion
 
