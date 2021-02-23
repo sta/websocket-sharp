@@ -62,8 +62,9 @@ namespace WebSocketSharp.Net
       _buffer = buffer;
       _offset = offset;
       _count = count;
-      _initialCount = count;
       _asyncResult = asyncResult;
+
+      _initialCount = count;
     }
 
     #endregion
