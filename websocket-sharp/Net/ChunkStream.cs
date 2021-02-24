@@ -67,6 +67,7 @@ namespace WebSocketSharp.Net
     public ChunkStream (WebHeaderCollection headers)
     {
       _headers = headers;
+
       _chunkSize = -1;
       _chunks = new List<Chunk> ();
       _saved = new StringBuilder ();
