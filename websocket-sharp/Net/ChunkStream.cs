@@ -114,19 +114,22 @@ namespace WebSocketSharp.Net
     private int read (byte[] buffer, int offset, int count)
     {
       var nread = 0;
-
       var cnt = _chunks.Count;
+
       for (var i = 0; i < cnt; i++) {
         var chunk = _chunks[i];
+
         if (chunk == null)
           continue;
 
         if (chunk.ReadLeft == 0) {
           _chunks[i] = null;
+
           continue;
         }
 
         nread += chunk.Read (buffer, offset + nread, count - nread);
+
         if (nread == count)
           break;
       }
