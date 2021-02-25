@@ -140,6 +140,7 @@ namespace WebSocketSharp.Net
     private static string removeChunkExtension (string value)
     {
       var idx = value.IndexOf (';');
+
       return idx > -1 ? value.Substring (0, idx) : value;
     }
 
