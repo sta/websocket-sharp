@@ -151,6 +151,7 @@ namespace WebSocketSharp.Net
           throwProtocolViolation ("CR is expected.");
 
         _sawCr = true;
+
         if (offset == length)
           return InputChunkState.DataEnded;
       }
