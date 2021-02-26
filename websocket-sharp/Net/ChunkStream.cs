@@ -162,11 +162,15 @@ namespace WebSocketSharp.Net
       return InputChunkState.None;
     }
 
-    private InputChunkState setChunkSize (byte[] buffer, ref int offset, int length)
+    private InputChunkState setChunkSize (
+      byte[] buffer, ref int offset, int length
+    )
     {
       byte b = 0;
+
       while (offset < length) {
         b = buffer[offset++];
+
         if (_sawCr) {
           if (b != 10)
             throwProtocolViolation ("LF is expected.");
@@ -176,6 +180,7 @@ namespace WebSocketSharp.Net
 
         if (b == 13) {
           _sawCr = true;
+
           continue;
         }
 
@@ -196,9 +201,12 @@ namespace WebSocketSharp.Net
         return InputChunkState.None;
 
       _chunkRead = 0;
+
       try {
         _chunkSize = Int32.Parse (
-          removeChunkExtension (_saved.ToString ()), NumberStyles.HexNumber);
+                       removeChunkExtension (_saved.ToString ()),
+                       NumberStyles.HexNumber
+                     );
       }
       catch {
         throwProtocolViolation ("The chunk size cannot be parsed.");
@@ -206,6 +214,7 @@ namespace WebSocketSharp.Net
 
       if (_chunkSize == 0) {
         _trailerState = 2;
+
         return InputChunkState.Trailer;
       }
 
