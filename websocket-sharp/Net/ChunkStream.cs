@@ -286,7 +286,9 @@ namespace WebSocketSharp.Net
 
     private static void throwProtocolViolation (string message)
     {
-      throw new WebException (message, null, WebExceptionStatus.ServerProtocolViolation, null);
+      throw new WebException (
+              message, null, WebExceptionStatus.ServerProtocolViolation, null
+            );
     }
 
     private void write (byte[] buffer, ref int offset, int length)
