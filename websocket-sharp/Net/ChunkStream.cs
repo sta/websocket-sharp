@@ -221,13 +221,17 @@ namespace WebSocketSharp.Net
       return InputChunkState.Data;
     }
 
-    private InputChunkState setTrailer (byte[] buffer, ref int offset, int length)
+    private InputChunkState setTrailer (
+      byte[] buffer, ref int offset, int length
+    )
     {
       // Check if no trailer.
       if (_trailerState == 2 && buffer[offset] == 13 && _saved.Length == 0) {
         offset++;
+
         if (offset < length && buffer[offset] == 10) {
           offset++;
+
           return InputChunkState.End;
         }
 
@@ -237,6 +241,7 @@ namespace WebSocketSharp.Net
       while (offset < length && _trailerState < 4) {
         var b = buffer[offset++];
         _saved.Append ((char) b);
+
         if (_saved.Length > 4196)
           throwProtocolViolation ("The trailer is too long.");
 
@@ -245,11 +250,13 @@ namespace WebSocketSharp.Net
             throwProtocolViolation ("LF is expected.");
 
           _trailerState++;
+
           continue;
         }
 
         if (b == 13) {
           _trailerState++;
+
           continue;
         }
 
@@ -265,9 +272,14 @@ namespace WebSocketSharp.Net
       _saved.Length -= 2;
       var reader = new StringReader (_saved.ToString ());
 
-      string line;
-      while ((line = reader.ReadLine ()) != null && line.Length > 0)
+      while (true) {
+        var line = reader.ReadLine ();
+
+        if (line == null || line.Length == 0)
+          break;
+
         _headers.Add (line);
+      }
 
       return InputChunkState.End;
     }
