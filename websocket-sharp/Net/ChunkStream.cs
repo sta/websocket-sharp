@@ -298,6 +298,7 @@ namespace WebSocketSharp.Net
 
       if (_state == InputChunkState.None) {
         _state = setChunkSize (buffer, ref offset, length);
+
         if (_state == InputChunkState.None)
           return;
 
@@ -308,12 +309,14 @@ namespace WebSocketSharp.Net
 
       if (_state == InputChunkState.Data && offset < length) {
         _state = writeData (buffer, ref offset, length);
+
         if (_state == InputChunkState.Data)
           return;
       }
 
       if (_state == InputChunkState.DataEnded && offset < length) {
         _state = seekCrLf (buffer, ref offset, length);
+
         if (_state == InputChunkState.DataEnded)
           return;
 
@@ -322,6 +325,7 @@ namespace WebSocketSharp.Net
 
       if (_state == InputChunkState.Trailer && offset < length) {
         _state = setTrailer (buffer, ref offset, length);
+
         if (_state == InputChunkState.Trailer)
           return;
 
