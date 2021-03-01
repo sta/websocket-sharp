@@ -366,6 +366,7 @@ namespace WebSocketSharp.Net
     {
       _chunkRead = 0;
       _chunkSize = -1;
+
       _chunks.Clear ();
     }
 
