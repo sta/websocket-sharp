@@ -336,10 +336,13 @@ namespace WebSocketSharp.Net
         write (buffer, ref offset, length);
     }
 
-    private InputChunkState writeData (byte[] buffer, ref int offset, int length)
+    private InputChunkState writeData (
+      byte[] buffer, ref int offset, int length
+    )
     {
       var cnt = length - offset;
       var left = _chunkSize - _chunkRead;
+
       if (cnt > left)
         cnt = left;
 
@@ -350,7 +353,9 @@ namespace WebSocketSharp.Net
       offset += cnt;
       _chunkRead += cnt;
 
-      return _chunkRead == _chunkSize ? InputChunkState.DataEnded : InputChunkState.Data;
+      return _chunkRead == _chunkSize
+             ? InputChunkState.DataEnded
+             : InputChunkState.Data;
     }
 
     #endregion
