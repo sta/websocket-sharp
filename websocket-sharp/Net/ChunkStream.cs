@@ -370,15 +370,6 @@ namespace WebSocketSharp.Net
       _chunks.Clear ();
     }
 
-    internal int WriteAndReadBack (
-      byte[] buffer, int offset, int writeCount, int readCount
-    )
-    {
-      Write (buffer, offset, writeCount);
-
-      return Read (buffer, offset, readCount);
-    }
-
     #endregion
 
     #region Public Methods
