@@ -291,7 +291,7 @@ namespace WebSocketSharp.Net
             );
     }
 
-    private void write (byte[] buffer, ref int offset, int length)
+    private void write (byte[] buffer, int offset, int length)
     {
       if (_state == InputChunkState.End)
         throwProtocolViolation ("The chunks were ended.");
@@ -333,7 +333,7 @@ namespace WebSocketSharp.Net
       }
 
       if (offset < length)
-        write (buffer, ref offset, length);
+        write (buffer, offset, length);
     }
 
     private InputChunkState writeData (
@@ -387,7 +387,7 @@ namespace WebSocketSharp.Net
       if (count <= 0)
         return;
 
-      write (buffer, ref offset, offset + count);
+      write (buffer, offset, offset + count);
     }
 
     #endregion
