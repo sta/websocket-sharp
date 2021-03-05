@@ -73,14 +73,6 @@ namespace WebSocketSharp.Net
       _saved = new StringBuilder ();
     }
 
-    public ChunkStream (
-      byte[] buffer, int offset, int count, WebHeaderCollection headers
-    )
-      : this (headers)
-    {
-      Write (buffer, offset, count);
-    }
-
     #endregion
 
     #region Internal Properties
