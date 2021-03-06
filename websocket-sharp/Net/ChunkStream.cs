@@ -309,7 +309,10 @@ namespace WebSocketSharp.Net
           return;
       }
 
-      if (_state == InputChunkState.DataEnded && offset < length) {
+      if (_state == InputChunkState.DataEnded) {
+        if (offset >= length)
+          return;
+
         _state = seekCrLf (buffer, ref offset, length);
 
         if (_state == InputChunkState.DataEnded)
