@@ -299,7 +299,10 @@ namespace WebSocketSharp.Net
         _gotIt = false;
       }
 
-      if (_state == InputChunkState.Data && offset < length) {
+      if (_state == InputChunkState.Data) {
+        if (offset >= length)
+          return;
+
         _state = writeData (buffer, ref offset, length);
 
         if (_state == InputChunkState.Data)
