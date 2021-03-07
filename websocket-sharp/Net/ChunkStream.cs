@@ -321,7 +321,10 @@ namespace WebSocketSharp.Net
         _sawCr = false;
       }
 
-      if (_state == InputChunkState.Trailer && offset < length) {
+      if (_state == InputChunkState.Trailer) {
+        if (offset >= length)
+          return;
+
         _state = setTrailer (buffer, ref offset, length);
 
         if (_state == InputChunkState.Trailer)
