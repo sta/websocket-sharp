@@ -333,8 +333,10 @@ namespace WebSocketSharp.Net
         _saved.Length = 0;
       }
 
-      if (offset < length)
-        write (buffer, offset, length);
+      if (offset >= length)
+        return;
+
+      write (buffer, offset, length);
     }
 
     private InputChunkState writeData (
