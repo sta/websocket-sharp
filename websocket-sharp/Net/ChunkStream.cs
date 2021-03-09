@@ -230,7 +230,10 @@ namespace WebSocketSharp.Net
         offset--;
       }
 
-      while (offset < length && _trailerState < 4) {
+      while (offset < length) {
+        if (_trailerState == 4)
+          break;
+
         var b = buffer[offset++];
         _saved.Append ((char) b);
 
