@@ -231,7 +231,7 @@ namespace WebSocketSharp.Net
       }
 
       while (offset < length) {
-        if (_trailerState == 4)
+        if (_trailerState == 4) // CR LF CR LF
           break;
 
         var b = buffer[offset++];
@@ -240,7 +240,7 @@ namespace WebSocketSharp.Net
         if (_saved.Length > 4196)
           throwProtocolViolation ("The trailer is too long.");
 
-        if (_trailerState == 1 || _trailerState == 3) {
+        if (_trailerState == 1 || _trailerState == 3) { // CR or CR LF CR
           if (b != 10)
             throwProtocolViolation ("LF is expected.");
 
