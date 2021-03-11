@@ -217,19 +217,6 @@ namespace WebSocketSharp.Net
       byte[] buffer, ref int offset, int length
     )
     {
-      // Check if no trailer.
-      if (_trailerState == 2 && buffer[offset] == 13 && _saved.Length == 0) {
-        offset++;
-
-        if (offset < length && buffer[offset] == 10) {
-          offset++;
-
-          return InputChunkState.End;
-        }
-
-        offset--;
-      }
-
       while (offset < length) {
         if (_trailerState == 4) // CR LF CR LF
           break;
@@ -263,6 +250,9 @@ namespace WebSocketSharp.Net
 
       if (_trailerState < 4)
         return InputChunkState.Trailer;
+
+      if (_saved.Length == 2)
+        return InputChunkState.End;
 
       _saved.Length -= 2;
       var reader = new StringReader (_saved.ToString ());
