@@ -224,9 +224,6 @@ namespace WebSocketSharp.Net
         var b = buffer[offset++];
         _saved.Append ((char) b);
 
-        if (_saved.Length > 4196)
-          throwProtocolViolation ("The trailer is too long.");
-
         if (_trailerState == 1 || _trailerState == 3) { // CR or CR LF CR
           if (b != 10)
             throwProtocolViolation ("LF is expected.");
@@ -247,6 +244,9 @@ namespace WebSocketSharp.Net
 
         _trailerState = 0;
       }
+
+      if (_saved.Length > 4196)
+        throwProtocolViolation ("The trailer is too long.");
 
       if (_trailerState < 4)
         return InputChunkState.Trailer;
