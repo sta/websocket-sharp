@@ -245,16 +245,18 @@ namespace WebSocketSharp.Net
         _trailerState = 0;
       }
 
-      if (_saved.Length > 4196)
+      var len = _saved.Length;
+
+      if (len > 4196)
         throwProtocolViolation ("The trailer is too long.");
 
       if (_trailerState < 4)
         return InputChunkState.Trailer;
 
-      if (_saved.Length == 2)
+      if (len == 2)
         return InputChunkState.End;
 
-      _saved.Length -= 2;
+      _saved.Length = len - 2;
       var reader = new StringReader (_saved.ToString ());
 
       while (true) {
