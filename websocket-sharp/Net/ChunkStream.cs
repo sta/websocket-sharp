@@ -182,8 +182,10 @@ namespace WebSocketSharp.Net
         if (b == 32) // SP
           _gotIt = true;
 
-        if (!_gotIt)
-          _saved.Append ((char) b);
+        if (_gotIt)
+          continue;
+
+        _saved.Append ((char) b);
       }
 
       if (_saved.Length > 20)
