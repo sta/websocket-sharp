@@ -191,7 +191,7 @@ namespace WebSocketSharp.Net
       if (_saved.Length > 20)
         throwProtocolViolation ("The chunk size is too long.");
 
-      if (!_sawCr || b != 10)
+      if (b != 10)
         return InputChunkState.None;
 
       _chunkRead = 0;
