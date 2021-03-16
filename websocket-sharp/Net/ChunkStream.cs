@@ -348,7 +348,9 @@ namespace WebSocketSharp.Net
 
       var data = new byte[cnt];
       Buffer.BlockCopy (buffer, offset, data, 0, cnt);
-      _chunks.Add (new Chunk (data));
+
+      var chunk = new Chunk (data);
+      _chunks.Add (chunk);
 
       offset += cnt;
       _chunkRead += cnt;
