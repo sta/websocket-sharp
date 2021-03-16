@@ -259,7 +259,8 @@ namespace WebSocketSharp.Net
         return InputChunkState.End;
 
       _saved.Length = len - 2;
-      var reader = new StringReader (_saved.ToString ());
+      var val = _saved.ToString ();
+      var reader = new StringReader (val);
 
       while (true) {
         var line = reader.ReadLine ();
