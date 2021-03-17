@@ -196,11 +196,11 @@ namespace WebSocketSharp.Net
 
       _chunkRead = 0;
 
+      var val = _saved.ToString ();
+      var s = removeChunkExtension (val);
+
       try {
-        _chunkSize = Int32.Parse (
-                       removeChunkExtension (_saved.ToString ()),
-                       NumberStyles.HexNumber
-                     );
+        _chunkSize = Int32.Parse (s, NumberStyles.HexNumber);
       }
       catch {
         throwProtocolViolation ("The chunk size cannot be parsed.");
