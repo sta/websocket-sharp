@@ -194,8 +194,6 @@ namespace WebSocketSharp.Net
       if (b != 10)
         return InputChunkState.None;
 
-      _chunkRead = 0;
-
       var val = _saved.ToString ();
       var s = removeChunkExtension (val);
 
@@ -205,6 +203,8 @@ namespace WebSocketSharp.Net
       catch {
         throwProtocolViolation ("The chunk size cannot be parsed.");
       }
+
+      _chunkRead = 0;
 
       if (_chunkSize == 0) {
         _trailerState = 2;
