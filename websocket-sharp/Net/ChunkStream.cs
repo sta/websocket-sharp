@@ -179,11 +179,14 @@ namespace WebSocketSharp.Net
         if (b == 10)
           throwProtocolViolation ("LF is unexpected.");
 
-        if (b == 32) // SP
-          _gotIt = true;
-
         if (_gotIt)
           continue;
+
+        if (b == 32) { // SP
+          _gotIt = true;
+
+          continue;
+        }
 
         _saved.Append ((char) b);
       }
