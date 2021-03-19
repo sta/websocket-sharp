@@ -182,7 +182,7 @@ namespace WebSocketSharp.Net
         if (_gotIt)
           continue;
 
-        if (b == 32) { // SP
+        if (b == 32 || b == 59) { // SP or ';'
           _gotIt = true;
 
           continue;
@@ -197,8 +197,7 @@ namespace WebSocketSharp.Net
       if (b != 10)
         return InputChunkState.None;
 
-      var val = _saved.ToString ();
-      var s = removeChunkExtension (val);
+      var s = _saved.ToString ();
 
       try {
         _chunkSize = Int32.Parse (s, NumberStyles.HexNumber);
