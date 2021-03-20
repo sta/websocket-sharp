@@ -129,13 +129,6 @@ namespace WebSocketSharp.Net
       return nread;
     }
 
-    private static string removeChunkExtension (string value)
-    {
-      var idx = value.IndexOf (';');
-
-      return idx > -1 ? value.Substring (0, idx) : value;
-    }
-
     private InputChunkState seekCrLf (byte[] buffer, ref int offset, int length)
     {
       if (!_sawCr) {
