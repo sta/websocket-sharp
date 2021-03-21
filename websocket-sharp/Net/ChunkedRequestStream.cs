@@ -123,7 +123,7 @@ namespace WebSocketSharp.Net
         }
 
         ares.Offset = 0;
-        ares.Count = Math.Min (_bufferLength, _decoder.ChunkLeft + 6);
+        ares.Count = _bufferLength;
 
         base.BeginRead (ares.Buffer, ares.Offset, ares.Count, onRead, rstate);
       }
