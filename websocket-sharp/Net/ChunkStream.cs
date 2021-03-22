@@ -87,12 +87,6 @@ namespace WebSocketSharp.Net
 
     #region Public Properties
 
-    public int ChunkLeft {
-      get {
-        return _chunkSize - _chunkRead;
-      }
-    }
-
     public bool WantMore {
       get {
         return _state != InputChunkState.End;
