@@ -122,9 +122,6 @@ namespace WebSocketSharp.Net
           return;
         }
 
-        ares.Offset = 0;
-        ares.Count = _bufferLength;
-
         base.BeginRead (ares.Buffer, ares.Offset, ares.Count, onRead, rstate);
       }
       catch (Exception ex) {
