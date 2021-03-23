@@ -83,20 +83,6 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Internal Properties
-
-    internal ChunkStream Decoder {
-      get {
-        return _decoder;
-      }
-
-      set {
-        _decoder = value;
-      }
-    }
-
-    #endregion
-
     #region Private Methods
 
     private void onRead (IAsyncResult asyncResult)
