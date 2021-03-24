@@ -89,7 +89,7 @@ namespace WebSocketSharp.Net
 
     public bool WantMore {
       get {
-        return _state != InputChunkState.End;
+        return _state < InputChunkState.End;
       }
     }
 
