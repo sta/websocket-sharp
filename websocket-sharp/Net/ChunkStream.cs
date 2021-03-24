@@ -87,7 +87,7 @@ namespace WebSocketSharp.Net
 
     #region Public Properties
 
-    public bool WantMore {
+    public bool WantsMore {
       get {
         return _state < InputChunkState.End;
       }

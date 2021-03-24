@@ -99,8 +99,8 @@ namespace WebSocketSharp.Net
         rstate.Offset += nread;
         rstate.Count -= nread;
 
-        if (rstate.Count == 0 || !_decoder.WantMore || nread == 0) {
-          _noMoreData = !_decoder.WantMore && nread == 0;
+        if (rstate.Count == 0 || !_decoder.WantsMore || nread == 0) {
+          _noMoreData = !_decoder.WantsMore && nread == 0;
 
           ares.Count = rstate.InitialCount - rstate.Count;
           ares.Complete ();
@@ -175,7 +175,7 @@ namespace WebSocketSharp.Net
         return ares;
       }
 
-      if (!_decoder.WantMore) {
+      if (!_decoder.WantsMore) {
         _noMoreData = nread == 0;
 
         ares.Count = nread;
