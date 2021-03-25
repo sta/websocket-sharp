@@ -75,17 +75,13 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Internal Properties
+    #region Public Properties
 
-    internal WebHeaderCollection Headers {
+    public WebHeaderCollection Headers {
       get {
         return _headers;
       }
     }
-
-    #endregion
-
-    #region Public Properties
 
     public bool WantsMore {
       get {
