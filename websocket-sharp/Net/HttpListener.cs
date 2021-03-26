@@ -802,10 +802,12 @@ namespace WebSocketSharp.Net
     public void Stop ()
     {
       CheckDisposed ();
+
       if (!_listening)
         return;
 
       _listening = false;
+
       EndPointManager.RemoveListener (this);
 
       lock (_ctxRegistrySync)
@@ -813,7 +815,9 @@ namespace WebSocketSharp.Net
 
       cleanupContextRegistry ();
       cleanupConnections ();
-      cleanupWaitQueue (new HttpListenerException (995, "The listener is stopped."));
+
+      var ex = new HttpListenerException (995, "The listener is stopped.");
+      cleanupWaitQueue (ex);
     }
 
     #endregion
