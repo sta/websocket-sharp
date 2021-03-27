@@ -786,10 +786,12 @@ namespace WebSocketSharp.Net
     public void Start ()
     {
       CheckDisposed ();
+
       if (_listening)
         return;
 
       EndPointManager.AddListener (this);
+
       _listening = true;
     }
 
