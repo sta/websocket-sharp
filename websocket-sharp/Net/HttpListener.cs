@@ -722,17 +722,26 @@ namespace WebSocketSharp.Net
     public HttpListenerContext EndGetContext (IAsyncResult asyncResult)
     {
       CheckDisposed ();
+
       if (asyncResult == null)
         throw new ArgumentNullException ("asyncResult");
 
       var ares = asyncResult as HttpListenerAsyncResult;
-      if (ares == null)
-        throw new ArgumentException ("A wrong IAsyncResult.", "asyncResult");
 
-      if (ares.EndCalled)
-        throw new InvalidOperationException ("This IAsyncResult cannot be reused.");
+      if (ares == null) {
+        var msg = "A wrong IAsyncResult instance.";
+
+        throw new ArgumentException (msg, "asyncResult");
+      }
+
+      if (ares.EndCalled) {
+        var msg = "This IAsyncResult instance cannot be reused.";
+
+        throw new InvalidOperationException (msg);
+      }
 
       ares.EndCalled = true;
+
       if (!ares.IsCompleted)
         ares.AsyncWaitHandle.WaitOne ();
 
