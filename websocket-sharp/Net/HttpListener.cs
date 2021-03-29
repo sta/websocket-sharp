@@ -743,7 +743,8 @@ namespace WebSocketSharp.Net
     /// Gets an incoming request.
     /// </summary>
     /// <remarks>
-    /// This method waits for an incoming request, and returns when a request is received.
+    /// This method waits for an incoming request and returns when a request is
+    /// received.
     /// </remarks>
     /// <returns>
     /// A <see cref="HttpListenerContext"/> that represents a request.
@@ -756,7 +757,7 @@ namespace WebSocketSharp.Net
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   This listener hasn't been started, or is currently stopped.
+    ///   This listener has not been started or is currently stopped.
     ///   </para>
     /// </exception>
     /// <exception cref="ObjectDisposedException">
