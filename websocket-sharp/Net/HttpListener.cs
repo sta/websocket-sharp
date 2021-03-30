@@ -699,22 +699,24 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <remarks>
     /// This method completes an asynchronous operation started by calling
-    /// the <c>BeginGetContext</c> method.
+    /// the BeginGetContext method.
     /// </remarks>
     /// <returns>
     /// A <see cref="HttpListenerContext"/> that represents a request.
     /// </returns>
     /// <param name="asyncResult">
-    /// An <see cref="IAsyncResult"/> obtained by calling the <c>BeginGetContext</c> method.
+    /// An <see cref="IAsyncResult"/> instance obtained by calling
+    /// the BeginGetContext method.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="asyncResult"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="asyncResult"/> wasn't obtained by calling the <c>BeginGetContext</c> method.
+    /// <paramref name="asyncResult"/> was not obtained by calling
+    /// the BeginGetContext method.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// This method was already called for the specified <paramref name="asyncResult"/>.
+    /// This method was already called for <paramref name="asyncResult"/>.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
