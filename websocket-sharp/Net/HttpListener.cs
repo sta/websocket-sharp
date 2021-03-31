@@ -674,11 +674,18 @@ namespace WebSocketSharp.Net
     public IAsyncResult BeginGetContext (AsyncCallback callback, Object state)
     {
       CheckDisposed ();
-      if (_prefixes.Count == 0)
-        throw new InvalidOperationException ("The listener has no URI prefix on which listens.");
 
-      if (!_listening)
-        throw new InvalidOperationException ("The listener hasn't been started.");
+      if (_prefixes.Count == 0) {
+        var msg = "The listener has no URI prefix on which listens.";
+
+        throw new InvalidOperationException (msg);
+      }
+
+      if (!_listening) {
+        var msg = "The listener has not been started.";
+
+        throw new InvalidOperationException (msg);
+      }
 
       return BeginGetContext (new HttpListenerAsyncResult (callback, state));
     }
