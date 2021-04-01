@@ -643,19 +643,26 @@ namespace WebSocketSharp.Net
     /// Begins getting an incoming request asynchronously.
     /// </summary>
     /// <remarks>
-    /// This asynchronous operation must be completed by calling the <c>EndGetContext</c> method.
-    /// Typically, the method is invoked by the <paramref name="callback"/> delegate.
+    ///   <para>
+    ///   This asynchronous operation must be completed by calling
+    ///   the EndGetContext method.
+    ///   </para>
+    ///   <para>
+    ///   Typically, the EndGetContext method is called by
+    ///   <paramref name="callback"/>.
+    ///   </para>
     /// </remarks>
     /// <returns>
-    /// An <see cref="IAsyncResult"/> that represents the status of the asynchronous operation.
+    /// An <see cref="IAsyncResult"/> that represents the status of
+    /// the asynchronous operation.
     /// </returns>
     /// <param name="callback">
-    /// An <see cref="AsyncCallback"/> delegate that references the method to invoke when
-    /// the asynchronous operation completes.
+    /// An <see cref="AsyncCallback"/> delegate that references the method to
+    /// invoke when the asynchronous operation completes.
     /// </param>
     /// <param name="state">
-    /// An <see cref="object"/> that represents a user defined object to pass to
-    /// the <paramref name="callback"/> delegate.
+    /// An <see cref="object"/> that represents a user defined object to
+    /// pass to <paramref name="callback"/>.
     /// </param>
     /// <exception cref="InvalidOperationException">
     ///   <para>
@@ -665,7 +672,7 @@ namespace WebSocketSharp.Net
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   This listener hasn't been started, or is currently stopped.
+    ///   This listener has not been started or is currently stopped.
     ///   </para>
     /// </exception>
     /// <exception cref="ObjectDisposedException">
