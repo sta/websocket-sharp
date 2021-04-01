@@ -604,9 +604,12 @@ namespace WebSocketSharp.Net
         _connections.Remove (connection);
     }
 
-    internal AuthenticationSchemes SelectAuthenticationScheme (HttpListenerRequest request)
+    internal AuthenticationSchemes SelectAuthenticationScheme (
+      HttpListenerRequest request
+    )
     {
       var selector = _authSchemeSelector;
+
       if (selector == null)
         return _authSchemes;
 
