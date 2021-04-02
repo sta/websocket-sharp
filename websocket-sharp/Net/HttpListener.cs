@@ -589,6 +589,7 @@ namespace WebSocketSharp.Net
         _ctxRegistry[context] = context;
 
         var ares = getAsyncResultFromQueue ();
+
         if (ares == null)
           _ctxQueue.Add (context);
         else
