@@ -540,6 +540,7 @@ namespace WebSocketSharp.Net
           return false;
 
         _connections[connection] = connection;
+
         return true;
       }
     }
