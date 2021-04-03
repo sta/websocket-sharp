@@ -544,13 +544,16 @@ namespace WebSocketSharp.Net
       }
     }
 
-    internal HttpListenerAsyncResult BeginGetContext (HttpListenerAsyncResult asyncResult)
+    internal HttpListenerAsyncResult BeginGetContext (
+      HttpListenerAsyncResult asyncResult
+    )
     {
       lock (_ctxRegistrySync) {
         if (!_listening)
           throw new HttpListenerException (995);
 
         var ctx = getContextFromQueue ();
+
         if (ctx == null)
           _waitQueue.Add (asyncResult);
         else
