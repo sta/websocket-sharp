@@ -509,10 +509,11 @@ namespace WebSocketSharp.Net
       if (_waitQueue.Count == 0)
         return null;
 
-      var ares = _waitQueue[0];
+      var ret = _waitQueue[0];
+
       _waitQueue.RemoveAt (0);
 
-      return ares;
+      return ret;
     }
 
     private HttpListenerContext getContextFromQueue ()
