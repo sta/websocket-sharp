@@ -520,10 +520,11 @@ namespace WebSocketSharp.Net
       if (_ctxQueue.Count == 0)
         return null;
 
-      var ctx = _ctxQueue[0];
+      var ret = _ctxQueue[0];
+
       _ctxQueue.RemoveAt (0);
 
-      return ctx;
+      return ret;
     }
 
     #endregion
