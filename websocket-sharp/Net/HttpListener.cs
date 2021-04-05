@@ -475,11 +475,13 @@ namespace WebSocketSharp.Net
     private void cleanupWaitQueue (Exception exception)
     {
       HttpListenerAsyncResult[] aress = null;
+
       lock (_waitQueueSync) {
         if (_waitQueue.Count == 0)
           return;
 
         aress = _waitQueue.ToArray ();
+
         _waitQueue.Clear ();
       }
 
