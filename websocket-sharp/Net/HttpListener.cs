@@ -491,6 +491,7 @@ namespace WebSocketSharp.Net
     {
       if (_listening) {
         _listening = false;
+
         EndPointManager.RemoveListener (this);
       }
 
@@ -499,7 +500,9 @@ namespace WebSocketSharp.Net
 
       cleanupContextRegistry ();
       cleanupConnections ();
-      cleanupWaitQueue (new ObjectDisposedException (GetType ().ToString ()));
+
+      var ex = new ObjectDisposedException (GetType ().ToString ());
+      cleanupWaitQueue (ex);
 
       _disposed = true;
     }
