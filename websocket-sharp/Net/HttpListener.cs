@@ -457,6 +457,7 @@ namespace WebSocketSharp.Net
     private void cleanupContextRegistry ()
     {
       HttpListenerContext[] ctxs = null;
+
       lock (_ctxRegistrySync) {
         if (_ctxRegistry.Count == 0)
           return;
@@ -465,6 +466,7 @@ namespace WebSocketSharp.Net
         var keys = _ctxRegistry.Keys;
         ctxs = new HttpListenerContext[keys.Count];
         keys.CopyTo (ctxs, 0);
+
         _ctxRegistry.Clear ();
       }
 
