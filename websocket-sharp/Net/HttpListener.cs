@@ -418,6 +418,7 @@ namespace WebSocketSharp.Net
     private void cleanupConnections ()
     {
       HttpConnection[] conns = null;
+
       lock (_connectionsSync) {
         if (_connections.Count == 0)
           return;
@@ -426,6 +427,7 @@ namespace WebSocketSharp.Net
         var keys = _connections.Keys;
         conns = new HttpConnection[keys.Count];
         keys.CopyTo (conns, 0);
+
         _connections.Clear ();
       }
 
