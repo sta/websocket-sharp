@@ -68,8 +68,8 @@ namespace WebSocketSharp.Net
     private object                                               _connectionsSync;
     private List<HttpListenerContext>                            _ctxQueue;
     private object                                               _ctxQueueSync;
-    private Dictionary<HttpListenerContext, HttpListenerContext> _ctxRegistry;
-    private object                                               _ctxRegistrySync;
+    private Dictionary<HttpListenerContext, HttpListenerContext> _contextRegistry;
+    private object                                               _contextRegistrySync;
     private static readonly string                               _defaultRealm;
     private bool                                                 _disposed;
     private bool                                                 _ignoreWriteExceptions;
@@ -109,8 +109,8 @@ namespace WebSocketSharp.Net
       _ctxQueue = new List<HttpListenerContext> ();
       _ctxQueueSync = ((ICollection) _ctxQueue).SyncRoot;
 
-      _ctxRegistry = new Dictionary<HttpListenerContext, HttpListenerContext> ();
-      _ctxRegistrySync = ((ICollection) _ctxRegistry).SyncRoot;
+      _contextRegistry = new Dictionary<HttpListenerContext, HttpListenerContext> ();
+      _contextRegistrySync = ((ICollection) _contextRegistry).SyncRoot;
 
       _logger = new Logger ();
 
@@ -463,16 +463,16 @@ namespace WebSocketSharp.Net
     {
       HttpListenerContext[] ctxs = null;
 
-      lock (_ctxRegistrySync) {
-        if (_ctxRegistry.Count == 0)
+      lock (_contextRegistrySync) {
+        if (_contextRegistry.Count == 0)
           return;
 
         // Need to copy this since closing will call the UnregisterContext method.
-        var keys = _ctxRegistry.Keys;
+        var keys = _contextRegistry.Keys;
         ctxs = new HttpListenerContext[keys.Count];
         keys.CopyTo (ctxs, 0);
 
-        _ctxRegistry.Clear ();
+        _contextRegistry.Clear ();
       }
 
       for (var i = ctxs.Length - 1; i >= 0; i--)
@@ -504,7 +504,7 @@ namespace WebSocketSharp.Net
         EndPointManager.RemoveListener (this);
       }
 
-      lock (_ctxRegistrySync)
+      lock (_contextRegistrySync)
         cleanupContextQueue (!force);
 
       cleanupContextRegistry ();
@@ -563,7 +563,7 @@ namespace WebSocketSharp.Net
       HttpListenerAsyncResult asyncResult
     )
     {
-      lock (_ctxRegistrySync) {
+      lock (_contextRegistrySync) {
         if (!_listening)
           throw new HttpListenerException (995);
 
@@ -601,11 +601,11 @@ namespace WebSocketSharp.Net
       if (!_listening)
         return false;
 
-      lock (_ctxRegistrySync) {
+      lock (_contextRegistrySync) {
         if (!_listening)
           return false;
 
-        _ctxRegistry[context] = context;
+        _contextRegistry[context] = context;
 
         var ares = getAsyncResultFromQueue ();
 
@@ -643,8 +643,8 @@ namespace WebSocketSharp.Net
 
     internal void UnregisterContext (HttpListenerContext context)
     {
-      lock (_ctxRegistrySync)
-        _ctxRegistry.Remove (context);
+      lock (_contextRegistrySync)
+        _contextRegistry.Remove (context);
     }
 
     #endregion
@@ -868,7 +868,7 @@ namespace WebSocketSharp.Net
 
       EndPointManager.RemoveListener (this);
 
-      lock (_ctxRegistrySync)
+      lock (_contextRegistrySync)
         cleanupContextQueue (true);
 
       cleanupContextRegistry ();
