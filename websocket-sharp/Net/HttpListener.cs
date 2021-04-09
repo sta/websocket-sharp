@@ -68,7 +68,7 @@ namespace WebSocketSharp.Net
     private object                                               _connectionsSync;
     private List<HttpListenerContext>                            _ctxQueue;
     private object                                               _ctxQueueSync;
-    private Dictionary<HttpListenerContext, HttpListenerContext> _contextRegistry;
+    private LinkedList<HttpListenerContext>                      _contextRegistry;
     private object                                               _contextRegistrySync;
     private static readonly string                               _defaultRealm;
     private bool                                                 _disposed;
@@ -109,7 +109,7 @@ namespace WebSocketSharp.Net
       _ctxQueue = new List<HttpListenerContext> ();
       _ctxQueueSync = ((ICollection) _ctxQueue).SyncRoot;
 
-      _contextRegistry = new Dictionary<HttpListenerContext, HttpListenerContext> ();
+      _contextRegistry = new LinkedList<HttpListenerContext> ();
       _contextRegistrySync = ((ICollection) _contextRegistry).SyncRoot;
 
       _logger = new Logger ();
@@ -468,9 +468,8 @@ namespace WebSocketSharp.Net
           return;
 
         // Need to copy this since closing will call the UnregisterContext method.
-        var keys = _contextRegistry.Keys;
-        ctxs = new HttpListenerContext[keys.Count];
-        keys.CopyTo (ctxs, 0);
+        ctxs = new HttpListenerContext[_contextRegistry.Count];
+        _contextRegistry.CopyTo (ctxs, 0);
 
         _contextRegistry.Clear ();
       }
@@ -605,7 +604,7 @@ namespace WebSocketSharp.Net
         if (!_listening)
           return false;
 
-        _contextRegistry[context] = context;
+        _contextRegistry.AddLast (context);
 
         var ares = getAsyncResultFromQueue ();
 
