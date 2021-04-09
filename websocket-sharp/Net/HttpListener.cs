@@ -469,7 +469,6 @@ namespace WebSocketSharp.Net
         if (cnt == 0)
           return;
 
-        // Need to copy this since closing will call the UnregisterContext method.
         ctxs = new HttpListenerContext[cnt];
         _contextRegistry.CopyTo (ctxs, 0);
 
