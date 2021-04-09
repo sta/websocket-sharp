@@ -61,27 +61,27 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private AuthenticationSchemes                                _authSchemes;
-    private Func<HttpListenerRequest, AuthenticationSchemes>     _authSchemeSelector;
-    private string                                               _certFolderPath;
-    private Dictionary<HttpConnection, HttpConnection>           _connections;
-    private object                                               _connectionsSync;
-    private List<HttpListenerContext>                            _ctxQueue;
-    private object                                               _ctxQueueSync;
-    private LinkedList<HttpListenerContext>                      _contextRegistry;
-    private object                                               _contextRegistrySync;
-    private static readonly string                               _defaultRealm;
-    private bool                                                 _disposed;
-    private bool                                                 _ignoreWriteExceptions;
-    private volatile bool                                        _listening;
-    private Logger                                               _logger;
-    private HttpListenerPrefixCollection                         _prefixes;
-    private string                                               _realm;
-    private bool                                                 _reuseAddress;
-    private ServerSslConfiguration                               _sslConfig;
-    private Func<IIdentity, NetworkCredential>                   _userCredFinder;
-    private List<HttpListenerAsyncResult>                        _waitQueue;
-    private object                                               _waitQueueSync;
+    private AuthenticationSchemes                            _authSchemes;
+    private Func<HttpListenerRequest, AuthenticationSchemes> _authSchemeSelector;
+    private string                                           _certFolderPath;
+    private Dictionary<HttpConnection, HttpConnection>       _connections;
+    private object                                           _connectionsSync;
+    private List<HttpListenerContext>                        _ctxQueue;
+    private object                                           _ctxQueueSync;
+    private LinkedList<HttpListenerContext>                  _contextRegistry;
+    private object                                           _contextRegistrySync;
+    private static readonly string                           _defaultRealm;
+    private bool                                             _disposed;
+    private bool                                             _ignoreWriteExceptions;
+    private volatile bool                                    _listening;
+    private Logger                                           _logger;
+    private HttpListenerPrefixCollection                     _prefixes;
+    private string                                           _realm;
+    private bool                                             _reuseAddress;
+    private ServerSslConfiguration                           _sslConfig;
+    private Func<IIdentity, NetworkCredential>               _userCredFinder;
+    private List<HttpListenerAsyncResult>                    _waitQueue;
+    private object                                           _waitQueueSync;
 
     #endregion
 
