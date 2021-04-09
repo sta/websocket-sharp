@@ -464,11 +464,13 @@ namespace WebSocketSharp.Net
       HttpListenerContext[] ctxs = null;
 
       lock (_contextRegistrySync) {
-        if (_contextRegistry.Count == 0)
+        var cnt = _contextRegistry.Count;
+
+        if (cnt == 0)
           return;
 
         // Need to copy this since closing will call the UnregisterContext method.
-        ctxs = new HttpListenerContext[_contextRegistry.Count];
+        ctxs = new HttpListenerContext[cnt];
         _contextRegistry.CopyTo (ctxs, 0);
 
         _contextRegistry.Clear ();
