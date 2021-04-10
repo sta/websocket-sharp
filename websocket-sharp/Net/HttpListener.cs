@@ -66,8 +66,8 @@ namespace WebSocketSharp.Net
     private string                                           _certFolderPath;
     private Dictionary<HttpConnection, HttpConnection>       _connections;
     private object                                           _connectionsSync;
-    private List<HttpListenerContext>                        _ctxQueue;
-    private object                                           _ctxQueueSync;
+    private List<HttpListenerContext>                        _contextQueue;
+    private object                                           _contextQueueSync;
     private LinkedList<HttpListenerContext>                  _contextRegistry;
     private object                                           _contextRegistrySync;
     private static readonly string                           _defaultRealm;
@@ -106,8 +106,8 @@ namespace WebSocketSharp.Net
       _connections = new Dictionary<HttpConnection, HttpConnection> ();
       _connectionsSync = ((ICollection) _connections).SyncRoot;
 
-      _ctxQueue = new List<HttpListenerContext> ();
-      _ctxQueueSync = ((ICollection) _ctxQueue).SyncRoot;
+      _contextQueue = new List<HttpListenerContext> ();
+      _contextQueueSync = ((ICollection) _contextQueue).SyncRoot;
 
       _contextRegistry = new LinkedList<HttpListenerContext> ();
       _contextRegistrySync = ((ICollection) _contextRegistry).SyncRoot;
@@ -439,13 +439,13 @@ namespace WebSocketSharp.Net
     {
       HttpListenerContext[] ctxs = null;
 
-      lock (_ctxQueueSync) {
-        if (_ctxQueue.Count == 0)
+      lock (_contextQueueSync) {
+        if (_contextQueue.Count == 0)
           return;
 
-        ctxs = _ctxQueue.ToArray ();
+        ctxs = _contextQueue.ToArray ();
 
-        _ctxQueue.Clear ();
+        _contextQueue.Clear ();
       }
 
       if (!sendServiceUnavailable)
@@ -530,12 +530,12 @@ namespace WebSocketSharp.Net
 
     private HttpListenerContext getContextFromQueue ()
     {
-      if (_ctxQueue.Count == 0)
+      if (_contextQueue.Count == 0)
         return null;
 
-      var ret = _ctxQueue[0];
+      var ret = _contextQueue[0];
 
-      _ctxQueue.RemoveAt (0);
+      _contextQueue.RemoveAt (0);
 
       return ret;
     }
@@ -610,7 +610,7 @@ namespace WebSocketSharp.Net
         var ares = getAsyncResultFromQueue ();
 
         if (ares == null)
-          _ctxQueue.Add (context);
+          _contextQueue.Add (context);
         else
           ares.Complete (context);
 
