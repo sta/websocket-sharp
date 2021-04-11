@@ -528,10 +528,7 @@ namespace WebSocketSharp.Net
 
     private HttpListenerContext getContextFromQueue ()
     {
-      if (_contextQueue.Count == 0)
-        return null;
-
-      return _contextQueue.Dequeue ();
+      return _contextQueue.Count > 0 ? _contextQueue.Dequeue () : null;
     }
 
     #endregion
