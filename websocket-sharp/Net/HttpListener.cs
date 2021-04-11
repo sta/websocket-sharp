@@ -66,7 +66,7 @@ namespace WebSocketSharp.Net
     private string                                           _certFolderPath;
     private Dictionary<HttpConnection, HttpConnection>       _connections;
     private object                                           _connectionsSync;
-    private List<HttpListenerContext>                        _contextQueue;
+    private Queue<HttpListenerContext>                       _contextQueue;
     private object                                           _contextQueueSync;
     private LinkedList<HttpListenerContext>                  _contextRegistry;
     private object                                           _contextRegistrySync;
@@ -106,7 +106,7 @@ namespace WebSocketSharp.Net
       _connections = new Dictionary<HttpConnection, HttpConnection> ();
       _connectionsSync = ((ICollection) _connections).SyncRoot;
 
-      _contextQueue = new List<HttpListenerContext> ();
+      _contextQueue = new Queue<HttpListenerContext> ();
       _contextQueueSync = ((ICollection) _contextQueue).SyncRoot;
 
       _contextRegistry = new LinkedList<HttpListenerContext> ();
@@ -533,11 +533,7 @@ namespace WebSocketSharp.Net
       if (_contextQueue.Count == 0)
         return null;
 
-      var ret = _contextQueue[0];
-
-      _contextQueue.RemoveAt (0);
-
-      return ret;
+      return _contextQueue.Dequeue ();
     }
 
     #endregion
@@ -610,7 +606,7 @@ namespace WebSocketSharp.Net
         var ares = getAsyncResultFromQueue ();
 
         if (ares == null)
-          _contextQueue.Add (context);
+          _contextQueue.Enqueue (context);
         else
           ares.Complete (context);
 
