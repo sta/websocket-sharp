@@ -452,10 +452,8 @@ namespace WebSocketSharp.Net
         return;
 
       foreach (var ctx in ctxs) {
-        var res = ctx.Response;
-        res.StatusCode = 503;
-
-        res.Close ();
+        ctx.ErrorStatusCode = 503;
+        ctx.SendError ();
       }
     }
 
