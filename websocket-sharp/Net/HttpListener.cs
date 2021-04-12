@@ -80,7 +80,7 @@ namespace WebSocketSharp.Net
     private bool                                             _reuseAddress;
     private ServerSslConfiguration                           _sslConfig;
     private Func<IIdentity, NetworkCredential>               _userCredFinder;
-    private List<HttpListenerAsyncResult>                    _waitQueue;
+    private Queue<HttpListenerAsyncResult>                   _waitQueue;
     private object                                           _waitQueueSync;
 
     #endregion
@@ -116,7 +116,7 @@ namespace WebSocketSharp.Net
 
       _prefixes = new HttpListenerPrefixCollection (this);
 
-      _waitQueue = new List<HttpListenerAsyncResult> ();
+      _waitQueue = new Queue<HttpListenerAsyncResult> ();
       _waitQueueSync = ((ICollection) _waitQueue).SyncRoot;
     }
 
@@ -516,14 +516,7 @@ namespace WebSocketSharp.Net
 
     private HttpListenerAsyncResult getAsyncResultFromQueue ()
     {
-      if (_waitQueue.Count == 0)
-        return null;
-
-      var ret = _waitQueue[0];
-
-      _waitQueue.RemoveAt (0);
-
-      return ret;
+      return _waitQueue.Count > 0 ? _waitQueue.Dequeue () : null;
     }
 
     private HttpListenerContext getContextFromQueue ()
@@ -561,7 +554,7 @@ namespace WebSocketSharp.Net
         var ctx = getContextFromQueue ();
 
         if (ctx == null)
-          _waitQueue.Add (asyncResult);
+          _waitQueue.Enqueue (asyncResult);
         else
           asyncResult.Complete (ctx, true);
 
