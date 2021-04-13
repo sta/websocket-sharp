@@ -69,7 +69,7 @@ namespace WebSocketSharp.Net
     private Socket                   _socket;
     private ServerSslConfiguration   _sslConfig;
     private List<HttpListenerPrefix> _unhandled; // host == '*'
-    private List<HttpConnection>     _unregistered;
+    private LinkedList<HttpConnection> _unregistered;
     private object                   _unregisteredSync;
 
     #endregion
@@ -116,7 +116,7 @@ namespace WebSocketSharp.Net
       }
 
       _prefixes = new List<HttpListenerPrefix> ();
-      _unregistered = new List<HttpConnection> ();
+      _unregistered = new LinkedList<HttpConnection> ();
       _unregisteredSync = ((ICollection) _unregistered).SyncRoot;
 
       _socket = new Socket (
@@ -313,7 +313,7 @@ namespace WebSocketSharp.Net
       }
 
       lock (listener._unregisteredSync)
-        listener._unregistered.Add (conn);
+        listener._unregistered.AddLast (conn);
 
       conn.BeginReadRequest ();
     }
