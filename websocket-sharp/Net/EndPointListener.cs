@@ -200,8 +200,8 @@ namespace WebSocketSharp.Net
           return;
 
         conns = new HttpConnection[cnt];
-
         _unregistered.CopyTo (conns, 0);
+
         _unregistered.Clear ();
       }
 
