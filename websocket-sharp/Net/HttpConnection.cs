@@ -200,7 +200,7 @@ namespace WebSocketSharp.Net
       }
 
       unregisterContext ();
-      removeConnection ();
+      _listener.RemoveConnection (this);
     }
 
     private void closeSocket ()
