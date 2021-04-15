@@ -67,7 +67,6 @@ namespace WebSocketSharp.Net
     private StringBuilder         _currentLine;
     private InputState            _inputState;
     private RequestStream         _inputStream;
-    private HttpListener          _lastListener;
     private LineState             _lineState;
     private EndPointListener      _listener;
     private EndPoint              _localEndPoint;
@@ -454,38 +453,24 @@ namespace WebSocketSharp.Net
 
     private void registerContext (HttpListener listener)
     {
-      if (_lastListener != listener) {
-        removeConnection ();
-
-        if (!listener.AddConnection (this)) {
-          close ();
-
-          return;
-        }
-
-        _lastListener = listener;
-      }
-
       _context.Listener = listener;
 
       if (!_context.Authenticate ())
         return;
 
-      if (!_context.Register ())
+      if (!_context.Register ()) {
+        _context.ErrorStatusCode = 503;
+        _context.SendError ();
+
         return;
+      }
 
       _contextRegistered = true;
     }
 
     private void removeConnection ()
     {
-      if (_lastListener == null) {
-        _listener.RemoveConnection (this);
-
-        return;
-      }
-
-      _lastListener.RemoveConnection (this);
+      _listener.RemoveConnection (this);
     }
 
     private void unregisterContext ()
