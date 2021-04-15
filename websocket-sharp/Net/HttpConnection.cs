@@ -468,11 +468,6 @@ namespace WebSocketSharp.Net
       _contextRegistered = true;
     }
 
-    private void removeConnection ()
-    {
-      _listener.RemoveConnection (this);
-    }
-
     private void unregisterContext ()
     {
       if (!_contextRegistered)
