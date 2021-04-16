@@ -69,8 +69,8 @@ namespace WebSocketSharp.Net
     private Socket                     _socket;
     private ServerSslConfiguration     _sslConfig;
     private List<HttpListenerPrefix>   _unhandled; // host == '*'
-    private LinkedList<HttpConnection> _unregistered;
-    private object                     _unregisteredSync;
+    private LinkedList<HttpConnection> _connections;
+    private object                     _connectionsSync;
 
     #endregion
 
@@ -116,8 +116,8 @@ namespace WebSocketSharp.Net
       }
 
       _prefixes = new List<HttpListenerPrefix> ();
-      _unregistered = new LinkedList<HttpConnection> ();
-      _unregisteredSync = ((ICollection) _unregistered).SyncRoot;
+      _connections = new LinkedList<HttpConnection> ();
+      _connectionsSync = ((ICollection) _connections).SyncRoot;
 
       _socket = new Socket (
                   endpoint.Address.AddressFamily,
@@ -193,16 +193,16 @@ namespace WebSocketSharp.Net
 
       var cnt = 0;
 
-      lock (_unregisteredSync) {
-        cnt = _unregistered.Count;
+      lock (_connectionsSync) {
+        cnt = _connections.Count;
 
         if (cnt == 0)
           return;
 
         conns = new HttpConnection[cnt];
-        _unregistered.CopyTo (conns, 0);
+        _connections.CopyTo (conns, 0);
 
-        _unregistered.Clear ();
+        _connections.Clear ();
       }
 
       for (var i = cnt - 1; i >= 0; i--)
@@ -312,8 +312,8 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      lock (listener._unregisteredSync)
-        listener._unregistered.AddLast (conn);
+      lock (listener._connectionsSync)
+        listener._connections.AddLast (conn);
 
       conn.BeginReadRequest ();
     }
@@ -380,8 +380,8 @@ namespace WebSocketSharp.Net
 
     internal void RemoveConnection (HttpConnection connection)
     {
-      lock (_unregisteredSync)
-        _unregistered.Remove (connection);
+      lock (_connectionsSync)
+        _connections.Remove (connection);
     }
 
     internal bool TrySearchHttpListener (Uri uri, out HttpListener listener)
