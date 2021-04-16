@@ -62,6 +62,8 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private List<HttpListenerPrefix>   _all; // host == '+'
+    private LinkedList<HttpConnection> _connections;
+    private object                     _connectionsSync;
     private static readonly string     _defaultCertFolderPath;
     private IPEndPoint                 _endpoint;
     private List<HttpListenerPrefix>   _prefixes;
@@ -69,8 +71,6 @@ namespace WebSocketSharp.Net
     private Socket                     _socket;
     private ServerSslConfiguration     _sslConfig;
     private List<HttpListenerPrefix>   _unhandled; // host == '*'
-    private LinkedList<HttpConnection> _connections;
-    private object                     _connectionsSync;
 
     #endregion
 
