@@ -191,10 +191,8 @@ namespace WebSocketSharp.Net
     {
       HttpConnection[] conns = null;
 
-      var cnt = 0;
-
       lock (_connectionsSync) {
-        cnt = _connections.Count;
+        var cnt = _connections.Count;
 
         if (cnt == 0)
           return;
@@ -207,8 +205,8 @@ namespace WebSocketSharp.Net
         _connections.Clear ();
       }
 
-      for (var i = cnt - 1; i >= 0; i--)
-        conns[i].Close (true);
+      foreach (var conn in conns)
+        conn.Close (true);
     }
 
     private static RSACryptoServiceProvider createRSAFromFile (string path)
