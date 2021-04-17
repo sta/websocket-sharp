@@ -62,7 +62,7 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private List<HttpListenerPrefix>   _all; // host == '+'
-    private LinkedList<HttpConnection> _connections;
+    private Dictionary<HttpConnection, HttpConnection> _connections;
     private object                     _connectionsSync;
     private static readonly string     _defaultCertFolderPath;
     private IPEndPoint                 _endpoint;
@@ -116,7 +116,7 @@ namespace WebSocketSharp.Net
       }
 
       _prefixes = new List<HttpListenerPrefix> ();
-      _connections = new LinkedList<HttpConnection> ();
+      _connections = new Dictionary<HttpConnection, HttpConnection> ();
       _connectionsSync = ((ICollection) _connections).SyncRoot;
 
       _socket = new Socket (
@@ -200,7 +200,9 @@ namespace WebSocketSharp.Net
           return;
 
         conns = new HttpConnection[cnt];
-        _connections.CopyTo (conns, 0);
+
+        var vals = _connections.Values;
+        vals.CopyTo (conns, 0);
 
         _connections.Clear ();
       }
@@ -313,7 +315,7 @@ namespace WebSocketSharp.Net
       }
 
       lock (listener._connectionsSync)
-        listener._connections.AddLast (conn);
+        listener._connections.Add (conn, conn);
 
       conn.BeginReadRequest ();
     }
