@@ -528,21 +528,6 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    internal bool AddConnection (HttpConnection connection)
-    {
-      if (!_listening)
-        return false;
-
-      lock (_connectionsSync) {
-        if (!_listening)
-          return false;
-
-        _connections[connection] = connection;
-
-        return true;
-      }
-    }
-
     internal HttpListenerAsyncResult BeginGetContext (
       HttpListenerAsyncResult asyncResult
     )
