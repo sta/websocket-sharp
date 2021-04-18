@@ -835,7 +835,6 @@ namespace WebSocketSharp.Net
         cleanupContextQueue (true);
 
       cleanupContextRegistry ();
-      cleanupConnections ();
 
       var ex = new HttpListenerException (995, "The listener is stopped.");
       cleanupWaitQueue (ex);
