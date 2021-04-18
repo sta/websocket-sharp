@@ -415,26 +415,6 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private void cleanupConnections ()
-    {
-      HttpConnection[] conns = null;
-
-      lock (_connectionsSync) {
-        if (_connections.Count == 0)
-          return;
-
-        // Need to copy this since closing will call the RemoveConnection method.
-        var keys = _connections.Keys;
-        conns = new HttpConnection[keys.Count];
-        keys.CopyTo (conns, 0);
-
-        _connections.Clear ();
-      }
-
-      for (var i = conns.Length - 1; i >= 0; i--)
-        conns[i].Close (true);
-    }
-
     private void cleanupContextQueue (bool sendServiceUnavailable)
     {
       HttpListenerContext[] ctxs = null;
