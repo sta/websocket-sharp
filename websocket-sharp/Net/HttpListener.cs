@@ -64,8 +64,6 @@ namespace WebSocketSharp.Net
     private AuthenticationSchemes                            _authSchemes;
     private Func<HttpListenerRequest, AuthenticationSchemes> _authSchemeSelector;
     private string                                           _certFolderPath;
-    private Dictionary<HttpConnection, HttpConnection>       _connections;
-    private object                                           _connectionsSync;
     private Queue<HttpListenerContext>                       _contextQueue;
     private object                                           _contextQueueSync;
     private LinkedList<HttpListenerContext>                  _contextRegistry;
@@ -102,9 +100,6 @@ namespace WebSocketSharp.Net
     public HttpListener ()
     {
       _authSchemes = AuthenticationSchemes.Anonymous;
-
-      _connections = new Dictionary<HttpConnection, HttpConnection> ();
-      _connectionsSync = ((ICollection) _connections).SyncRoot;
 
       _contextQueue = new Queue<HttpListenerContext> ();
       _contextQueueSync = ((ICollection) _contextQueue).SyncRoot;
