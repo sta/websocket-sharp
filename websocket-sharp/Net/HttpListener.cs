@@ -602,12 +602,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    internal void RemoveConnection (HttpConnection connection)
-    {
-      lock (_connectionsSync)
-        _connections.Remove (connection);
-    }
-
     internal AuthenticationSchemes SelectAuthenticationScheme (
       HttpListenerRequest request
     )
