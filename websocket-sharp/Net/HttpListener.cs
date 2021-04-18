@@ -506,7 +506,6 @@ namespace WebSocketSharp.Net
         cleanupContextQueue (!force);
 
       cleanupContextRegistry ();
-      cleanupConnections ();
 
       var ex = new ObjectDisposedException (GetType ().ToString ());
       cleanupWaitQueue (ex);
