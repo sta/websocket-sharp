@@ -505,12 +505,13 @@ namespace WebSocketSharp.Net
         if (!_listening)
           throw new HttpListenerException (995);
 
-        var ctx = getContextFromQueue ();
-
-        if (ctx == null)
+        if (_contextQueue.Count == 0) {
           _waitQueue.Enqueue (asyncResult);
-        else
+        }
+        else {
+          var ctx = _contextQueue.Dequeue ();
           asyncResult.Complete (ctx, true);
+        }
 
         return asyncResult;
       }
