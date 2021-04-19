@@ -488,11 +488,6 @@ namespace WebSocketSharp.Net
       _disposed = true;
     }
 
-    private HttpListenerAsyncResult getAsyncResultFromQueue ()
-    {
-      return _waitQueue.Count > 0 ? _waitQueue.Dequeue () : null;
-    }
-
     private HttpListenerContext getContextFromQueue ()
     {
       return _contextQueue.Count > 0 ? _contextQueue.Dequeue () : null;
