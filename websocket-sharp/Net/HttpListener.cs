@@ -550,12 +550,13 @@ namespace WebSocketSharp.Net
 
         _contextRegistry.AddLast (context);
 
-        var ares = getAsyncResultFromQueue ();
-
-        if (ares == null)
+        if (_waitQueue.Count == 0) {
           _contextQueue.Enqueue (context);
-        else
+        }
+        else {
+          var ares = _waitQueue.Dequeue ();
           ares.Complete (context);
+        }
 
         return true;
       }
