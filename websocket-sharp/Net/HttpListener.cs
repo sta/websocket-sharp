@@ -488,11 +488,6 @@ namespace WebSocketSharp.Net
       _disposed = true;
     }
 
-    private HttpListenerContext getContextFromQueue ()
-    {
-      return _contextQueue.Count > 0 ? _contextQueue.Dequeue () : null;
-    }
-
     #endregion
 
     #region Internal Methods
