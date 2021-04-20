@@ -813,14 +813,14 @@ namespace WebSocketSharp.Net
         if (!_listening)
           return;
 
-        EndPointManager.RemoveListener (this);
-
         cleanupContextQueue (true);
         cleanupContextRegistry ();
 
         var msg = "The listener is stopped.";
         var ex = new HttpListenerException (995, msg);
         cleanupWaitQueue (ex);
+
+        EndPointManager.RemoveListener (this);
 
         _listening = false;
       }
