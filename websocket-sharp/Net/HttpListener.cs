@@ -775,9 +775,16 @@ namespace WebSocketSharp.Net
       if (_listening)
         return;
 
-      EndPointManager.AddListener (this);
+      lock (_contextRegistrySync) {
+        CheckDisposed ();
 
-      _listening = true;
+        if (_listening)
+          return;
+
+        EndPointManager.AddListener (this);
+
+        _listening = true;
+      }
     }
 
     /// <summary>
