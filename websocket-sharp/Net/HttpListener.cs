@@ -800,17 +800,20 @@ namespace WebSocketSharp.Net
       if (!_listening)
         return;
 
-      _listening = false;
+      lock (_contextRegistrySync) {
+        if (!_listening)
+          return;
 
-      EndPointManager.RemoveListener (this);
+        EndPointManager.RemoveListener (this);
 
-      lock (_contextRegistrySync)
         cleanupContextQueue (true);
+        cleanupContextRegistry ();
 
-      cleanupContextRegistry ();
+        var ex = new HttpListenerException (995, "The listener is stopped.");
+        cleanupWaitQueue (ex);
 
-      var ex = new HttpListenerException (995, "The listener is stopped.");
-      cleanupWaitQueue (ex);
+        _listening = false;
+      }
     }
 
     #endregion
