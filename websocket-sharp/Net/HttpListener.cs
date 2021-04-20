@@ -588,7 +588,12 @@ namespace WebSocketSharp.Net
       if (_disposed)
         return;
 
-      close (true);
+      lock (_contextRegistrySync) {
+        if (_disposed)
+          return;
+
+        close (true);
+      }
     }
 
     /// <summary>
