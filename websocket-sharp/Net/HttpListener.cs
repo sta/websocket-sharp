@@ -449,16 +449,12 @@ namespace WebSocketSharp.Net
 
     private void cleanupWaitQueue (Exception exception)
     {
-      HttpListenerAsyncResult[] aress = null;
+      if (_waitQueue.Count == 0)
+        return;
 
-      lock (_waitQueueSync) {
-        if (_waitQueue.Count == 0)
-          return;
+      var aress = _waitQueue.ToArray ();
 
-        aress = _waitQueue.ToArray ();
-
-        _waitQueue.Clear ();
-      }
+      _waitQueue.Clear ();
 
       foreach (var ares in aress)
         ares.Complete (exception);
