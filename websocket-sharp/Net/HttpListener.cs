@@ -412,19 +412,18 @@ namespace WebSocketSharp.Net
 
     private void cleanupContextQueue (bool sendServiceUnavailable)
     {
-      HttpListenerContext[] ctxs = null;
+      if (_contextQueue.Count == 0)
+        return;
 
-      lock (_contextQueueSync) {
-        if (_contextQueue.Count == 0)
-          return;
-
-        ctxs = _contextQueue.ToArray ();
-
+      if (!sendServiceUnavailable) {
         _contextQueue.Clear ();
+
+        return;
       }
 
-      if (!sendServiceUnavailable)
-        return;
+      var ctxs = _contextQueue.ToArray ();
+
+      _contextQueue.Clear ();
 
       foreach (var ctx in ctxs) {
         ctx.ErrorStatusCode = 503;
