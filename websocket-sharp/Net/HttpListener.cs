@@ -98,16 +98,13 @@ namespace WebSocketSharp.Net
     public HttpListener ()
     {
       _authSchemes = AuthenticationSchemes.Anonymous;
-
       _contextQueue = new Queue<HttpListenerContext> ();
 
       _contextRegistry = new LinkedList<HttpListenerContext> ();
       _contextRegistrySync = ((ICollection) _contextRegistry).SyncRoot;
 
       _logger = new Logger ();
-
       _prefixes = new HttpListenerPrefixCollection (this);
-
       _waitQueue = new Queue<HttpListenerAsyncResult> ();
     }
 
