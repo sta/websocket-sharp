@@ -433,22 +433,18 @@ namespace WebSocketSharp.Net
 
     private void cleanupContextRegistry ()
     {
-      HttpListenerContext[] ctxs = null;
+      var cnt = _contextRegistry.Count;
 
-      lock (_contextRegistrySync) {
-        var cnt = _contextRegistry.Count;
+      if (cnt == 0)
+        return;
 
-        if (cnt == 0)
-          return;
+      var ctxs = new HttpListenerContext[cnt];
+      _contextRegistry.CopyTo (ctxs, 0);
 
-        ctxs = new HttpListenerContext[cnt];
-        _contextRegistry.CopyTo (ctxs, 0);
+      _contextRegistry.Clear ();
 
-        _contextRegistry.Clear ();
-      }
-
-      for (var i = ctxs.Length - 1; i >= 0; i--)
-        ctxs[i].Connection.Close (true);
+      foreach (var ctx in ctxs)
+        ctx.Connection.Close (true);
     }
 
     private void cleanupWaitQueue (Exception exception)
