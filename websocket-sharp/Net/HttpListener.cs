@@ -65,7 +65,6 @@ namespace WebSocketSharp.Net
     private Func<HttpListenerRequest, AuthenticationSchemes> _authSchemeSelector;
     private string                                           _certFolderPath;
     private Queue<HttpListenerContext>                       _contextQueue;
-    private object                                           _contextQueueSync;
     private LinkedList<HttpListenerContext>                  _contextRegistry;
     private object                                           _contextRegistrySync;
     private static readonly string                           _defaultRealm;
@@ -79,7 +78,6 @@ namespace WebSocketSharp.Net
     private ServerSslConfiguration                           _sslConfig;
     private Func<IIdentity, NetworkCredential>               _userCredFinder;
     private Queue<HttpListenerAsyncResult>                   _waitQueue;
-    private object                                           _waitQueueSync;
 
     #endregion
 
@@ -102,7 +100,6 @@ namespace WebSocketSharp.Net
       _authSchemes = AuthenticationSchemes.Anonymous;
 
       _contextQueue = new Queue<HttpListenerContext> ();
-      _contextQueueSync = ((ICollection) _contextQueue).SyncRoot;
 
       _contextRegistry = new LinkedList<HttpListenerContext> ();
       _contextRegistrySync = ((ICollection) _contextRegistry).SyncRoot;
@@ -112,7 +109,6 @@ namespace WebSocketSharp.Net
       _prefixes = new HttpListenerPrefixCollection (this);
 
       _waitQueue = new Queue<HttpListenerAsyncResult> ();
-      _waitQueueSync = ((ICollection) _waitQueue).SyncRoot;
     }
 
     #endregion
