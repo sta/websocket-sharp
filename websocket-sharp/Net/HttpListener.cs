@@ -797,6 +797,8 @@ namespace WebSocketSharp.Net
         if (!_listening)
           return;
 
+        _listening = false;
+
         cleanupContextQueue (true);
         cleanupContextRegistry ();
 
@@ -805,8 +807,6 @@ namespace WebSocketSharp.Net
         cleanupWaitQueue (ex);
 
         EndPointManager.RemoveListener (this);
-
-        _listening = false;
       }
     }
 
