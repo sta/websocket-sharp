@@ -456,6 +456,8 @@ namespace WebSocketSharp.Net
     private void close (bool force)
     {
       if (_listening) {
+        _listening = false;
+
         cleanupContextQueue (!force);
         cleanupContextRegistry ();
 
@@ -464,8 +466,6 @@ namespace WebSocketSharp.Net
         cleanupWaitQueue (ex);
 
         EndPointManager.RemoveListener (this);
-
-        _listening = false;
       }
 
       _disposed = true;
