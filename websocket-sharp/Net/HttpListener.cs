@@ -403,12 +403,12 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private void cleanupContextQueue (bool sendServiceUnavailable)
+    private void cleanupContextQueue (bool force)
     {
       if (_contextQueue.Count == 0)
         return;
 
-      if (!sendServiceUnavailable) {
+      if (force) {
         _contextQueue.Clear ();
 
         return;
@@ -458,7 +458,7 @@ namespace WebSocketSharp.Net
       if (_listening) {
         _listening = false;
 
-        cleanupContextQueue (!force);
+        cleanupContextQueue (force);
         cleanupContextRegistry ();
 
         var name = GetType ().ToString ();
@@ -799,7 +799,7 @@ namespace WebSocketSharp.Net
 
         _listening = false;
 
-        cleanupContextQueue (true);
+        cleanupContextQueue (false);
         cleanupContextRegistry ();
 
         var msg = "The listener is stopped.";
