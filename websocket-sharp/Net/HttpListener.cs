@@ -790,9 +790,6 @@ namespace WebSocketSharp.Net
     {
       CheckDisposed ();
 
-      if (!_listening)
-        return;
-
       lock (_contextRegistrySync) {
         if (!_listening)
           return;
