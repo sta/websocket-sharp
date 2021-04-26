@@ -455,18 +455,22 @@ namespace WebSocketSharp.Net
 
     private void close (bool force)
     {
-      if (_listening) {
-        _listening = false;
+      if (!_listening) {
+        _disposed = true;
 
-        cleanupContextQueue (force);
-        cleanupContextRegistry ();
-
-        var name = GetType ().ToString ();
-        var ex = new ObjectDisposedException (name);
-        cleanupWaitQueue (ex);
-
-        EndPointManager.RemoveListener (this);
+        return;
       }
+
+      _listening = false;
+
+      cleanupContextQueue (force);
+      cleanupContextRegistry ();
+
+      var name = GetType ().ToString ();
+      var ex = new ObjectDisposedException (name);
+      cleanupWaitQueue (ex);
+
+      EndPointManager.RemoveListener (this);
 
       _disposed = true;
     }
