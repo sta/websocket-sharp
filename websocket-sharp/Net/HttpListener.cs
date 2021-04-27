@@ -147,7 +147,9 @@ namespace WebSocketSharp.Net
     /// </exception>
     public AuthenticationSchemes AuthenticationSchemes {
       get {
-        CheckDisposed ();
+        if (_disposed)
+          throw new ObjectDisposedException (_objectName);
+
         return _authSchemes;
       }
 
