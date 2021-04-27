@@ -72,6 +72,7 @@ namespace WebSocketSharp.Net
     private bool                                             _ignoreWriteExceptions;
     private volatile bool                                    _listening;
     private Logger                                           _logger;
+    private string                                           _objectName;
     private HttpListenerPrefixCollection                     _prefixes;
     private string                                           _realm;
     private bool                                             _reuseAddress;
@@ -104,6 +105,7 @@ namespace WebSocketSharp.Net
       _contextRegistrySync = ((ICollection) _contextRegistry).SyncRoot;
 
       _logger = new Logger ();
+      _objectName = GetType ().ToString ();
       _prefixes = new HttpListenerPrefixCollection (this);
       _waitQueue = new Queue<HttpListenerAsyncResult> ();
     }
