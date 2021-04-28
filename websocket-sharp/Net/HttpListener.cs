@@ -138,9 +138,17 @@ namespace WebSocketSharp.Net
     /// Gets or sets the scheme used to authenticate the clients.
     /// </summary>
     /// <value>
-    /// One of the <see cref="WebSocketSharp.Net.AuthenticationSchemes"/> enum values,
-    /// represents the scheme used to authenticate the clients. The default value is
-    /// <see cref="WebSocketSharp.Net.AuthenticationSchemes.Anonymous"/>.
+    ///   <para>
+    ///   One of the <see cref="WebSocketSharp.Net.AuthenticationSchemes"/>
+    ///   enum values.
+    ///   </para>
+    ///   <para>
+    ///   It represents the scheme used to authenticate the clients.
+    ///   </para>
+    ///   <para>
+    ///   The default value is
+    ///   <see cref="WebSocketSharp.Net.AuthenticationSchemes.Anonymous"/>.
+    ///   </para>
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
