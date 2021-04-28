@@ -154,7 +154,9 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        CheckDisposed ();
+        if (_disposed)
+          throw new ObjectDisposedException (_objectName);
+
         _authSchemes = value;
       }
     }
