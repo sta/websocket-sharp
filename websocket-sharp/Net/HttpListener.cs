@@ -188,7 +188,9 @@ namespace WebSocketSharp.Net
     /// </exception>
     public Func<HttpListenerRequest, AuthenticationSchemes> AuthenticationSchemeSelector {
       get {
-        CheckDisposed ();
+        if (_disposed)
+          throw new ObjectDisposedException (_objectName);
+
         return _authSchemeSelector;
       }
 
