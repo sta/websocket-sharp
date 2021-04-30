@@ -243,7 +243,9 @@ namespace WebSocketSharp.Net
     /// </exception>
     public string CertificateFolderPath {
       get {
-        CheckDisposed ();
+        if (_disposed)
+          throw new ObjectDisposedException (_objectName);
+
         return _certFolderPath;
       }
 
