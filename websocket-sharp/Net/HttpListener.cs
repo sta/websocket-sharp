@@ -170,18 +170,33 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the delegate called to select the scheme used to authenticate the clients.
+    /// Gets or sets the delegate called to select the scheme used to
+    /// authenticate the clients.
     /// </summary>
     /// <remarks>
-    /// If you set this property, the listener uses the authentication scheme selected by
-    /// the delegate for each request. Or if you don't set, the listener uses the value of
-    /// the <see cref="HttpListener.AuthenticationSchemes"/> property as the authentication
-    /// scheme for all requests.
+    ///   <para>
+    ///   If this property is set, the listener uses the authentication
+    ///   scheme selected by the delegate for each request.
+    ///   </para>
+    ///   <para>
+    ///   Or if this property is not set, the listener uses the value of
+    ///   the <see cref="HttpListener.AuthenticationSchemes"/> property
+    ///   as the authentication scheme for all requests.
+    ///   </para>
     /// </remarks>
     /// <value>
-    /// A <c>Func&lt;<see cref="HttpListenerRequest"/>, <see cref="AuthenticationSchemes"/>&gt;</c>
-    /// delegate that references the method used to select an authentication scheme. The default
-    /// value is <see langword="null"/>.
+    ///   <para>
+    ///   A <c>Func&lt;<see cref="HttpListenerRequest"/>,
+    ///   <see cref="AuthenticationSchemes"/>&gt;</c> delegate or
+    ///   <see langword="null"/> if not needed.
+    ///   </para>
+    ///   <para>
+    ///   The delegate references the method used to select
+    ///   an authentication scheme.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
+    ///   </para>
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
