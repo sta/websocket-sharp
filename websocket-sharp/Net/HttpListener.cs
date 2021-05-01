@@ -218,25 +218,34 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the path to the folder in which stores the certificate files used to
-    /// authenticate the server on the secure connection.
+    /// Gets or sets the path to the folder in which stores the certificate
+    /// files used to authenticate the server on the secure connection.
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   This property represents the path to the folder in which stores the certificate files
-    ///   associated with each port number of added URI prefixes. A set of the certificate files
-    ///   is a pair of the <c>'port number'.cer</c> (DER) and <c>'port number'.key</c>
-    ///   (DER, RSA Private Key).
+    ///   This property represents the path to the folder in which stores
+    ///   the certificate files associated with each port number of added
+    ///   URI prefixes.
     ///   </para>
     ///   <para>
-    ///   If this property is <see langword="null"/> or empty, the result of
-    ///   <c>System.Environment.GetFolderPath
-    ///   (<see cref="Environment.SpecialFolder.ApplicationData"/>)</c> is used as the default path.
+    ///   A set of the certificate files is a pair of &lt;port number&gt;.cer
+    ///   (DER) and &lt;port number&gt;.key (DER, RSA Private Key).
+    ///   </para>
+    ///   <para>
+    ///   If this property is <see langword="null"/> or an empty string,
+    ///   the result of <c>System.Environment.GetFolderPath (
+    ///   <see cref="Environment.SpecialFolder.ApplicationData"/>)</c>
+    ///   is used as the default path.
     ///   </para>
     /// </remarks>
     /// <value>
-    /// A <see cref="string"/> that represents the path to the folder in which stores
-    /// the certificate files. The default value is <see langword="null"/>.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the path to the folder
+    ///   in which stores the certificate files.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
+    ///   </para>
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
