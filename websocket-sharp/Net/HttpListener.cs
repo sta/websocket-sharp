@@ -267,12 +267,17 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the listener returns exceptions that occur when
-    /// sending the response to the client.
+    /// Gets or sets a value indicating whether the listener returns
+    /// exceptions that occur when sending the response to the client.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the listener shouldn't return those exceptions; otherwise, <c>false</c>.
-    /// The default value is <c>false</c>.
+    ///   <para>
+    ///   <c>true</c> if the listener should not return those exceptions;
+    ///   otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
