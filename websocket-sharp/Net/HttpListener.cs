@@ -311,7 +311,8 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the listener can be used with the current operating system.
+    /// Gets a value indicating whether the listener can be used with
+    /// the current operating system.
     /// </summary>
     /// <value>
     /// <c>true</c>.
