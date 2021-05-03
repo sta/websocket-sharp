@@ -348,7 +348,8 @@ namespace WebSocketSharp.Net
     /// Gets the URI prefixes handled by the listener.
     /// </summary>
     /// <value>
-    /// A <see cref="HttpListenerPrefixCollection"/> that contains the URI prefixes.
+    /// A <see cref="HttpListenerPrefixCollection"/> that contains the URI
+    /// prefixes.
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
