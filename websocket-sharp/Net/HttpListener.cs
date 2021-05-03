@@ -355,7 +355,9 @@ namespace WebSocketSharp.Net
     /// </exception>
     public HttpListenerPrefixCollection Prefixes {
       get {
-        CheckDisposed ();
+        if (_disposed)
+          throw new ObjectDisposedException (_objectName);
+
         return _prefixes;
       }
     }
