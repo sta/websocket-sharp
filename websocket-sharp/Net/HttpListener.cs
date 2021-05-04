@@ -367,12 +367,16 @@ namespace WebSocketSharp.Net
     /// Gets or sets the name of the realm associated with the listener.
     /// </summary>
     /// <remarks>
-    /// If this property is <see langword="null"/> or empty, <c>"SECRET AREA"</c> will be used as
-    /// the name of the realm.
+    /// If this property is <see langword="null"/> or an empty string,
+    /// "SECRET AREA" will be used as the name of the realm.
     /// </remarks>
     /// <value>
-    /// A <see cref="string"/> that represents the name of the realm. The default value is
-    /// <see langword="null"/>.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the name of the realm.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
+    ///   </para>
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
