@@ -410,7 +410,9 @@ namespace WebSocketSharp.Net
     /// </exception>
     public ServerSslConfiguration SslConfiguration {
       get {
-        CheckDisposed ();
+        if (_disposed)
+          throw new ObjectDisposedException (_objectName);
+
         return _sslConfig ?? (_sslConfig = new ServerSslConfiguration ());
       }
 
