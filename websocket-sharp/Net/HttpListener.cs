@@ -467,7 +467,9 @@ namespace WebSocketSharp.Net
     /// </exception>
     public Func<IIdentity, NetworkCredential> UserCredentialsFinder {
       get {
-        CheckDisposed ();
+        if (_disposed)
+          throw new ObjectDisposedException (_objectName);
+
         return _userCredFinder;
       }
 
