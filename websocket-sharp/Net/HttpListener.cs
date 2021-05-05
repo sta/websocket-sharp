@@ -433,7 +433,7 @@ namespace WebSocketSharp.Net
     /// additional requests on the same connection.
     /// </summary>
     /// <remarks>
-    /// This property isn't currently supported and always throws
+    /// This property is not currently supported and always throws
     /// a <see cref="NotSupportedException"/>.
     /// </remarks>
     /// <value>
