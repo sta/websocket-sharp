@@ -830,7 +830,8 @@ namespace WebSocketSharp.Net
     /// </exception>
     public HttpListenerContext GetContext ()
     {
-      CheckDisposed ();
+      if (_disposed)
+        throw new ObjectDisposedException (_objectName);
 
       if (_prefixes.Count == 0) {
         var msg = "The listener has no URI prefix on which listens.";
