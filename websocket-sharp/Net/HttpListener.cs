@@ -776,7 +776,8 @@ namespace WebSocketSharp.Net
     /// </exception>
     public HttpListenerContext EndGetContext (IAsyncResult asyncResult)
     {
-      CheckDisposed ();
+      if (_disposed)
+        throw new ObjectDisposedException (_objectName);
 
       if (asyncResult == null)
         throw new ArgumentNullException ("asyncResult");
