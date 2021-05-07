@@ -713,7 +713,8 @@ namespace WebSocketSharp.Net
     /// </exception>
     public IAsyncResult BeginGetContext (AsyncCallback callback, Object state)
     {
-      CheckDisposed ();
+      if (_disposed)
+        throw new ObjectDisposedException (_objectName);
 
       if (_prefixes.Count == 0) {
         var msg = "The listener has no URI prefix on which listens.";
