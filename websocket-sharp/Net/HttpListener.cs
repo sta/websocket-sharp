@@ -556,8 +556,7 @@ namespace WebSocketSharp.Net
       cleanupContextQueue (force);
       cleanupContextRegistry ();
 
-      var name = GetType ().ToString ();
-      var ex = new ObjectDisposedException (name);
+      var ex = new ObjectDisposedException (_objectName);
       cleanupWaitQueue (ex);
 
       EndPointManager.RemoveListener (this);
