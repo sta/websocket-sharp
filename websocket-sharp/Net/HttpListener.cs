@@ -591,7 +591,7 @@ namespace WebSocketSharp.Net
     internal void CheckDisposed ()
     {
       if (_disposed)
-        throw new ObjectDisposedException (GetType ().ToString ());
+        throw new ObjectDisposedException (_objectName);
     }
 
     internal string GetRealm ()
