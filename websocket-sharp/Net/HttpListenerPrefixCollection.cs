@@ -188,8 +188,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public bool Contains (string uriPrefix)
     {
-      if (_listener.IsDisposed)
-        throw new ObjectDisposedException (_listener.GetType ().ToString ());
+      _listener.CheckDisposed ();
 
       if (uriPrefix == null)
         throw new ArgumentNullException ("uriPrefix");
