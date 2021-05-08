@@ -160,8 +160,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Clear ()
     {
-      if (_listener.IsDisposed)
-        throw new ObjectDisposedException (_listener.GetType ().ToString ());
+      _listener.CheckDisposed ();
 
       if (_listener.IsListening)
         EndPointManager.RemoveListener (_listener);
