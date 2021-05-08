@@ -859,10 +859,12 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Start ()
     {
-      CheckDisposed ();
+      if (_disposed)
+        throw new ObjectDisposedException (_objectName);
 
       lock (_contextRegistrySync) {
-        CheckDisposed ();
+        if (_disposed)
+          throw new ObjectDisposedException (_objectName);
 
         if (_listening)
           return;
