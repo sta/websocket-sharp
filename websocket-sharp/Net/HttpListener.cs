@@ -883,7 +883,8 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Stop ()
     {
-      CheckDisposed ();
+      if (_disposed)
+        throw new ObjectDisposedException (_objectName);
 
       lock (_contextRegistrySync) {
         if (!_listening)
