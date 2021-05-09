@@ -114,12 +114,6 @@ namespace WebSocketSharp.Net
 
     #region Internal Properties
 
-    internal bool IsDisposed {
-      get {
-        return _disposed;
-      }
-    }
-
     internal bool ReuseAddress {
       get {
         return _reuseAddress;
