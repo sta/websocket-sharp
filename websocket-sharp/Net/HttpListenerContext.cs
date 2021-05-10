@@ -252,6 +252,18 @@ namespace WebSocketSharp.Net
       return _listener.RegisterContext (this);
     }
 
+    internal void SendAuthenticationChallenge (
+      AuthenticationSchemes scheme, string realm
+    )
+    {
+      var chal = new AuthenticationChallenge (scheme, realm).ToString ();
+
+      _response.StatusCode = 401;
+      _response.Headers.InternalSet ("WWW-Authenticate", chal, true);
+
+      _response.Close ();
+    }
+
     internal void SendError ()
     {
       try {
