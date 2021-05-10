@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2018 sta.blockhead
+ * Copyright (c) 2012-2021 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,7 +48,8 @@ using System.Text;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Represents an incoming request to a <see cref="HttpListener"/> instance.
+  /// Represents an incoming HTTP request to a <see cref="HttpListener"/>
+  /// instance.
   /// </summary>
   /// <remarks>
   /// This class cannot be inherited.
@@ -120,13 +121,14 @@ namespace WebSocketSharp.Net
     public string[] AcceptTypes {
       get {
         var val = _headers["Accept"];
+
         if (val == null)
           return null;
 
         if (_acceptTypes == null) {
           _acceptTypes = val
                          .SplitHeaderValue (',')
-                         .Trim ()
+                         .TrimEach ()
                          .ToList ()
                          .ToArray ();
         }
@@ -166,7 +168,7 @@ namespace WebSocketSharp.Net
     public Encoding ContentEncoding {
       get {
         if (_contentEncoding == null)
-          _contentEncoding = getContentEncoding () ?? Encoding.UTF8;
+          _contentEncoding = getContentEncoding ();
 
         return _contentEncoding;
       }
@@ -281,8 +283,12 @@ namespace WebSocketSharp.Net
     /// </value>
     public Stream InputStream {
       get {
-        if (_inputStream == null)
-          _inputStream = getInputStream () ?? Stream.Null;
+        if (_inputStream == null) {
+          _inputStream = _contentLength > 0 || _chunked
+                         ? _connection
+                           .GetRequestStream (_contentLength, _chunked)
+                         : Stream.Null;
+        }
 
         return _inputStream;
       }
@@ -337,9 +343,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public bool IsWebSocketRequest {
       get {
-        return _httpMethod == "GET"
-               && _protocolVersion > HttpVersion.Version10
-               && _headers.Upgrades ("websocket");
+        return _httpMethod == "GET" && _headers.Upgrades ("websocket");
       }
     }
 
@@ -398,7 +402,9 @@ namespace WebSocketSharp.Net
       get {
         if (_queryString == null) {
           var url = Url;
-          _queryString = QueryStringCollection.Parse (
+
+          _queryString = QueryStringCollection
+                         .Parse (
                            url != null ? url.Query : null,
                            Encoding.UTF8
                          );
@@ -460,7 +466,8 @@ namespace WebSocketSharp.Net
     public Uri Url {
       get {
         if (!_urlSet) {
-          _url = HttpUtility.CreateRequestUrl (
+          _url = HttpUtility
+                 .CreateRequestUrl (
                    _rawUrl,
                    _userHostName ?? UserHostAddress,
                    IsWebSocketRequest,
@@ -488,6 +495,7 @@ namespace WebSocketSharp.Net
     public Uri UrlReferrer {
       get {
         var val = _headers["Referer"];
+
         if (val == null)
           return null;
 
@@ -565,11 +573,12 @@ namespace WebSocketSharp.Net
     public string[] UserLanguages {
       get {
         var val = _headers["Accept-Language"];
+
         if (val == null)
           return null;
 
         if (_userLanguages == null)
-          _userLanguages = val.Split (',').Trim ().ToList ().ToArray ();
+          _userLanguages = val.Split (',').TrimEach ().ToList ().ToArray ();
 
         return _userLanguages;
       }
@@ -579,44 +588,18 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private void finishInitialization10 ()
-    {
-      var transferEnc = _headers["Transfer-Encoding"];
-      if (transferEnc != null) {
-        _context.ErrorMessage = "Invalid Transfer-Encoding header";
-        return;
-      }
-
-      if (_httpMethod == "POST") {
-        if (_contentLength == -1) {
-          _context.ErrorMessage = "Content-Length header required";
-          return;
-        }
-
-        if (_contentLength == 0) {
-          _context.ErrorMessage = "Invalid Content-Length header";
-          return;
-        }
-      }
-    }
-
     private Encoding getContentEncoding ()
     {
       var val = _headers["Content-Type"];
+
       if (val == null)
-        return null;
+        return Encoding.UTF8;
 
       Encoding ret;
-      HttpUtility.TryGetEncoding (val, out ret);
 
-      return ret;
-    }
-
-    private RequestStream getInputStream ()
-    {
-      return _contentLength > 0 || _chunked
-             ? _connection.GetRequestStream (_contentLength, _chunked)
-             : null;
+      return HttpUtility.TryGetEncoding (val, out ret)
+             ? ret
+             : Encoding.UTF8;
     }
 
     #endregion
@@ -626,20 +609,26 @@ namespace WebSocketSharp.Net
     internal void AddHeader (string headerField)
     {
       var start = headerField[0];
+
       if (start == ' ' || start == '\t') {
         _context.ErrorMessage = "Invalid header field";
+
         return;
       }
 
       var colon = headerField.IndexOf (':');
+
       if (colon < 1) {
         _context.ErrorMessage = "Invalid header field";
+
         return;
       }
 
       var name = headerField.Substring (0, colon).Trim ();
+
       if (name.Length == 0 || !name.IsToken ()) {
         _context.ErrorMessage = "Invalid header name";
+
         return;
       }
 
@@ -650,61 +639,68 @@ namespace WebSocketSharp.Net
       _headers.InternalSet (name, val, false);
 
       var lower = name.ToLower (CultureInfo.InvariantCulture);
+
       if (lower == "host") {
         if (_userHostName != null) {
           _context.ErrorMessage = "Invalid Host header";
+
           return;
         }
 
         if (val.Length == 0) {
           _context.ErrorMessage = "Invalid Host header";
+
           return;
         }
 
         _userHostName = val;
+
         return;
       }
 
       if (lower == "content-length") {
         if (_contentLength > -1) {
           _context.ErrorMessage = "Invalid Content-Length header";
+
           return;
         }
 
         long len;
+
         if (!Int64.TryParse (val, out len)) {
           _context.ErrorMessage = "Invalid Content-Length header";
+
           return;
         }
 
         if (len < 0) {
           _context.ErrorMessage = "Invalid Content-Length header";
+
           return;
         }
 
         _contentLength = len;
+
         return;
       }
     }
 
     internal void FinishInitialization ()
     {
-      if (_protocolVersion == HttpVersion.Version10) {
-        finishInitialization10 ();
-        return;
-      }
-
       if (_userHostName == null) {
         _context.ErrorMessage = "Host header required";
+
         return;
       }
 
       var transferEnc = _headers["Transfer-Encoding"];
+
       if (transferEnc != null) {
         var comparison = StringComparison.OrdinalIgnoreCase;
+
         if (!transferEnc.Equals ("chunked", comparison)) {
-          _context.ErrorMessage = String.Empty;
-          _context.ErrorStatus = 501;
+          _context.ErrorMessage = "Invalid Transfer-Encoding header";
+          _context.ErrorStatusCode = 501;
 
           return;
         }
@@ -715,17 +711,20 @@ namespace WebSocketSharp.Net
       if (_httpMethod == "POST" || _httpMethod == "PUT") {
         if (_contentLength <= 0 && !_chunked) {
           _context.ErrorMessage = String.Empty;
-          _context.ErrorStatus = 411;
+          _context.ErrorStatusCode = 411;
 
           return;
         }
       }
 
       var expect = _headers["Expect"];
+
       if (expect != null) {
         var comparison = StringComparison.OrdinalIgnoreCase;
+
         if (!expect.Equals ("100-continue", comparison)) {
           _context.ErrorMessage = "Invalid Expect header";
+
           return;
         }
 
@@ -737,10 +736,12 @@ namespace WebSocketSharp.Net
     internal bool FlushInput ()
     {
       var input = InputStream;
+
       if (input == Stream.Null)
         return true;
 
       var len = 2048;
+
       if (_contentLength > 0 && _contentLength < len)
         len = (int) _contentLength;
 
@@ -749,8 +750,10 @@ namespace WebSocketSharp.Net
       while (true) {
         try {
           var ares = input.BeginRead (buff, 0, len, null, null);
+
           if (!ares.IsCompleted) {
             var timeout = 100;
+
             if (!ares.AsyncWaitHandle.WaitOne (timeout))
               return false;
           }
@@ -772,47 +775,62 @@ namespace WebSocketSharp.Net
     internal void SetRequestLine (string requestLine)
     {
       var parts = requestLine.Split (new[] { ' ' }, 3);
+
       if (parts.Length < 3) {
         _context.ErrorMessage = "Invalid request line (parts)";
+
         return;
       }
 
       var method = parts[0];
+
       if (method.Length == 0) {
         _context.ErrorMessage = "Invalid request line (method)";
+
         return;
       }
 
       var target = parts[1];
+
       if (target.Length == 0) {
         _context.ErrorMessage = "Invalid request line (target)";
+
         return;
       }
 
       var rawVer = parts[2];
+
       if (rawVer.Length != 8) {
         _context.ErrorMessage = "Invalid request line (version)";
+
         return;
       }
 
-      if (rawVer.IndexOf ("HTTP/") != 0) {
+      if (!rawVer.StartsWith ("HTTP/", StringComparison.Ordinal)) {
         _context.ErrorMessage = "Invalid request line (version)";
+
         return;
       }
 
       Version ver;
+
       if (!rawVer.Substring (5).TryCreateVersion (out ver)) {
         _context.ErrorMessage = "Invalid request line (version)";
+
         return;
       }
 
-      if (ver.Major < 1) {
+      if (ver != HttpVersion.Version11) {
         _context.ErrorMessage = "Invalid request line (version)";
+        _context.ErrorStatusCode = 505;
+
         return;
       }
 
       if (!method.IsHttpMethod (ver)) {
         _context.ErrorMessage = "Invalid request line (method)";
+        _context.ErrorStatusCode = 501;
+
         return;
       }
 

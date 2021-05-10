@@ -106,26 +106,26 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the host instance for a WebSocket service with
-    /// the specified <paramref name="path"/>.
+    /// Gets the host instance for a WebSocket service with the specified path.
     /// </summary>
-    /// <remarks>
-    /// <paramref name="path"/> is converted to a URL-decoded string and
-    /// / is trimmed from the end of the converted string if any.
-    /// </remarks>
     /// <value>
     ///   <para>
     ///   A <see cref="WebSocketServiceHost"/> instance or
     ///   <see langword="null"/> if not found.
     ///   </para>
     ///   <para>
-    ///   That host instance provides the function to access
+    ///   The host instance provides the function to access
     ///   the information in the service.
     ///   </para>
     /// </value>
     /// <param name="path">
-    /// A <see cref="string"/> that represents an absolute path to
-    /// the service to find.
+    ///   <para>
+    ///   A <see cref="string"/> that represents an absolute path to
+    ///   the service to find.
+    ///   </para>
+    ///   <para>
+    ///   / is trimmed from the end of the string if present.
+    ///   </para>
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="path"/> is <see langword="null"/>.
@@ -409,7 +409,7 @@ namespace WebSocketSharp.Server
     internal void Add<TBehavior> (string path, Func<TBehavior> creator)
       where TBehavior : WebSocketBehavior
     {
-      path = HttpUtility.UrlDecode (path).TrimSlashFromEnd ();
+      path = path.TrimSlashFromEnd ();
 
       lock (_sync) {
         WebSocketServiceHost host;
@@ -437,7 +437,7 @@ namespace WebSocketSharp.Server
       string path, out WebSocketServiceHost host
     )
     {
-      path = HttpUtility.UrlDecode (path).TrimSlashFromEnd ();
+      path = path.TrimSlashFromEnd ();
 
       lock (_sync)
         return _hosts.TryGetValue (path, out host);
@@ -470,16 +470,17 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Adds a WebSocket service with the specified behavior,
-    /// <paramref name="path"/>, and <paramref name="initializer"/>.
+    /// Adds a WebSocket service with the specified behavior, path,
+    /// and delegate.
     /// </summary>
-    /// <remarks>
-    /// <paramref name="path"/> is converted to a URL-decoded string and
-    /// / is trimmed from the end of the converted string if any.
-    /// </remarks>
     /// <param name="path">
-    /// A <see cref="string"/> that represents an absolute path to
-    /// the service to add.
+    ///   <para>
+    ///   A <see cref="string"/> that represents an absolute path to
+    ///   the service to add.
+    ///   </para>
+    ///   <para>
+    ///   / is trimmed from the end of the string if present.
+    ///   </para>
     /// </param>
     /// <param name="initializer">
     ///   <para>
@@ -487,14 +488,20 @@ namespace WebSocketSharp.Server
     ///   <see langword="null"/> if not needed.
     ///   </para>
     ///   <para>
-    ///   That delegate invokes the method called for initializing
+    ///   The delegate invokes the method called when initializing
     ///   a new session instance for the service.
     ///   </para>
     /// </param>
     /// <typeparam name="TBehavior">
-    /// The type of the behavior for the service. It must inherit
-    /// the <see cref="WebSocketBehavior"/> class and it must have
-    /// a public parameterless constructor.
+    ///   <para>
+    ///   The type of the behavior for the service.
+    ///   </para>
+    ///   <para>
+    ///   It must inherit the <see cref="WebSocketBehavior"/> class.
+    ///   </para>
+    ///   <para>
+    ///   And also, it must have a public parameterless constructor.
+    ///   </para>
     /// </typeparam>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="path"/> is <see langword="null"/>.
@@ -542,7 +549,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentException (msg, "path");
       }
 
-      path = HttpUtility.UrlDecode (path).TrimSlashFromEnd ();
+      path = path.TrimSlashFromEnd ();
 
       lock (_sync) {
         WebSocketServiceHost host;
@@ -927,25 +934,24 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Removes a WebSocket service with the specified <paramref name="path"/>.
+    /// Removes a WebSocket service with the specified path.
     /// </summary>
     /// <remarks>
-    ///   <para>
-    ///   <paramref name="path"/> is converted to a URL-decoded string and
-    ///   / is trimmed from the end of the converted string if any.
-    ///   </para>
-    ///   <para>
-    ///   The service is stopped with close status 1001 (going away)
-    ///   if it has already started.
-    ///   </para>
+    /// The service is stopped with close status 1001 (going away)
+    /// if it has already started.
     /// </remarks>
     /// <returns>
     /// <c>true</c> if the service is successfully found and removed;
     /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="path">
-    /// A <see cref="string"/> that represents an absolute path to
-    /// the service to remove.
+    ///   <para>
+    ///   A <see cref="string"/> that represents an absolute path to
+    ///   the service to remove.
+    ///   </para>
+    ///   <para>
+    ///   / is trimmed from the end of the string if present.
+    ///   </para>
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="path"/> is <see langword="null"/>.
@@ -984,7 +990,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentException (msg, "path");
       }
 
-      path = HttpUtility.UrlDecode (path).TrimSlashFromEnd ();
+      path = path.TrimSlashFromEnd ();
 
       WebSocketServiceHost host;
       lock (_sync) {
@@ -1002,19 +1008,20 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Tries to get the host instance for a WebSocket service with
-    /// the specified <paramref name="path"/>.
+    /// the specified path.
     /// </summary>
-    /// <remarks>
-    /// <paramref name="path"/> is converted to a URL-decoded string and
-    /// / is trimmed from the end of the converted string if any.
-    /// </remarks>
     /// <returns>
-    /// <c>true</c> if the service is successfully found;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the service is successfully found; otherwise,
+    /// <c>false</c>.
     /// </returns>
     /// <param name="path">
-    /// A <see cref="string"/> that represents an absolute path to
-    /// the service to find.
+    ///   <para>
+    ///   A <see cref="string"/> that represents an absolute path to
+    ///   the service to find.
+    ///   </para>
+    ///   <para>
+    ///   / is trimmed from the end of the string if present.
+    ///   </para>
     /// </param>
     /// <param name="host">
     ///   <para>
@@ -1022,7 +1029,7 @@ namespace WebSocketSharp.Server
     ///   instance or <see langword="null"/> if not found.
     ///   </para>
     ///   <para>
-    ///   That host instance provides the function to access
+    ///   The host instance provides the function to access
     ///   the information in the service.
     ///   </para>
     /// </param>

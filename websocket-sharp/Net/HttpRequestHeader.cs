@@ -2,13 +2,13 @@
 /*
  * HttpRequestHeader.cs
  *
- * This code is derived from System.Net.HttpRequestHeader.cs of Mono
+ * This code is derived from HttpRequestHeader.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2014 sta.blockhead
+ * Copyright (c) 2014-2020 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,12 +40,12 @@
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Contains the HTTP headers that may be specified in a client request.
+  /// Indicates the HTTP header that may be specified in a client request.
   /// </summary>
   /// <remarks>
-  /// The HttpRequestHeader enumeration contains the HTTP request headers defined in
-  /// <see href="http://tools.ietf.org/html/rfc2616#section-14">RFC 2616</see> for the HTTP/1.1 and
-  /// <see href="http://tools.ietf.org/html/rfc6455#section-11.3">RFC 6455</see> for the WebSocket.
+  /// The headers of this enumeration are defined in
+  /// <see href="http://tools.ietf.org/html/rfc2616#section-14">RFC 2616</see> or
+  /// <see href="http://tools.ietf.org/html/rfc6455#section-11.3">RFC 6455</see>.
   /// </remarks>
   public enum HttpRequestHeader
   {

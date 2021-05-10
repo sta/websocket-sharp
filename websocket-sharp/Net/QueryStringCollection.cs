@@ -61,6 +61,17 @@ namespace WebSocketSharp.Net
 
     #endregion
 
+    #region Private Methods
+
+    private static string urlDecode (string s, Encoding encoding)
+    {
+      return s.IndexOfAny (new[] { '%', '+' }) > -1
+             ? HttpUtility.UrlDecode (s, encoding)
+             : s;
+    }
+
+    #endregion
+
     #region Public Methods
 
     public static QueryStringCollection Parse (string query)
@@ -99,25 +110,20 @@ namespace WebSocketSharp.Net
 
         var i = component.IndexOf ('=');
         if (i < 0) {
-          ret.Add (null, HttpUtility.UrlDecode (component, encoding));
+          ret.Add (null, urlDecode (component, encoding));
           continue;
         }
 
         if (i == 0) {
-          ret.Add (
-            null, HttpUtility.UrlDecode (component.Substring (1), encoding)
-          );
-
+          ret.Add (null, urlDecode (component.Substring (1), encoding));
           continue;
         }
 
-        var name = HttpUtility.UrlDecode (component.Substring (0, i), encoding);
+        var name = urlDecode (component.Substring (0, i), encoding);
 
         var start = i + 1;
         var val = start < len
-                  ? HttpUtility.UrlDecode (
-                      component.Substring (start), encoding
-                    )
+                  ? urlDecode (component.Substring (start), encoding)
                   : String.Empty;
 
         ret.Add (name, val);
@@ -128,9 +134,6 @@ namespace WebSocketSharp.Net
 
     public override string ToString ()
     {
-      if (Count == 0)
-        return String.Empty;
-
       var buff = new StringBuilder ();
 
       foreach (var key in AllKeys)

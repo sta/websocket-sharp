@@ -5,7 +5,7 @@
  * The MIT License
  *
  * Copyright (c) 2014 liryna
- * Copyright (c) 2014-2017 sta.blockhead
+ * Copyright (c) 2014-2020 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,29 +60,34 @@ namespace WebSocketSharp.Net
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ClientSslConfiguration"/> class.
-    /// </summary>
-    public ClientSslConfiguration ()
-    {
-      _enabledSslProtocols = SslProtocols.Default;
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ClientSslConfiguration"/> class
-    /// with the specified <paramref name="targetHost"/>.
+    /// Initializes a new instance of the <see cref="ClientSslConfiguration"/>
+    /// class with the specified target host server name.
     /// </summary>
     /// <param name="targetHost">
-    /// A <see cref="string"/> that represents the target host server name.
+    /// A <see cref="string"/> that specifies the target host server name.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="targetHost"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="targetHost"/> is an empty string.
+    /// </exception>
     public ClientSslConfiguration (string targetHost)
     {
+      if (targetHost == null)
+        throw new ArgumentNullException ("targetHost");
+
+      if (targetHost.Length == 0)
+        throw new ArgumentException ("An empty string.", "targetHost");
+
       _targetHost = targetHost;
-      _enabledSslProtocols = SslProtocols.Default;
+
+      _enabledSslProtocols = SslProtocols.None;
     }
 
     /// <summary>
-    /// Copies the parameters from the specified <paramref name="configuration"/> to
-    /// a new instance of the <see cref="ClientSslConfiguration"/> class.
+    /// Initializes a new instance of the <see cref="ClientSslConfiguration"/>
+    /// class that stores the parameters copied from the specified configuration.
     /// </summary>
     /// <param name="configuration">
     /// A <see cref="ClientSslConfiguration"/> from which to copy.
@@ -131,15 +136,15 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the certificates from which to select one to
-    /// supply to the server.
+    /// Gets or sets the collection of client certificates from which to select
+    /// one to supply to the server.
     /// </summary>
     /// <value>
     ///   <para>
     ///   A <see cref="X509CertificateCollection"/> or <see langword="null"/>.
     ///   </para>
     ///   <para>
-    ///   That collection contains client certificates from which to select.
+    ///   The collection contains client certificates from which to select.
     ///   </para>
     ///   <para>
     ///   The default value is <see langword="null"/>.
@@ -156,12 +161,11 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the callback used to select the certificate to
-    /// supply to the server.
+    /// Gets or sets the callback used to select the certificate to supply to
+    /// the server.
     /// </summary>
     /// <remarks>
-    /// No certificate is supplied if the callback returns
-    /// <see langword="null"/>.
+    /// No certificate is supplied if the callback returns <see langword="null"/>.
     /// </remarks>
     /// <value>
     ///   <para>
@@ -169,8 +173,8 @@ namespace WebSocketSharp.Net
     ///   invokes the method called for selecting the certificate.
     ///   </para>
     ///   <para>
-    ///   The default value is a delegate that invokes a method that
-    ///   only returns <see langword="null"/>.
+    ///   The default value is a delegate that invokes a method that only
+    ///   returns <see langword="null"/>.
     ///   </para>
     /// </value>
     public LocalCertificateSelectionCallback ClientCertificateSelectionCallback {
@@ -191,11 +195,13 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   The <see cref="SslProtocols"/> enum values that represent
-    ///   the protocols used for authentication.
+    ///   Any of the <see cref="SslProtocols"/> enum values.
     ///   </para>
     ///   <para>
-    ///   The default value is <see cref="SslProtocols.Default"/>.
+    ///   It represents the protocols used for authentication.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see cref="SslProtocols.None"/>.
     ///   </para>
     /// </value>
     public SslProtocols EnabledSslProtocols {
@@ -209,8 +215,8 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the callback used to validate the certificate
-    /// supplied by the server.
+    /// Gets or sets the callback used to validate the certificate supplied by
+    /// the server.
     /// </summary>
     /// <remarks>
     /// The certificate is valid if the callback returns <c>true</c>.
@@ -221,8 +227,8 @@ namespace WebSocketSharp.Net
     ///   invokes the method called for validating the certificate.
     ///   </para>
     ///   <para>
-    ///   The default value is a delegate that invokes a method that
-    ///   only returns <c>true</c>.
+    ///   The default value is a delegate that invokes a method that only
+    ///   returns <c>true</c>.
     ///   </para>
     /// </value>
     public RemoteCertificateValidationCallback ServerCertificateValidationCallback {
@@ -242,21 +248,27 @@ namespace WebSocketSharp.Net
     /// Gets or sets the target host server name.
     /// </summary>
     /// <value>
-    ///   <para>
-    ///   A <see cref="string"/> or <see langword="null"/>
-    ///   if not specified.
-    ///   </para>
-    ///   <para>
-    ///   That string represents the name of the server that
-    ///   will share a secure connection with a client.
-    ///   </para>
+    /// A <see cref="string"/> that represents the name of the server that
+    /// will share a secure connection with a client.
     /// </value>
+    /// <exception cref="ArgumentNullException">
+    /// The value specified for a set operation is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The value specified for a set operation is an empty string.
+    /// </exception>
     public string TargetHost {
       get {
         return _targetHost;
       }
 
       set {
+        if (value == null)
+          throw new ArgumentNullException ("value");
+
+        if (value.Length == 0)
+          throw new ArgumentException ("An empty string.", "value");
+
         _targetHost = value;
       }
     }

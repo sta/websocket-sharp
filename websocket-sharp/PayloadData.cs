@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2016 sta.blockhead
+ * Copyright (c) 2012-2019 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,13 +36,9 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private ushort _code;
-    private bool   _codeSet;
     private byte[] _data;
     private long   _extDataLength;
     private long   _length;
-    private string _reason;
-    private bool   _reasonSet;
 
     #endregion
 
@@ -54,16 +50,17 @@ namespace WebSocketSharp
     public static readonly PayloadData Empty;
 
     /// <summary>
-    /// Represents the allowable max length.
+    /// Represents the allowable max length of payload data.
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   A <see cref="WebSocketException"/> will occur if the payload data length is
-    ///   greater than the value of this field.
+    ///   A <see cref="WebSocketException"/> will occur when the length of
+    ///   incoming payload data is greater than the value of this field.
     ///   </para>
     ///   <para>
-    ///   If you would like to change the value, you must set it to a value between
-    ///   <c>WebSocket.FragmentLength</c> and <c>Int64.MaxValue</c> inclusive.
+    ///   If you would like to change the value of this field, it must be
+    ///   a number between <see cref="WebSocket.FragmentLength"/> and
+    ///   <see cref="Int64.MaxValue"/> inclusive.
     ///   </para>
     /// </remarks>
     public static readonly ulong MaxLength;
@@ -74,24 +71,13 @@ namespace WebSocketSharp
 
     static PayloadData ()
     {
-      Empty = new PayloadData ();
+      Empty = new PayloadData (WebSocket.EmptyBytes, 0);
       MaxLength = Int64.MaxValue;
     }
 
     #endregion
 
     #region Internal Constructors
-
-    internal PayloadData ()
-    {
-      _code = 1005;
-      _reason = String.Empty;
-
-      _data = WebSocket.EmptyBytes;
-
-      _codeSet = true;
-      _reasonSet = true;
-    }
 
     internal PayloadData (byte[] data)
       : this (data, data.LongLength)
@@ -106,14 +92,8 @@ namespace WebSocketSharp
 
     internal PayloadData (ushort code, string reason)
     {
-      _code = code;
-      _reason = reason ?? String.Empty;
-
       _data = code.Append (reason);
       _length = _data.LongLength;
-
-      _codeSet = true;
-      _reasonSet = true;
     }
 
     #endregion
@@ -122,15 +102,9 @@ namespace WebSocketSharp
 
     internal ushort Code {
       get {
-        if (!_codeSet) {
-          _code = _length > 1
-                  ? _data.SubArray (0, 2).ToUInt16 (ByteOrder.Big)
-                  : (ushort) 1005;
-
-          _codeSet = true;
-        }
-
-        return _code;
+        return _length >= 2
+               ? _data.SubArray (0, 2).ToUInt16 (ByteOrder.Big)
+               : (ushort) 1005;
       }
     }
 
@@ -146,21 +120,21 @@ namespace WebSocketSharp
 
     internal bool HasReservedCode {
       get {
-        return _length > 1 && Code.IsReserved ();
+        return _length >= 2 && Code.IsReserved ();
       }
     }
 
     internal string Reason {
       get {
-        if (!_reasonSet) {
-          _reason = _length > 2
-                    ? _data.SubArray (2, _length - 2).UTF8Decode ()
-                    : String.Empty;
+        if (_length <= 2)
+          return String.Empty;
 
-          _reasonSet = true;
-        }
+        var raw = _data.SubArray (2, _length - 2);
 
-        return _reason;
+        string reason;
+        return raw.TryGetUTF8DecodedString (out reason)
+               ? reason
+               : String.Empty;
       }
     }
 

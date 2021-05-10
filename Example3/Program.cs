@@ -108,7 +108,8 @@ namespace Example3
             res.ContentEncoding = Encoding.UTF8;
           }
 
-          res.WriteContent (contents);
+          res.ContentLength64 = contents.LongLength;
+          res.Close (contents, true);
         };
 
       // Add the WebSocket services.

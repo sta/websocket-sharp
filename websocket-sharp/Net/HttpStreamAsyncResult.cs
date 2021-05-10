@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2015 sta.blockhead
+ * Copyright (c) 2012-2021 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -65,6 +65,7 @@ namespace WebSocketSharp.Net
     {
       _callback = callback;
       _state = state;
+
       _sync = new object ();
     }
 
@@ -136,8 +137,12 @@ namespace WebSocketSharp.Net
 
     public WaitHandle AsyncWaitHandle {
       get {
-        lock (_sync)
-          return _waitHandle ?? (_waitHandle = new ManualResetEvent (_completed));
+        lock (_sync) {
+          if (_waitHandle == null)
+            _waitHandle = new ManualResetEvent (_completed);
+
+          return _waitHandle;
+        }
       }
     }
 
@@ -165,6 +170,7 @@ namespace WebSocketSharp.Net
           return;
 
         _completed = true;
+
         if (_waitHandle != null)
           _waitHandle.Set ();
 
@@ -175,8 +181,19 @@ namespace WebSocketSharp.Net
 
     internal void Complete (Exception exception)
     {
-      _exception = exception;
-      Complete ();
+      lock (_sync) {
+        if (_completed)
+          return;
+
+        _completed = true;
+        _exception = exception;
+
+        if (_waitHandle != null)
+          _waitHandle.Set ();
+
+        if (_callback != null)
+          _callback.BeginInvoke (this, ar => _callback.EndInvoke (ar), null);
+      }
     }
 
     #endregion
