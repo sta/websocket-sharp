@@ -168,6 +168,10 @@ namespace WebSocketSharp.Net
       get {
         return _user;
       }
+
+      internal set {
+        _user = value;
+      }
     }
 
     #endregion
