@@ -456,8 +456,6 @@ namespace WebSocketSharp.Net
 
     private void registerContext (HttpListener listener)
     {
-      _context.Listener = listener;
-
       if (!listener.RegisterContext (_context)) {
         _context.ErrorStatusCode = 503;
         _context.SendError ();

@@ -646,6 +646,8 @@ namespace WebSocketSharp.Net
         if (!_listening)
           return false;
 
+        context.Listener = this;
+
         _contextRegistry.AddLast (context);
 
         if (_waitQueue.Count == 0) {
