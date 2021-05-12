@@ -455,7 +455,7 @@ namespace WebSocketSharp.Net
     {
       _context.Listener = listener;
 
-      if (!_context.Authenticate ())
+      if (!listener.AuthenticateContext (_context))
         return;
 
       if (!_context.Register ()) {
