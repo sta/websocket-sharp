@@ -562,6 +562,43 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
+    internal bool AuthenticateContext (HttpListenerContext context)
+    {
+      var req = context.Request;
+      var schm = SelectAuthenticationScheme (req);
+
+      if (schm == AuthenticationSchemes.Anonymous)
+        return true;
+
+      if (schm == AuthenticationSchemes.None) {
+        context.ErrorStatusCode = 403;
+        context.ErrorMessage = "Authentication not allowed";
+
+        context.SendError ();
+
+        return false;
+      }
+
+      var realm = GetRealm ();
+      var user = HttpUtility.CreateUser (
+                   req.Headers["Authorization"],
+                   schm,
+                   realm,
+                   req.HttpMethod,
+                   _userCredFinder
+                 );
+
+      if (user == null || !user.Identity.IsAuthenticated) {
+        context.SendAuthenticationChallenge (schm, realm);
+
+        return false;
+      }
+
+      context.User = user;
+
+      return true;
+    }
+
     internal HttpListenerAsyncResult BeginGetContext (
       HttpListenerAsyncResult asyncResult
     )
