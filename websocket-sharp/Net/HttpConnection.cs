@@ -319,6 +319,9 @@ namespace WebSocketSharp.Net
           HttpListener lsnr;
 
           if (conn._listener.TrySearchHttpListener (url, out lsnr)) {
+            if (!lsnr.AuthenticateContext (conn._context))
+              return;
+
             conn.registerContext (lsnr);
 
             return;
@@ -454,9 +457,6 @@ namespace WebSocketSharp.Net
     private void registerContext (HttpListener listener)
     {
       _context.Listener = listener;
-
-      if (!listener.AuthenticateContext (_context))
-        return;
 
       if (!_context.Register ()) {
         _context.ErrorStatusCode = 503;
