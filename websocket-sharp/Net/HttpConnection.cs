@@ -458,7 +458,7 @@ namespace WebSocketSharp.Net
     {
       _context.Listener = listener;
 
-      if (!_context.Register ()) {
+      if (!listener.RegisterContext (_context)) {
         _context.ErrorStatusCode = 503;
         _context.SendError ();
 
