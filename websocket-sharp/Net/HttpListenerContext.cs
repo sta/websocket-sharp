@@ -216,11 +216,6 @@ namespace WebSocketSharp.Net
       return _websocketContext;
     }
 
-    internal bool Register ()
-    {
-      return _listener.RegisterContext (this);
-    }
-
     internal void SendAuthenticationChallenge (
       AuthenticationSchemes scheme, string realm
     )
