@@ -246,6 +246,9 @@ namespace WebSocketSharp.Net
 
     internal void Unregister ()
     {
+      if (_listener == null)
+        return;
+
       _listener.UnregisterContext (this);
     }
 
