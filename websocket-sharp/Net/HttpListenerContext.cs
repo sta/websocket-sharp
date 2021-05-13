@@ -197,14 +197,6 @@ namespace WebSocketSharp.Net
                );
     }
 
-    private void sendAuthenticationChallenge (string challenge)
-    {
-      _response.StatusCode = 401;
-      _response.Headers.InternalSet ("WWW-Authenticate", challenge, true);
-
-      _response.Close ();
-    }
-
     #endregion
 
     #region Internal Methods
