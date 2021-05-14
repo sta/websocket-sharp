@@ -199,7 +199,7 @@ namespace WebSocketSharp.Net
         closeSocket ();
       }
 
-      unregisterContext ();
+      _context.Unregister ();
       _listener.RemoveConnection (this);
     }
 
