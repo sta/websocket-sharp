@@ -63,7 +63,6 @@ namespace WebSocketSharp.Net
     private byte[]                _buffer;
     private static readonly int   _bufferLength;
     private HttpListenerContext   _context;
-    private bool                  _contextRegistered;
     private StringBuilder         _currentLine;
     private InputState            _inputState;
     private RequestStream         _inputStream;
@@ -328,8 +327,6 @@ namespace WebSocketSharp.Net
 
               return;
             }
-
-            conn._contextRegistered = true;
 
             return;
           }
