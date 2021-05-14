@@ -322,7 +322,14 @@ namespace WebSocketSharp.Net
             if (!lsnr.AuthenticateContext (conn._context))
               return;
 
-            conn.registerContext (lsnr);
+            if (!lsnr.RegisterContext (conn._context)) {
+              conn._context.ErrorStatusCode = 503;
+              conn._context.SendError ();
+
+              return;
+            }
+
+            conn._contextRegistered = true;
 
             return;
           }
