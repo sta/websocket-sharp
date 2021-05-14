@@ -461,16 +461,6 @@ namespace WebSocketSharp.Net
       return ret;
     }
 
-    private void unregisterContext ()
-    {
-      if (!_contextRegistered)
-        return;
-
-      _context.Unregister ();
-
-      _contextRegistered = false;
-    }
-
     #endregion
 
     #region Internal Methods
