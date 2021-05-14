@@ -523,7 +523,7 @@ namespace WebSocketSharp.Net
         }
 
         disposeRequestBuffer ();
-        unregisterContext ();
+        _context.Unregister ();
 
         _reuses++;
 
