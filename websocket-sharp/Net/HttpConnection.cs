@@ -461,18 +461,6 @@ namespace WebSocketSharp.Net
       return ret;
     }
 
-    private void registerContext (HttpListener listener)
-    {
-      if (!listener.RegisterContext (_context)) {
-        _context.ErrorStatusCode = 503;
-        _context.SendError ();
-
-        return;
-      }
-
-      _contextRegistered = true;
-    }
-
     private void unregisterContext ()
     {
       if (!_contextRegistered)
