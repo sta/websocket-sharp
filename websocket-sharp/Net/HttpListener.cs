@@ -632,13 +632,6 @@ namespace WebSocketSharp.Net
         throw new ObjectDisposedException (_objectName);
     }
 
-    internal string GetRealm ()
-    {
-      var realm = _realm;
-
-      return realm != null && realm.Length > 0 ? realm : _defaultRealm;
-    }
-
     internal bool RegisterContext (HttpListenerContext context)
     {
       if (!_listening)
