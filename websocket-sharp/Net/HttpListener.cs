@@ -586,7 +586,7 @@ namespace WebSocketSharp.Net
         return false;
       }
 
-      var realm = GetRealm ();
+      var realm = getRealm ();
       var user = HttpUtility.CreateUser (
                    req.Headers["Authorization"],
                    schm,
