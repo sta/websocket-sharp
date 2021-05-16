@@ -565,6 +565,23 @@ namespace WebSocketSharp.Net
       return realm != null && realm.Length > 0 ? realm : _defaultRealm;
     }
 
+    private AuthenticationSchemes selectAuthenticationScheme (
+      HttpListenerRequest request
+    )
+    {
+      var selector = _authSchemeSelector;
+
+      if (selector == null)
+        return _authSchemes;
+
+      try {
+        return selector (request);
+      }
+      catch {
+        return AuthenticationSchemes.None;
+      }
+    }
+
     #endregion
 
     #region Internal Methods
