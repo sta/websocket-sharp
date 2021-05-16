@@ -674,23 +674,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    internal AuthenticationSchemes SelectAuthenticationScheme (
-      HttpListenerRequest request
-    )
-    {
-      var selector = _authSchemeSelector;
-
-      if (selector == null)
-        return _authSchemes;
-
-      try {
-        return selector (request);
-      }
-      catch {
-        return AuthenticationSchemes.None;
-      }
-    }
-
     internal void UnregisterContext (HttpListenerContext context)
     {
       lock (_contextRegistrySync)
