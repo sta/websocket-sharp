@@ -612,7 +612,9 @@ namespace WebSocketSharp.Net
                    _userCredFinder
                  );
 
-      if (user == null || !user.Identity.IsAuthenticated) {
+      var authenticated = user != null && user.Identity.IsAuthenticated;
+
+      if (!authenticated) {
         context.SendAuthenticationChallenge (schm, realm);
 
         return false;
