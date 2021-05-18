@@ -227,8 +227,8 @@ namespace WebSocketSharp.Net
     ///   </para>
     ///   <para>
     ///   If this property is <see langword="null"/> or an empty string,
-    ///   the result of <c>System.Environment.GetFolderPath (
-    ///   <see cref="Environment.SpecialFolder.ApplicationData"/>)</c>
+    ///   the result of <c>System.Environment.GetFolderPath (<see
+    ///   cref="Environment.SpecialFolder.ApplicationData"/>)</c>
     ///   is used as the default path.
     ///   </para>
     /// </remarks>
