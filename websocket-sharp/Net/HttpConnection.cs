@@ -60,6 +60,7 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
+    private int                   _attempts;
     private byte[]                _buffer;
     private static readonly int   _bufferLength;
     private HttpListenerContext   _context;
@@ -268,7 +269,7 @@ namespace WebSocketSharp.Net
     private static void onRead (IAsyncResult asyncResult)
     {
       var conn = (HttpConnection) asyncResult.AsyncState;
-      var current = conn._reuses;
+      var current = conn._attempts;
 
       if (conn._socket == null)
         return;
@@ -351,7 +352,7 @@ namespace WebSocketSharp.Net
     private static void onTimeout (object state)
     {
       var conn = (HttpConnection) state;
-      var current = conn._reuses;
+      var current = conn._attempts;
 
       if (conn._socket == null)
         return;
@@ -464,7 +465,9 @@ namespace WebSocketSharp.Net
 
     internal void BeginReadRequest ()
     {
-      _timeoutCanceled.Add (_reuses, false);
+      _attempts++;
+
+      _timeoutCanceled.Add (_attempts, false);
       _timer.Change (_timeout, Timeout.Infinite);
 
       try {
