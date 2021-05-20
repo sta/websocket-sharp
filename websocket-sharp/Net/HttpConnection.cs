@@ -338,14 +338,7 @@ namespace WebSocketSharp.Net
           return;
         }
 
-        try {
-          conn._stream.BeginRead (conn._buffer, 0, _bufferLength, onRead, conn);
-        }
-        catch (Exception) {
-          // TODO: Logging.
-
-          conn.close ();
-        }
+        conn.BeginReadRequest ();
       }
     }
 
