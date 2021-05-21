@@ -278,10 +278,8 @@ namespace WebSocketSharp.Net
         if (conn._socket == null)
           return;
 
-        if (!conn._timeoutCanceled[current]) {
-          conn._timer.Change (Timeout.Infinite, Timeout.Infinite);
-          conn._timeoutCanceled[current] = true;
-        }
+        conn._timer.Change (Timeout.Infinite, Timeout.Infinite);
+        conn._timeoutCanceled[current] = true;
 
         var nread = 0;
 
