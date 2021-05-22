@@ -112,8 +112,12 @@ namespace WebSocketSharp.Net
 
     public WaitHandle AsyncWaitHandle {
       get {
-        lock (_sync)
-          return _waitHandle ?? (_waitHandle = new ManualResetEvent (_completed));
+        lock (_sync) {
+          if (_waitHandle == null)
+            _waitHandle = new ManualResetEvent (_completed);
+
+          return _waitHandle;
+        }
       }
     }
 
