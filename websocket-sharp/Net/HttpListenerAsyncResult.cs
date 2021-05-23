@@ -204,14 +204,6 @@ namespace WebSocketSharp.Net
       complete (this);
     }
 
-    internal HttpListenerContext GetContext ()
-    {
-      if (_exception != null)
-        throw _exception;
-
-      return _context;
-    }
-
     #endregion
   }
 }
