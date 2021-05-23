@@ -189,13 +189,6 @@ namespace WebSocketSharp.Net
       complete (this);
     }
 
-    internal void Complete (HttpListenerContext context)
-    {
-      _context = context;
-
-      complete (this);
-    }
-
     internal void Complete (HttpListenerContext context, bool syncCompleted)
     {
       _context = context;
