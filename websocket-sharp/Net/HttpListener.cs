@@ -831,7 +831,7 @@ namespace WebSocketSharp.Net
       if (!ares.IsCompleted)
         ares.AsyncWaitHandle.WaitOne ();
 
-      return ares.GetContext (); // This may throw an exception.
+      return ares.Context;
     }
 
     /// <summary>
