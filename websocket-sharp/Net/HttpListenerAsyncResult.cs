@@ -80,6 +80,16 @@ namespace WebSocketSharp.Net
 
     #region Internal Properties
 
+    internal HttpListenerContext Context
+    {
+      get {
+        if (_exception != null)
+          throw _exception;
+
+        return _context;
+      }
+    }
+
     internal bool EndCalled {
       get {
         return _endCalled;
