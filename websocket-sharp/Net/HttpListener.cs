@@ -669,7 +669,7 @@ namespace WebSocketSharp.Net
         }
         else {
           var ares = _waitQueue.Dequeue ();
-          ares.Complete (context);
+          ares.Complete (context, false);
         }
 
         return true;
