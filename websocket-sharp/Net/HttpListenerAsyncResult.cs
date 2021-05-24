@@ -218,7 +218,7 @@ namespace WebSocketSharp.Net
       _context = context;
       _syncCompleted = syncCompleted;
 
-      complete (this);
+      complete ();
     }
 
     #endregion
