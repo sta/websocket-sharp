@@ -172,34 +172,6 @@ namespace WebSocketSharp.Net
       );
     }
 
-    private static void complete (HttpListenerAsyncResult asyncResult)
-    {
-      lock (asyncResult._sync) {
-        asyncResult._completed = true;
-
-        var waitHandle = asyncResult._waitHandle;
-
-        if (waitHandle != null)
-          waitHandle.Set ();
-      }
-
-      var callback = asyncResult._callback;
-
-      if (callback == null)
-        return;
-
-      ThreadPool.QueueUserWorkItem (
-        state => {
-          try {
-            callback (asyncResult);
-          }
-          catch {
-          }
-        },
-        null
-      );
-    }
-
     #endregion
 
     #region Internal Methods
