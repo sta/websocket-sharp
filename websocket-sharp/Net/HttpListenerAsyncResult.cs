@@ -210,7 +210,7 @@ namespace WebSocketSharp.Net
                    ? new HttpListenerException (995, "The listener is closed.")
                    : exception;
 
-      complete (this);
+      complete ();
     }
 
     internal void Complete (HttpListenerContext context, bool syncCompleted)
