@@ -148,6 +148,30 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
+    private void complete ()
+    {
+      lock (_sync) {
+        _completed = true;
+
+        if (_waitHandle != null)
+          _waitHandle.Set ();
+      }
+
+      if (_callback == null)
+        return;
+
+      ThreadPool.QueueUserWorkItem (
+        state => {
+          try {
+            _callback (this);
+          }
+          catch {
+          }
+        },
+        null
+      );
+    }
+
     private static void complete (HttpListenerAsyncResult asyncResult)
     {
       lock (asyncResult._sync) {
