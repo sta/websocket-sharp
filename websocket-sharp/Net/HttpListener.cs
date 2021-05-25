@@ -780,7 +780,7 @@ namespace WebSocketSharp.Net
         throw new InvalidOperationException (msg);
       }
 
-      return BeginGetContext (new HttpListenerAsyncResult (callback, state));
+      return beginGetContext (callback, state);
     }
 
     /// <summary>
