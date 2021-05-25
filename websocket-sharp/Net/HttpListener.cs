@@ -487,6 +487,28 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
+    private HttpListenerAsyncResult beginGetContext (
+      AsyncCallback callback, object state
+    )
+    {
+      lock (_contextRegistrySync) {
+        if (!_listening)
+          throw new HttpListenerException (995);
+
+        var ares = new HttpListenerAsyncResult (callback, state);
+
+        if (_contextQueue.Count == 0) {
+          _waitQueue.Enqueue (ares);
+        }
+        else {
+          var ctx = _contextQueue.Dequeue ();
+          ares.Complete (ctx, true);
+        }
+
+        return ares;
+      }
+    }
+
     private void cleanupContextQueue (bool force)
     {
       if (_contextQueue.Count == 0)
