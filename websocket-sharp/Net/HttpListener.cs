@@ -897,7 +897,7 @@ namespace WebSocketSharp.Net
         throw new InvalidOperationException (msg);
       }
 
-      var ares = BeginGetContext (new HttpListenerAsyncResult (null, null));
+      var ares = beginGetContext (null, null);
       ares.InGet = true;
 
       return EndGetContext (ares);
