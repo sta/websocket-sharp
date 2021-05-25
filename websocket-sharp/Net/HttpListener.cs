@@ -647,26 +647,6 @@ namespace WebSocketSharp.Net
       return true;
     }
 
-    internal HttpListenerAsyncResult BeginGetContext (
-      HttpListenerAsyncResult asyncResult
-    )
-    {
-      lock (_contextRegistrySync) {
-        if (!_listening)
-          throw new HttpListenerException (995);
-
-        if (_contextQueue.Count == 0) {
-          _waitQueue.Enqueue (asyncResult);
-        }
-        else {
-          var ctx = _contextQueue.Dequeue ();
-          asyncResult.Complete (ctx, true);
-        }
-
-        return asyncResult;
-      }
-    }
-
     internal void CheckDisposed ()
     {
       if (_disposed)
