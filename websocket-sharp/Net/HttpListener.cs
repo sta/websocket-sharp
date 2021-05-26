@@ -879,8 +879,12 @@ namespace WebSocketSharp.Net
 
       var ares = beginGetContext (null, null);
       ares.InGet = true;
+      ares.EndCalled = true;
 
-      return EndGetContext (ares);
+      if (!ares.IsCompleted)
+        ares.AsyncWaitHandle.WaitOne ();
+
+      return ares.Context;
     }
 
     /// <summary>
