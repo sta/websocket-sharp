@@ -822,13 +822,15 @@ namespace WebSocketSharp.Net
         throw new ArgumentException (msg, "asyncResult");
       }
 
-      if (ares.EndCalled) {
-        var msg = "This IAsyncResult instance cannot be reused.";
+      lock (ares.SyncRoot) {
+        if (ares.EndCalled) {
+          var msg = "This IAsyncResult instance cannot be reused.";
 
-        throw new InvalidOperationException (msg);
+          throw new InvalidOperationException (msg);
+        }
+
+        ares.EndCalled = true;
       }
-
-      ares.EndCalled = true;
 
       if (!ares.IsCompleted)
         ares.AsyncWaitHandle.WaitOne ();
