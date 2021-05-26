@@ -110,6 +110,12 @@ namespace WebSocketSharp.Net
       }
     }
 
+    internal object SyncRoot {
+      get {
+        return _sync;
+      }
+    }
+
     #endregion
 
     #region Public Properties
