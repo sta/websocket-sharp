@@ -58,7 +58,6 @@ namespace WebSocketSharp.Net
     private HttpListenerContext _context;
     private bool                _endCalled;
     private Exception           _exception;
-    private bool                _inGet;
     private object              _state;
     private object              _sync;
     private bool                _syncCompleted;
@@ -97,16 +96,6 @@ namespace WebSocketSharp.Net
 
       set {
         _endCalled = value;
-      }
-    }
-
-    internal bool InGet {
-      get {
-        return _inGet;
-      }
-
-      set {
-        _inGet = value;
       }
     }
 
