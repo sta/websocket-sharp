@@ -184,9 +184,7 @@ namespace WebSocketSharp.Net
 
     internal void Complete (Exception exception)
     {
-      _exception = _inGet && (exception is ObjectDisposedException)
-                   ? new HttpListenerException (995, "The listener is closed.")
-                   : exception;
+      _exception = exception;
 
       complete ();
     }
