@@ -807,6 +807,9 @@ namespace WebSocketSharp.Net
     /// <exception cref="InvalidOperationException">
     /// This method was already called for <paramref name="asyncResult"/>.
     /// </exception>
+    /// <exception cref="HttpListenerException">
+    /// This method is canceled.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
     /// </exception>
