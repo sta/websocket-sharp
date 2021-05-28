@@ -866,6 +866,9 @@ namespace WebSocketSharp.Net
     ///   This listener has not been started or is currently stopped.
     ///   </para>
     /// </exception>
+    /// <exception cref="HttpListenerException">
+    /// This method is canceled.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
     /// </exception>
