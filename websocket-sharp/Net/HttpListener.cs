@@ -747,7 +747,7 @@ namespace WebSocketSharp.Net
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
     /// </exception>
-    public IAsyncResult BeginGetContext (AsyncCallback callback, Object state)
+    public IAsyncResult BeginGetContext (AsyncCallback callback, object state)
     {
       if (_disposed)
         throw new ObjectDisposedException (_objectName);
