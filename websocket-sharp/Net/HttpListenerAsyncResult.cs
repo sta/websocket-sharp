@@ -60,7 +60,7 @@ namespace WebSocketSharp.Net
     private Exception           _exception;
     private object              _state;
     private object              _sync;
-    private bool                _syncCompleted;
+    private bool                _completedSynchronously;
     private ManualResetEvent    _waitHandle;
 
     #endregion
@@ -128,7 +128,7 @@ namespace WebSocketSharp.Net
 
     public bool CompletedSynchronously {
       get {
-        return _syncCompleted;
+        return _completedSynchronously;
       }
     }
 
@@ -178,10 +178,10 @@ namespace WebSocketSharp.Net
       complete ();
     }
 
-    internal void Complete (HttpListenerContext context, bool syncCompleted)
+    internal void Complete (HttpListenerContext context, bool completedSynchronously)
     {
       _context = context;
-      _syncCompleted = syncCompleted;
+      _completedSynchronously = completedSynchronously;
 
       complete ();
     }
