@@ -55,12 +55,12 @@ namespace WebSocketSharp.Net
 
     private AsyncCallback       _callback;
     private bool                _completed;
+    private bool                _completedSynchronously;
     private HttpListenerContext _context;
     private bool                _endCalled;
     private Exception           _exception;
     private object              _state;
     private object              _sync;
-    private bool                _completedSynchronously;
     private ManualResetEvent    _waitHandle;
 
     #endregion
