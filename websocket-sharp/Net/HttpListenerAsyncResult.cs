@@ -178,7 +178,9 @@ namespace WebSocketSharp.Net
       complete ();
     }
 
-    internal void Complete (HttpListenerContext context, bool completedSynchronously)
+    internal void Complete (
+      HttpListenerContext context, bool completedSynchronously
+    )
     {
       _context = context;
       _completedSynchronously = completedSynchronously;
