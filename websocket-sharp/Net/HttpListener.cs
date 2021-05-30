@@ -546,19 +546,6 @@ namespace WebSocketSharp.Net
         ctx.Connection.Close (true);
     }
 
-    private void cleanupWaitQueue (Exception exception)
-    {
-      if (_waitQueue.Count == 0)
-        return;
-
-      var aress = _waitQueue.ToArray ();
-
-      _waitQueue.Clear ();
-
-      foreach (var ares in aress)
-        ares.Complete (exception);
-    }
-
     private void cleanupWaitQueue (string message)
     {
       if (_waitQueue.Count == 0)
