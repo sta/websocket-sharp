@@ -559,6 +559,22 @@ namespace WebSocketSharp.Net
         ares.Complete (exception);
     }
 
+    private void cleanupWaitQueue (string message)
+    {
+      if (_waitQueue.Count == 0)
+        return;
+
+      var aress = _waitQueue.ToArray ();
+
+      _waitQueue.Clear ();
+
+      foreach (var ares in aress) {
+        var ex = new HttpListenerException (995, message);
+
+        ares.Complete (ex);
+      }
+    }
+
     private void close (bool force)
     {
       if (!_listening) {
