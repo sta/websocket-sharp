@@ -63,7 +63,8 @@ namespace WebSocketSharp.Net
     /// A <see cref="StreamingContext"/> that specifies the source for the deserialization.
     /// </param>
     protected HttpListenerException (
-      SerializationInfo serializationInfo, StreamingContext streamingContext)
+      SerializationInfo serializationInfo, StreamingContext streamingContext
+    )
       : base (serializationInfo, streamingContext)
     {
     }
