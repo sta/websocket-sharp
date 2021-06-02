@@ -74,7 +74,8 @@ namespace WebSocketSharp.Net
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HttpListenerException"/> class.
+    /// Initializes a new instance of the <see cref="HttpListenerException"/>
+    /// class.
     /// </summary>
     public HttpListenerException ()
     {
