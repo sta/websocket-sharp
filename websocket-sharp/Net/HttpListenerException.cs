@@ -94,14 +94,14 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HttpListenerException"/> class
-    /// with the specified <paramref name="errorCode"/> and <paramref name="message"/>.
+    /// Initializes a new instance of the <see cref="HttpListenerException"/>
+    /// class with the specified error code and message.
     /// </summary>
     /// <param name="errorCode">
-    /// An <see cref="int"/> that identifies the error.
+    /// An <see cref="int"/> that specifies the error code.
     /// </param>
     /// <param name="message">
-    /// A <see cref="string"/> that describes the error.
+    /// A <see cref="string"/> that specifies the message.
     /// </param>
     public HttpListenerException (int errorCode, string message)
       : base (errorCode, message)
