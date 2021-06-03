@@ -116,7 +116,7 @@ namespace WebSocketSharp.Net
     /// Gets the error code that identifies the error that occurred.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that identifies the error.
+    /// An <see cref="int"/> that represents the error code.
     /// </value>
     public override int ErrorCode {
       get {
