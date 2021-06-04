@@ -44,8 +44,8 @@ using System.Runtime.Serialization;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// The exception that is thrown when a <see cref="HttpListener"/> instance
-  /// gets an error processing an HTTP request.
+  /// The exception that is thrown when an error occurres processing
+  /// an HTTP request.
   /// </summary>
   [Serializable]
   public class HttpListenerException : Win32Exception
