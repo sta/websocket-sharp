@@ -44,7 +44,7 @@ using System.Runtime.Serialization;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// The exception that is thrown when an error occurres processing
+  /// The exception that is thrown when an error occurs processing
   /// an HTTP request.
   /// </summary>
   [Serializable]
