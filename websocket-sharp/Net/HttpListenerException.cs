@@ -119,7 +119,12 @@ namespace WebSocketSharp.Net
     /// Gets the error code that identifies the error that occurred.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that represents the error code.
+    ///   <para>
+    ///   An <see cref="int"/> that represents the error code.
+    ///   </para>
+    ///   <para>
+    ///   It is any of Win32 error codes.
+    ///   </para>
     /// </value>
     public override int ErrorCode {
       get {
