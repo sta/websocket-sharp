@@ -123,7 +123,7 @@ namespace WebSocketSharp.Net
     ///   An <see cref="int"/> that represents the error code.
     ///   </para>
     ///   <para>
-    ///   It is any of Win32 error codes.
+    ///   It is any of the Win32 error codes.
     ///   </para>
     /// </value>
     public override int ErrorCode {
