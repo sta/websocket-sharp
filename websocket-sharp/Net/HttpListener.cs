@@ -412,13 +412,6 @@ namespace WebSocketSharp.Net
 
         return _sslConfig;
       }
-
-      set {
-        if (_disposed)
-          throw new ObjectDisposedException (_objectName);
-
-        _sslConfig = value;
-      }
     }
 
     /// <summary>
