@@ -392,8 +392,8 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the SSL configuration used to authenticate the server
-    /// and optionally the client for secure connection.
+    /// Gets the SSL configuration used to authenticate the server and
+    /// optionally the client for secure connection.
     /// </summary>
     /// <value>
     /// A <see cref="ServerSslConfiguration"/> that represents the SSL
