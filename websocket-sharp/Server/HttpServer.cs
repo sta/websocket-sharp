@@ -538,10 +538,11 @@ namespace WebSocketSharp.Server
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> or <see langword="null"/> by default.
+    ///   A <see cref="string"/> that represents the name of
+    ///   the realm or <see langword="null"/>.
     ///   </para>
     ///   <para>
-    ///   That string represents the name of the realm.
+    ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
     public string Realm {
