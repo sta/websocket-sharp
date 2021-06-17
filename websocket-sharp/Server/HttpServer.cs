@@ -626,6 +626,7 @@ namespace WebSocketSharp.Server
       get {
         if (!_secure) {
           var msg = "This instance does not provide secure connections.";
+
           throw new InvalidOperationException (msg);
         }
 
