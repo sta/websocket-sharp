@@ -612,7 +612,7 @@ namespace WebSocketSharp.Server
     /// Gets the configuration for secure connection.
     /// </summary>
     /// <remarks>
-    /// This configuration will be referenced when attempts to start,
+    /// The configuration will be referenced when attempts to start,
     /// so it must be configured before the start method is called.
     /// </remarks>
     /// <value>
