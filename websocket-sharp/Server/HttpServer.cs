@@ -656,7 +656,7 @@ namespace WebSocketSharp.Server
     ///   <see langword="null"/> if not needed.
     ///   </para>
     ///   <para>
-    ///   That delegate invokes the method called for finding
+    ///   The delegate invokes the method called for finding
     ///   the credentials used to authenticate a client.
     ///   </para>
     ///   <para>
