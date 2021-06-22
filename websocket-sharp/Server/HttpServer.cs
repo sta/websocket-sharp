@@ -426,15 +426,12 @@ namespace WebSocketSharp.Server
         if (full.Length == 2 && full[1] == ':')
           throw new ArgumentException ("An absolute root.", "value");
 
-        string msg;
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
-          return;
-        }
-
         lock (_sync) {
+          string msg;
+
           if (!canSet (out msg)) {
             _log.Warn (msg);
+
             return;
           }
 
