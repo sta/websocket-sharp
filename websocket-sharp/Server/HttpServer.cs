@@ -379,13 +379,13 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The value specified for a set operation is an invalid path string.
+    ///   The value specified for a set operation is an absolute root.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The value specified for a set operation is an absolute root.
+    ///   The value specified for a set operation is an invalid path string.
     ///   </para>
     /// </exception>
     public string DocumentRootPath {
