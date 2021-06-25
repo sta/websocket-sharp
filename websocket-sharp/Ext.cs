@@ -1076,6 +1076,7 @@ namespace WebSocketSharp
     internal static string TrimSlashFromEnd (this string value)
     {
       var ret = value.TrimEnd ('/');
+
       return ret.Length > 0 ? ret : "/";
     }
 
