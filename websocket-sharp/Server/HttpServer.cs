@@ -1476,6 +1476,7 @@ namespace WebSocketSharp.Server
     {
       if (_secure) {
         string msg;
+
         if (!checkCertificate (out msg))
           throw new InvalidOperationException (msg);
       }
