@@ -824,12 +824,17 @@ namespace WebSocketSharp.Server
       var path = _listener.CertificateFolderPath;
       var withPort = EndPointListener.CertificateExists (_port, path);
 
-      if (!(byUser || withPort)) {
+      var exists = byUser || withPort;
+
+      if (!exists) {
         message = "There is no server certificate for secure connection.";
+
         return false;
       }
 
-      if (byUser && withPort)
+      var both = byUser && withPort;
+
+      if (both)
         _log.Warn ("The server certificate associated with the port is used.");
 
       return true;
