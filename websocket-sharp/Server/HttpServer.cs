@@ -834,8 +834,11 @@ namespace WebSocketSharp.Server
 
       var both = byUser && withPort;
 
-      if (both)
-        _log.Warn ("The server certificate associated with the port is used.");
+      if (both) {
+        var msg = "The server certificate associated with the port is used.";
+
+        _log.Warn (msg);
+      }
 
       return true;
     }
