@@ -824,9 +824,9 @@ namespace WebSocketSharp.Server
       var path = _listener.CertificateFolderPath;
       var withPort = EndPointListener.CertificateExists (_port, path);
 
-      var exists = byUser || withPort;
+      var either = byUser || withPort;
 
-      if (!exists) {
+      if (!either) {
         message = "There is no server certificate for secure connection.";
 
         return false;
