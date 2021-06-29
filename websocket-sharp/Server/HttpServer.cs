@@ -993,22 +993,26 @@ namespace WebSocketSharp.Server
     {
       if (_state == ServerState.Start) {
         _log.Info ("The server has already started.");
+
         return;
       }
 
       if (_state == ServerState.ShuttingDown) {
         _log.Warn ("The server is shutting down.");
+
         return;
       }
 
       lock (_sync) {
         if (_state == ServerState.Start) {
           _log.Info ("The server has already started.");
+
           return;
         }
 
         if (_state == ServerState.ShuttingDown) {
           _log.Warn ("The server is shutting down.");
+
           return;
         }
 
