@@ -1019,6 +1019,7 @@ namespace WebSocketSharp.Server
         }
         catch {
           _services.Stop (1011, String.Empty);
+
           throw;
         }
 
