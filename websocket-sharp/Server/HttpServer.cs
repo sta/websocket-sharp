@@ -1081,11 +1081,13 @@ namespace WebSocketSharp.Server
 
       try {
         var threw = false;
+
         try {
           _services.Stop (code, reason);
         }
         catch {
           threw = true;
+
           throw;
         }
         finally {
