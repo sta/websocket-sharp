@@ -1138,8 +1138,9 @@ namespace WebSocketSharp.Server
       }
 
       var schm = uri.Scheme;
+      var http = schm == "http" || schm == "https";
 
-      if (!(schm == "http" || schm == "https")) {
+      if (!http) {
         message = "The scheme part is not 'http' or 'https'.";
 
         return false;
