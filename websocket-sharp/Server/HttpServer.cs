@@ -161,19 +161,22 @@ namespace WebSocketSharp.Server
 
       Uri uri;
       string msg;
+
       if (!tryCreateUri (url, out uri, out msg))
         throw new ArgumentException (msg, "url");
 
       var host = uri.GetDnsSafeHost (true);
-
       var addr = host.ToIPAddress ();
+
       if (addr == null) {
         msg = "The host part could not be converted to an IP address.";
+
         throw new ArgumentException (msg, "url");
       }
 
       if (!addr.IsLocal ()) {
         msg = "The IP address of the host is not a local IP address.";
+
         throw new ArgumentException (msg, "url");
       }
 
