@@ -121,8 +121,8 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   The new instance listens for incoming requests on the IP address of the
-    ///   host of <paramref name="url"/> and the port of <paramref name="url"/>.
+    ///   The new instance listens for incoming requests on the IP address and
+    ///   port of <paramref name="url"/>.
     ///   </para>
     ///   <para>
     ///   Either port 80 or 443 is used if <paramref name="url"/> includes
