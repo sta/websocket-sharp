@@ -135,7 +135,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </remarks>
     /// <param name="url">
-    /// A <see cref="string"/> that represents the HTTP URL of the server.
+    /// A <see cref="string"/> that specifies the HTTP URL of the server.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="url"/> is <see langword="null"/>.
