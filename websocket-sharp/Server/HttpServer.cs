@@ -92,7 +92,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HttpServer"/> class with
-    /// the specified <paramref name="port"/>.
+    /// the specified port.
     /// </summary>
     /// <remarks>
     ///   <para>
