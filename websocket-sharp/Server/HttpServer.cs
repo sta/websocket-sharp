@@ -205,7 +205,8 @@ namespace WebSocketSharp.Server
     public HttpServer (int port, bool secure)
     {
       if (!port.IsPortNumber ()) {
-        var msg = "Less than 1 or greater than 65535.";
+        var msg = "It is less than 1 or greater than 65535.";
+
         throw new ArgumentOutOfRangeException ("port", msg);
       }
 
