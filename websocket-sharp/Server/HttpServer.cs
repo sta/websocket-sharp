@@ -185,7 +185,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HttpServer"/> class with
-    /// the specified <paramref name="port"/> and <paramref name="secure"/>.
+    /// the specified port and boolean if secure or not.
     /// </summary>
     /// <remarks>
     /// The new instance listens for incoming requests on
