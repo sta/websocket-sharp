@@ -231,8 +231,8 @@ namespace WebSocketSharp.Server
     /// on which to listen.
     /// </param>
     /// <param name="port">
-    /// An <see cref="int"/> that represents the number of the port
-    /// on which to listen.
+    /// An <see cref="int"/> that specifies the number of the port on which
+    /// to listen.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="address"/> is <see langword="null"/>.
