@@ -283,8 +283,11 @@ namespace WebSocketSharp.Server
       if (address == null)
         throw new ArgumentNullException ("address");
 
-      if (!address.IsLocal ())
-        throw new ArgumentException ("Not a local IP address.", "address");
+      if (!address.IsLocal ()) {
+        var msg = "It is not a local IP address.";
+
+        throw new ArgumentException (msg, "address");
+      }
 
       if (!port.IsPortNumber ()) {
         var msg = "It is less than 1 or greater than 65535.";
