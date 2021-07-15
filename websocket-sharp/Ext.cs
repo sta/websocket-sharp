@@ -1501,6 +1501,7 @@ namespace WebSocketSharp
 
       var host = System.Net.Dns.GetHostName ();
       var addrs = System.Net.Dns.GetHostAddresses (host);
+
       foreach (var addr in addrs) {
         if (address.Equals (addr))
           return true;
