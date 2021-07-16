@@ -1499,8 +1499,8 @@ namespace WebSocketSharp
           return true;
       }
 
-      var host = System.Net.Dns.GetHostName ();
-      var addrs = System.Net.Dns.GetHostAddresses (host);
+      var name = System.Net.Dns.GetHostName ();
+      var addrs = System.Net.Dns.GetHostAddresses (name);
 
       foreach (var addr in addrs) {
         if (address.Equals (addr))
