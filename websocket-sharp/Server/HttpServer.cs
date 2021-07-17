@@ -227,8 +227,8 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </remarks>
     /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that specifies the local IP address
-    /// on which to listen.
+    /// A <see cref="System.Net.IPAddress"/> that specifies the local IP
+    /// address on which to listen.
     /// </param>
     /// <param name="port">
     /// An <see cref="int"/> that specifies the number of the port on which
