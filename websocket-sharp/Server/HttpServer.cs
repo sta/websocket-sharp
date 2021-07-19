@@ -52,11 +52,15 @@ using WebSocketSharp.Net.WebSockets;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Provides a simple HTTP server that allows to accept
-  /// WebSocket handshake requests.
+  /// Provides a simple HTTP server.
   /// </summary>
   /// <remarks>
-  /// This class can provide multiple WebSocket services.
+  ///   <para>
+  ///   The server allows to accept WebSocket handshake requests.
+  ///   </para>
+  ///   <para>
+  ///   This class can provide multiple WebSocket services.
+  ///   </para>
   /// </remarks>
   public class HttpServer
   {
