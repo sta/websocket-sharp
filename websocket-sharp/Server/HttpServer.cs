@@ -2,8 +2,6 @@
 /*
  * HttpServer.cs
  *
- * A simple HTTP server that allows to accept WebSocket handshake requests.
- *
  * The MIT License
  *
  * Copyright (c) 2012-2016 sta.blockhead
