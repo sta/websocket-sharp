@@ -1450,6 +1450,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentException ("It contains '..'.", "path");
 
       path = createFilePath (path);
+
       return File.Exists (path) ? File.ReadAllBytes (path) : null;
     }
 
