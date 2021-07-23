@@ -1407,54 +1407,6 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the contents of the specified file from the document
-    /// folder of the server.
-    /// </summary>
-    /// <returns>
-    ///   <para>
-    ///   An array of <see cref="byte"/> or <see langword="null"/>
-    ///   if it fails.
-    ///   </para>
-    ///   <para>
-    ///   That array represents the contents of the file.
-    ///   </para>
-    /// </returns>
-    /// <param name="path">
-    /// A <see cref="string"/> that represents a virtual path to
-    /// find the file from the document folder.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="path"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    ///   <para>
-    ///   <paramref name="path"/> is an empty string.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="path"/> contains "..".
-    ///   </para>
-    /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public byte[] GetFile (string path)
-    {
-      if (path == null)
-        throw new ArgumentNullException ("path");
-
-      if (path.Length == 0)
-        throw new ArgumentException ("An empty string.", "path");
-
-      if (path.IndexOf ("..") > -1)
-        throw new ArgumentException ("It contains '..'.", "path");
-
-      path = createFilePath (path);
-
-      return File.Exists (path) ? File.ReadAllBytes (path) : null;
-    }
-
-    /// <summary>
     /// Removes a WebSocket service with the specified path.
     /// </summary>
     /// <remarks>
