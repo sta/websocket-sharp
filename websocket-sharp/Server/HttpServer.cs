@@ -855,16 +855,6 @@ namespace WebSocketSharp.Server
       return true;
     }
 
-    private string createFilePath (string childPath)
-    {
-      childPath = childPath.TrimStart ('/', '\\');
-
-      return new StringBuilder (_docRootPath, 32)
-             .AppendFormat ("/{0}", childPath)
-             .ToString ()
-             .Replace ('\\', '/');
-    }
-
     private static HttpListener createListener (
       string hostname, int port, bool secure
     )
