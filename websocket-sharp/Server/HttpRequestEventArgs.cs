@@ -127,6 +127,7 @@ namespace WebSocketSharp.Server
     private string createFilePath (string childPath)
     {
       childPath = childPath.TrimStart ('/', '\\');
+
       return new StringBuilder (_docRootPath, 32)
              .AppendFormat ("/{0}", childPath)
              .ToString ()
