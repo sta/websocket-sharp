@@ -198,6 +198,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentException ("It contains '..'.", "path");
 
       byte[] contents;
+
       tryReadFile (createFilePath (path), out contents);
 
       return contents;
