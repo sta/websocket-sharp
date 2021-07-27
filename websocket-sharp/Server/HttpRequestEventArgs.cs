@@ -35,8 +35,8 @@ using WebSocketSharp.Net;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Represents the event data for the HTTP request events of
-  /// the <see cref="HttpServer"/>.
+  /// Represents the event data for the HTTP request events of the
+  /// <see cref="HttpServer"/> class.
   /// </summary>
   /// <remarks>
   ///   <para>
