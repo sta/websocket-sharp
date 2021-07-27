@@ -41,7 +41,7 @@ namespace WebSocketSharp.Server
   /// <remarks>
   ///   <para>
   ///   An HTTP request event occurs when the <see cref="HttpServer"/>
-  ///   receives an HTTP request.
+  ///   instance receives an HTTP request.
   ///   </para>
   ///   <para>
   ///   You should access the <see cref="Request"/> property if you would
