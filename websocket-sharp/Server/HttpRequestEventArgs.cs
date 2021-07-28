@@ -156,8 +156,8 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Reads the specified file from the document folder of
-    /// the <see cref="HttpServer"/>.
+    /// Reads the specified file from the document folder of the
+    /// <see cref="HttpServer"/> class.
     /// </summary>
     /// <returns>
     ///   <para>
