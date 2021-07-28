@@ -48,8 +48,8 @@ namespace WebSocketSharp.Server
   ///   like to get the request data sent from a client.
   ///   </para>
   ///   <para>
-  ///   And you should access the <see cref="Response"/> property if you would
-  ///   like to get the response data to return to the client.
+  ///   And you should access the <see cref="Response"/> property if you
+  ///   would like to get the response data to return to the client.
   ///   </para>
   /// </remarks>
   public class HttpRequestEventArgs : EventArgs
