@@ -206,7 +206,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Tries to read the specified file from the document folder of
-    /// the <see cref="HttpServer"/>.
+    /// the <see cref="HttpServer"/> class.
     /// </summary>
     /// <returns>
     /// <c>true</c> if it succeeds to read; otherwise, <c>false</c>.
