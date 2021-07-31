@@ -249,7 +249,9 @@ namespace WebSocketSharp.Server
       if (path.IndexOf ("..") > -1)
         throw new ArgumentException ("It contains '..'.", "path");
 
-      return tryReadFile (createFilePath (path), out contents);
+      path = createFilePath (path);
+
+      return tryReadFile (path, out contents);
     }
 
     #endregion
