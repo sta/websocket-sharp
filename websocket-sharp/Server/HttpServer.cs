@@ -994,18 +994,6 @@ namespace WebSocketSharp.Server
 
     private void start ()
     {
-      if (_state == ServerState.Start) {
-        _log.Info ("The server has already started.");
-
-        return;
-      }
-
-      if (_state == ServerState.ShuttingDown) {
-        _log.Warn ("The server is shutting down.");
-
-        return;
-      }
-
       lock (_sync) {
         if (_state == ServerState.Start) {
           _log.Info ("The server has already started.");
@@ -1449,6 +1437,18 @@ namespace WebSocketSharp.Server
 
         if (!checkCertificate (out msg))
           throw new InvalidOperationException (msg);
+      }
+
+      if (_state == ServerState.Start) {
+        _log.Info ("The server has already started.");
+
+        return;
+      }
+
+      if (_state == ServerState.ShuttingDown) {
+        _log.Warn ("The server is shutting down.");
+
+        return;
       }
 
       start ();
