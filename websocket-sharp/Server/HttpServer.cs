@@ -1362,6 +1362,10 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Stops receiving incoming requests.
     /// </summary>
+    /// <remarks>
+    /// This method does nothing if the server is not started,
+    /// it is shutting down, or it has already stopped.
+    /// </remarks>
     public void Stop ()
     {
       if (_state == ServerState.Ready) {
