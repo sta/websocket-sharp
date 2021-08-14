@@ -905,11 +905,14 @@ namespace WebSocketSharp.Server
                               ? OnTrace
                               : null;
 
-      if (evt != null)
-        evt (this, new HttpRequestEventArgs (context, _docRootPath));
-      else
-        context.Response.StatusCode = 501; // Not Implemented
+      if (evt == null) {
+        context.ErrorStatusCode = 501;
+        context.SendError ();
 
+        return;
+      }
+
+      evt (this, new HttpRequestEventArgs (context, _docRootPath));
       context.Response.Close ();
     }
 
