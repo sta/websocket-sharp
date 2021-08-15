@@ -912,7 +912,9 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      evt (this, new HttpRequestEventArgs (context, _docRootPath));
+      var e = new HttpRequestEventArgs (context, _docRootPath);
+      evt (this, e);
+
       context.Response.Close ();
     }
 
