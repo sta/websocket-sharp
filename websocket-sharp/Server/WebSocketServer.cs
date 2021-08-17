@@ -387,15 +387,12 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        string msg;
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
-          return;
-        }
-
         lock (_sync) {
+          string msg;
+
           if (!canSet (out msg)) {
             _log.Warn (msg);
+
             return;
           }
 
