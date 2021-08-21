@@ -78,6 +78,7 @@ namespace WebSocketSharp.Server
     private WebSocketServiceManager _services;
     private volatile ServerState    _state;
     private object                  _sync;
+    private bool _autoCloseResponse;
 
     #endregion
 
@@ -737,6 +738,57 @@ namespace WebSocketSharp.Server
       }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the responses
+    /// are synchronously closed after the request event handler
+    /// has returned. If set to <c>false</c>, it is the responsibility to
+    /// the event handler delegate to call the <see cref="HttpListenerResponse.Close()"/>
+    /// method on the response object, otherwise resources may not be properly cleaned. 
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   You should set this property to <c>true</c> if you would
+    ///   like to send response after executing an asynchronous task.
+    ///   </para>
+    ///   <para>
+    ///   The set operation does nothing if the server has already
+    ///   started or it is shutting down.
+    ///   </para>
+    /// </remarks>
+    /// <value>
+    ///   <para>
+    ///   <c>true</c> if the server synchronously close the response
+    ///   after the handler delegate has returned; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>true</c>.
+    ///   </para>
+    /// </value>
+    public bool AutoCloseResponse
+    {
+      get
+      {
+        return _autoCloseResponse;
+      }
+      set
+      {
+        string msg;
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
+          return;
+        }
+
+        lock (_sync) {
+          if (!canSet (out msg)) {
+            _log.Warn (msg);
+            return;
+          }
+
+          _autoCloseResponse = value;
+        }        
+      }
+    }
+
     #endregion
 
     #region Public Events
@@ -882,6 +934,8 @@ namespace WebSocketSharp.Server
       _log = _listener.Log;
       _services = new WebSocketServiceManager (_log);
       _sync = new object ();
+
+      AutoCloseResponse = true;
     }
 
     private void processRequest (HttpListenerContext context)
@@ -908,9 +962,14 @@ namespace WebSocketSharp.Server
       if (evt != null)
         evt (this, new HttpRequestEventArgs (context, _docRootPath));
       else
+      {
         context.Response.StatusCode = 501; // Not Implemented
+        context.Response.Close ();
+        return;
+      }
 
-      context.Response.Close ();
+      if (AutoCloseResponse)
+        context.Response.Close ();
     }
 
     private void processRequest (HttpListenerWebSocketContext context)
