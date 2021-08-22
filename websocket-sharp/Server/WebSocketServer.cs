@@ -417,7 +417,7 @@ namespace WebSocketSharp.Server
     /// Gets a value indicating whether secure connections are provided.
     /// </summary>
     /// <value>
-    /// <c>true</c> if this instance provides secure connections; otherwise,
+    /// <c>true</c> if the server provides secure connections; otherwise,
     /// <c>false</c>.
     /// </value>
     public bool IsSecure {
