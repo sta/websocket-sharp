@@ -756,6 +756,7 @@ namespace WebSocketSharp.Server
 
       if (configuration.ServerCertificate == null) {
         message = "There is no server certificate for secure connection.";
+
         return false;
       }
 
