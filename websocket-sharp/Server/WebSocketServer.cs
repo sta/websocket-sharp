@@ -1320,8 +1320,8 @@ namespace WebSocketSharp.Server
 
       if (_secure) {
         sslConfig = new ServerSslConfiguration (getSslConfiguration ());
-
         string msg;
+
         if (!checkSslConfiguration (sslConfig, out msg))
           throw new InvalidOperationException (msg);
       }
