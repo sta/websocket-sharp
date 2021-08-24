@@ -766,6 +766,7 @@ namespace WebSocketSharp.Server
     private string getRealm ()
     {
       var realm = _realm;
+
       return realm != null && realm.Length > 0 ? realm : _defaultRealm;
     }
 
