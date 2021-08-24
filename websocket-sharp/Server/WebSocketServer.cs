@@ -1322,10 +1322,12 @@ namespace WebSocketSharp.Server
 
       if (_secure) {
         sslConfig = new ServerSslConfiguration (getSslConfiguration ());
-        string msg;
 
-        if (!checkSslConfiguration (sslConfig, out msg))
+        if (sslConfig.ServerCertificate == null) {
+          var msg = "There is no server certificate for secure connection.";
+
           throw new InvalidOperationException (msg);
+        }
       }
 
       start (sslConfig);
