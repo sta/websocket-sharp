@@ -748,21 +748,6 @@ namespace WebSocketSharp.Server
              || name == _hostname;
     }
 
-    private static bool checkSslConfiguration (
-      ServerSslConfiguration configuration, out string message
-    )
-    {
-      message = null;
-
-      if (configuration.ServerCertificate == null) {
-        message = "There is no server certificate for secure connection.";
-
-        return false;
-      }
-
-      return true;
-    }
-
     private string getRealm ()
     {
       var realm = _realm;
