@@ -1306,7 +1306,8 @@ namespace WebSocketSharp.Server
       ServerSslConfiguration sslConfig = null;
 
       if (_secure) {
-        sslConfig = new ServerSslConfiguration (getSslConfiguration ());
+        var src = getSslConfiguration ();
+        sslConfig = new ServerSslConfiguration (src);
 
         if (sslConfig.ServerCertificate == null) {
           var msg = "There is no server certificate for secure connection.";
