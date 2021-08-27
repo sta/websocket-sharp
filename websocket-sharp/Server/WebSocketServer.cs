@@ -1307,6 +1307,10 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Stops receiving incoming handshake requests.
     /// </summary>
+    /// <remarks>
+    /// This method does nothing if the server is not started,
+    /// it is shutting down, or it has already stopped.
+    /// </remarks>
     /// <exception cref="InvalidOperationException">
     /// The underlying <see cref="TcpListener"/> has failed to stop.
     /// </exception>
