@@ -930,21 +930,6 @@ namespace WebSocketSharp.Server
 
     private void stop (ushort code, string reason)
     {
-      if (_state == ServerState.Ready) {
-        _log.Info ("The server is not started.");
-        return;
-      }
-
-      if (_state == ServerState.ShuttingDown) {
-        _log.Info ("The server is shutting down.");
-        return;
-      }
-
-      if (_state == ServerState.Stop) {
-        _log.Info ("The server has already stopped.");
-        return;
-      }
-
       lock (_sync) {
         if (_state == ServerState.ShuttingDown) {
           _log.Info ("The server is shutting down.");
@@ -1327,6 +1312,24 @@ namespace WebSocketSharp.Server
     /// </exception>
     public void Stop ()
     {
+      if (_state == ServerState.Ready) {
+        _log.Info ("The server is not started.");
+
+        return;
+      }
+
+      if (_state == ServerState.ShuttingDown) {
+        _log.Info ("The server is shutting down.");
+
+        return;
+      }
+
+      if (_state == ServerState.Stop) {
+        _log.Info ("The server has already stopped.");
+
+        return;
+      }
+
       stop (1001, String.Empty);
     }
 
