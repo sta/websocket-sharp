@@ -933,11 +933,13 @@ namespace WebSocketSharp.Server
       lock (_sync) {
         if (_state == ServerState.ShuttingDown) {
           _log.Info ("The server is shutting down.");
+
           return;
         }
 
         if (_state == ServerState.Stop) {
           _log.Info ("The server has already stopped.");
+
           return;
         }
 
@@ -946,11 +948,13 @@ namespace WebSocketSharp.Server
 
       try {
         var threw = false;
+
         try {
           stopReceiving (5000);
         }
         catch {
           threw = true;
+
           throw;
         }
         finally {
