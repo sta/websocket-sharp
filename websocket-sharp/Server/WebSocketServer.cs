@@ -873,11 +873,13 @@ namespace WebSocketSharp.Server
       lock (_sync) {
         if (_state == ServerState.Start) {
           _log.Info ("The server has already started.");
+
           return;
         }
 
         if (_state == ServerState.ShuttingDown) {
           _log.Warn ("The server is shutting down.");
+
           return;
         }
 
@@ -885,11 +887,13 @@ namespace WebSocketSharp.Server
         _realmInUse = getRealm ();
 
         _services.Start ();
+
         try {
           startReceiving ();
         }
         catch {
           _services.Stop (1011, String.Empty);
+
           throw;
         }
 
