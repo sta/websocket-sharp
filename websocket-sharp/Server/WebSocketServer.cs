@@ -822,8 +822,10 @@ namespace WebSocketSharp.Server
     {
       while (true) {
         TcpClient cl = null;
+
         try {
           cl = _listener.AcceptTcpClient ();
+
           ThreadPool.QueueUserWorkItem (
             state => {
               try {
@@ -845,6 +847,7 @@ namespace WebSocketSharp.Server
         catch (SocketException ex) {
           if (_state == ServerState.ShuttingDown) {
             _log.Info ("The underlying listener is stopped.");
+
             break;
           }
 
