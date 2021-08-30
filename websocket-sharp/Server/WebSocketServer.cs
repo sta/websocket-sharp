@@ -914,11 +914,13 @@ namespace WebSocketSharp.Server
       }
       catch (Exception ex) {
         var msg = "The underlying listener has failed to start.";
+
         throw new InvalidOperationException (msg, ex);
       }
 
       _receiveThread = new Thread (new ThreadStart (receiveRequest));
       _receiveThread.IsBackground = true;
+
       _receiveThread.Start ();
     }
 
