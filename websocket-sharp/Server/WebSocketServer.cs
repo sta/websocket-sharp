@@ -784,34 +784,42 @@ namespace WebSocketSharp.Server
     {
       if (!authenticateClient (context)) {
         context.Close (HttpStatusCode.Forbidden);
+
         return;
       }
 
       var uri = context.RequestUri;
+
       if (uri == null) {
         context.Close (HttpStatusCode.BadRequest);
+
         return;
       }
 
       if (!_allowForwardedRequest) {
         if (uri.Port != _port) {
           context.Close (HttpStatusCode.BadRequest);
+
           return;
         }
 
         if (!checkHostNameForRequest (uri.DnsSafeHost)) {
           context.Close (HttpStatusCode.NotFound);
+
           return;
         }
       }
 
       var path = uri.AbsolutePath;
+
       if (path.IndexOfAny (new[] { '%', '+' }) > -1)
         path = HttpUtility.UrlDecode (path, Encoding.UTF8);
 
       WebSocketServiceHost host;
+
       if (!_services.InternalTryGetServiceHost (path, out host)) {
         context.Close (HttpStatusCode.NotImplemented);
+
         return;
       }
 
