@@ -986,6 +986,7 @@ namespace WebSocketSharp.Server
       }
       catch (Exception ex) {
         var msg = "The underlying listener has failed to stop.";
+
         throw new InvalidOperationException (msg, ex);
       }
 
