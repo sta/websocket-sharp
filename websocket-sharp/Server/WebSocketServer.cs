@@ -1064,10 +1064,10 @@ namespace WebSocketSharp.Server
     ///   <paramref name="path"/> is already in use.
     ///   </para>
     /// </exception>
-    public void AddWebSocketService<TBehaviorWithNew> (string path)
-      where TBehaviorWithNew : WebSocketBehavior, new ()
+    public void AddWebSocketService<TBehavior> (string path)
+      where TBehavior : WebSocketBehavior, new ()
     {
-      _services.AddService<TBehaviorWithNew> (path, null);
+      _services.AddService<TBehavior> (path, null);
     }
 
     /// <summary>
