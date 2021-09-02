@@ -1026,7 +1026,7 @@ namespace WebSocketSharp.Server
     ///   / is trimmed from the end of the string if present.
     ///   </para>
     /// </param>
-    /// <typeparam name="TBehaviorWithNew">
+    /// <typeparam name="TBehavior">
     ///   <para>
     ///   The type of the behavior for the service.
     ///   </para>
