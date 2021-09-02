@@ -1019,7 +1019,7 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <param name="path">
     ///   <para>
-    ///   A <see cref="string"/> that represents an absolute path to
+    ///   A <see cref="string"/> that specifies an absolute path to
     ///   the service to add.
     ///   </para>
     ///   <para>
