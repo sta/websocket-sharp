@@ -123,7 +123,7 @@ namespace WebSocketSharp.Server
     /// on which to listen.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is less than 1 or greater than 65535.
+    /// <paramref name="port"/> is less than 0 or greater than 65535.
     /// </exception>
     public WebSocketServer (int port)
       : this (port, port == 443)
@@ -213,12 +213,12 @@ namespace WebSocketSharp.Server
     /// secure connections; otherwise, <c>false</c>.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is less than 1 or greater than 65535.
+    /// <paramref name="port"/> is less than 0 or greater than 65535.
     /// </exception>
     public WebSocketServer (int port, bool secure)
     {
       if (!port.IsPortNumber ()) {
-        var msg = "Less than 1 or greater than 65535.";
+        var msg = "Less than 0 or greater than 65535.";
         throw new ArgumentOutOfRangeException ("port", msg);
       }
 
@@ -926,6 +926,11 @@ namespace WebSocketSharp.Server
       _receiveThread = new Thread (new ThreadStart (receiveRequest));
       _receiveThread.IsBackground = true;
       _receiveThread.Start ();
+      
+      if (_port == 0)
+      {
+          _port = ((System.Net.IPEndPoint)_listener.LocalEndpoint).Port;
+      }
     }
 
     private void stop (ushort code, string reason)
