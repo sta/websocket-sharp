@@ -1085,7 +1085,7 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="initializer">
     ///   <para>
-    ///   An <c>Action&lt;TBehaviorWithNew&gt;</c> delegate or
+    ///   An <c>Action&lt;TBehavior&gt;</c> delegate or
     ///   <see langword="null"/> if not needed.
     ///   </para>
     ///   <para>
@@ -1093,7 +1093,7 @@ namespace WebSocketSharp.Server
     ///   a new session instance for the service.
     ///   </para>
     /// </param>
-    /// <typeparam name="TBehaviorWithNew">
+    /// <typeparam name="TBehavior">
     ///   <para>
     ///   The type of the behavior for the service.
     ///   </para>
