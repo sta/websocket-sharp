@@ -1131,12 +1131,12 @@ namespace WebSocketSharp.Server
     ///   <paramref name="path"/> is already in use.
     ///   </para>
     /// </exception>
-    public void AddWebSocketService<TBehaviorWithNew> (
-      string path, Action<TBehaviorWithNew> initializer
+    public void AddWebSocketService<TBehavior> (
+      string path, Action<TBehavior> initializer
     )
-      where TBehaviorWithNew : WebSocketBehavior, new ()
+      where TBehavior : WebSocketBehavior, new ()
     {
-      _services.AddService<TBehaviorWithNew> (path, initializer);
+      _services.AddService<TBehavior> (path, initializer);
     }
 
     /// <summary>
