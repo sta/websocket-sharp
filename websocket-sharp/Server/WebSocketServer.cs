@@ -120,8 +120,8 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </remarks>
     /// <param name="port">
-    /// An <see cref="int"/> that represents the number of the port
-    /// on which to listen.
+    /// An <see cref="int"/> that specifies the number of the port on which
+    /// to listen.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="port"/> is less than 1 or greater than 65535.
