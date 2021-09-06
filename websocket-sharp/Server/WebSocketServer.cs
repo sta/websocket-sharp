@@ -102,6 +102,7 @@ namespace WebSocketSharp.Server
     public WebSocketServer ()
     {
       var addr = System.Net.IPAddress.Any;
+
       init (addr.ToString (), addr, 80, false);
     }
 
