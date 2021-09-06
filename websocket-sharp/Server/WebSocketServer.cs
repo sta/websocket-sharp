@@ -108,7 +108,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketServer"/> class
-    /// with the specified <paramref name="port"/>.
+    /// with the specified port.
     /// </summary>
     /// <remarks>
     ///   <para>
