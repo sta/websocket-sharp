@@ -138,8 +138,7 @@ namespace WebSocketSharp.Server
     /// <remarks>
     ///   <para>
     ///   The new instance listens for incoming handshake requests on
-    ///   the IP address of the host of <paramref name="url"/> and
-    ///   the port of <paramref name="url"/>.
+    ///   the IP address and port of <paramref name="url"/>.
     ///   </para>
     ///   <para>
     ///   Either port 80 or 443 is used if <paramref name="url"/> includes
