@@ -133,7 +133,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketServer"/> class
-    /// with the specified <paramref name="url"/>.
+    /// with the specified URL.
     /// </summary>
     /// <remarks>
     ///   <para>
