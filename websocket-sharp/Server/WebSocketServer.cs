@@ -268,8 +268,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketServer"/> class
-    /// with the specified <paramref name="address"/>, <paramref name="port"/>,
-    /// and <paramref name="secure"/>.
+    /// with the specified IP address, port, and boolean if secure or not.
     /// </summary>
     /// <remarks>
     /// The new instance listens for incoming handshake requests on
