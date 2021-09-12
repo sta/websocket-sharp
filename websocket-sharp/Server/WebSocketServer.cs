@@ -275,8 +275,8 @@ namespace WebSocketSharp.Server
     /// <paramref name="address"/> and <paramref name="port"/>.
     /// </remarks>
     /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that represents the local
-    /// IP address on which to listen.
+    /// A <see cref="System.Net.IPAddress"/> that specifies the local IP
+    /// address on which to listen.
     /// </param>
     /// <param name="port">
     /// An <see cref="int"/> that represents the number of the port
