@@ -279,8 +279,8 @@ namespace WebSocketSharp.Server
     /// address on which to listen.
     /// </param>
     /// <param name="port">
-    /// An <see cref="int"/> that represents the number of the port
-    /// on which to listen.
+    /// An <see cref="int"/> that specifies the number of the port on which
+    /// to listen.
     /// </param>
     /// <param name="secure">
     /// A <see cref="bool"/>: <c>true</c> if the new instance provides
