@@ -310,8 +310,8 @@ namespace WebSocketSharp.Server
     /// Gets the IP address of the server.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Net.IPAddress"/> that represents the local
-    /// IP address on which to listen for incoming requests.
+    /// A <see cref="System.Net.IPAddress"/> that represents the local IP
+    /// address on which to listen for incoming requests.
     /// </value>
     public System.Net.IPAddress Address {
       get {
