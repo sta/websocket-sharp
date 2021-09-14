@@ -435,8 +435,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the server cleans up
-    /// the inactive sessions periodically.
+    /// Gets or sets a value indicating whether the server cleans up the
+    /// inactive sessions periodically.
     /// </summary>
     /// <remarks>
     /// The set operation does nothing if the server has already started or
