@@ -537,12 +537,12 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   You should set this property to <c>true</c> if you would
-    ///   like to resolve to wait for socket in TIME_WAIT state.
+    ///   You should set this property to <c>true</c> if you would like to
+    ///   resolve to wait for socket in TIME_WAIT state.
     ///   </para>
     ///   <para>
-    ///   The set operation does nothing if the server has already
-    ///   started or it is shutting down.
+    ///   The set operation does nothing if the server has already started
+    ///   or it is shutting down.
     ///   </para>
     /// </remarks>
     /// <value>
