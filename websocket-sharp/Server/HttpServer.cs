@@ -724,12 +724,12 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the management function for the WebSocket services
-    /// provided by the server.
+    /// Gets the management function for the WebSocket services provided by
+    /// the server.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketServiceManager"/> that manages
-    /// the WebSocket services provided by the server.
+    /// A <see cref="WebSocketServiceManager"/> that manages the WebSocket
+    /// services provided by the server.
     /// </value>
     public WebSocketServiceManager WebSocketServices {
       get {
