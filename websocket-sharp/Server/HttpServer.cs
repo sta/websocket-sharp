@@ -646,8 +646,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the delegate used to find the credentials
-    /// for an identity.
+    /// Gets or sets the delegate used to find the credentials for
+    /// an identity.
     /// </summary>
     /// <remarks>
     ///   <para>
