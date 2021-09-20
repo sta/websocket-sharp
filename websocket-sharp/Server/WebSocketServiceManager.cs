@@ -406,33 +406,6 @@ namespace WebSocketSharp.Server
 
     #region Internal Methods
 
-    internal void Add<TBehavior> (string path, Func<TBehavior> creator)
-      where TBehavior : WebSocketBehavior
-    {
-      path = path.TrimSlashFromEnd ();
-
-      lock (_sync) {
-        WebSocketServiceHost host;
-        if (_hosts.TryGetValue (path, out host))
-          throw new ArgumentException ("Already in use.", "path");
-
-        host = new WebSocketServiceHost<TBehavior> (
-                 path, creator, null, _log
-               );
-
-        if (!_clean)
-          host.KeepClean = false;
-
-        if (_waitTime != host.WaitTime)
-          host.WaitTime = _waitTime;
-
-        if (_state == ServerState.Start)
-          host.Start ();
-
-        _hosts.Add (path, host);
-      }
-    }
-
     internal bool InternalTryGetServiceHost (
       string path, out WebSocketServiceHost host
     )
