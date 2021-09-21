@@ -515,10 +515,11 @@ namespace WebSocketSharp.Server
         throw new ArgumentException ("An empty string.", "path");
 
       if (path[0] != '/')
-        throw new ArgumentException ("Not an absolute path.", "path");
+        throw new ArgumentException ("It is not an absolute path.", "path");
 
       if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
         var msg = "It includes either or both query and fragment components.";
+
         throw new ArgumentException (msg, "path");
       }
 
@@ -526,8 +527,9 @@ namespace WebSocketSharp.Server
 
       lock (_sync) {
         WebSocketServiceHost host;
+
         if (_hosts.TryGetValue (path, out host))
-          throw new ArgumentException ("Already in use.", "path");
+          throw new ArgumentException ("It is already in use.", "path");
 
         host = new WebSocketServiceHost<TBehavior> (
                  path, () => new TBehavior (), initializer, _log
