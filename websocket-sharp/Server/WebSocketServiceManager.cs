@@ -528,8 +528,11 @@ namespace WebSocketSharp.Server
       lock (_sync) {
         WebSocketServiceHost host;
 
-        if (_hosts.TryGetValue (path, out host))
-          throw new ArgumentException ("It is already in use.", "path");
+        if (_hosts.TryGetValue (path, out host)) {
+          var msg = "It is already in use.";
+
+          throw new ArgumentException (msg, "path");
+        }
 
         host = new WebSocketServiceHost<TBehavior> (
                  path, () => new TBehavior (), initializer, _log
