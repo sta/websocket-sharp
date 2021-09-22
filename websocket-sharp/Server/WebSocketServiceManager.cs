@@ -514,8 +514,11 @@ namespace WebSocketSharp.Server
       if (path.Length == 0)
         throw new ArgumentException ("An empty string.", "path");
 
-      if (path[0] != '/')
-        throw new ArgumentException ("It is not an absolute path.", "path");
+      if (path[0] != '/') {
+        var msg = "It is not an absolute path.";
+
+        throw new ArgumentException (msg, "path");
+      }
 
       if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
         var msg = "It includes either or both query and fragment components.";
