@@ -1001,7 +1001,7 @@ namespace WebSocketSharp.Server
     /// </returns>
     /// <param name="path">
     ///   <para>
-    ///   A <see cref="string"/> that represents an absolute path to
+    ///   A <see cref="string"/> that specifies an absolute path to
     ///   the service to find.
     ///   </para>
     ///   <para>
@@ -1023,7 +1023,7 @@ namespace WebSocketSharp.Server
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="path"/> is empty.
+    ///   <paramref name="path"/> is an empty string.
     ///   </para>
     ///   <para>
     ///   -or-
