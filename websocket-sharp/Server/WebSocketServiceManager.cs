@@ -555,57 +555,6 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends <paramref name="data"/> asynchronously to every client in
-    /// the WebSocket services.
-    /// </summary>
-    /// <remarks>
-    /// This method does not wait for the send to be complete.
-    /// </remarks>
-    /// <param name="data">
-    /// A <see cref="string"/> that represents the text data to send.
-    /// </param>
-    /// <param name="completed">
-    ///   <para>
-    ///   An <see cref="Action"/> delegate or <see langword="null"/>
-    ///   if not needed.
-    ///   </para>
-    ///   <para>
-    ///   The delegate invokes the method called when the send is complete.
-    ///   </para>
-    /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The current state of the manager is not Start.
-    /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="data"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="data"/> could not be UTF-8-encoded.
-    /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public void BroadcastAsync (string data, Action completed)
-    {
-      if (_state != ServerState.Start) {
-        var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
-      }
-
-      if (data == null)
-        throw new ArgumentNullException ("data");
-
-      byte[] bytes;
-      if (!data.TryGetUTF8EncodedBytes (out bytes)) {
-        var msg = "It could not be UTF-8-encoded.";
-        throw new ArgumentException (msg, "data");
-      }
-
-      if (bytes.LongLength <= WebSocket.FragmentLength)
-        broadcastAsync (Opcode.Text, bytes, completed);
-      else
-        broadcastAsync (Opcode.Text, new MemoryStream (bytes), completed);
-    }
-
-    /// <summary>
     /// Sends the data from <paramref name="stream"/> asynchronously to
     /// every client in the WebSocket services.
     /// </summary>
