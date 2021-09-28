@@ -562,48 +562,6 @@ namespace WebSocketSharp.Server
     /// This method does not wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that represents the binary data to send.
-    /// </param>
-    /// <param name="completed">
-    ///   <para>
-    ///   An <see cref="Action"/> delegate or <see langword="null"/>
-    ///   if not needed.
-    ///   </para>
-    ///   <para>
-    ///   The delegate invokes the method called when the send is complete.
-    ///   </para>
-    /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The current state of the manager is not Start.
-    /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="data"/> is <see langword="null"/>.
-    /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public void BroadcastAsync (byte[] data, Action completed)
-    {
-      if (_state != ServerState.Start) {
-        var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
-      }
-
-      if (data == null)
-        throw new ArgumentNullException ("data");
-
-      if (data.LongLength <= WebSocket.FragmentLength)
-        broadcastAsync (Opcode.Binary, data, completed);
-      else
-        broadcastAsync (Opcode.Binary, new MemoryStream (data), completed);
-    }
-
-    /// <summary>
-    /// Sends <paramref name="data"/> asynchronously to every client in
-    /// the WebSocket services.
-    /// </summary>
-    /// <remarks>
-    /// This method does not wait for the send to be complete.
-    /// </remarks>
-    /// <param name="data">
     /// A <see cref="string"/> that represents the text data to send.
     /// </param>
     /// <param name="completed">
