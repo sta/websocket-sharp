@@ -297,35 +297,6 @@ namespace WebSocketSharp.Server
 
     #region Private Methods
 
-    private void broadcast (Opcode opcode, Stream stream, Action completed)
-    {
-      var cache = new Dictionary<CompressionMethod, Stream> ();
-
-      try {
-        foreach (var host in Hosts) {
-          if (_state != ServerState.Start) {
-            _log.Error ("The server is shutting down.");
-            break;
-          }
-
-          host.Sessions.Broadcast (opcode, stream, cache);
-        }
-
-        if (completed != null)
-          completed ();
-      }
-      catch (Exception ex) {
-        _log.Error (ex.Message);
-        _log.Debug (ex.ToString ());
-      }
-      finally {
-        foreach (var cached in cache.Values)
-          cached.Dispose ();
-
-        cache.Clear ();
-      }
-    }
-
     private Dictionary<string, Dictionary<string, bool>> broadping (
       byte[] frameAsBytes, TimeSpan timeout
     )
