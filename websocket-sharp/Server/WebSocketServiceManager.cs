@@ -352,13 +352,6 @@ namespace WebSocketSharp.Server
       }
     }
 
-    private void broadcastAsync (Opcode opcode, Stream stream, Action completed)
-    {
-      ThreadPool.QueueUserWorkItem (
-        state => broadcast (opcode, stream, completed)
-      );
-    }
-
     private Dictionary<string, Dictionary<string, bool>> broadping (
       byte[] frameAsBytes, TimeSpan timeout
     )
