@@ -303,11 +303,13 @@ namespace WebSocketSharp.Server
 
       if (_state == ServerState.Start) {
         message = "The server has already started.";
+
         return false;
       }
 
       if (_state == ServerState.ShuttingDown) {
         message = "The server is shutting down.";
+
         return false;
       }
 
