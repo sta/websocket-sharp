@@ -180,8 +180,13 @@ namespace WebSocketSharp.Server
     /// it is shutting down.
     /// </remarks>
     /// <value>
-    /// <c>true</c> if the inactive sessions are cleaned up every 60 seconds;
-    /// otherwise, <c>false</c>.
+    ///   <para>
+    ///   <c>true</c> if the inactive sessions are cleaned up every 60
+    ///   seconds; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>true</c>.
+    ///   </para>
     /// </value>
     public bool KeepClean {
       get {
