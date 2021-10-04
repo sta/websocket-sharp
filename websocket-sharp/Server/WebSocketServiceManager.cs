@@ -272,8 +272,11 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        if (value <= TimeSpan.Zero)
-          throw new ArgumentOutOfRangeException ("value", "Zero or less.");
+        if (value <= TimeSpan.Zero) {
+          var msg = "It is zero or less.";
+
+          throw new ArgumentOutOfRangeException ("value", msg);
+        }
 
         lock (_sync) {
           string msg;
