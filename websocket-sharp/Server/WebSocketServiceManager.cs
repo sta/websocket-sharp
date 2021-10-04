@@ -253,15 +253,20 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the time to wait for the response to the WebSocket Ping or
-    /// Close.
+    /// Gets or sets the time to wait for the response to the WebSocket Ping
+    /// or Close.
     /// </summary>
     /// <remarks>
     /// The set operation does nothing if the server has already started or
     /// it is shutting down.
     /// </remarks>
     /// <value>
-    /// A <see cref="TimeSpan"/> to wait for the response.
+    ///   <para>
+    ///   A <see cref="TimeSpan"/> to wait for the response.
+    ///   </para>
+    ///   <para>
+    ///   The default value is the same as 1 second.
+    ///   </para>
     /// </value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The value specified for a set operation is zero or less.
