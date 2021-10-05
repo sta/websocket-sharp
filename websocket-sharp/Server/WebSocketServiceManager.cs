@@ -47,8 +47,8 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private volatile bool                            _keepClean;
     private Dictionary<string, WebSocketServiceHost> _hosts;
+    private volatile bool                            _keepClean;
     private Logger                                   _log;
     private volatile ServerState                     _state;
     private object                                   _sync;
