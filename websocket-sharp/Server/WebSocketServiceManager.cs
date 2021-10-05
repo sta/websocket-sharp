@@ -47,7 +47,7 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private volatile bool                            _clean;
+    private volatile bool                            _keepClean;
     private Dictionary<string, WebSocketServiceHost> _hosts;
     private Logger                                   _log;
     private volatile ServerState                     _state;
@@ -62,7 +62,7 @@ namespace WebSocketSharp.Server
     {
       _log = log;
 
-      _clean = true;
+      _keepClean = true;
       _hosts = new Dictionary<string, WebSocketServiceHost> ();
       _state = ServerState.Ready;
       _sync = ((ICollection) _hosts).SyncRoot;
@@ -190,7 +190,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public bool KeepClean {
       get {
-        return _clean;
+        return _keepClean;
       }
 
       set {
@@ -206,7 +206,7 @@ namespace WebSocketSharp.Server
           foreach (var host in _hosts.Values)
             host.KeepClean = value;
 
-          _clean = value;
+          _keepClean = value;
         }
       }
     }
@@ -462,7 +462,7 @@ namespace WebSocketSharp.Server
                  path, () => new TBehavior (), initializer, _log
                );
 
-        if (!_clean)
+        if (!_keepClean)
           host.KeepClean = false;
 
         if (_waitTime != host.WaitTime)
