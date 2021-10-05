@@ -62,8 +62,8 @@ namespace WebSocketSharp.Server
     {
       _log = log;
 
-      _keepClean = true;
       _hosts = new Dictionary<string, WebSocketServiceHost> ();
+      _keepClean = true;
       _state = ServerState.Ready;
       _sync = ((ICollection) _hosts).SyncRoot;
       _waitTime = TimeSpan.FromSeconds (1);
