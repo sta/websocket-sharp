@@ -132,7 +132,7 @@ namespace WebSocketSharp.Server
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="path"/> is empty.
+    ///   <paramref name="path"/> is an empty string.
     ///   </para>
     ///   <para>
     ///   -or-
