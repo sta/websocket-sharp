@@ -106,7 +106,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the host instance for a WebSocket service with the specified path.
+    /// Gets the service host instance for a WebSocket service with
+    /// the specified path.
     /// </summary>
     /// <value>
     ///   <para>
