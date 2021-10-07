@@ -114,7 +114,7 @@ namespace WebSocketSharp.Server
     ///   <see langword="null"/> if not found.
     ///   </para>
     ///   <para>
-    ///   The host instance provides the function to access
+    ///   The service host instance provides the function to access
     ///   the information in the service.
     ///   </para>
     /// </value>
