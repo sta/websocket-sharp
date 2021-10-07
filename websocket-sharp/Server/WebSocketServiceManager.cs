@@ -87,7 +87,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the host instances for the WebSocket services.
+    /// Gets the service host instances for the WebSocket services.
     /// </summary>
     /// <value>
     ///   <para>
@@ -95,7 +95,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     ///   <para>
     ///   It provides an enumerator which supports the iteration over
-    ///   the collection of the host instances.
+    ///   the collection of the service host instances.
     ///   </para>
     /// </value>
     public IEnumerable<WebSocketServiceHost> Hosts {
