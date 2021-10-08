@@ -237,28 +237,6 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the total number of the sessions in the WebSocket services.
-    /// </summary>
-    /// <value>
-    /// An <see cref="int"/> that represents the total number of
-    /// the sessions in the services.
-    /// </value>
-    [Obsolete ("This property will be removed.")]
-    public int SessionCount {
-      get {
-        var cnt = 0;
-        foreach (var host in Hosts) {
-          if (_state != ServerState.Start)
-            break;
-
-          cnt += host.Sessions.Count;
-        }
-
-        return cnt;
-      }
-    }
-
-    /// <summary>
     /// Gets or sets the time to wait for the response to the WebSocket Ping
     /// or Close.
     /// </summary>
