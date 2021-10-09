@@ -472,6 +472,7 @@ namespace WebSocketSharp.Server
 
       lock (_sync) {
         hosts = _hosts.Values.ToList ();
+
         _hosts.Clear ();
       }
 
