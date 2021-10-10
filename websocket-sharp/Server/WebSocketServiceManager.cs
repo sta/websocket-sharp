@@ -560,7 +560,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Tries to get the host instance for a WebSocket service with
+    /// Tries to get the service host instance for a WebSocket service with
     /// the specified path.
     /// </summary>
     /// <returns>
@@ -582,7 +582,7 @@ namespace WebSocketSharp.Server
     ///   instance or <see langword="null"/> if not found.
     ///   </para>
     ///   <para>
-    ///   The host instance provides the function to access
+    ///   The service host instance provides the function to access
     ///   the information in the service.
     ///   </para>
     /// </param>
