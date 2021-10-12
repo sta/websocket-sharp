@@ -164,8 +164,8 @@ namespace WebSocketSharp.Server
     public abstract Type BehaviorType { get; }
 
     /// <summary>
-    /// Gets or sets the time to wait for the response to the WebSocket Ping or
-    /// Close.
+    /// Gets or sets the time to wait for the response to the WebSocket Ping
+    /// or Close.
     /// </summary>
     /// <remarks>
     /// The set operation does nothing if the service has already started or
