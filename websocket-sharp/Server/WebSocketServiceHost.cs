@@ -59,14 +59,16 @@ namespace WebSocketSharp.Server
     #region Protected Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServiceHost"/> class
-    /// with the specified <paramref name="path"/> and <paramref name="log"/>.
+    /// Initializes a new instance of the <see cref="WebSocketServiceHost"/>
+    /// class with the specified path and logging function.
     /// </summary>
     /// <param name="path">
-    /// A <see cref="string"/> that represents the absolute path to the service.
+    /// A <see cref="string"/> that specifies the absolute path to
+    /// the service.
     /// </param>
     /// <param name="log">
-    /// A <see cref="Logger"/> that represents the logging function for the service.
+    /// A <see cref="Logger"/> that specifies the logging function for
+    /// the service.
     /// </param>
     protected WebSocketServiceHost (string path, Logger log)
     {
