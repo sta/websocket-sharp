@@ -155,7 +155,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the <see cref="Type"/> of the behavior of the service.
+    /// Gets the type of the behavior of the service.
     /// </summary>
     /// <value>
     /// A <see cref="Type"/> that represents the type of the behavior of
