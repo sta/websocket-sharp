@@ -41,7 +41,7 @@ namespace WebSocketSharp.Server
   /// <summary>
   /// Exposes the methods and properties used to access the information in
   /// a WebSocket service provided by the <see cref="WebSocketServer"/> or
-  /// <see cref="HttpServer"/>.
+  /// <see cref="HttpServer"/> class.
   /// </summary>
   /// <remarks>
   /// This class is an abstract class.
