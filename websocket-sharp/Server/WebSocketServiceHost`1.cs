@@ -31,7 +31,7 @@ using System;
 namespace WebSocketSharp.Server
 {
   internal class WebSocketServiceHost<TBehavior> : WebSocketServiceHost
-    where TBehavior : WebSocketBehavior
+    where TBehavior : WebSocketBehavior, new ()
   {
     #region Private Fields
 
