@@ -42,13 +42,6 @@ namespace WebSocketSharp.Server
     #region Internal Constructors
 
     internal WebSocketServiceHost (
-      string path, Func<TBehavior> creator, Logger log
-    )
-      : this (path, creator, null, log)
-    {
-    }
-
-    internal WebSocketServiceHost (
       string path,
       Func<TBehavior> creator,
       Action<TBehavior> initializer,
