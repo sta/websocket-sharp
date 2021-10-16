@@ -36,7 +36,6 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private Func<TBehavior> _creator;
-    private Action<TBehavior> _initializer;
 
     #endregion
 
@@ -47,7 +46,7 @@ namespace WebSocketSharp.Server
     )
       : base (path, log)
     {
-      _initializer = initializer;
+      _creator = createCreator (initializer);
     }
 
     internal WebSocketServiceHost (
