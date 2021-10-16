@@ -75,6 +75,20 @@ namespace WebSocketSharp.Server
 
     #region Private Methods
 
+    private Func<TBehavior> createCreator (Action<TBehavior> initializer)
+    {
+      if (initializer == null)
+        return () => new TBehavior ();
+
+      return () => {
+               var ret = new TBehavior ();
+
+               initializer (ret);
+
+               return ret;
+             };
+    }
+
     private Func<TBehavior> createCreator (
       Func<TBehavior> creator, Action<TBehavior> initializer
     )
