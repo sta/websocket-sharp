@@ -49,17 +49,6 @@ namespace WebSocketSharp.Server
       _creator = createCreator (initializer);
     }
 
-    internal WebSocketServiceHost (
-      string path,
-      Func<TBehavior> creator,
-      Action<TBehavior> initializer,
-      Logger log
-    )
-      : base (path, log)
-    {
-      _creator = createCreator (creator, initializer);
-    }
-
     #endregion
 
     #region Public Properties
