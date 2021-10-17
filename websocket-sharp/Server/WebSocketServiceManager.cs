@@ -442,9 +442,7 @@ namespace WebSocketSharp.Server
           throw new ArgumentException (msg, "path");
         }
 
-        host = new WebSocketServiceHost<TBehavior> (
-                 path, () => new TBehavior (), initializer, _log
-               );
+        host = new WebSocketServiceHost<TBehavior> (path, initializer, _log);
 
         if (!_keepClean)
           host.KeepClean = false;
