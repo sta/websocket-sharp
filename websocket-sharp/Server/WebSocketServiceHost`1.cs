@@ -46,7 +46,7 @@ namespace WebSocketSharp.Server
     )
       : base (path, log)
     {
-      _creator = createCreator (initializer);
+      _creator = createSessionCreator (initializer);
     }
 
     #endregion
@@ -63,7 +63,7 @@ namespace WebSocketSharp.Server
 
     #region Private Methods
 
-    private Func<TBehavior> createCreator (Action<TBehavior> initializer)
+    private Func<TBehavior> createSessionCreator (Action<TBehavior> initializer)
     {
       if (initializer == null)
         return () => new TBehavior ();
