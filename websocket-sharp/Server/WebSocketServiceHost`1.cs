@@ -63,7 +63,9 @@ namespace WebSocketSharp.Server
 
     #region Private Methods
 
-    private Func<TBehavior> createSessionCreator (Action<TBehavior> initializer)
+    private static Func<TBehavior> createSessionCreator (
+      Action<TBehavior> initializer
+    )
     {
       if (initializer == null)
         return () => new TBehavior ();
