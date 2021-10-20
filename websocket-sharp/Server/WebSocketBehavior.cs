@@ -467,6 +467,7 @@ namespace WebSocketSharp.Server
       _websocket.Protocol = _protocol;
 
       var waitTime = sessions.WaitTime;
+
       if (waitTime != _websocket.WaitTime)
         _websocket.WaitTime = waitTime;
 
