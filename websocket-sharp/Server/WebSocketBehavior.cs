@@ -413,6 +413,7 @@ namespace WebSocketSharp.Server
       if (_cookiesValidator != null) {
         var req = context.CookieCollection;
         var res = context.WebSocket.CookieCollection;
+
         if (!_cookiesValidator (req, res))
           return "It includes no cookie or an invalid one.";
       }
