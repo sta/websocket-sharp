@@ -427,6 +427,7 @@ namespace WebSocketSharp.Server
         return;
 
       _sessions.Remove (_id);
+
       OnClose (e);
     }
 
