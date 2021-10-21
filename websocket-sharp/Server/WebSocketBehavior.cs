@@ -455,7 +455,9 @@ namespace WebSocketSharp.Server
 
     #region Internal Methods
 
-    internal void Start (WebSocketContext context, WebSocketSessionManager sessions)
+    internal void Start (
+      WebSocketContext context, WebSocketSessionManager sessions
+    )
     {
       _context = context;
       _sessions = sessions;
