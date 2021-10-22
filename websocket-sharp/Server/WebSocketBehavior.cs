@@ -521,7 +521,7 @@ namespace WebSocketSharp.Server
     /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that represents the status code indicating
+    ///   A <see cref="ushort"/> that specifies the status code indicating
     ///   the reason for the close.
     ///   </para>
     ///   <para>
@@ -532,7 +532,7 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="reason">
     ///   <para>
-    ///   A <see cref="string"/> that represents the reason for the close.
+    ///   A <see cref="string"/> that specifies the reason for the close.
     ///   </para>
     ///   <para>
     ///   The size must be 123 bytes or less in UTF-8.
