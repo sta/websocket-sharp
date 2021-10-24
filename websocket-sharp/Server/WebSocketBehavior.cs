@@ -806,34 +806,6 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Calls the <see cref="OnError"/> method with the specified message.
-    /// </summary>
-    /// <param name="message">
-    /// A <see cref="string"/> that represents the error message.
-    /// </param>
-    /// <param name="exception">
-    /// An <see cref="Exception"/> instance that represents the cause of
-    /// the error if present.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="message"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="message"/> is an empty string.
-    /// </exception>
-    [Obsolete ("This method will be removed.")]
-    protected void Error (string message, Exception exception)
-    {
-      if (message == null)
-        throw new ArgumentNullException ("message");
-
-      if (message.Length == 0)
-        throw new ArgumentException ("An empty string.", "message");
-
-      OnError (new ErrorEventArgs (message, exception));
-    }
-
-    /// <summary>
     /// Called when the WebSocket connection for a session has been closed.
     /// </summary>
     /// <param name="e">
