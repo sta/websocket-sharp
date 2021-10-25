@@ -849,7 +849,7 @@ namespace WebSocketSharp.Server
     /// Sends the specified data to a client using the WebSocket connection.
     /// </summary>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that represents the binary data to send.
+    /// An array of <see cref="byte"/> that specifies the binary data to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// The current state of the connection is not Open.
