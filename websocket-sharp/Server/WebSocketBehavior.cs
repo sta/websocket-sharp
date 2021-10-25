@@ -911,7 +911,7 @@ namespace WebSocketSharp.Server
     /// Sends the specified data to a client using the WebSocket connection.
     /// </summary>
     /// <param name="data">
-    /// A <see cref="string"/> that represents the text data to send.
+    /// A <see cref="string"/> that specifies the text data to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// The current state of the connection is not Open.
