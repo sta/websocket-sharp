@@ -983,14 +983,14 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified data to a client asynchronously using
-    /// the WebSocket connection.
+    /// Sends the specified data to a client asynchronously using the WebSocket
+    /// connection.
     /// </summary>
     /// <remarks>
     /// This method does not wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that represents the binary data to send.
+    /// An array of <see cref="byte"/> that specifies the binary data to send.
     /// </param>
     /// <param name="completed">
     ///   <para>
