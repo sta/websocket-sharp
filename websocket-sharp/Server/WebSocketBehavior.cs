@@ -1015,6 +1015,7 @@ namespace WebSocketSharp.Server
     {
       if (_websocket == null) {
         var msg = "The current state of the connection is not Open.";
+
         throw new InvalidOperationException (msg);
       }
 
