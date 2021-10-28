@@ -233,6 +233,7 @@ namespace WebSocketSharp.Server
       set {
         if (_websocket != null) {
           _websocket.EmitOnPing = value;
+
           return;
         }
 
