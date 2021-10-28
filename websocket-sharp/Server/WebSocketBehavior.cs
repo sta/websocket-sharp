@@ -91,24 +91,6 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the logging function.
-    /// </summary>
-    /// <value>
-    ///   <para>
-    ///   A <see cref="Logger"/> that provides the logging function.
-    ///   </para>
-    ///   <para>
-    ///   <see langword="null"/> if the session has not started yet.
-    ///   </para>
-    /// </value>
-    [Obsolete ("This property will be removed.")]
-    protected Logger Log {
-      get {
-        return _websocket != null ? _websocket.Log : null;
-      }
-    }
-
-    /// <summary>
     /// Gets the query string included in a WebSocket handshake request.
     /// </summary>
     /// <value>
