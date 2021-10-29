@@ -349,16 +349,21 @@ namespace WebSocketSharp.Server
       set {
         if (ConnectionState != WebSocketState.Connecting) {
           var msg = "The session has already started.";
+
           throw new InvalidOperationException (msg);
         }
 
         if (value == null || value.Length == 0) {
           _protocol = null;
+
           return;
         }
 
-        if (!value.IsToken ())
-          throw new ArgumentException ("Not a token.", "value");
+        if (!value.IsToken ()) {
+          var msg = "It is not a token.";
+
+          throw new ArgumentException (msg, "value");
+        }
 
         _protocol = value;
       }
