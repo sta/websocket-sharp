@@ -347,7 +347,7 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        if (ConnectionState != WebSocketState.Connecting) {
+        if (_websocket != null) {
           var msg = "The session has already started.";
 
           throw new InvalidOperationException (msg);
