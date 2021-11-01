@@ -834,6 +834,27 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Sends a ping to a client using the WebSocket connection.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the send has done with no error and a pong has been
+    /// received within a time; otherwise, <c>false</c>.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
+    /// </exception>
+    protected bool Ping ()
+    {
+      if (_websocket == null) {
+        var msg = "The session has not started yet.";
+
+        throw new InvalidOperationException (msg);
+      }
+
+      return _websocket.Ping ();
+    }
+
+    /// <summary>
     /// Sends the specified data to a client using the WebSocket connection.
     /// </summary>
     /// <param name="data">
