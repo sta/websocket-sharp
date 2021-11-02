@@ -855,6 +855,42 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Sends a ping with the specified message to a client using
+    /// the WebSocket connection.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the send has done with no error and a pong has been
+    /// received within a time; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="message">
+    ///   <para>
+    ///   A <see cref="string"/> that specifies the message to send.
+    ///   </para>
+    ///   <para>
+    ///   The size must be 125 bytes or less in UTF-8.
+    ///   </para>
+    /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="message"/> could not be UTF-8-encoded.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The size of <paramref name="message"/> is greater than 125 bytes.
+    /// </exception>
+    protected bool Ping (string message)
+    {
+      if (_websocket == null) {
+        var msg = "The session has not started yet.";
+
+        throw new InvalidOperationException (msg);
+      }
+
+      return _websocket.Ping (message);
+    }
+
+    /// <summary>
     /// Sends the specified data to a client using the WebSocket connection.
     /// </summary>
     /// <param name="data">
