@@ -405,11 +405,13 @@ namespace WebSocketSharp.Server
 
       if (_state == ServerState.Start) {
         message = "The service has already started.";
+
         return false;
       }
 
       if (_state == ServerState.ShuttingDown) {
         message = "The service is shutting down.";
+
         return false;
       }
 
