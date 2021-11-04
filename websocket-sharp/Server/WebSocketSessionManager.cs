@@ -289,15 +289,12 @@ namespace WebSocketSharp.Server
         if (value <= TimeSpan.Zero)
           throw new ArgumentOutOfRangeException ("value", "Zero or less.");
 
-        string msg;
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
-          return;
-        }
-
         lock (_sync) {
+          string msg;
+
           if (!canSet (out msg)) {
             _log.Warn (msg);
+
             return;
           }
 
