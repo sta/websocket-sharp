@@ -48,7 +48,7 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private volatile bool                         _clean;
+    private volatile bool                         _keepClean;
     private object                                _forSweep;
     private Logger                                _log;
     private Dictionary<string, IWebSocketSession> _sessions;
@@ -66,7 +66,7 @@ namespace WebSocketSharp.Server
     {
       _log = log;
 
-      _clean = true;
+      _keepClean = true;
       _forSweep = new object ();
       _sessions = new Dictionary<string, IWebSocketSession> ();
       _state = ServerState.Ready;
@@ -222,7 +222,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public bool KeepClean {
       get {
-        return _clean;
+        return _keepClean;
       }
 
       set {
@@ -235,7 +235,7 @@ namespace WebSocketSharp.Server
             return;
           }
 
-          _clean = value;
+          _keepClean = value;
         }
       }
     }
@@ -531,7 +531,7 @@ namespace WebSocketSharp.Server
     internal void Start ()
     {
       lock (_sync) {
-        _sweepTimer.Enabled = _clean;
+        _sweepTimer.Enabled = _keepClean;
         _state = ServerState.Start;
       }
     }
