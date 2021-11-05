@@ -48,8 +48,8 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private volatile bool                         _keepClean;
     private object                                _forSweep;
+    private volatile bool                         _keepClean;
     private Logger                                _log;
     private Dictionary<string, IWebSocketSession> _sessions;
     private volatile ServerState                  _state;
@@ -66,8 +66,8 @@ namespace WebSocketSharp.Server
     {
       _log = log;
 
-      _keepClean = true;
       _forSweep = new object ();
+      _keepClean = true;
       _sessions = new Dictionary<string, IWebSocketSession> ();
       _state = ServerState.Ready;
       _sync = ((ICollection) _sessions).SyncRoot;
