@@ -172,7 +172,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the session instance with <paramref name="id"/>.
+    /// Gets the session instance with the specified ID.
     /// </summary>
     /// <value>
     ///   <para>
@@ -185,7 +185,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </value>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
+    /// A <see cref="string"/> that specifies the ID of the session to find.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="id"/> is <see langword="null"/>.
