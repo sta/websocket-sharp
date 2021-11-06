@@ -41,8 +41,8 @@ namespace WebSocketSharp.Server
   /// Provides the management function for the sessions in a WebSocket service.
   /// </summary>
   /// <remarks>
-  /// This class manages the sessions in a WebSocket service provided by
-  /// the <see cref="WebSocketServer"/> or <see cref="HttpServer"/>.
+  /// This class manages the sessions in a WebSocket service provided by the
+  /// <see cref="WebSocketServer"/> or <see cref="HttpServer"/> class.
   /// </remarks>
   public class WebSocketSessionManager
   {
