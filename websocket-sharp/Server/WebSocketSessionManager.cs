@@ -202,6 +202,7 @@ namespace WebSocketSharp.Server
           throw new ArgumentException ("An empty string.", "id");
 
         IWebSocketSession session;
+
         tryGetSession (id, out session);
 
         return session;
