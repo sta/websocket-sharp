@@ -397,6 +397,11 @@ namespace WebSocketSharp.Server
       return ret;
     }
 
+    private bool canSet ()
+    {
+      return _state == ServerState.Ready || _state == ServerState.Stop;
+    }
+
     private bool canSet (out string message)
     {
       message = null;
