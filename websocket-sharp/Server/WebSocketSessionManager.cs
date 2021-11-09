@@ -392,25 +392,6 @@ namespace WebSocketSharp.Server
       return _state == ServerState.Ready || _state == ServerState.Stop;
     }
 
-    private bool canSet (out string message)
-    {
-      message = null;
-
-      if (_state == ServerState.Start) {
-        message = "The service has already started.";
-
-        return false;
-      }
-
-      if (_state == ServerState.ShuttingDown) {
-        message = "The service is shutting down.";
-
-        return false;
-      }
-
-      return true;
-    }
-
     private static string createID ()
     {
       return Guid.NewGuid ().ToString ("N");
