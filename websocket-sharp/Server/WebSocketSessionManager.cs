@@ -574,7 +574,8 @@ namespace WebSocketSharp.Server
     public void Broadcast (string data)
     {
       if (_state != ServerState.Start) {
-        var msg = "The current state of the manager is not Start.";
+        var msg = "The current state of the service is not Start.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -582,8 +583,10 @@ namespace WebSocketSharp.Server
         throw new ArgumentNullException ("data");
 
       byte[] bytes;
+
       if (!data.TryGetUTF8EncodedBytes (out bytes)) {
         var msg = "It could not be UTF-8-encoded.";
+
         throw new ArgumentException (msg, "data");
       }
 
