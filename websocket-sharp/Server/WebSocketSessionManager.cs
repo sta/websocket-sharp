@@ -542,7 +542,8 @@ namespace WebSocketSharp.Server
     public void Broadcast (byte[] data)
     {
       if (_state != ServerState.Start) {
-        var msg = "The current state of the manager is not Start.";
+        var msg = "The current state of the service is not Start.";
+
         throw new InvalidOperationException (msg);
       }
 
