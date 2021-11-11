@@ -665,10 +665,8 @@ namespace WebSocketSharp.Server
       }
 
       if (len < length) {
-        var msg = String.Format (
-                    "Only {0} byte(s) of data could be read from the stream.",
-                    len
-                  );
+        var fmt = "Only {0} byte(s) of data could be read from the stream.";
+        var msg = String.Format (fmt, len);
 
         _log.Warn (msg);
       }
