@@ -665,12 +665,12 @@ namespace WebSocketSharp.Server
       }
 
       if (len < length) {
-        _log.Warn (
-          String.Format (
-            "Only {0} byte(s) of data could be read from the stream.",
-            len
-          )
-        );
+        var msg = String.Format (
+                    "Only {0} byte(s) of data could be read from the stream.",
+                    len
+                  );
+
+        _log.Warn (msg);
       }
 
       if (len <= WebSocket.FragmentLength)
