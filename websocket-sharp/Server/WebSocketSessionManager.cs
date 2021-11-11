@@ -635,7 +635,8 @@ namespace WebSocketSharp.Server
     public void Broadcast (Stream stream, int length)
     {
       if (_state != ServerState.Start) {
-        var msg = "The current state of the manager is not Start.";
+        var msg = "The current state of the service is not Start.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -644,19 +645,22 @@ namespace WebSocketSharp.Server
 
       if (!stream.CanRead) {
         var msg = "It cannot be read.";
+
         throw new ArgumentException (msg, "stream");
       }
 
       if (length < 1) {
-        var msg = "Less than 1.";
+        var msg = "It is less than 1.";
+
         throw new ArgumentException (msg, "length");
       }
 
       var bytes = stream.ReadBytes (length);
-
       var len = bytes.Length;
+
       if (len == 0) {
         var msg = "No data could be read from it.";
+
         throw new ArgumentException (msg, "stream");
       }
 
