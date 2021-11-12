@@ -597,20 +597,22 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the data from <paramref name="stream"/> to every client in
+    /// Sends the data from the specified stream instance to every client in
     /// the WebSocket service.
     /// </summary>
-    /// <remarks>
-    /// The data is sent as the binary data.
-    /// </remarks>
     /// <param name="stream">
-    /// A <see cref="Stream"/> instance from which to read the data to send.
+    ///   <para>
+    ///   A <see cref="Stream"/> instance from which to read the data to send.
+    ///   </para>
+    ///   <para>
+    ///   The data is sent as the binary data.
+    ///   </para>
     /// </param>
     /// <param name="length">
     /// An <see cref="int"/> that specifies the number of bytes to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// The current state of the manager is not Start.
+    /// The current state of the service is not Start.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="stream"/> is <see langword="null"/>.
