@@ -707,7 +707,8 @@ namespace WebSocketSharp.Server
     public void BroadcastAsync (byte[] data, Action completed)
     {
       if (_state != ServerState.Start) {
-        var msg = "The current state of the manager is not Start.";
+        var msg = "The current state of the service is not Start.";
+
         throw new InvalidOperationException (msg);
       }
 
