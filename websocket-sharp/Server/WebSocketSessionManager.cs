@@ -722,14 +722,14 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends <paramref name="data"/> asynchronously to every client in
+    /// Sends the specified data asynchronously to every client in
     /// the WebSocket service.
     /// </summary>
     /// <remarks>
     /// This method does not wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
-    /// A <see cref="string"/> that represents the text data to send.
+    /// A <see cref="string"/> that specifies the text data to send.
     /// </param>
     /// <param name="completed">
     ///   <para>
@@ -741,7 +741,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// The current state of the manager is not Start.
+    /// The current state of the service is not Start.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="data"/> is <see langword="null"/>.
