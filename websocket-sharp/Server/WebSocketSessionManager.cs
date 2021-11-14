@@ -775,19 +775,19 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the data from <paramref name="stream"/> asynchronously to
+    /// Sends the data from the specified stream instance asynchronously to
     /// every client in the WebSocket service.
     /// </summary>
     /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="stream">
+    ///   <para>
+    ///   A <see cref="Stream"/> instance from which to read the data to send.
+    ///   </para>
     ///   <para>
     ///   The data is sent as the binary data.
     ///   </para>
-    ///   <para>
-    ///   This method does not wait for the send to be complete.
-    ///   </para>
-    /// </remarks>
-    /// <param name="stream">
-    /// A <see cref="Stream"/> instance from which to read the data to send.
     /// </param>
     /// <param name="length">
     /// An <see cref="int"/> that specifies the number of bytes to send.
@@ -802,7 +802,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// The current state of the manager is not Start.
+    /// The current state of the service is not Start.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="stream"/> is <see langword="null"/>.
