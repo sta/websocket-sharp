@@ -870,10 +870,10 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Closes the specified session.
+    /// Closes the session with the specified ID.
     /// </summary>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to close.
+    /// A <see cref="string"/> that specifies the ID of the session to close.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="id"/> is <see langword="null"/>.
