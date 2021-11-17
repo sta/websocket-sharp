@@ -976,23 +976,22 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Closes the specified session with <paramref name="code"/> and
-    /// <paramref name="reason"/>.
+    /// Closes the session with the specified ID, code, and reason.
     /// </summary>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to close.
+    /// A <see cref="string"/> that specifies the ID of the session to close.
     /// </param>
     /// <param name="code">
     ///   <para>
     ///   One of the <see cref="CloseStatusCode"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It represents the status code indicating the reason for the close.
+    ///   It specifies the status code indicating the reason for the close.
     ///   </para>
     /// </param>
     /// <param name="reason">
     ///   <para>
-    ///   A <see cref="string"/> that represents the reason for the close.
+    ///   A <see cref="string"/> that specifies the reason for the close.
     ///   </para>
     ///   <para>
     ///   The size must be 123 bytes or less in UTF-8.
@@ -1017,8 +1016,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     ///   <para>
     ///   <paramref name="code"/> is
-    ///   <see cref="CloseStatusCode.NoStatus"/> and there is
-    ///   <paramref name="reason"/>.
+    ///   <see cref="CloseStatusCode.NoStatus"/> and there is reason.
     ///   </para>
     ///   <para>
     ///   -or-
