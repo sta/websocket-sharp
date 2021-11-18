@@ -1077,7 +1077,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a ping with <paramref name="message"/> to the client using
+    /// Sends a ping with the specified message to the client using
     /// the specified session.
     /// </summary>
     /// <returns>
@@ -1086,14 +1086,14 @@ namespace WebSocketSharp.Server
     /// </returns>
     /// <param name="message">
     ///   <para>
-    ///   A <see cref="string"/> that represents the message to send.
+    ///   A <see cref="string"/> that specifies the message to send.
     ///   </para>
     ///   <para>
     ///   The size must be 125 bytes or less in UTF-8.
     ///   </para>
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session.
+    /// A <see cref="string"/> that specifies the ID of the session.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="id"/> is <see langword="null"/>.
