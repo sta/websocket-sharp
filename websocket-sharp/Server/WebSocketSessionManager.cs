@@ -1118,8 +1118,10 @@ namespace WebSocketSharp.Server
     public bool PingTo (string message, string id)
     {
       IWebSocketSession session;
+
       if (!TryGetSession (id, out session)) {
         var msg = "The session could not be found.";
+
         throw new InvalidOperationException (msg);
       }
 
