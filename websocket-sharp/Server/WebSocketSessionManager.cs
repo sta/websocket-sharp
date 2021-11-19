@@ -1220,8 +1220,10 @@ namespace WebSocketSharp.Server
     public void SendTo (string data, string id)
     {
       IWebSocketSession session;
+
       if (!TryGetSession (id, out session)) {
         var msg = "The session could not be found.";
+
         throw new InvalidOperationException (msg);
       }
 
