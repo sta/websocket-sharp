@@ -1176,13 +1176,13 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends <paramref name="data"/> to the client using the specified session.
+    /// Sends the specified data to the client using the specified session.
     /// </summary>
     /// <param name="data">
-    /// A <see cref="string"/> that represents the text data to send.
+    /// A <see cref="string"/> that specifies the text data to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session.
+    /// A <see cref="string"/> that specifies the ID of the session.
     /// </param>
     /// <exception cref="ArgumentNullException">
     ///   <para>
