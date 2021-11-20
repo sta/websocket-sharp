@@ -1231,20 +1231,22 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the data from <paramref name="stream"/> to the client using
+    /// Sends the data from the specified stream instance to the client using
     /// the specified session.
     /// </summary>
-    /// <remarks>
-    /// The data is sent as the binary data.
-    /// </remarks>
     /// <param name="stream">
-    /// A <see cref="Stream"/> instance from which to read the data to send.
+    ///   <para>
+    ///   A <see cref="Stream"/> instance from which to read the data to send.
+    ///   </para>
+    ///   <para>
+    ///   The data is sent as the binary data.
+    ///   </para>
     /// </param>
     /// <param name="length">
     /// An <see cref="int"/> that specifies the number of bytes to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session.
+    /// A <see cref="string"/> that specifies the ID of the session.
     /// </param>
     /// <exception cref="ArgumentNullException">
     ///   <para>
