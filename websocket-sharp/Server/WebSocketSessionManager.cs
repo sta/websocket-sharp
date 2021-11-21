@@ -1360,8 +1360,10 @@ namespace WebSocketSharp.Server
     public void SendToAsync (byte[] data, string id, Action<bool> completed)
     {
       IWebSocketSession session;
+
       if (!TryGetSession (id, out session)) {
         var msg = "The session could not be found.";
+
         throw new InvalidOperationException (msg);
       }
 
