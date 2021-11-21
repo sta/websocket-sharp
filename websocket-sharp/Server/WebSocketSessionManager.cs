@@ -1371,17 +1371,17 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends <paramref name="data"/> asynchronously to the client using
+    /// Sends the specified data asynchronously to the client using
     /// the specified session.
     /// </summary>
     /// <remarks>
     /// This method does not wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
-    /// A <see cref="string"/> that represents the text data to send.
+    /// A <see cref="string"/> that specifies the text data to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session.
+    /// A <see cref="string"/> that specifies the ID of the session.
     /// </param>
     /// <param name="completed">
     ///   <para>
