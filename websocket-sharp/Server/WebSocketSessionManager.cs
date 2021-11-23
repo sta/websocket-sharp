@@ -1567,16 +1567,21 @@ namespace WebSocketSharp.Server
 
           IWebSocketSession session;
 
-          if (_sessions.TryGetValue (id, out session)) {
-            var state = session.ConnectionState;
+          if (!_sessions.TryGetValue (id, out session))
+            continue;
 
-            if (state == WebSocketState.Open)
-              session.Context.WebSocket.Close (CloseStatusCode.Abnormal);
-            else if (state == WebSocketState.Closing)
-              continue;
-            else
-              _sessions.Remove (id);
+          var state = session.ConnectionState;
+
+          if (state == WebSocketState.Open) {
+            session.Context.WebSocket.Close (CloseStatusCode.Abnormal);
+
+            continue;
           }
+
+          if (state == WebSocketState.Closing)
+            continue;
+
+          _sessions.Remove (id);
         }
       }
 
