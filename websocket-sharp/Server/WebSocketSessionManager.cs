@@ -1543,12 +1543,14 @@ namespace WebSocketSharp.Server
     {
       if (_sweeping) {
         _log.Info ("The sweeping is already in progress.");
+
         return;
       }
 
       lock (_forSweep) {
         if (_sweeping) {
           _log.Info ("The sweeping is already in progress.");
+
           return;
         }
 
@@ -1564,8 +1566,10 @@ namespace WebSocketSharp.Server
             break;
 
           IWebSocketSession session;
+
           if (_sessions.TryGetValue (id, out session)) {
             var state = session.ConnectionState;
+
             if (state == WebSocketState.Open)
               session.Context.WebSocket.Close (CloseStatusCode.Abnormal);
             else if (state == WebSocketState.Closing)
