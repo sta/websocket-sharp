@@ -1589,14 +1589,14 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Tries to get the session instance with <paramref name="id"/>.
+    /// Tries to get the session instance with the specified ID.
     /// </summary>
     /// <returns>
     /// <c>true</c> if the session is successfully found; otherwise,
     /// <c>false</c>.
     /// </returns>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
+    /// A <see cref="string"/> that specifies the ID of the session to find.
     /// </param>
     /// <param name="session">
     ///   <para>
