@@ -515,12 +515,16 @@ namespace WebSocketSharp.Server
 
     internal void Stop (ushort code, string reason)
     {
-      if (code == 1005) { // == no status
+      if (code == 1005) {
         stop (PayloadData.Empty, true);
+
         return;
       }
 
-      stop (new PayloadData (code, reason), !code.IsReserved ());
+      var payloadData = new PayloadData (code, reason);
+      var send = !code.IsReserved ();
+
+      stop (payloadData, send);
     }
 
     #endregion
