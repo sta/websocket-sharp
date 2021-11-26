@@ -466,20 +466,6 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal void Broadcast (
-      Opcode opcode, Stream stream, Dictionary <CompressionMethod, Stream> cache
-    )
-    {
-      foreach (var session in Sessions) {
-        if (_state != ServerState.Start) {
-          _log.Error ("The service is shutting down.");
-          break;
-        }
-
-        session.Context.WebSocket.Send (opcode, stream, cache);
-      }
-    }
-
     internal bool Remove (string id)
     {
       lock (_sync)
