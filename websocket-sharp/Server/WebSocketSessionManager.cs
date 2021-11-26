@@ -480,25 +480,6 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal Dictionary<string, bool> Broadping (
-      byte[] frameAsBytes, TimeSpan timeout
-    )
-    {
-      var ret = new Dictionary<string, bool> ();
-
-      foreach (var session in Sessions) {
-        if (_state != ServerState.Start) {
-          _log.Error ("The service is shutting down.");
-          break;
-        }
-
-        var res = session.Context.WebSocket.Ping (frameAsBytes, timeout);
-        ret.Add (session.ID, res);
-      }
-
-      return ret;
-    }
-
     internal bool Remove (string id)
     {
       lock (_sync)
