@@ -446,6 +446,7 @@ namespace WebSocketSharp.Server
           return null;
 
         var id = createID ();
+
         _sessions.Add (id, session);
 
         return id;
