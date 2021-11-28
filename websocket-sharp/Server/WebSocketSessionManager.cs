@@ -406,13 +406,15 @@ namespace WebSocketSharp.Server
     private void stop (PayloadData payloadData, bool send)
     {
       var bytes = send
-                  ? WebSocketFrame.CreateCloseFrame (payloadData, false).ToArray ()
+                  ? WebSocketFrame
+                    .CreateCloseFrame (payloadData, false)
+                    .ToArray ()
                   : null;
 
       lock (_sync) {
         _state = ServerState.ShuttingDown;
-
         _sweepTimer.Enabled = false;
+
         foreach (var session in _sessions.Values.ToList ())
           session.Context.WebSocket.Close (payloadData, bytes);
 
