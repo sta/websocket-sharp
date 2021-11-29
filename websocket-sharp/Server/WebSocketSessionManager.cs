@@ -336,6 +336,7 @@ namespace WebSocketSharp.Server
         foreach (var session in Sessions) {
           if (_state != ServerState.Start) {
             _log.Error ("The service is shutting down.");
+
             break;
           }
 
