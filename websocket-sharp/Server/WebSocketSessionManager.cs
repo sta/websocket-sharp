@@ -379,10 +379,12 @@ namespace WebSocketSharp.Server
       foreach (var session in Sessions) {
         if (_state != ServerState.Start) {
           _log.Error ("The service is shutting down.");
+
           break;
         }
 
         var res = session.Context.WebSocket.Ping (frameAsBytes, _waitTime);
+
         ret.Add (session.ID, res);
       }
 
