@@ -47,8 +47,8 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private static readonly int _bufferLength;
-    private HttpListenerContext _context;
-    private ChunkStream         _decoder;
+    private readonly HttpListenerContext _context;
+    private readonly ChunkStream         _decoder;
     private bool                _disposed;
     private bool                _noMoreData;
 

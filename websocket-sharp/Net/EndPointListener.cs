@@ -62,14 +62,14 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private List<HttpListenerPrefix>                   _all; // host == '+'
-    private Dictionary<HttpConnection, HttpConnection> _connections;
-    private object                                     _connectionsSync;
+    private readonly Dictionary<HttpConnection, HttpConnection> _connections;
+    private readonly object                                     _connectionsSync;
     private static readonly string                     _defaultCertFolderPath;
-    private IPEndPoint                                 _endpoint;
+    private readonly IPEndPoint                                 _endpoint;
     private List<HttpListenerPrefix>                   _prefixes;
-    private bool                                       _secure;
-    private Socket                                     _socket;
-    private ServerSslConfiguration                     _sslConfig;
+    private readonly bool                                       _secure;
+    private readonly Socket                                     _socket;
+    private readonly ServerSslConfiguration                     _sslConfig;
     private List<HttpListenerPrefix>                   _unhandled; // host == '*'
 
     #endregion

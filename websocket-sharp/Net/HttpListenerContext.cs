@@ -55,12 +55,12 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private HttpConnection               _connection;
+    private readonly HttpConnection               _connection;
     private string                       _errorMessage;
     private int                          _errorStatusCode;
     private HttpListener                 _listener;
-    private HttpListenerRequest          _request;
-    private HttpListenerResponse         _response;
+    private readonly HttpListenerRequest          _request;
+    private readonly HttpListenerResponse         _response;
     private IPrincipal                   _user;
     private HttpListenerWebSocketContext _websocketContext;
 

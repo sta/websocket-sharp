@@ -61,27 +61,27 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private int                   _attempts;
-    private byte[]                _buffer;
+    private readonly byte[]                _buffer;
     private static readonly int   _bufferLength;
     private HttpListenerContext   _context;
     private StringBuilder         _currentLine;
     private InputState            _inputState;
     private RequestStream         _inputStream;
     private LineState             _lineState;
-    private EndPointListener      _listener;
-    private EndPoint              _localEndPoint;
+    private readonly EndPointListener      _listener;
+    private readonly EndPoint              _localEndPoint;
     private static readonly int   _maxInputLength;
     private ResponseStream        _outputStream;
     private int                   _position;
-    private EndPoint              _remoteEndPoint;
+    private readonly EndPoint              _remoteEndPoint;
     private MemoryStream          _requestBuffer;
     private int                   _reuses;
-    private bool                  _secure;
+    private readonly bool                  _secure;
     private Socket                _socket;
     private Stream                _stream;
-    private object                _sync;
+    private readonly object                _sync;
     private int                   _timeout;
-    private Dictionary<int, bool> _timeoutCanceled;
+    private readonly Dictionary<int, bool> _timeoutCanceled;
     private Timer                 _timer;
 
     #endregion

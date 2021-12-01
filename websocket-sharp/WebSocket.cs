@@ -74,7 +74,7 @@ namespace WebSocketSharp
 
     private AuthenticationChallenge        _authChallenge;
     private string                         _base64Key;
-    private bool                           _client;
+    private readonly bool                           _client;
     private Action                         _closeContext;
     private CompressionMethod              _compression;
     private WebSocketContext               _context;
@@ -98,14 +98,14 @@ namespace WebSocketSharp
     private volatile bool                  _inMessage;
     private volatile Logger                _logger;
     private static readonly int            _maxRetryCountForConnect;
-    private Action<MessageEventArgs>       _message;
+    private readonly Action<MessageEventArgs>       _message;
     private Queue<MessageEventArgs>        _messageEventQueue;
     private uint                           _nonceCount;
     private string                         _origin;
     private ManualResetEvent               _pongReceived;
     private bool                           _preAuth;
     private string                         _protocol;
-    private string[]                       _protocols;
+    private readonly string[]                       _protocols;
     private bool                           _protocolsRequested;
     private NetworkCredential              _proxyCredentials;
     private Uri                            _proxyUri;
@@ -396,7 +396,7 @@ namespace WebSocketSharp
     public IEnumerable<Cookie> Cookies {
       get {
         lock (_cookies.SyncRoot) {
-          foreach (Cookie cookie in _cookies)
+          foreach (var cookie in _cookies)
             yield return cookie;
         }
       }

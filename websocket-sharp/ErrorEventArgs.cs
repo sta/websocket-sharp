@@ -57,8 +57,8 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private Exception _exception;
-    private string    _message;
+    private readonly Exception _exception;
+    private readonly string    _message;
 
     #endregion
 

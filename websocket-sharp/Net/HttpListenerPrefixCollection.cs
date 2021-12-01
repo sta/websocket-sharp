@@ -55,8 +55,8 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private HttpListener _listener;
-    private List<string> _prefixes;
+    private readonly HttpListener _listener;
+    private readonly List<string> _prefixes;
 
     #endregion
 

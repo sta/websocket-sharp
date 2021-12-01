@@ -52,10 +52,10 @@ namespace WebSocketSharp.Net
 
     private int                 _chunkRead;
     private int                 _chunkSize;
-    private List<Chunk>         _chunks;
+    private readonly List<Chunk>         _chunks;
     private bool                _gotIt;
-    private WebHeaderCollection _headers;
-    private StringBuilder       _saved;
+    private readonly WebHeaderCollection _headers;
+    private readonly StringBuilder       _saved;
     private bool                _sawCr;
     private InputChunkState     _state;
     private int                 _trailerState;

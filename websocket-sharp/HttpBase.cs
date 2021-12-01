@@ -40,9 +40,9 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private NameValueCollection _headers;
+    private readonly NameValueCollection _headers;
     private const int           _headersMaxLength = 8192;
-    private Version             _version;
+    private readonly Version             _version;
 
     #endregion
 

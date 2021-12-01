@@ -49,13 +49,13 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private volatile bool                         _clean;
-    private object                                _forSweep;
-    private Logger                                _log;
-    private Dictionary<string, IWebSocketSession> _sessions;
+    private readonly object                                _forSweep;
+    private readonly Logger                                _log;
+    private readonly Dictionary<string, IWebSocketSession> _sessions;
     private volatile ServerState                  _state;
     private volatile bool                         _sweeping;
     private System.Timers.Timer                   _sweepTimer;
-    private object                                _sync;
+    private readonly object                                _sync;
     private TimeSpan                              _waitTime;
 
     #endregion

@@ -56,8 +56,8 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private HttpListenerContext _context;
-    private string              _docRootPath;
+    private readonly HttpListenerContext _context;
+    private readonly string              _docRootPath;
 
     #endregion
 

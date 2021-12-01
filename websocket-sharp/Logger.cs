@@ -57,7 +57,7 @@ namespace WebSocketSharp
     private volatile string         _file;
     private volatile LogLevel       _level;
     private Action<LogData, string> _output;
-    private object                  _sync;
+    private readonly object                  _sync;
 
     #endregion
 

@@ -46,8 +46,8 @@ namespace WebSocketSharp
     #region Private Fields
 
     private CookieCollection _cookies;
-    private string           _method;
-    private string           _uri;
+    private readonly string           _method;
+    private readonly string           _uri;
 
     #endregion
 
@@ -161,7 +161,7 @@ namespace WebSocketSharp
         throw new ArgumentException ("Invalid request line: " + headerParts[0]);
 
       var headers = new WebHeaderCollection ();
-      for (int i = 1; i < headerParts.Length; i++)
+      for (var i = 1; i < headerParts.Length; i++)
         headers.InternalSet (headerParts[i], false);
 
       return new HttpRequest (

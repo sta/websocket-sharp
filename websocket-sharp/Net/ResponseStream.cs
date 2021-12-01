@@ -55,9 +55,9 @@ namespace WebSocketSharp.Net
     private static readonly int      _maxHeadersLength;
     private HttpListenerResponse     _response;
     private bool                     _sendChunked;
-    private Action<byte[], int, int> _write;
+    private readonly Action<byte[], int, int> _write;
     private Action<byte[], int, int> _writeBody;
-    private Action<byte[], int, int> _writeChunked;
+    private readonly Action<byte[], int, int> _writeChunked;
 
     #endregion
 

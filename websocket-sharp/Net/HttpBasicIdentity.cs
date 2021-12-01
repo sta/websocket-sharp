@@ -49,7 +49,7 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private string _password;
+    private readonly string _password;
 
     #endregion
 

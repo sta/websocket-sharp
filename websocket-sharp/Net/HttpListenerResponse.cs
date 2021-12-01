@@ -67,7 +67,7 @@ namespace WebSocketSharp.Net
     private Encoding            _contentEncoding;
     private long                _contentLength;
     private string              _contentType;
-    private HttpListenerContext _context;
+    private readonly HttpListenerContext _context;
     private CookieCollection    _cookies;
     private bool                _disposed;
     private WebHeaderCollection _headers;

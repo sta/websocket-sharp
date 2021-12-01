@@ -48,10 +48,10 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private volatile bool                            _clean;
-    private Dictionary<string, WebSocketServiceHost> _hosts;
-    private Logger                                   _log;
+    private readonly Dictionary<string, WebSocketServiceHost> _hosts;
+    private readonly Logger                                   _log;
     private volatile ServerState                     _state;
-    private object                                   _sync;
+    private readonly object                                   _sync;
     private TimeSpan                                 _waitTime;
 
     #endregion

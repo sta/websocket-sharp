@@ -47,8 +47,8 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private string       _host;
-    private HttpListener _listener;
-    private string       _original;
+    private readonly HttpListener _listener;
+    private readonly string       _original;
     private string       _path;
     private string       _port;
     private string       _prefix;

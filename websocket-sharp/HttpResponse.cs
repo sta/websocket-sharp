@@ -38,8 +38,8 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private string _code;
-    private string _reason;
+    private readonly string _code;
+    private readonly string _reason;
 
     #endregion
 
@@ -160,7 +160,7 @@ namespace WebSocketSharp
         throw new ArgumentException ("Invalid status line: " + headerParts[0]);
 
       var headers = new WebHeaderCollection ();
-      for (int i = 1; i < headerParts.Length; i++)
+      for (var i = 1; i < headerParts.Length; i++)
         headers.InternalSet (headerParts[i], true);
 
       return new HttpResponse (

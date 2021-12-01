@@ -53,14 +53,14 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private AsyncCallback       _callback;
+    private readonly AsyncCallback       _callback;
     private bool                _completed;
     private bool                _completedSynchronously;
     private HttpListenerContext _context;
     private bool                _endCalled;
     private Exception           _exception;
-    private object              _state;
-    private object              _sync;
+    private readonly object              _state;
+    private readonly object              _sync;
     private ManualResetEvent    _waitHandle;
 
     #endregion

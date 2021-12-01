@@ -250,7 +250,7 @@ namespace WebSocketSharp
       this IEnumerable<T> source, Func<T, bool> condition
     )
     {
-      foreach (T elm in source) {
+      foreach (var elm in source) {
         if (condition (elm))
           return true;
       }
@@ -1775,7 +1775,7 @@ namespace WebSocketSharp
       if (action == null)
         return;
 
-      for (int i = 0; i < n; i++)
+      for (var i = 0; i < n; i++)
         action ();
     }
 
@@ -1864,7 +1864,7 @@ namespace WebSocketSharp
       if (action == null)
         return;
 
-      for (int i = 0; i < n; i++)
+      for (var i = 0; i < n; i++)
         action (i);
     }
 
@@ -2054,7 +2054,7 @@ namespace WebSocketSharp
       var bytes = type == typeof (Boolean)
                   ? BitConverter.GetBytes ((Boolean)(object) value)
                   : type == typeof (Byte)
-                    ? new byte[] { (Byte)(object) value }
+                    ? new[] { (Byte)(object) value }
                     : type == typeof (Char)
                       ? BitConverter.GetBytes ((Char)(object) value)
                       : type == typeof (Double)

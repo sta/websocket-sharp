@@ -47,11 +47,11 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private long   _bodyLeft;
-    private byte[] _buffer;
+    private readonly byte[] _buffer;
     private int    _count;
     private bool   _disposed;
     private int    _offset;
-    private Stream _stream;
+    private readonly Stream _stream;
 
     #endregion
 

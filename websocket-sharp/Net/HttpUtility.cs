@@ -56,8 +56,8 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private static Dictionary<string, char> _entities;
-    private static char[]                   _hexChars;
-    private static object                   _sync;
+    private static readonly char[]                   _hexChars;
+    private static readonly object                   _sync;
 
     #endregion
 
@@ -668,7 +668,7 @@ namespace WebSocketSharp.Net
       }
 
       var i = (int) b;
-      var bytes = new byte[] {
+      var bytes = new[] {
                     (byte) '%',
                     (byte) _hexChars[i >> 4],
                     (byte) _hexChars[i & 0x0F]

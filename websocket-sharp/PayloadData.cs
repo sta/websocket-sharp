@@ -36,9 +36,9 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private byte[] _data;
+    private readonly byte[] _data;
     private long   _extDataLength;
-    private long   _length;
+    private readonly long   _length;
 
     #endregion
 

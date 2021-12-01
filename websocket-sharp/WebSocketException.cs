@@ -38,7 +38,7 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private CloseStatusCode _code;
+    private readonly CloseStatusCode _code;
 
     #endregion
 
