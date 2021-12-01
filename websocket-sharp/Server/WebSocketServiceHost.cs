@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2017 sta.blockhead
+ * Copyright (c) 2012-2021 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ namespace WebSocketSharp.Server
   /// <summary>
   /// Exposes the methods and properties used to access the information in
   /// a WebSocket service provided by the <see cref="WebSocketServer"/> or
-  /// <see cref="HttpServer"/>.
+  /// <see cref="HttpServer"/> class.
   /// </summary>
   /// <remarks>
   /// This class is an abstract class.
@@ -59,14 +59,16 @@ namespace WebSocketSharp.Server
     #region Protected Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServiceHost"/> class
-    /// with the specified <paramref name="path"/> and <paramref name="log"/>.
+    /// Initializes a new instance of the <see cref="WebSocketServiceHost"/>
+    /// class with the specified path and logging function.
     /// </summary>
     /// <param name="path">
-    /// A <see cref="string"/> that represents the absolute path to the service.
+    /// A <see cref="string"/> that specifies the absolute path to
+    /// the service.
     /// </param>
     /// <param name="log">
-    /// A <see cref="Logger"/> that represents the logging function for the service.
+    /// A <see cref="Logger"/> that specifies the logging function for
+    /// the service.
     /// </param>
     protected WebSocketServiceHost (string path, Logger log)
     {
@@ -107,8 +109,8 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets a value indicating whether the service cleans up
-    /// the inactive sessions periodically.
+    /// Gets or sets a value indicating whether the service cleans up the
+    /// inactive sessions periodically.
     /// </summary>
     /// <remarks>
     /// The set operation does nothing if the service has already started or
@@ -155,7 +157,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the <see cref="Type"/> of the behavior of the service.
+    /// Gets the type of the behavior of the service.
     /// </summary>
     /// <value>
     /// A <see cref="Type"/> that represents the type of the behavior of
@@ -164,8 +166,8 @@ namespace WebSocketSharp.Server
     public abstract Type BehaviorType { get; }
 
     /// <summary>
-    /// Gets or sets the time to wait for the response to the WebSocket Ping or
-    /// Close.
+    /// Gets or sets the time to wait for the response to the WebSocket Ping
+    /// or Close.
     /// </summary>
     /// <remarks>
     /// The set operation does nothing if the service has already started or

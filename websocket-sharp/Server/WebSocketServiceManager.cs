@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2015 sta.blockhead
+ * Copyright (c) 2012-2021 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ namespace WebSocketSharp.Server
   /// </summary>
   /// <remarks>
   /// This class manages the WebSocket services provided by
-  /// the <see cref="WebSocketServer"/> or <see cref="HttpServer"/>.
+  /// the <see cref="WebSocketServer"/> or <see cref="HttpServer"/> class.
   /// </remarks>
   public class WebSocketServiceManager
   {
@@ -62,8 +62,8 @@ namespace WebSocketSharp.Server
     {
       _log = log;
 
-      _clean = true;
       _hosts = new Dictionary<string, WebSocketServiceHost> ();
+      _keepClean = true;
       _state = ServerState.Ready;
       _sync = ((ICollection) _hosts).SyncRoot;
       _waitTime = TimeSpan.FromSeconds (1);
@@ -87,7 +87,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the host instances for the WebSocket services.
+    /// Gets the service host instances for the WebSocket services.
     /// </summary>
     /// <value>
     ///   <para>
@@ -95,7 +95,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     ///   <para>
     ///   It provides an enumerator which supports the iteration over
-    ///   the collection of the host instances.
+    ///   the collection of the service host instances.
     ///   </para>
     /// </value>
     public IEnumerable<WebSocketServiceHost> Hosts {
@@ -106,7 +106,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the host instance for a WebSocket service with the specified path.
+    /// Gets the service host instance for a WebSocket service with
+    /// the specified path.
     /// </summary>
     /// <value>
     ///   <para>
@@ -114,13 +115,13 @@ namespace WebSocketSharp.Server
     ///   <see langword="null"/> if not found.
     ///   </para>
     ///   <para>
-    ///   The host instance provides the function to access
+    ///   The service host instance provides the function to access
     ///   the information in the service.
     ///   </para>
     /// </value>
     /// <param name="path">
     ///   <para>
-    ///   A <see cref="string"/> that represents an absolute path to
+    ///   A <see cref="string"/> that specifies an absolute path to
     ///   the service to find.
     ///   </para>
     ///   <para>
@@ -132,7 +133,7 @@ namespace WebSocketSharp.Server
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="path"/> is empty.
+    ///   <paramref name="path"/> is an empty string.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -156,15 +157,20 @@ namespace WebSocketSharp.Server
         if (path.Length == 0)
           throw new ArgumentException ("An empty string.", "path");
 
-        if (path[0] != '/')
-          throw new ArgumentException ("Not an absolute path.", "path");
+        if (path[0] != '/') {
+          var msg = "It is not an absolute path.";
+
+          throw new ArgumentException (msg, "path");
+        }
 
         if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
           var msg = "It includes either or both query and fragment components.";
+
           throw new ArgumentException (msg, "path");
         }
 
         WebSocketServiceHost host;
+
         InternalTryGetServiceHost (path, out host);
 
         return host;
@@ -190,7 +196,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public bool KeepClean {
       get {
-        return _clean;
+        return _keepClean;
       }
 
       set {
@@ -206,7 +212,7 @@ namespace WebSocketSharp.Server
           foreach (var host in _hosts.Values)
             host.KeepClean = value;
 
-          _clean = value;
+          _keepClean = value;
         }
       }
     }
@@ -227,28 +233,6 @@ namespace WebSocketSharp.Server
       get {
         lock (_sync)
           return _hosts.Keys.ToList ();
-      }
-    }
-
-    /// <summary>
-    /// Gets the total number of the sessions in the WebSocket services.
-    /// </summary>
-    /// <value>
-    /// An <see cref="int"/> that represents the total number of
-    /// the sessions in the services.
-    /// </value>
-    [Obsolete ("This property will be removed.")]
-    public int SessionCount {
-      get {
-        var cnt = 0;
-        foreach (var host in Hosts) {
-          if (_state != ServerState.Start)
-            break;
-
-          cnt += host.Sessions.Count;
-        }
-
-        return cnt;
       }
     }
 
@@ -458,11 +442,9 @@ namespace WebSocketSharp.Server
           throw new ArgumentException (msg, "path");
         }
 
-        host = new WebSocketServiceHost<TBehavior> (
-                 path, () => new TBehavior (), initializer, _log
-               );
+        host = new WebSocketServiceHost<TBehavior> (path, initializer, _log);
 
-        if (!_clean)
+        if (!_keepClean)
           host.KeepClean = false;
 
         if (_waitTime != host.WaitTime)
@@ -488,6 +470,7 @@ namespace WebSocketSharp.Server
 
       lock (_sync) {
         hosts = _hosts.Values.ToList ();
+
         _hosts.Clear ();
       }
 
@@ -575,7 +558,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Tries to get the host instance for a WebSocket service with
+    /// Tries to get the service host instance for a WebSocket service with
     /// the specified path.
     /// </summary>
     /// <returns>
@@ -597,7 +580,7 @@ namespace WebSocketSharp.Server
     ///   instance or <see langword="null"/> if not found.
     ///   </para>
     ///   <para>
-    ///   The host instance provides the function to access
+    ///   The service host instance provides the function to access
     ///   the information in the service.
     ///   </para>
     /// </param>
