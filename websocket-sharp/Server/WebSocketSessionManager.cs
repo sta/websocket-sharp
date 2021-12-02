@@ -48,6 +48,7 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
+    private static readonly byte[]                _emptyPingFrameAsBytes;
     private object                                _forSweep;
     private volatile bool                         _keepClean;
     private Logger                                _log;
@@ -57,6 +58,17 @@ namespace WebSocketSharp.Server
     private System.Timers.Timer                   _sweepTimer;
     private object                                _sync;
     private TimeSpan                              _waitTime;
+
+    #endregion
+
+    #region Static Constructor
+
+    static WebSocketSessionManager ()
+    {
+      _emptyPingFrameAsBytes = WebSocketFrame
+                               .CreatePingFrame (false)
+                               .ToArray ();
+    }
 
     #endregion
 
