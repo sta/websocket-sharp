@@ -176,7 +176,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> InactiveIDs {
       get {
-        foreach (var res in broadping (WebSocketFrame.EmptyPingBytes)) {
+        foreach (var res in broadping (_emptyPingFrameAsBytes)) {
           if (!res.Value)
             yield return res.Key;
         }
