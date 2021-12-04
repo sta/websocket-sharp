@@ -58,29 +58,6 @@ namespace WebSocketSharp
 
     #endregion
 
-    #region Internal Fields
-
-    /// <summary>
-    /// Represents the ping frame without the payload data as an array of
-    /// <see cref="byte"/>.
-    /// </summary>
-    /// <remarks>
-    /// The value of this field is created from a non masked ping frame,
-    /// so it can only be used to send a ping from the server.
-    /// </remarks>
-    internal static readonly byte[] EmptyPingBytes;
-
-    #endregion
-
-    #region Static Constructor
-
-    static WebSocketFrame ()
-    {
-      EmptyPingBytes = CreatePingFrame (false).ToArray ();
-    }
-
-    #endregion
-
     #region Private Constructors
 
     private WebSocketFrame ()
