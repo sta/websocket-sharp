@@ -299,6 +299,7 @@ namespace WebSocketSharp
     private static byte[] createMaskingKey ()
     {
       var key = new byte[4];
+
       WebSocket.RandomNumber.GetBytes (key);
 
       return key;
