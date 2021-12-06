@@ -313,6 +313,7 @@ namespace WebSocketSharp
 
       int cntDigit;
       string cntFmt;
+
       if (cnt < 10000) {
         cntDigit = 4;
         cntFmt = "{0,4}";
@@ -352,6 +353,7 @@ namespace WebSocketSharp
       Func<Action<string, string, string, string>> linePrinter =
         () => {
           long lineCnt = 0;
+
           return (arg1, arg2, arg3, arg4) => {
                    buff.AppendFormat (
                      lineFmt, ++lineCnt, arg1, arg2, arg3, arg4
@@ -393,6 +395,7 @@ namespace WebSocketSharp
       }
 
       buff.AppendFormat (footerFmt, String.Empty);
+
       return buff.ToString ();
     }
 
