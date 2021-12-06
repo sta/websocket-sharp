@@ -455,6 +455,7 @@ Extended Payload Length: {7}
     {
       if (header.Length != 2) {
         var msg = "The header part of a frame could not be read.";
+
         throw new WebSocketException (msg);
       }
 
@@ -481,22 +482,26 @@ Extended Payload Length: {7}
 
       if (!opcode.IsSupported ()) {
         var msg = "A frame has an unsupported opcode.";
+
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
       }
 
       if (!opcode.IsData () && rsv1 == Rsv.On) {
         var msg = "A non data frame is compressed.";
+
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
       }
 
       if (opcode.IsControl ()) {
         if (fin == Fin.More) {
           var msg = "A control frame is fragmented.";
+
           throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
         }
 
         if (payloadLen > 125) {
           var msg = "A control frame has too long payload length.";
+
           throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
         }
       }
