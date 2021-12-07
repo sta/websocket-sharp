@@ -597,6 +597,7 @@ Extended Payload Length: {7}
     {
       if (!frame.IsMasked) {
         frame._maskingKey = WebSocket.EmptyBytes;
+
         return frame;
       }
 
@@ -605,10 +606,12 @@ Extended Payload Length: {7}
 
       if (bytes.Length != len) {
         var msg = "The masking key of a frame could not be read.";
+
         throw new WebSocketException (msg);
       }
 
       frame._maskingKey = bytes;
+
       return frame;
     }
 
