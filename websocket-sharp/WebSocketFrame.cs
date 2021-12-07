@@ -523,18 +523,23 @@ Extended Payload Length: {7}
     )
     {
       var len = frame.ExtendedPayloadLengthWidth;
+
       if (len == 0) {
         frame._extPayloadLength = WebSocket.EmptyBytes;
+
         return frame;
       }
 
       var bytes = stream.ReadBytes (len);
+
       if (bytes.Length != len) {
         var msg = "The extended payload length of a frame could not be read.";
+
         throw new WebSocketException (msg);
       }
 
       frame._extPayloadLength = bytes;
+
       return frame;
     }
 
