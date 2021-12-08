@@ -589,7 +589,13 @@ Extended Payload Length: {7}
     )
     {
       stream.ReadBytesAsync (
-        2, bytes => completed (processHeader (bytes)), error
+        2,
+        bytes => {
+          var frame = processHeader (bytes);
+
+          completed (frame);
+        },
+        error
       );
     }
 
