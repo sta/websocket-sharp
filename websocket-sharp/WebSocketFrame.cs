@@ -579,7 +579,9 @@ Extended Payload Length: {7}
 
     private static WebSocketFrame readHeader (Stream stream)
     {
-      return processHeader (stream.ReadBytes (2));
+      var bytes = stream.ReadBytes (2);
+
+      return processHeader (bytes);
     }
 
     private static void readHeaderAsync (
