@@ -662,13 +662,16 @@ Extended Payload Length: {7}
     )
     {
       var exactLen = frame.ExactPayloadLength;
+
       if (exactLen > PayloadData.MaxLength) {
         var msg = "A frame has too long payload length.";
+
         throw new WebSocketException (CloseStatusCode.TooBig, msg);
       }
 
       if (exactLen == 0) {
         frame._payloadData = PayloadData.Empty;
+
         return frame;
       }
 
@@ -679,10 +682,12 @@ Extended Payload Length: {7}
 
       if (bytes.LongLength != len) {
         var msg = "The payload data of a frame could not be read.";
+
         throw new WebSocketException (msg);
       }
 
       frame._payloadData = new PayloadData (bytes, len);
+
       return frame;
     }
 
