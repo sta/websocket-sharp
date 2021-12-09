@@ -898,6 +898,7 @@ Extended Payload Length: {7}
         }
 
         buff.Close ();
+
         return buff.ToArray ();
       }
     }
