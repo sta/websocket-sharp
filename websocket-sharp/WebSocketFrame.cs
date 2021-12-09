@@ -841,7 +841,9 @@ Extended Payload Length: {7}
         return;
 
       _mask = Mask.Off;
+
       _payloadData.Mask (_maskingKey);
+
       _maskingKey = WebSocket.EmptyBytes;
     }
 
