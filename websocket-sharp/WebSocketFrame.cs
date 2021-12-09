@@ -787,6 +787,7 @@ Extended Payload Length: {7}
     internal static WebSocketFrame ReadFrame (Stream stream, bool unmask)
     {
       var frame = readHeader (stream);
+
       readExtendedPayloadLength (stream, frame);
       readMaskingKey (stream, frame);
       readPayloadData (stream, frame);
