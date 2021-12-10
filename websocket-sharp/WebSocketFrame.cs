@@ -840,11 +840,10 @@ Extended Payload Length: {7}
       if (_mask == Mask.Off)
         return;
 
-      _mask = Mask.Off;
-
       _payloadData.Mask (_maskingKey);
 
       _maskingKey = WebSocket.EmptyBytes;
+      _mask = Mask.Off;
     }
 
     #endregion
