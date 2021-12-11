@@ -906,7 +906,9 @@ Extended Payload Length: {7}
 
     public override string ToString ()
     {
-      return BitConverter.ToString (ToArray ());
+      var val = ToArray ();
+
+      return BitConverter.ToString (val);
     }
 
     #endregion
