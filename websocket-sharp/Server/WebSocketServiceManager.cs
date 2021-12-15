@@ -201,13 +201,8 @@ namespace WebSocketSharp.Server
 
       set {
         lock (_sync) {
-          string msg;
-
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
-
+          if (!canSet ())
             return;
-          }
 
           foreach (var host in _hosts.Values)
             host.KeepClean = value;
