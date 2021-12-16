@@ -730,6 +730,11 @@ namespace WebSocketSharp.Server
       return context.Authenticate (_authSchemes, _realmInUse, _userCredFinder);
     }
 
+    private bool canSet ()
+    {
+      return _state == ServerState.Ready || _state == ServerState.Stop;
+    }
+
     private bool canSet (out string message)
     {
       message = null;
