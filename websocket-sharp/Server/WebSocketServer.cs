@@ -1187,17 +1187,8 @@ namespace WebSocketSharp.Server
         }
       }
 
-      if (_state == ServerState.Start) {
-        _log.Info ("The server has already started.");
-
+      if (_state == ServerState.Start || _state == ServerState.ShuttingDown)
         return;
-      }
-
-      if (_state == ServerState.ShuttingDown) {
-        _log.Warn ("The server is shutting down.");
-
-        return;
-      }
 
       start (sslConfig);
     }
