@@ -848,6 +848,42 @@ namespace WebSocketSharp.Server
         abort ();
     }
 
+    private void start ()
+    {
+      lock (_sync) {
+        if (_state == ServerState.Start || _state == ServerState.ShuttingDown)
+          return;
+
+        if (_secure) {
+          var src = getSslConfiguration ();
+          var conf = new ServerSslConfiguration (src);
+
+          if (conf.ServerCertificate == null) {
+            var msg = "There is no server certificate for secure connection.";
+
+            throw new InvalidOperationException (msg);
+          }
+
+          _sslConfigInUse = conf;
+        }
+
+        _realmInUse = getRealm ();
+
+        _services.Start ();
+
+        try {
+          startReceiving ();
+        }
+        catch {
+          _services.Stop (1011, String.Empty);
+
+          throw;
+        }
+
+        _state = ServerState.Start;
+      }
+    }
+
     private void start (ServerSslConfiguration sslConfig)
     {
       lock (_sync) {
