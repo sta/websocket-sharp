@@ -1201,23 +1201,10 @@ namespace WebSocketSharp.Server
     /// </exception>
     public void Start ()
     {
-      ServerSslConfiguration sslConfig = null;
-
-      if (_secure) {
-        var src = getSslConfiguration ();
-        sslConfig = new ServerSslConfiguration (src);
-
-        if (sslConfig.ServerCertificate == null) {
-          var msg = "There is no server certificate for secure connection.";
-
-          throw new InvalidOperationException (msg);
-        }
-      }
-
       if (_state == ServerState.Start || _state == ServerState.ShuttingDown)
         return;
 
-      start (sslConfig);
+      start ();
     }
 
     /// <summary>
