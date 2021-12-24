@@ -910,17 +910,8 @@ namespace WebSocketSharp.Server
     private void stop (ushort code, string reason)
     {
       lock (_sync) {
-        if (_state == ServerState.ShuttingDown) {
-          _log.Info ("The server is shutting down.");
-
+        if (_state != ServerState.Start)
           return;
-        }
-
-        if (_state == ServerState.Stop) {
-          _log.Info ("The server has already stopped.");
-
-          return;
-        }
 
         _state = ServerState.ShuttingDown;
       }
