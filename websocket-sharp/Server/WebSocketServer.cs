@@ -681,14 +681,19 @@ namespace WebSocketSharp.Server
       }
 
       try {
-        try {
-          _listener.Stop ();
-        }
-        finally {
-          _services.Stop (1006, String.Empty);
-        }
+        _listener.Stop ();
       }
-      catch {
+      catch (Exception ex) {
+        _log.Error (ex.Message);
+        _log.Debug (ex.ToString ());
+      }
+
+      try {
+        _services.Stop (1006, String.Empty);
+      }
+      catch (Exception ex) {
+        _log.Error (ex.Message);
+        _log.Debug (ex.ToString ());
       }
 
       _state = ServerState.Stop;
