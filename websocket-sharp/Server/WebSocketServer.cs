@@ -684,7 +684,7 @@ namespace WebSocketSharp.Server
         _listener.Stop ();
       }
       catch (Exception ex) {
-        _log.Error (ex.Message);
+        _log.Fatal (ex.Message);
         _log.Debug (ex.ToString ());
       }
 
@@ -692,7 +692,7 @@ namespace WebSocketSharp.Server
         _services.Stop (1006, String.Empty);
       }
       catch (Exception ex) {
-        _log.Error (ex.Message);
+        _log.Fatal (ex.Message);
         _log.Debug (ex.ToString ());
       }
 
