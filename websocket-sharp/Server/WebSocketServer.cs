@@ -922,29 +922,22 @@ namespace WebSocketSharp.Server
       }
 
       try {
-        var threw = false;
-
-        try {
-          stopReceiving (5000);
-        }
-        catch {
-          threw = true;
-
-          throw;
-        }
-        finally {
-          try {
-            _services.Stop (code, reason);
-          }
-          catch {
-            if (!threw)
-              throw;
-          }
-        }
+        stopReceiving (5000);
       }
-      finally {
-        _state = ServerState.Stop;
+      catch (Exception ex) {
+        _log.Fatal (ex.Message);
+        _log.Debug (ex.ToString ());
       }
+
+      try {
+        _services.Stop (code, reason);
+      }
+      catch (Exception ex) {
+        _log.Fatal (ex.Message);
+        _log.Debug (ex.ToString ());
+      }
+
+      _state = ServerState.Stop;
     }
 
     private void stopReceiving (int millisecondsTimeout)
