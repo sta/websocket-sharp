@@ -942,15 +942,7 @@ namespace WebSocketSharp.Server
 
     private void stopReceiving (int millisecondsTimeout)
     {
-      try {
-        _listener.Stop ();
-      }
-      catch (Exception ex) {
-        var msg = "The underlying listener has failed to stop.";
-
-        throw new InvalidOperationException (msg, ex);
-      }
-
+      _listener.Stop ();
       _receiveThread.Join (millisecondsTimeout);
     }
 
