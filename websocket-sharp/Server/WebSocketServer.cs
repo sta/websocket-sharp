@@ -906,7 +906,8 @@ namespace WebSocketSharp.Server
         throw new InvalidOperationException (msg, ex);
       }
 
-      _receiveThread = new Thread (new ThreadStart (receiveRequest));
+      var receiver = new ThreadStart (receiveRequest);
+      _receiveThread = new Thread (receiver);
       _receiveThread.IsBackground = true;
 
       _receiveThread.Start ();
