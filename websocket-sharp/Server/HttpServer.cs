@@ -553,13 +553,8 @@ namespace WebSocketSharp.Server
 
       set {
         lock (_sync) {
-          string msg;
-
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
-
+          if (!canSet ())
             return;
-          }
 
           _listener.Realm = value;
         }
