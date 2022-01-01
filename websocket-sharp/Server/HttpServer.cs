@@ -436,13 +436,8 @@ namespace WebSocketSharp.Server
           throw new ArgumentException ("An absolute root.", "value");
 
         lock (_sync) {
-          string msg;
-
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
-
+          if (!canSet ())
             return;
-          }
 
           _docRootPath = value;
         }
