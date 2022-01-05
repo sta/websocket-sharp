@@ -964,6 +964,13 @@ namespace WebSocketSharp.Server
         if (_state == ServerState.Start || _state == ServerState.ShuttingDown)
           return;
 
+        if (_secure) {
+          string msg;
+
+          if (!checkCertificate (out msg))
+            throw new InvalidOperationException (msg);
+        }
+
         _services.Start ();
 
         try {
@@ -1294,13 +1301,6 @@ namespace WebSocketSharp.Server
     /// </exception>
     public void Start ()
     {
-      if (_secure) {
-        string msg;
-
-        if (!checkCertificate (out msg))
-          throw new InvalidOperationException (msg);
-      }
-
       if (_state == ServerState.Start || _state == ServerState.ShuttingDown)
         return;
 
