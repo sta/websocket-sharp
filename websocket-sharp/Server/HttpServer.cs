@@ -770,14 +770,19 @@ namespace WebSocketSharp.Server
       }
 
       try {
-        try {
-          _services.Stop (1006, String.Empty);
-        }
-        finally {
-          _listener.Abort ();
-        }
+        _services.Stop (1006, String.Empty);
       }
-      catch {
+      catch (Exception ex) {
+        _log.Fatal (ex.Message);
+        _log.Debug (ex.ToString ());
+      }
+
+      try {
+        _listener.Abort ();
+      }
+      catch (Exception ex) {
+        _log.Fatal (ex.Message);
+        _log.Debug (ex.ToString ());
       }
 
       _state = ServerState.Stop;
