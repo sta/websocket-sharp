@@ -959,8 +959,10 @@ namespace WebSocketSharp.Server
         }
       }
 
-      if (_state != ServerState.ShuttingDown)
-        abort ();
+      if (_state == ServerState.ShuttingDown)
+        return;
+
+      abort ();
     }
 
     private void start ()
