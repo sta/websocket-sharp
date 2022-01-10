@@ -830,7 +830,7 @@ namespace WebSocketSharp.Server
           if (_state == ServerState.ShuttingDown) {
             _log.Info ("The underlying listener is stopped.");
 
-            break;
+            return;
           }
 
           _log.Fatal (ex.Message);
@@ -845,12 +845,14 @@ namespace WebSocketSharp.Server
           if (cl != null)
             cl.Close ();
 
+          if (_state == ServerState.ShuttingDown)
+            return;
+
           break;
         }
       }
 
-      if (_state != ServerState.ShuttingDown)
-        abort ();
+      abort ();
     }
 
     private void start ()
