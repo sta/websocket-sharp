@@ -838,6 +838,18 @@ namespace WebSocketSharp.Server
 
           break;
         }
+        catch (InvalidOperationException ex) {
+          if (_state == ServerState.ShuttingDown) {
+            _log.Info ("The underlying listener is stopped.");
+
+            return;
+          }
+
+          _log.Fatal (ex.Message);
+          _log.Debug (ex.ToString ());
+
+          break;
+        }
         catch (Exception ex) {
           _log.Fatal (ex.Message);
           _log.Debug (ex.ToString ());
