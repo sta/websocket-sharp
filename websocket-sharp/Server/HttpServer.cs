@@ -829,6 +829,7 @@ namespace WebSocketSharp.Server
 
       var schm = secure ? "https" : "http";
       var pref = String.Format ("{0}://{1}:{2}/", schm, hostname, port);
+
       lsnr.Prefixes.Add (pref);
 
       return lsnr;
