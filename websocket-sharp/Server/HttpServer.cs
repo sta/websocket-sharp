@@ -938,13 +938,27 @@ namespace WebSocketSharp.Server
             }
           );
         }
-        catch (HttpListenerException) {
-          _log.Info ("The underlying listener is stopped.");
+        catch (HttpListenerException ex) {
+          if (_state == ServerState.ShuttingDown) {
+            _log.Info ("The underlying listener is stopped.");
+
+            return;
+          }
+
+          _log.Fatal (ex.Message);
+          _log.Debug (ex.ToString ());
 
           break;
         }
-        catch (InvalidOperationException) {
-          _log.Info ("The underlying listener is stopped.");
+        catch (InvalidOperationException ex) {
+          if (_state == ServerState.ShuttingDown) {
+            _log.Info ("The underlying listener is stopped.");
+
+            return;
+          }
+
+          _log.Fatal (ex.Message);
+          _log.Debug (ex.ToString ());
 
           break;
         }
@@ -955,12 +969,12 @@ namespace WebSocketSharp.Server
           if (ctx != null)
             ctx.Connection.Close (true);
 
+          if (_state == ServerState.ShuttingDown)
+            return;
+
           break;
         }
       }
-
-      if (_state == ServerState.ShuttingDown)
-        return;
 
       abort ();
     }
