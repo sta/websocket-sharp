@@ -931,7 +931,7 @@ namespace WebSocketSharp.Server
                 processRequest (ctx);
               }
               catch (Exception ex) {
-                _log.Fatal (ex.Message);
+                _log.Error (ex.Message);
                 _log.Debug (ex.ToString ());
 
                 ctx.Connection.Close (true);
