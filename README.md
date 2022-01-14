@@ -404,12 +404,8 @@ wssv.Start ();
 Stopping the WebSocket server.
 
 ```csharp
-wssv.Stop (code, reason);
+wssv.Stop ();
 ```
-
-The `WebSocketServer.Stop` method is overloaded.
-
-You can use the `WebSocketServer.Stop ()`, `WebSocketServer.Stop (ushort, string)`, or `WebSocketServer.Stop (WebSocketSharp.CloseStatusCode, string)` method to stop the server.
 
 ### HTTP Server with the WebSocket ###
 
