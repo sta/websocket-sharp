@@ -340,13 +340,18 @@ public class Chat : WebSocketBehavior
   private string _suffix;
 
   public Chat ()
-    : this (null)
   {
+    _suffix = String.Empty;
   }
 
-  public Chat (string suffix)
-  {
-    _suffix = suffix ?? String.Empty;
+  public string Suffix {
+    get {
+      return _suffix;
+    }
+
+    set {
+      _suffix = value ?? String.Empty;
+    }
   }
 
   protected override void OnMessage (MessageEventArgs e)
