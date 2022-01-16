@@ -379,16 +379,15 @@ Creating a new instance of the `WebSocketServer` class.
 
 ```csharp
 var wssv = new WebSocketServer (4649);
+
 wssv.AddWebSocketService<Echo> ("/Echo");
 wssv.AddWebSocketService<Chat> ("/Chat");
-wssv.AddWebSocketService<Chat> ("/ChatWithNyan", () => new Chat (" Nyan!"));
+wssv.AddWebSocketService<Chat> ("/ChatWithNyan", s => s.Suffix = " Nyan!");
 ```
 
-You can add any WebSocket service to your `WebSocketServer` with the specified behavior and absolute path to the service, by using the `WebSocketServer.AddWebSocketService<TBehaviorWithNew> (string)` or `WebSocketServer.AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method.
+You can add any WebSocket service to your `WebSocketServer` with the specified behavior and absolute path to the service, by using the `WebSocketServer.AddWebSocketService<TBehavior> (string)` or `WebSocketServer.AddWebSocketService<TBehavior> (string, Action<TBehavior>)` method.
 
-The type of `TBehaviorWithNew` must inherit the `WebSocketBehavior` class, and must have a public parameterless constructor.
-
-The type of `TBehavior` must inherit the `WebSocketBehavior` class.
+The type of `TBehavior` must inherit the `WebSocketBehavior` class, and must have a public parameterless constructor.
 
 So you can use a class in the above Step 2 to add the service.
 
