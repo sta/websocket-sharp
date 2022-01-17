@@ -417,13 +417,14 @@ I have modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`,
 
 So websocket-sharp provides the `WebSocketSharp.Server.HttpServer` class.
 
-You can add any WebSocket service to your `HttpServer` with the specified behavior and path to the service, by using the `HttpServer.AddWebSocketService<TBehaviorWithNew> (string)` or `HttpServer.AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method.
+You can add any WebSocket service to your `HttpServer` with the specified behavior and path to the service, by using the `HttpServer.AddWebSocketService<TBehavior> (string)` or `HttpServer.AddWebSocketService<TBehavior> (string, Action<TBehavior>)` method.
 
 ```csharp
 var httpsv = new HttpServer (4649);
+
 httpsv.AddWebSocketService<Echo> ("/Echo");
 httpsv.AddWebSocketService<Chat> ("/Chat");
-httpsv.AddWebSocketService<Chat> ("/ChatWithNyan", () => new Chat (" Nyan!"));
+httpsv.AddWebSocketService<Chat> ("/ChatWithNyan", s => s.Suffix = " Nyan!");
 ```
 
 For more information, would you see **[Example3]**?
