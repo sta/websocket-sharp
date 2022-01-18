@@ -277,7 +277,7 @@ namespace Example
     protected override void OnMessage (MessageEventArgs e)
     {
       var msg = e.Data == "BALUS"
-                ? "I've been balused already..."
+                ? "Are you kidding?"
                 : "I'm not available now.";
 
       Send (msg);
@@ -289,6 +289,7 @@ namespace Example
     public static void Main (string[] args)
     {
       var wssv = new WebSocketServer ("ws://dragonsnest.far");
+
       wssv.AddWebSocketService<Laputa> ("/Laputa");
       wssv.Start ();
       Console.ReadKey (true);
