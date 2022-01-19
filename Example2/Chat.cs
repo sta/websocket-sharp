@@ -12,13 +12,18 @@ namespace Example2
     private string     _prefix;
 
     public Chat ()
-      : this (null)
     {
+      _prefix = "anon#";
     }
 
-    public Chat (string prefix)
-    {
-      _prefix = !prefix.IsNullOrEmpty () ? prefix : "anon#";
+    public string Prefix {
+      get {
+        return _prefix;
+      }
+
+      set {
+        _prefix = !value.IsNullOrEmpty () ? value : "anon#";
+      }
     }
 
     private string getName ()
