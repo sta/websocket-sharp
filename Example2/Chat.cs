@@ -28,7 +28,8 @@ namespace Example2
 
     private string getName ()
     {
-      var name = Context.QueryString["name"];
+      var name = QueryString["name"];
+
       return !name.IsNullOrEmpty () ? name : _prefix + getNumber ();
     }
 
