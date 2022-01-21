@@ -57,6 +57,11 @@ namespace Example2
     protected override void OnOpen ()
     {
       _name = getName ();
+
+      var fmt = "{0} has logged in!";
+      var msg = String.Format (fmt, _name);
+
+      Sessions.Broadcast (msg);
     }
   }
 }
