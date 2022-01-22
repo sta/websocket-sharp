@@ -8,8 +8,12 @@ namespace Example2
   {
     protected override void OnMessage (MessageEventArgs e)
     {
-      var name = Context.QueryString["name"];
-      Send (!name.IsNullOrEmpty () ? String.Format ("\"{0}\" to {1}", e.Data, name) : e.Data);
+      var name = QueryString["name"];
+      var msg = !name.IsNullOrEmpty ()
+                ? String.Format ("\"{0}\" to {1}", e.Data, name)
+                : e.Data;
+
+      Send (msg);
     }
   }
 }
