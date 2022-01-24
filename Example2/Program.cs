@@ -88,34 +88,40 @@ namespace Example2
       /*
       wssv.AddWebSocketService<Chat> (
         "/Chat",
-        () =>
-          new Chat ("Anon#") {
-            // To send the Sec-WebSocket-Protocol header that has a subprotocol name.
-            Protocol = "chat",
-            // To ignore the Sec-WebSocket-Extensions header.
-            IgnoreExtensions = true,
-            // To emit a WebSocket.OnMessage event when receives a ping.
-            EmitOnPing = true,
-            // To validate the Origin header.
-            OriginValidator = val => {
-                // Check the value of the Origin header, and return true if valid.
-                Uri origin;
-                return !val.IsNullOrEmpty ()
-                       && Uri.TryCreate (val, UriKind.Absolute, out origin)
-                       && origin.Host == "localhost";
-              },
-            // To validate the cookies.
-            CookiesValidator = (req, res) => {
-                // Check the cookies in 'req', and set the cookies to send to
-                // the client with 'res' if necessary.
-                foreach (Cookie cookie in req) {
-                  cookie.Expired = true;
-                  res.Add (cookie);
-                }
+        s => {
+          s.Prefix = "Anon#";
 
-                return true; // If valid.
+          // To send the Sec-WebSocket-Protocol header that has a subprotocol name.
+          s.Protocol = "chat";
+
+          // To ignore the Sec-WebSocket-Extensions header.
+          s.IgnoreExtensions = true;
+
+          // To emit a WebSocket.OnMessage event when receives a ping.
+          s.EmitOnPing = true;
+
+          // To validate the Origin header.
+          s.OriginValidator = val => {
+              // Check the value of the Origin header, and return true if valid.
+              Uri origin;
+
+              return !val.IsNullOrEmpty ()
+                     && Uri.TryCreate (val, UriKind.Absolute, out origin)
+                     && origin.Host == "localhost";
+            };
+
+          // To validate the cookies.
+          s.CookiesValidator = (req, res) => {
+              // Check the cookies in 'req', and set the cookies to send to
+              // the client with 'res' if necessary.
+              foreach (Cookie cookie in req) {
+                cookie.Expired = true;
+                res.Add (cookie);
               }
-          }
+
+              return true; // If valid.
+            };
+        }
       );
        */
 
