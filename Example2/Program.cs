@@ -126,8 +126,10 @@ namespace Example2
        */
 
       wssv.Start ();
+
       if (wssv.IsListening) {
         Console.WriteLine ("Listening on port {0}, and providing WebSocket services:", wssv.Port);
+
         foreach (var path in wssv.WebSocketServices.Paths)
           Console.WriteLine ("- {0}", path);
       }
