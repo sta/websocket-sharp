@@ -73,7 +73,7 @@ namespace Example2
           // Return user name, password, and roles.
           return name == "nobita"
                  ? new NetworkCredential (name, "password", "gunfighter")
-                 : null; // If the user credentials aren't found.
+                 : null; // If the user credentials are not found.
         };
        */
 
