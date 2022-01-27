@@ -40,7 +40,10 @@ namespace Example3
 
     protected override void OnClose (CloseEventArgs e)
     {
-      Sessions.Broadcast (String.Format ("{0} got logged off...", _name));
+      var fmt = "{0} got logged off...";
+      var msg = String.Format (fmt, _name);
+
+      Sessions.Broadcast (msg);
     }
 
     protected override void OnMessage (MessageEventArgs e)
