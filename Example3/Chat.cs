@@ -40,6 +40,9 @@ namespace Example3
 
     protected override void OnClose (CloseEventArgs e)
     {
+      if (_name == null)
+        return;
+
       var fmt = "{0} got logged off...";
       var msg = String.Format (fmt, _name);
 
