@@ -51,7 +51,10 @@ namespace Example3
 
     protected override void OnMessage (MessageEventArgs e)
     {
-      Sessions.Broadcast (String.Format ("{0}: {1}", _name, e.Data));
+      var fmt = "{0}: {1}";
+      var msg = String.Format (fmt, _name, e.Data);
+
+      Sessions.Broadcast (msg);
     }
 
     protected override void OnOpen ()
