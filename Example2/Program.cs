@@ -114,7 +114,7 @@ namespace Example2
           s.CookiesValidator = (req, res) => {
               // Check the cookies in 'req', and set the cookies to send to
               // the client with 'res' if necessary.
-              foreach (Cookie cookie in req) {
+              foreach (var cookie in req) {
                 cookie.Expired = true;
                 res.Add (cookie);
               }
