@@ -90,12 +90,15 @@ namespace Example3
           var res = e.Response;
 
           var path = req.RawUrl;
+
           if (path == "/")
             path += "index.html";
 
           byte[] contents;
+
           if (!e.TryReadFile (path, out contents)) {
             res.StatusCode = (int) HttpStatusCode.NotFound;
+
             return;
           }
 
@@ -109,6 +112,7 @@ namespace Example3
           }
 
           res.ContentLength64 = contents.LongLength;
+
           res.Close (contents, true);
         };
 
