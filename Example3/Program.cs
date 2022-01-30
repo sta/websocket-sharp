@@ -158,8 +158,10 @@ namespace Example3
        */
 
       httpsv.Start ();
+
       if (httpsv.IsListening) {
         Console.WriteLine ("Listening on port {0}, and providing WebSocket services:", httpsv.Port);
+
         foreach (var path in httpsv.WebSocketServices.Paths)
           Console.WriteLine ("- {0}", path);
       }
