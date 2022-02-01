@@ -15,8 +15,8 @@ namespace Example3
       // Create a new instance of the HttpServer class.
       //
       // If you would like to provide the secure connection, you should
-      // create a new instance with the 'secure' parameter set to true,
-      // or an https scheme HTTP URL.
+      // create a new instance with the 'secure' parameter set to true or
+      // with an https scheme HTTP URL.
 
       var httpsv = new HttpServer (4649);
       //var httpsv = new HttpServer (5963, true);
