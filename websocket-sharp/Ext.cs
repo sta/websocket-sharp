@@ -2197,56 +2197,6 @@ namespace WebSocketSharp
       return ret;
     }
 
-    /// <summary>
-    /// Sends the specified content data with the HTTP response.
-    /// </summary>
-    /// <param name="response">
-    /// A <see cref="HttpListenerResponse"/> that represents the HTTP response
-    /// used to send the content data.
-    /// </param>
-    /// <param name="content">
-    /// An array of <see cref="byte"/> that specifies the content data to send.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    ///   <para>
-    ///   <paramref name="response"/> is <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="content"/> is <see langword="null"/>.
-    ///   </para>
-    /// </exception>
-    [Obsolete ("This method will be removed.")]
-    public static void WriteContent (
-      this HttpListenerResponse response, byte[] content
-    )
-    {
-      if (response == null)
-        throw new ArgumentNullException ("response");
-
-      if (content == null)
-        throw new ArgumentNullException ("content");
-
-      var len = content.LongLength;
-      if (len == 0) {
-        response.Close ();
-        return;
-      }
-
-      response.ContentLength64 = len;
-
-      var output = response.OutputStream;
-
-      if (len <= Int32.MaxValue)
-        output.Write (content, 0, (int) len);
-      else
-        output.WriteBytes (content, 1024);
-
-      output.Close ();
-    }
-
     #endregion
   }
 }
