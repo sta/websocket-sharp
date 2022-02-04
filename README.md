@@ -457,11 +457,7 @@ As a WebSocket server, if you would like to ignore the extensions requested from
 ```csharp
 wssv.AddWebSocketService<Chat> (
   "/Chat",
-  () =>
-    new Chat () {
-      // To ignore the extensions requested from a client.
-      IgnoreExtensions = true
-    }
+  s => s.IgnoreExtensions = true // To ignore the extensions requested from a client.
 );
 ```
 
