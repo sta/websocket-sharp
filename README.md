@@ -493,8 +493,9 @@ As a WebSocket server, you should create a new instance of the `WebSocketServer`
 
 ```csharp
 var wssv = new WebSocketServer (5963, true);
-wssv.SslConfiguration.ServerCertificate =
-  new X509Certificate2 ("/path/to/cert.pfx", "password for cert.pfx");
+wssv.SslConfiguration.ServerCertificate = new X509Certificate2 (
+                                            "/path/to/cert.pfx", "password for cert.pfx"
+                                          );
 ```
 
 ### HTTP Authentication ###
