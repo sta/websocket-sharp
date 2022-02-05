@@ -553,7 +553,7 @@ And if you would like to send the cookies in the handshake request, you should s
 ws.SetCookie (new Cookie ("name", "nobita"));
 ```
 
-As a WebSocket server, if you would like to get the query string included in a handshake request, you should access the `WebSocketBehavior.Context.QueryString` property, such as the following.
+As a WebSocket server, if you would like to get the query string included in a handshake request, you should access the `WebSocketBehavior.QueryString` property, such as the following.
 
 ```csharp
 public class Chat : WebSocketBehavior
@@ -563,7 +563,7 @@ public class Chat : WebSocketBehavior
 
   protected override void OnOpen ()
   {
-    _name = Context.QueryString["name"];
+    _name = QueryString["name"];
   }
 
   ...
@@ -574,31 +574,32 @@ If you would like to get the value of the Origin header included in a handshake 
 
 If you would like to get the cookies included in a handshake request, you should access the `WebSocketBehavior.Context.CookieCollection` property.
 
-And if you would like to validate the Origin header, cookies, or both, you should set each validation for it with your `WebSocketBehavior`, for example, by using the `WebSocketServer.AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, such as the following.
+And if you would like to validate the Origin header, cookies, or both, you should set each validation for it with your `WebSocketBehavior`, for example, by using the `WebSocketServer.AddWebSocketService<TBehavior> (string, Action<TBehavior>)` method with initializing, such as the following.
 
 ```csharp
 wssv.AddWebSocketService<Chat> (
   "/Chat",
-  () =>
-    new Chat () {
-      OriginValidator = val => {
-          // Check the value of the Origin header, and return true if valid.
-          Uri origin;
-          return !val.IsNullOrEmpty ()
-                 && Uri.TryCreate (val, UriKind.Absolute, out origin)
-                 && origin.Host == "example.com";
-        },
-      CookiesValidator = (req, res) => {
-          // Check the cookies in 'req', and set the cookies to send to
-          // the client with 'res' if necessary.
-          foreach (Cookie cookie in req) {
-            cookie.Expired = true;
-            res.Add (cookie);
-          }
+  s => {
+    s.OriginValidator = val => {
+        // Check the value of the Origin header, and return true if valid.
+        Uri origin;
 
-          return true; // If valid.
+        return !val.IsNullOrEmpty ()
+               && Uri.TryCreate (val, UriKind.Absolute, out origin)
+               && origin.Host == "example.com";
+      };
+
+    s.CookiesValidator = (req, res) => {
+        // Check the cookies in 'req', and set the cookies to send to
+        // the client with 'res' if necessary.
+        foreach (var cookie in req) {
+          cookie.Expired = true;
+          res.Add (cookie);
         }
-    }
+
+        return true; // If valid.
+      };
+  }
 );
 ```
 
