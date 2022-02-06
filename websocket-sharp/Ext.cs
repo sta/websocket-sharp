@@ -1440,6 +1440,7 @@ namespace WebSocketSharp
         return false;
 
       var len = value.Length;
+
       if (len < 2)
         return false;
 
