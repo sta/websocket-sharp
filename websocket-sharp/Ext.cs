@@ -1441,10 +1441,7 @@ namespace WebSocketSharp
 
       var len = value.Length;
 
-      if (len < 2)
-        return false;
-
-      return value[0] == c && value[len - 1] == c;
+      return len > 1 ? value[0] == c && value[len - 1] == c : false;
     }
 
     /// <summary>
