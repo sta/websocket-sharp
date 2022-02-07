@@ -1586,6 +1586,7 @@ namespace WebSocketSharp
         return false;
 
       var idx = value.IndexOf (':');
+
       if (idx == -1)
         return false;
 
@@ -1593,6 +1594,7 @@ namespace WebSocketSharp
         return false;
 
       var schm = value.Substring (0, idx);
+
       return schm.IsPredefinedScheme ();
     }
 
