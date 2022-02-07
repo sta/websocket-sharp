@@ -1540,6 +1540,7 @@ namespace WebSocketSharp
         return false;
 
       var c = value[0];
+
       if (c == 'h')
         return value == "http" || value == "https";
 
@@ -1557,6 +1558,7 @@ namespace WebSocketSharp
 
       if (c == 'n') {
         c = value[1];
+
         return c == 'e'
                ? value == "news" || value == "net.pipe" || value == "net.tcp"
                : value == "nntp";
