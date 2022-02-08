@@ -1651,6 +1651,7 @@ namespace WebSocketSharp
         throw new ArgumentNullException ("array");
 
       var len = array.Length;
+
       if (len == 0) {
         if (startIndex != 0)
           throw new ArgumentOutOfRangeException ("startIndex");
@@ -1673,10 +1674,11 @@ namespace WebSocketSharp
       if (length == len)
         return array;
 
-      var subArray = new T[length];
-      Array.Copy (array, startIndex, subArray, 0, length);
+      var ret = new T[length];
 
-      return subArray;
+      Array.Copy (array, startIndex, ret, 0, length);
+
+      return ret;
     }
 
     /// <summary>
