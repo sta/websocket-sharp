@@ -1609,11 +1609,11 @@ namespace WebSocketSharp
     /// An array of T from which to retrieve a sub-array.
     /// </param>
     /// <param name="startIndex">
-    /// An <see cref="int"/> that represents the zero-based index in the array
+    /// An <see cref="int"/> that specifies the zero-based index in the array
     /// at which retrieving starts.
     /// </param>
     /// <param name="length">
-    /// An <see cref="int"/> that represents the number of elements to retrieve.
+    /// An <see cref="int"/> that specifies the number of elements to retrieve.
     /// </param>
     /// <typeparam name="T">
     /// The type of elements in the array.
