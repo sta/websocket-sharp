@@ -1768,27 +1768,6 @@ namespace WebSocketSharp
     /// Executes the specified delegate <paramref name="n"/> times.
     /// </summary>
     /// <param name="n">
-    /// A <see cref="long"/> that specifies the number of times to execute.
-    /// </param>
-    /// <param name="action">
-    /// An <see cref="Action"/> delegate to execute.
-    /// </param>
-    public static void Times (this long n, Action action)
-    {
-      if (n <= 0)
-        return;
-
-      if (action == null)
-        return;
-
-      for (long i = 0; i < n; i++)
-        action ();
-    }
-
-    /// <summary>
-    /// Executes the specified delegate <paramref name="n"/> times.
-    /// </summary>
-    /// <param name="n">
     /// A <see cref="uint"/> that specifies the number of times to execute.
     /// </param>
     /// <param name="action">
