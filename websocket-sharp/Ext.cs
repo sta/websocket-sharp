@@ -1890,11 +1890,9 @@ namespace WebSocketSharp
         throw new ArgumentNullException ("array");
 
       var len = array.Length;
+
       if (len == 0)
         return String.Empty;
-
-      if (separator == null)
-        separator = String.Empty;
 
       var buff = new StringBuilder (64);
       var end = len - 1;
@@ -1902,7 +1900,8 @@ namespace WebSocketSharp
       for (var i = 0; i < end; i++)
         buff.AppendFormat ("{0}{1}", array[i], separator);
 
-      buff.Append (array[end].ToString ());
+      buff.AppendFormat ("{0}", array[end]);
+
       return buff.ToString ();
     }
 
