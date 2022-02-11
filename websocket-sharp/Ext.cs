@@ -1921,10 +1921,10 @@ namespace WebSocketSharp
     /// </param>
     public static Uri ToUri (this string value)
     {
+      var kind = value.MaybeUri () ? UriKind.Absolute : UriKind.Relative;
       Uri ret;
-      Uri.TryCreate (
-        value, value.MaybeUri () ? UriKind.Absolute : UriKind.Relative, out ret
-      );
+
+      Uri.TryCreate (value, kind, out ret);
 
       return ret;
     }
