@@ -4,7 +4,7 @@
  *
  * Some parts of this code are derived from Mono (http://www.mono-project.com):
  * - GetStatusDescription is derived from HttpListenerResponse.cs (System.Net)
- * - IsPredefinedScheme is derived from Uri.cs (System)
+ * - isPredefinedScheme is derived from Uri.cs (System)
  * - MaybeUri is derived from Uri.cs (System)
  *
  * The MIT License
@@ -158,6 +158,39 @@ namespace WebSocketSharp
       return value == "GET"
              || value == "HEAD"
              || value == "POST";
+    }
+
+    private static bool isPredefinedScheme (this string value)
+    {
+      if (value.Length < 2)
+        return false;
+
+      var c = value[0];
+
+      if (c == 'h')
+        return value == "http" || value == "https";
+
+      if (c == 'w')
+        return value == "ws" || value == "wss";
+
+      if (c == 'f')
+        return value == "file" || value == "ftp";
+
+      if (c == 'g')
+        return value == "gopher";
+
+      if (c == 'm')
+        return value == "mailto";
+
+      if (c == 'n') {
+        c = value[1];
+
+        return c == 'e'
+               ? value == "news" || value == "net.pipe" || value == "net.tcp"
+               : value == "nntp";
+      }
+
+      return false;
     }
 
     #endregion
@@ -1525,49 +1558,6 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified string is a predefined scheme.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="value"/> is a predefined scheme;
-    /// otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="value">
-    /// A <see cref="string"/> to test.
-    /// </param>
-    public static bool IsPredefinedScheme (this string value)
-    {
-      if (value == null || value.Length < 2)
-        return false;
-
-      var c = value[0];
-
-      if (c == 'h')
-        return value == "http" || value == "https";
-
-      if (c == 'w')
-        return value == "ws" || value == "wss";
-
-      if (c == 'f')
-        return value == "file" || value == "ftp";
-
-      if (c == 'g')
-        return value == "gopher";
-
-      if (c == 'm')
-        return value == "mailto";
-
-      if (c == 'n') {
-        c = value[1];
-
-        return c == 'e'
-               ? value == "news" || value == "net.pipe" || value == "net.tcp"
-               : value == "nntp";
-      }
-
-      return false;
-    }
-
-    /// <summary>
     /// Determines whether the specified string is a URI string.
     /// </summary>
     /// <returns>
@@ -1595,7 +1585,7 @@ namespace WebSocketSharp
 
       var schm = value.Substring (0, idx);
 
-      return schm.IsPredefinedScheme ();
+      return schm.isPredefinedScheme ();
     }
 
     /// <summary>
