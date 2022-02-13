@@ -746,6 +746,21 @@ namespace WebSocketSharp
              : !headers.Contains ("Connection", "close", comparison);
     }
 
+    internal static bool MaybeUri (this string value)
+    {
+      var idx = value.IndexOf (':');
+
+      if (idx == -1)
+        return false;
+
+      if (idx >= 10)
+        return false;
+
+      var schm = value.Substring (0, idx);
+
+      return schm.isPredefinedScheme ();
+    }
+
     internal static string Quote (this string value)
     {
       return String.Format ("\"{0}\"", value.Replace ("\"", "\\\""));
@@ -1558,37 +1573,6 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified string is a URI string.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="value"/> may be a URI string;
-    /// otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="value">
-    /// A <see cref="string"/> to test.
-    /// </param>
-    public static bool MaybeUri (this string value)
-    {
-      if (value == null)
-        return false;
-
-      if (value.Length == 0)
-        return false;
-
-      var idx = value.IndexOf (':');
-
-      if (idx == -1)
-        return false;
-
-      if (idx >= 10)
-        return false;
-
-      var schm = value.Substring (0, idx);
-
-      return schm.isPredefinedScheme ();
-    }
-
-    /// <summary>
     /// Retrieves a sub-array from the specified array. A sub-array starts at
     /// the specified index in the array.
     /// </summary>
@@ -1911,6 +1895,9 @@ namespace WebSocketSharp
     /// </param>
     public static Uri ToUri (this string value)
     {
+      if (value == null || value.Length == 0)
+        return null;
+
       var kind = value.MaybeUri () ? UriKind.Absolute : UriKind.Relative;
       Uri ret;
 
