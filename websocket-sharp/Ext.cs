@@ -4,8 +4,8 @@
  *
  * Some parts of this code are derived from Mono (http://www.mono-project.com):
  * - GetStatusDescription is derived from HttpListenerResponse.cs (System.Net)
- * - isPredefinedScheme is derived from Uri.cs (System)
  * - MaybeUri is derived from Uri.cs (System)
+ * - isPredefinedScheme is derived from Uri.cs (System)
  *
  * The MIT License
  *
