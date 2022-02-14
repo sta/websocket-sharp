@@ -162,9 +162,6 @@ namespace WebSocketSharp
 
     private static bool isPredefinedScheme (this string value)
     {
-      if (value.Length < 2)
-        return false;
-
       var c = value[0];
 
       if (c == 'h')
@@ -750,10 +747,7 @@ namespace WebSocketSharp
     {
       var idx = value.IndexOf (':');
 
-      if (idx == -1)
-        return false;
-
-      if (idx >= 10)
+      if (idx < 2 || idx > 9)
         return false;
 
       var schm = value.Substring (0, idx);
