@@ -23,8 +23,6 @@ namespace Example
       //using (var ws = new WebSocket ("wss://echo.websocket.org"))
       //using (var ws = new WebSocket ("ws://localhost:4649/Echo"))
       //using (var ws = new WebSocket ("wss://localhost:5963/Echo"))
-      //using (var ws = new WebSocket ("ws://localhost:4649/Echo?name=nobita"))
-      //using (var ws = new WebSocket ("wss://localhost:5963/Echo?name=nobita"))
       //using (var ws = new WebSocket ("ws://localhost:4649/Chat"))
       //using (var ws = new WebSocket ("wss://localhost:5963/Chat"))
       //using (var ws = new WebSocket ("ws://localhost:4649/Chat?name=nobita"))
