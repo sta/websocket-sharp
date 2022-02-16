@@ -62,6 +62,7 @@ namespace Example
     public void Close ()
     {
       _enabled = false;
+
       _exited.WaitOne ();
       _exited.Close ();
     }
