@@ -26,6 +26,7 @@ namespace Example
         state => {
           while (_enabled || Count > 0) {
             var msg = dequeue ();
+
             if (msg != null) {
 #if UBUNTU
               var nf = new Notification (msg.Summary, msg.Body, msg.Icon);
