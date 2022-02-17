@@ -18,7 +18,6 @@ namespace Example
       // If you would like to connect to the server with the secure connection,
       // you should create a new instance with a wss scheme WebSocket URL.
 
-      using (var nf = new Notifier ())
       using (var ws = new WebSocket ("ws://echo.websocket.org"))
       //using (var ws = new WebSocket ("wss://echo.websocket.org"))
       //using (var ws = new WebSocket ("ws://localhost:4649/Echo"))
@@ -32,32 +31,27 @@ namespace Example
 
         ws.OnOpen += (sender, e) => ws.Send ("Hi, there!");
 
-        ws.OnMessage += (sender, e) =>
-            nf.Notify (
-              new NotificationMessage {
-                Summary = "WebSocket Message",
-                Body = !e.IsPing ? e.Data : "Received a ping.",
-                Icon = "notification-message-im"
-              }
-            );
+        ws.OnMessage += (sender, e) => {
+            var fmt = "WebSocket Message: {0}";
+            var body = !e.IsPing ? e.Data : "Received a ping.";
+            var msg = String.Format (fmt, body);
 
-        ws.OnError += (sender, e) =>
-            nf.Notify (
-              new NotificationMessage {
-                Summary = "WebSocket Error",
-                Body = e.Message,
-                Icon = "notification-message-im"
-              }
-            );
+            Console.WriteLine (msg);
+          };
 
-        ws.OnClose += (sender, e) =>
-            nf.Notify (
-              new NotificationMessage {
-                Summary = String.Format ("WebSocket Close ({0})", e.Code),
-                Body = e.Reason,
-                Icon = "notification-message-im"
-              }
-            );
+        ws.OnError += (sender, e) => {
+            var fmt = "WebSocket Error: {0}";
+            var msg = String.Format (fmt, e.Message);
+
+            Console.WriteLine (msg);
+          };
+
+        ws.OnClose += (sender, e) => {
+            var fmt = "WebSocket Close ({0}): {1}";
+            var msg = String.Format (fmt, e.Code, e.Reason);
+
+            Console.WriteLine (msg);
+          };
 #if DEBUG
         // To change the logging level.
         ws.Log.Level = LogLevel.Trace;
