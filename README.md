@@ -649,7 +649,7 @@ Examples using websocket-sharp.
 
 ### Example ###
 
-[Example] connects to the [Echo server].
+[Example] connects to the server executed by [Example2] or [Example3].
 
 ### Example2 ###
 
@@ -679,7 +679,6 @@ Thanks for translating to japanese.
 websocket-sharp is provided under [The MIT License].
 
 
-[Echo server]: http://www.websocket.org/echo.html
 [Example]: https://github.com/sta/websocket-sharp/tree/master/Example
 [Example2]: https://github.com/sta/websocket-sharp/tree/master/Example2
 [Example3]: https://github.com/sta/websocket-sharp/tree/master/Example3
