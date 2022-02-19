@@ -30,25 +30,22 @@ namespace Example
         ws.OnOpen += (sender, e) => ws.Send ("Hi, there!");
 
         ws.OnMessage += (sender, e) => {
-            var fmt = "WebSocket Message: {0}";
+            var fmt = "[WebSocket Message] {0}";
             var body = !e.IsPing ? e.Data : "Received a ping.";
-            var msg = String.Format (fmt, body);
 
-            Console.WriteLine (msg);
+            Console.WriteLine (fmt, body);
           };
 
         ws.OnError += (sender, e) => {
-            var fmt = "WebSocket Error: {0}";
-            var msg = String.Format (fmt, e.Message);
+            var fmt = "[WebSocket Error] {0}";
 
-            Console.WriteLine (msg);
+            Console.WriteLine (fmt, e.Message);
           };
 
         ws.OnClose += (sender, e) => {
-            var fmt = "WebSocket Close ({0}): {1}";
-            var msg = String.Format (fmt, e.Code, e.Reason);
+            var fmt = "[WebSocket Close ({0})] {1}";
 
-            Console.WriteLine (msg);
+            Console.WriteLine (fmt, e.Code, e.Reason);
           };
 #if DEBUG
         // To change the logging level.
