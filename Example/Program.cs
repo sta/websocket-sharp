@@ -64,13 +64,12 @@ namespace Example
         /*
         ws.SslConfiguration.ServerCertificateValidationCallback =
           (sender, certificate, chain, sslPolicyErrors) => {
-            ws.Log.Debug (
-              String.Format (
-                "Certificate:\n- Issuer: {0}\n- Subject: {1}",
-                certificate.Issuer,
-                certificate.Subject
-              )
-            );
+            var fmt = "Certificate:\n- Issuer: {0}\n- Subject: {1}";
+            var msg = String.Format (
+                        fmt, certificate.Issuer, certificate.Subject
+                      );
+
+            ws.Log.Debug (msg);
 
             return true; // If the server certificate is valid.
           };
