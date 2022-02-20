@@ -31,7 +31,7 @@ namespace Example
 
         ws.OnMessage += (sender, e) => {
             var fmt = "[WebSocket Message] {0}";
-            var body = !e.IsPing ? e.Data : "Received a ping.";
+            var body = !e.IsPing ? e.Data : "A ping was received.";
 
             Console.WriteLine (fmt, body);
           };
