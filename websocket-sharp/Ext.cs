@@ -603,16 +603,6 @@ namespace WebSocketSharp
       return unquote ? val.Unquote () : val;
     }
 
-    internal static byte[] ToByteArray (this ulong value, ByteOrder order)
-    {
-      var ret = BitConverter.GetBytes (value);
-
-      if (!order.IsHostOrder ())
-        Array.Reverse (ret);
-
-      return ret;
-    }
-
     internal static bool IsCompressionExtension (
       this string value, CompressionMethod method
     )
@@ -1022,6 +1012,16 @@ namespace WebSocketSharp
     }
 
     internal static byte[] ToByteArray (this ushort value, ByteOrder order)
+    {
+      var ret = BitConverter.GetBytes (value);
+
+      if (!order.IsHostOrder ())
+        Array.Reverse (ret);
+
+      return ret;
+    }
+
+    internal static byte[] ToByteArray (this ulong value, ByteOrder order)
     {
       var ret = BitConverter.GetBytes (value);
 
