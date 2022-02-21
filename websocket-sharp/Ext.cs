@@ -196,7 +196,7 @@ namespace WebSocketSharp
 
     internal static byte[] Append (this ushort code, string reason)
     {
-      var bytes = code.InternalToByteArray (ByteOrder.Big);
+      var bytes = code.ToByteArray (ByteOrder.Big);
 
       if (reason == null || reason.Length == 0)
         return bytes;
@@ -603,9 +603,7 @@ namespace WebSocketSharp
       return unquote ? val.Unquote () : val;
     }
 
-    internal static byte[] InternalToByteArray (
-      this ushort value, ByteOrder order
-    )
+    internal static byte[] ToByteArray (this ushort value, ByteOrder order)
     {
       var ret = BitConverter.GetBytes (value);
 

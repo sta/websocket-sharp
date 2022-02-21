@@ -103,7 +103,7 @@ namespace WebSocketSharp
       }
       else if (len < 0x010000) {
         _payloadLength = (byte) 126;
-        _extPayloadLength = ((ushort) len).InternalToByteArray (ByteOrder.Big);
+        _extPayloadLength = ((ushort) len).ToByteArray (ByteOrder.Big);
       }
       else {
         _payloadLength = (byte) 127;
@@ -880,7 +880,7 @@ Extended Payload Length: {7}
         header = (header << 7) + (int) _payloadLength;
 
         var headerAsUshort = (ushort) header;
-        var headerAsBytes = headerAsUshort.InternalToByteArray (ByteOrder.Big);
+        var headerAsBytes = headerAsUshort.ToByteArray (ByteOrder.Big);
 
         buff.Write (headerAsBytes, 0, 2);
 
