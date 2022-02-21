@@ -603,9 +603,7 @@ namespace WebSocketSharp
       return unquote ? val.Unquote () : val;
     }
 
-    internal static byte[] InternalToByteArray (
-      this ulong value, ByteOrder order
-    )
+    internal static byte[] ToByteArray (this ulong value, ByteOrder order)
     {
       var ret = BitConverter.GetBytes (value);
 

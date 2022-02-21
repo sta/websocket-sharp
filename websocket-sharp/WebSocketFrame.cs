@@ -107,7 +107,7 @@ namespace WebSocketSharp
       }
       else {
         _payloadLength = (byte) 127;
-        _extPayloadLength = len.InternalToByteArray (ByteOrder.Big);
+        _extPayloadLength = len.ToByteArray (ByteOrder.Big);
       }
 
       if (mask) {
