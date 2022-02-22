@@ -196,13 +196,15 @@ namespace WebSocketSharp
 
     internal static byte[] Append (this ushort code, string reason)
     {
-      var bytes = code.ToByteArray (ByteOrder.Big);
+      var codeAsBytes = code.ToByteArray (ByteOrder.Big);
 
       if (reason == null || reason.Length == 0)
-        return bytes;
+        return codeAsBytes;
 
-      var buff = new List<byte> (bytes);
-      buff.AddRange (Encoding.UTF8.GetBytes (reason));
+      var buff = new List<byte> (codeAsBytes);
+      var reasonAsBytes = Encoding.UTF8.GetBytes (reason);
+
+      buff.AddRange (reasonAsBytes);
 
       return buff.ToArray ();
     }
