@@ -1004,12 +1004,13 @@ namespace WebSocketSharp
 
     internal static byte[] ToByteArray (this Stream stream)
     {
-      using (var output = new MemoryStream ()) {
-        stream.Position = 0;
-        stream.CopyTo (output, 1024);
-        output.Close ();
+      stream.Position = 0;
 
-        return output.ToArray ();
+      using (var buff = new MemoryStream ()) {
+        stream.CopyTo (buff, 1024);
+        buff.Close ();
+
+        return buff.ToArray ();
       }
     }
 
