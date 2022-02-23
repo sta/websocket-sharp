@@ -223,7 +223,9 @@ namespace WebSocketSharp
              : stream;
     }
 
-    internal static byte[] CompressToArray (this Stream stream, CompressionMethod method)
+    internal static byte[] CompressToArray (
+      this Stream stream, CompressionMethod method
+    )
     {
       return method == CompressionMethod.Deflate
              ? stream.compressToArray ()
