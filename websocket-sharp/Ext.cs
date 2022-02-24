@@ -348,8 +348,8 @@ namespace WebSocketSharp
     }
 
     internal static void CopyToAsync (
-      this Stream source,
-      Stream destination,
+      this Stream sourceStream,
+      Stream destinationStream,
       int bufferLength,
       Action completed,
       Action<Exception> error
@@ -361,7 +361,8 @@ namespace WebSocketSharp
       callback =
         ar => {
           try {
-            var nread = source.EndRead (ar);
+            var nread = sourceStream.EndRead (ar);
+
             if (nread <= 0) {
               if (completed != null)
                 completed ();
@@ -369,8 +370,9 @@ namespace WebSocketSharp
               return;
             }
 
-            destination.Write (buff, 0, nread);
-            source.BeginRead (buff, 0, bufferLength, callback, null);
+            destinationStream.Write (buff, 0, nread);
+
+            sourceStream.BeginRead (buff, 0, bufferLength, callback, null);
           }
           catch (Exception ex) {
             if (error != null)
@@ -379,7 +381,7 @@ namespace WebSocketSharp
         };
 
       try {
-        source.BeginRead (buff, 0, bufferLength, callback, null);
+        sourceStream.BeginRead (buff, 0, bufferLength, callback, null);
       }
       catch (Exception ex) {
         if (error != null)
