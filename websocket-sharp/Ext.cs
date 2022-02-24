@@ -331,18 +331,19 @@ namespace WebSocketSharp
     }
 
     internal static void CopyTo (
-      this Stream source, Stream destination, int bufferLength
+      this Stream sourceStream, Stream destinationStream, int bufferLength
     )
     {
       var buff = new byte[bufferLength];
       var nread = 0;
 
       while (true) {
-        nread = source.Read (buff, 0, bufferLength);
+        nread = sourceStream.Read (buff, 0, bufferLength);
+
         if (nread <= 0)
           break;
 
-        destination.Write (buff, 0, nread);
+        destinationStream.Write (buff, 0, nread);
       }
     }
 
