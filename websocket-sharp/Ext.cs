@@ -314,10 +314,11 @@ namespace WebSocketSharp
       return seek (0);
     }
 
-    internal static T[] Copy<T> (this T[] source, int length)
+    internal static T[] Copy<T> (this T[] sourceArray, int length)
     {
       var dest = new T[length];
-      Array.Copy (source, 0, dest, 0, length);
+
+      Array.Copy (sourceArray, 0, dest, 0, length);
 
       return dest;
     }
