@@ -303,6 +303,7 @@ namespace WebSocketSharp
                  return false;
 
                var val = values[idx];
+
                for (var i = idx + 1; i < len; i++) {
                  if (values[i] == val)
                    return true;
