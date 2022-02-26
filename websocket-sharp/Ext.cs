@@ -269,6 +269,7 @@ namespace WebSocketSharp
     )
     {
       var val = collection[name];
+
       if (val == null)
         return false;
 
