@@ -234,21 +234,6 @@ namespace WebSocketSharp
              : stream.ToByteArray ();
     }
 
-    /// <summary>
-    /// Determines whether the specified string contains any of characters in
-    /// the specified array of <see cref="char"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="value"/> contains any of characters in
-    /// <paramref name="anyOf"/>; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="value">
-    /// A <see cref="string"/> to test.
-    /// </param>
-    /// <param name="anyOf">
-    /// An array of <see cref="char"/> that contains one or more characters to
-    /// seek.
-    /// </param>
     internal static bool Contains (this string value, params char[] anyOf)
     {
       return anyOf != null && anyOf.Length > 0
