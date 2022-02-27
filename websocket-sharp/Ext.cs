@@ -216,7 +216,9 @@ namespace WebSocketSharp
              : data;
     }
 
-    internal static Stream Compress (this Stream stream, CompressionMethod method)
+    internal static Stream Compress (
+      this Stream stream, CompressionMethod method
+    )
     {
       return method == CompressionMethod.Deflate
              ? stream.compress ()
