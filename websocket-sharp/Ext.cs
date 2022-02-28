@@ -380,7 +380,9 @@ namespace WebSocketSharp
       }
     }
 
-    internal static byte[] Decompress (this byte[] data, CompressionMethod method)
+    internal static byte[] Decompress (
+      this byte[] data, CompressionMethod method
+    )
     {
       return method == CompressionMethod.Deflate
              ? data.decompress ()
