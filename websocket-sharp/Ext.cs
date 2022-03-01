@@ -450,6 +450,7 @@ namespace WebSocketSharp
     internal static bool EqualsWith (this int value, char c, Action<int> action)
     {
       action (value);
+
       return value == c - 0;
     }
 
