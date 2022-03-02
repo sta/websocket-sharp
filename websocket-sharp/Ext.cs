@@ -428,25 +428,6 @@ namespace WebSocketSharp
       eventHandler (sender, e);
     }
 
-    /// <summary>
-    /// Determines whether the specified <see cref="int"/> equals the specified <see cref="char"/>,
-    /// and invokes the specified <c>Action&lt;int&gt;</c> delegate at the same time.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="value"/> equals <paramref name="c"/>;
-    /// otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="value">
-    /// An <see cref="int"/> to compare.
-    /// </param>
-    /// <param name="c">
-    /// A <see cref="char"/> to compare.
-    /// </param>
-    /// <param name="action">
-    /// An <c>Action&lt;int&gt;</c> delegate that references the method(s) called
-    /// at the same time as comparing. An <see cref="int"/> parameter to pass to
-    /// the method(s) is <paramref name="value"/>.
-    /// </param>
     internal static bool EqualsWith (this int value, char c, Action<int> action)
     {
       action (value);
