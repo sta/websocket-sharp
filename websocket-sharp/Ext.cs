@@ -428,15 +428,6 @@ namespace WebSocketSharp
       eventHandler (sender, e);
     }
 
-    internal static bool IsEqualTo (
-      this int value, char c, Action<int> beforeComparing
-    )
-    {
-      beforeComparing (value);
-
-      return value == c - 0;
-    }
-
     /// <summary>
     /// Gets the absolute path from the specified <see cref="Uri"/>.
     /// </summary>
@@ -616,6 +607,15 @@ namespace WebSocketSharp
     internal static bool IsData (this Opcode opcode)
     {
       return opcode == Opcode.Text || opcode == Opcode.Binary;
+    }
+
+    internal static bool IsEqualTo (
+      this int value, char c, Action<int> beforeComparing
+    )
+    {
+      beforeComparing (value);
+
+      return value == c - 0;
     }
 
     internal static bool IsHttpMethod (this string value, Version version)
