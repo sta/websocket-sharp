@@ -428,7 +428,7 @@ namespace WebSocketSharp
       eventHandler (sender, e);
     }
 
-    internal static bool EqualsWith (
+    internal static bool IsEqualTo (
       this int value, char c, Action<int> beforeComparing
     )
     {
