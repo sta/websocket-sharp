@@ -444,10 +444,12 @@ namespace WebSocketSharp
         return uri.AbsolutePath;
 
       var original = uri.OriginalString;
+
       if (original[0] != '/')
         return null;
 
       var idx = original.IndexOfAny (new[] { '?', '#' });
+
       return idx > 0 ? original.Substring (0, idx) : original;
     }
 
