@@ -428,16 +428,6 @@ namespace WebSocketSharp
       eventHandler (sender, e);
     }
 
-    /// <summary>
-    /// Gets the absolute path from the specified <see cref="Uri"/>.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="string"/> that represents the absolute path if it's successfully found;
-    /// otherwise, <see langword="null"/>.
-    /// </returns>
-    /// <param name="uri">
-    /// A <see cref="Uri"/> that represents the URI to get the absolute path from.
-    /// </param>
     internal static string GetAbsolutePath (this Uri uri)
     {
       if (uri.IsAbsoluteUri)
