@@ -505,6 +505,7 @@ namespace WebSocketSharp
     internal static string GetName (this string nameAndValue, char separator)
     {
       var idx = nameAndValue.IndexOf (separator);
+
       return idx > 0 ? nameAndValue.Substring (0, idx).Trim () : null;
     }
 
