@@ -448,6 +448,7 @@ namespace WebSocketSharp
     )
     {
       var val = headers[response ? "Set-Cookie" : "Cookie"];
+
       return val != null
              ? CookieCollection.Parse (val, response)
              : new CookieCollection ();
