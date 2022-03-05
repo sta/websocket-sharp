@@ -484,24 +484,6 @@ namespace WebSocketSharp
                              : String.Empty;
     }
 
-    /// <summary>
-    /// Gets the name from the specified string that contains a pair of
-    /// name and value separated by a character.
-    /// </summary>
-    /// <returns>
-    ///   <para>
-    ///   A <see cref="string"/> that represents the name.
-    ///   </para>
-    ///   <para>
-    ///   <see langword="null"/> if the name is not present.
-    ///   </para>
-    /// </returns>
-    /// <param name="nameAndValue">
-    /// A <see cref="string"/> that contains a pair of name and value.
-    /// </param>
-    /// <param name="separator">
-    /// A <see cref="char"/> used to separate name and value.
-    /// </param>
     internal static string GetName (this string nameAndValue, char separator)
     {
       var idx = nameAndValue.IndexOf (separator);
