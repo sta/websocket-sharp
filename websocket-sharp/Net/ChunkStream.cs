@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2003 Ximian, Inc (http://www.ximian.com)
- * Copyright (c) 2012-2021 sta.blockhead
+ * Copyright (c) 2012-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -53,8 +53,11 @@ namespace WebSocketSharp.Net
     private int                 _chunkRead;
     private int                 _chunkSize;
     private List<Chunk>         _chunks;
+    private int                 _count;
+    private byte[]              _endBuffer;
     private bool                _gotIt;
     private WebHeaderCollection _headers;
+    private int                 _offset;
     private StringBuilder       _saved;
     private bool                _sawCr;
     private InputChunkState     _state;
@@ -71,6 +74,28 @@ namespace WebSocketSharp.Net
       _chunkSize = -1;
       _chunks = new List<Chunk> ();
       _saved = new StringBuilder ();
+    }
+
+    #endregion
+
+    #region Internal Properties
+
+    internal int Count {
+      get {
+        return _count;
+      }
+    }
+
+    internal byte[] EndBuffer {
+      get {
+        return _endBuffer;
+      }
+    }
+
+    internal int Offset {
+      get {
+        return _offset;
+      }
     }
 
     #endregion
@@ -209,6 +234,7 @@ namespace WebSocketSharp.Net
           break;
 
         var b = buffer[offset++];
+
         _saved.Append ((char) b);
 
         if (_trailerState == 1 || _trailerState == 3) { // CR or CR LF CR
@@ -244,6 +270,7 @@ namespace WebSocketSharp.Net
         return InputChunkState.End;
 
       _saved.Length = len - 2;
+
       var val = _saved.ToString ();
       var reader = new StringReader (val);
 
@@ -316,6 +343,14 @@ namespace WebSocketSharp.Net
         _saved.Length = 0;
       }
 
+      if (_state == InputChunkState.End) {
+        _endBuffer = buffer;
+        _offset = offset;
+        _count = length - offset;
+
+        return;
+      }
+
       if (offset >= length)
         return;
 
@@ -350,7 +385,7 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    internal void ResetBuffer ()
+    internal void ResetChunkStore ()
     {
       _chunkRead = 0;
       _chunkSize = -1;

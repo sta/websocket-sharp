@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2021 sta.blockhead
+ * Copyright (c) 2012-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -134,7 +134,8 @@ namespace WebSocketSharp.Net
       _timeoutCanceled = new Dictionary<int, bool> ();
       _timer = new Timer (onTimeout, this, Timeout.Infinite, Timeout.Infinite);
 
-      init (90000); // 90k ms for first request, 15k ms from then on.
+      // 90k ms for first request, 15k ms from then on.
+      init (new MemoryStream (), 90000);
     }
 
     #endregion
@@ -216,6 +217,32 @@ namespace WebSocketSharp.Net
       _socket = null;
     }
 
+    private static MemoryStream createRequestBuffer (
+      RequestStream inputStream
+    )
+    {
+      var ret = new MemoryStream ();
+
+      if (inputStream is ChunkedRequestStream) {
+        var crs = (ChunkedRequestStream) inputStream;
+
+        if (crs.HasRemainingBuffer) {
+          var buff = crs.RemainingBuffer;
+
+          ret.Write (buff, 0, buff.Length);
+        }
+
+        return ret;
+      }
+
+      var cnt = inputStream.Count;
+
+      if (cnt > 0)
+        ret.Write (inputStream.InitialBuffer, inputStream.Offset, cnt);
+
+      return ret;
+    }
+
     private void disposeRequestBuffer ()
     {
       if (_requestBuffer == null)
@@ -252,8 +279,9 @@ namespace WebSocketSharp.Net
       _timer = null;
     }
 
-    private void init (int timeout)
+    private void init (MemoryStream requestBuffer, int timeout)
     {
+      _requestBuffer = requestBuffer;
       _timeout = timeout;
 
       _context = new HttpListenerContext (this);
@@ -263,7 +291,6 @@ namespace WebSocketSharp.Net
       _lineState = LineState.None;
       _outputStream = null;
       _position = 0;
-      _requestBuffer = new MemoryStream ();
     }
 
     private static void onRead (IAsyncResult asyncResult)
@@ -301,9 +328,11 @@ namespace WebSocketSharp.Net
         }
 
         conn._requestBuffer.Write (conn._buffer, 0, nread);
+
+        var data = conn._requestBuffer.GetBuffer ();
         var len = (int) conn._requestBuffer.Length;
 
-        if (conn.processInput (conn._requestBuffer.GetBuffer (), len)) {
+        if (conn.processInput (data, len)) {
           if (!conn._context.HasErrorMessage)
             conn._context.Request.FinishInitialization ();
 
@@ -316,22 +345,22 @@ namespace WebSocketSharp.Net
           var url = conn._context.Request.Url;
           HttpListener lsnr;
 
-          if (conn._listener.TrySearchHttpListener (url, out lsnr)) {
-            if (!lsnr.AuthenticateContext (conn._context))
-              return;
-
-            if (!lsnr.RegisterContext (conn._context)) {
-              conn._context.ErrorStatusCode = 503;
-              conn._context.SendError ();
-
-              return;
-            }
+          if (!conn._listener.TrySearchHttpListener (url, out lsnr)) {
+            conn._context.ErrorStatusCode = 404;
+            conn._context.SendError ();
 
             return;
           }
 
-          conn._context.ErrorStatusCode = 404;
-          conn._context.SendError ();
+          if (!lsnr.AuthenticateContext (conn._context))
+            return;
+
+          if (!lsnr.RegisterContext (conn._context)) {
+            conn._context.ErrorStatusCode = 503;
+            conn._context.SendError ();
+
+            return;
+          }
 
           return;
         }
@@ -388,6 +417,7 @@ namespace WebSocketSharp.Net
 
           if (_inputState == InputState.RequestLine) {
             _context.Request.SetRequestLine (line);
+
             _inputState = InputState.Headers;
           }
           else {
@@ -450,6 +480,25 @@ namespace WebSocketSharp.Net
       return ret;
     }
 
+    private MemoryStream takeOverRequestBuffer ()
+    {
+      if (_inputStream != null)
+        return createRequestBuffer (_inputStream);
+
+      var ret = new MemoryStream ();
+
+      var buff = _requestBuffer.GetBuffer ();
+      var len = (int) _requestBuffer.Length;
+      var cnt = len - _position;
+
+      if (cnt > 0)
+        ret.Write (buff, _position, cnt);
+
+      disposeRequestBuffer ();
+
+      return ret;
+    }
+
     #endregion
 
     #region Internal Methods
@@ -503,12 +552,13 @@ namespace WebSocketSharp.Net
           return;
         }
 
-        disposeRequestBuffer ();
         _context.Unregister ();
 
         _reuses++;
 
-        init (15000);
+        var buff = takeOverRequestBuffer ();
+        init (buff, 15000);
+
         BeginReadRequest ();
       }
     }
@@ -535,8 +585,6 @@ namespace WebSocketSharp.Net
         var len = (int) _requestBuffer.Length;
         var cnt = len - _position;
 
-        disposeRequestBuffer ();
-
         _inputStream = chunked
                        ? new ChunkedRequestStream (
                            _stream, buff, _position, cnt, _context
@@ -544,6 +592,8 @@ namespace WebSocketSharp.Net
                        : new RequestStream (
                            _stream, buff, _position, cnt, contentLength
                          );
+
+        disposeRequestBuffer ();
 
         return _inputStream;
       }
@@ -560,6 +610,7 @@ namespace WebSocketSharp.Net
 
         var lsnr = _context.Listener;
         var ignore = lsnr != null ? lsnr.IgnoreWriteExceptions : true;
+
         _outputStream = new ResponseStream (_stream, _context.Response, ignore);
 
         return _outputStream;

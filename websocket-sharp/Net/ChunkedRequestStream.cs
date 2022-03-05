@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2021 sta.blockhead
+ * Copyright (c) 2012-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -66,19 +66,49 @@ namespace WebSocketSharp.Net
     #region Internal Constructors
 
     internal ChunkedRequestStream (
-      Stream stream,
-      byte[] buffer,
+      Stream innerStream,
+      byte[] initialBuffer,
       int offset,
       int count,
       HttpListenerContext context
     )
-      : base (stream, buffer, offset, count, -1)
+      : base (innerStream, initialBuffer, offset, count, -1)
     {
       _context = context;
 
       _decoder = new ChunkStream (
                    (WebHeaderCollection) context.Request.Headers
                  );
+    }
+
+    #endregion
+
+    #region Internal Properties
+
+    internal bool HasRemainingBuffer {
+      get {
+        return _decoder.Count + Count > 0;
+      }
+    }
+
+    internal byte[] RemainingBuffer {
+      get {
+        using (var buff = new MemoryStream ()) {
+          var cnt = _decoder.Count;
+
+          if (cnt > 0)
+            buff.Write (_decoder.EndBuffer, _decoder.Offset, cnt);
+
+          cnt = Count;
+
+          if (cnt > 0)
+            buff.Write (InitialBuffer, Offset, cnt);
+
+          buff.Close ();
+
+          return buff.ToArray ();
+        }
+      }
     }
 
     #endregion
@@ -201,9 +231,9 @@ namespace WebSocketSharp.Net
       if (_disposed)
         return;
 
-      _disposed = true;
-
       base.Close ();
+      
+      _disposed = true;
     }
 
     public override int EndRead (IAsyncResult asyncResult)
