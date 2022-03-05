@@ -131,10 +131,10 @@ namespace WebSocketSharp
 
       var read = false;
       while (cnt < maxLength) {
-        if (stream.ReadByte ().EqualsWith ('\r', add) &&
-            stream.ReadByte ().EqualsWith ('\n', add) &&
-            stream.ReadByte ().EqualsWith ('\r', add) &&
-            stream.ReadByte ().EqualsWith ('\n', add)) {
+        if (stream.ReadByte ().IsEqualTo ('\r', add) &&
+            stream.ReadByte ().IsEqualTo ('\n', add) &&
+            stream.ReadByte ().IsEqualTo ('\r', add) &&
+            stream.ReadByte ().IsEqualTo ('\n', add)) {
           read = true;
           break;
         }

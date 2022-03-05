@@ -380,14 +380,18 @@ namespace WebSocketSharp
       }
     }
 
-    internal static byte[] Decompress (this byte[] data, CompressionMethod method)
+    internal static byte[] Decompress (
+      this byte[] data, CompressionMethod method
+    )
     {
       return method == CompressionMethod.Deflate
              ? data.decompress ()
              : data;
     }
 
-    internal static Stream Decompress (this Stream stream, CompressionMethod method)
+    internal static Stream Decompress (
+      this Stream stream, CompressionMethod method
+    )
     {
       return method == CompressionMethod.Deflate
              ? stream.decompress ()
@@ -424,51 +428,18 @@ namespace WebSocketSharp
       eventHandler (sender, e);
     }
 
-    /// <summary>
-    /// Determines whether the specified <see cref="int"/> equals the specified <see cref="char"/>,
-    /// and invokes the specified <c>Action&lt;int&gt;</c> delegate at the same time.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="value"/> equals <paramref name="c"/>;
-    /// otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="value">
-    /// An <see cref="int"/> to compare.
-    /// </param>
-    /// <param name="c">
-    /// A <see cref="char"/> to compare.
-    /// </param>
-    /// <param name="action">
-    /// An <c>Action&lt;int&gt;</c> delegate that references the method(s) called
-    /// at the same time as comparing. An <see cref="int"/> parameter to pass to
-    /// the method(s) is <paramref name="value"/>.
-    /// </param>
-    internal static bool EqualsWith (this int value, char c, Action<int> action)
-    {
-      action (value);
-      return value == c - 0;
-    }
-
-    /// <summary>
-    /// Gets the absolute path from the specified <see cref="Uri"/>.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="string"/> that represents the absolute path if it's successfully found;
-    /// otherwise, <see langword="null"/>.
-    /// </returns>
-    /// <param name="uri">
-    /// A <see cref="Uri"/> that represents the URI to get the absolute path from.
-    /// </param>
     internal static string GetAbsolutePath (this Uri uri)
     {
       if (uri.IsAbsoluteUri)
         return uri.AbsolutePath;
 
       var original = uri.OriginalString;
+
       if (original[0] != '/')
         return null;
 
       var idx = original.IndexOfAny (new[] { '?', '#' });
+
       return idx > 0 ? original.Substring (0, idx) : original;
     }
 
@@ -477,6 +448,7 @@ namespace WebSocketSharp
     )
     {
       var val = headers[response ? "Set-Cookie" : "Cookie"];
+
       return val != null
              ? CookieCollection.Parse (val, response)
              : new CookieCollection ();
@@ -512,27 +484,10 @@ namespace WebSocketSharp
                              : String.Empty;
     }
 
-    /// <summary>
-    /// Gets the name from the specified string that contains a pair of
-    /// name and value separated by a character.
-    /// </summary>
-    /// <returns>
-    ///   <para>
-    ///   A <see cref="string"/> that represents the name.
-    ///   </para>
-    ///   <para>
-    ///   <see langword="null"/> if the name is not present.
-    ///   </para>
-    /// </returns>
-    /// <param name="nameAndValue">
-    /// A <see cref="string"/> that contains a pair of name and value.
-    /// </param>
-    /// <param name="separator">
-    /// A <see cref="char"/> used to separate name and value.
-    /// </param>
     internal static string GetName (this string nameAndValue, char separator)
     {
       var idx = nameAndValue.IndexOf (separator);
+
       return idx > 0 ? nameAndValue.Substring (0, idx).Trim () : null;
     }
 
@@ -628,6 +583,15 @@ namespace WebSocketSharp
     internal static bool IsData (this Opcode opcode)
     {
       return opcode == Opcode.Text || opcode == Opcode.Binary;
+    }
+
+    internal static bool IsEqualTo (
+      this int value, char c, Action<int> beforeComparing
+    )
+    {
+      beforeComparing (value);
+
+      return value == c - 0;
     }
 
     internal static bool IsHttpMethod (this string value, Version version)
