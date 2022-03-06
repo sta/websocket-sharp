@@ -506,28 +506,6 @@ namespace WebSocketSharp
       return nameAndValue.GetValue (separator, false);
     }
 
-    /// <summary>
-    /// Gets the value from the specified string that contains a pair of
-    /// name and value separated by a character.
-    /// </summary>
-    /// <returns>
-    ///   <para>
-    ///   A <see cref="string"/> that represents the value.
-    ///   </para>
-    ///   <para>
-    ///   <see langword="null"/> if the value is not present.
-    ///   </para>
-    /// </returns>
-    /// <param name="nameAndValue">
-    /// A <see cref="string"/> that contains a pair of name and value.
-    /// </param>
-    /// <param name="separator">
-    /// A <see cref="char"/> used to separate name and value.
-    /// </param>
-    /// <param name="unquote">
-    /// A <see cref="bool"/>: <c>true</c> if unquotes the value; otherwise,
-    /// <c>false</c>.
-    /// </param>
     internal static string GetValue (
       this string nameAndValue, char separator, bool unquote
     )
