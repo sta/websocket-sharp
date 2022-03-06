@@ -501,24 +501,6 @@ namespace WebSocketSharp
       return Encoding.UTF8.GetBytes (s);
     }
 
-    /// <summary>
-    /// Gets the value from the specified string that contains a pair of
-    /// name and value separated by a character.
-    /// </summary>
-    /// <returns>
-    ///   <para>
-    ///   A <see cref="string"/> that represents the value.
-    ///   </para>
-    ///   <para>
-    ///   <see langword="null"/> if the value is not present.
-    ///   </para>
-    /// </returns>
-    /// <param name="nameAndValue">
-    /// A <see cref="string"/> that contains a pair of name and value.
-    /// </param>
-    /// <param name="separator">
-    /// A <see cref="char"/> used to separate name and value.
-    /// </param>
     internal static string GetValue (this string nameAndValue, char separator)
     {
       return nameAndValue.GetValue (separator, false);
