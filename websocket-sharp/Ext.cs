@@ -533,10 +533,12 @@ namespace WebSocketSharp
     )
     {
       var idx = nameAndValue.IndexOf (separator);
+
       if (idx < 0 || idx == nameAndValue.Length - 1)
         return null;
 
       var val = nameAndValue.Substring (idx + 1).Trim ();
+
       return unquote ? val.Unquote () : val;
     }
 
