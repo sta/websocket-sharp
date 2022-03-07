@@ -598,16 +598,19 @@ namespace WebSocketSharp
 
       for (var i = 0; i < len; i++) {
         var c = value[i];
+
         if (c < 0x20) {
           if ("\r\n\t".IndexOf (c) == -1)
             return false;
 
           if (c == '\n') {
             i++;
+
             if (i == len)
               break;
 
             c = value[i];
+
             if (" \t".IndexOf (c) == -1)
               return false;
           }
