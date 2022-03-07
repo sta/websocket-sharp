@@ -524,7 +524,10 @@ namespace WebSocketSharp
       this string value, CompressionMethod method
     )
     {
-      return value.StartsWith (method.ToExtensionString ());
+      var val = method.ToExtensionString ();
+      var compType = StringComparison.Ordinal;
+
+      return value.StartsWith (val, compType);
     }
 
     internal static bool IsControl (this byte opcode)
