@@ -645,10 +645,11 @@ namespace WebSocketSharp
       this NameValueCollection headers, Version version
     )
     {
-      var comparison = StringComparison.OrdinalIgnoreCase;
+      var compType = StringComparison.OrdinalIgnoreCase;
+
       return version < HttpVersion.Version11
-             ? headers.Contains ("Connection", "keep-alive", comparison)
-             : !headers.Contains ("Connection", "close", comparison);
+             ? headers.Contains ("Connection", "keep-alive", compType)
+             : !headers.Contains ("Connection", "close", compType);
     }
 
     internal static bool MaybeUri (this string value)
