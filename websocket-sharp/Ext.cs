@@ -666,7 +666,10 @@ namespace WebSocketSharp
 
     internal static string Quote (this string value)
     {
-      return String.Format ("\"{0}\"", value.Replace ("\"", "\\\""));
+      var fmt = "\"{0}\"";
+      var val = value.Replace ("\"", "\\\"");
+
+      return String.Format (fmt, val);
     }
 
     internal static byte[] ReadBytes (this Stream stream, int length)
