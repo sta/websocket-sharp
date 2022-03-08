@@ -329,41 +329,8 @@ namespace WebSocketSharp.Net
 
         conn._requestBuffer.Write (conn._buffer, 0, nread);
 
-        var data = conn._requestBuffer.GetBuffer ();
-        var len = (int) conn._requestBuffer.Length;
-
-        if (conn.processInput (data, len)) {
-          if (!conn._context.HasErrorMessage)
-            conn._context.Request.FinishInitialization ();
-
-          if (conn._context.HasErrorMessage) {
-            conn._context.SendError ();
-
-            return;
-          }
-
-          var url = conn._context.Request.Url;
-          HttpListener lsnr;
-
-          if (!conn._listener.TrySearchHttpListener (url, out lsnr)) {
-            conn._context.ErrorStatusCode = 404;
-            conn._context.SendError ();
-
-            return;
-          }
-
-          if (!lsnr.AuthenticateContext (conn._context))
-            return;
-
-          if (!lsnr.RegisterContext (conn._context)) {
-            conn._context.ErrorStatusCode = 503;
-            conn._context.SendError ();
-
-            return;
-          }
-
+        if (conn.processRequestBuffer ())
           return;
-        }
 
         conn.BeginReadRequest ();
       }
@@ -441,6 +408,50 @@ namespace WebSocketSharp.Net
       }
 
       return false;
+    }
+
+    private bool processRequestBuffer ()
+    {
+      // This method returns a bool:
+      // - true  Done processing
+      // - false Need more write
+
+      var data = _requestBuffer.GetBuffer ();
+      var len = (int) _requestBuffer.Length;
+
+      if (!processInput (data, len))
+        return false;
+
+      if (!_context.HasErrorMessage)
+        _context.Request.FinishInitialization ();
+
+      if (_context.HasErrorMessage) {
+        _context.SendError ();
+
+        return true;
+      }
+
+      var url = _context.Request.Url;
+      HttpListener lsnr;
+
+      if (!_listener.TrySearchHttpListener (url, out lsnr)) {
+        _context.ErrorStatusCode = 404;
+        _context.SendError ();
+
+        return true;
+      }
+
+      if (!lsnr.AuthenticateContext (_context))
+        return true;
+
+      if (!lsnr.RegisterContext (_context)) {
+        _context.ErrorStatusCode = 503;
+        _context.SendError ();
+
+        return true;
+      }
+
+      return true;
     }
 
     private string readLineFrom (
@@ -557,7 +568,14 @@ namespace WebSocketSharp.Net
         _reuses++;
 
         var buff = takeOverRequestBuffer ();
+        var len = buff.Length;
+
         init (buff, 15000);
+
+        if (len > 0) {
+          if (processRequestBuffer ())
+            return;
+        }
 
         BeginReadRequest ();
       }
