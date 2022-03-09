@@ -351,8 +351,7 @@ namespace WebSocketSharp.Net
         if (conn._timeoutCanceled[current])
           return;
 
-        conn._context.ErrorStatusCode = 408;
-        conn._context.SendError ();
+        conn._context.SendError (408);
       }
     }
 
