@@ -435,8 +435,7 @@ namespace WebSocketSharp.Net
       HttpListener lsnr;
 
       if (!_listener.TrySearchHttpListener (url, out lsnr)) {
-        _context.ErrorStatusCode = 404;
-        _context.SendError ();
+        _context.SendError (404);
 
         return true;
       }
