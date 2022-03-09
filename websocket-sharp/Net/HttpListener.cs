@@ -489,10 +489,8 @@ namespace WebSocketSharp.Net
         return true;
 
       if (schm == AuthenticationSchemes.None) {
-        context.ErrorStatusCode = 403;
-        context.ErrorMessage = "Authentication not allowed";
-
-        context.SendError ();
+        var msg = "Authentication not allowed";
+        context.SendError (403, msg);
 
         return false;
       }
