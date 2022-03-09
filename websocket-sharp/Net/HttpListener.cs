@@ -561,10 +561,8 @@ namespace WebSocketSharp.Net
 
       _contextQueue.Clear ();
 
-      foreach (var ctx in ctxs) {
-        ctx.ErrorStatusCode = 503;
-        ctx.SendError ();
-      }
+      foreach (var ctx in ctxs)
+        ctx.SendError (503);
     }
 
     private void cleanupContextRegistry ()
