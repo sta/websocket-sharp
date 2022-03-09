@@ -212,9 +212,9 @@ namespace WebSocketSharp.Net
       AuthenticationSchemes scheme, string realm
     )
     {
-      var chal = new AuthenticationChallenge (scheme, realm).ToString ();
-
       _response.StatusCode = 401;
+
+      var chal = new AuthenticationChallenge (scheme, realm).ToString ();
       _response.Headers.InternalSet ("WWW-Authenticate", chal, true);
 
       _response.Close ();
