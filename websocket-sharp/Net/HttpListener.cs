@@ -682,8 +682,7 @@ namespace WebSocketSharp.Net
         return false;
 
       if (!registerContext (context)) {
-        context.ErrorStatusCode = 503;
-        context.SendError ();
+        context.SendError (503);
 
         return false;
       }
