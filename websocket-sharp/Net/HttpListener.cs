@@ -534,11 +534,12 @@ namespace WebSocketSharp.Net
 
         if (_contextQueue.Count == 0) {
           _waitQueue.Enqueue (ares);
+
+          return ares;
         }
-        else {
-          var ctx = _contextQueue.Dequeue ();
-          ares.Complete (ctx, true);
-        }
+
+        var ctx = _contextQueue.Dequeue ();
+        ares.Complete (ctx, true);
 
         return ares;
       }
