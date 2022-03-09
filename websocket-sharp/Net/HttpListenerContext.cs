@@ -251,6 +251,14 @@ namespace WebSocketSharp.Net
       SendError ();
     }
 
+    internal void SendError (int statusCode, string message)
+    {
+      _errorStatusCode = statusCode;
+      _errorMessage = message;
+
+      SendError ();
+    }
+
     internal void Unregister ()
     {
       if (_listener == null)
