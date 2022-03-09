@@ -480,6 +480,45 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
+    private bool authenticateContext (HttpListenerContext context)
+    {
+      var req = context.Request;
+      var schm = selectAuthenticationScheme (req);
+
+      if (schm == AuthenticationSchemes.Anonymous)
+        return true;
+
+      if (schm == AuthenticationSchemes.None) {
+        context.ErrorStatusCode = 403;
+        context.ErrorMessage = "Authentication not allowed";
+
+        context.SendError ();
+
+        return false;
+      }
+
+      var realm = getRealm ();
+      var user = HttpUtility.CreateUser (
+                   req.Headers["Authorization"],
+                   schm,
+                   realm,
+                   req.HttpMethod,
+                   _userCredFinder
+                 );
+
+      var authenticated = user != null && user.Identity.IsAuthenticated;
+
+      if (!authenticated) {
+        context.SendAuthenticationChallenge (schm, realm);
+
+        return false;
+      }
+
+      context.User = user;
+
+      return true;
+    }
+
     private HttpListenerAsyncResult beginGetContext (
       AsyncCallback callback, object state
     )
@@ -587,6 +626,29 @@ namespace WebSocketSharp.Net
       return realm != null && realm.Length > 0 ? realm : _defaultRealm;
     }
 
+    private bool registerContext (HttpListenerContext context)
+    {
+      lock (_contextRegistrySync) {
+        if (!_listening)
+          return false;
+
+        context.Listener = this;
+
+        _contextRegistry.AddLast (context);
+
+        if (_waitQueue.Count == 0) {
+          _contextQueue.Enqueue (context);
+
+          return true;
+        }
+
+        var ares = _waitQueue.Dequeue ();
+        ares.Complete (context, false);
+
+        return true;
+      }
+    }
+
     private AuthenticationSchemes selectAuthenticationScheme (
       HttpListenerRequest request
     )
@@ -608,45 +670,6 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    internal bool AuthenticateContext (HttpListenerContext context)
-    {
-      var req = context.Request;
-      var schm = selectAuthenticationScheme (req);
-
-      if (schm == AuthenticationSchemes.Anonymous)
-        return true;
-
-      if (schm == AuthenticationSchemes.None) {
-        context.ErrorStatusCode = 403;
-        context.ErrorMessage = "Authentication not allowed";
-
-        context.SendError ();
-
-        return false;
-      }
-
-      var realm = getRealm ();
-      var user = HttpUtility.CreateUser (
-                   req.Headers["Authorization"],
-                   schm,
-                   realm,
-                   req.HttpMethod,
-                   _userCredFinder
-                 );
-
-      var authenticated = user != null && user.Identity.IsAuthenticated;
-
-      if (!authenticated) {
-        context.SendAuthenticationChallenge (schm, realm);
-
-        return false;
-      }
-
-      context.User = user;
-
-      return true;
-    }
-
     internal void CheckDisposed ()
     {
       if (_disposed)
@@ -655,27 +678,17 @@ namespace WebSocketSharp.Net
 
     internal bool RegisterContext (HttpListenerContext context)
     {
-      if (!_listening)
+      if (!authenticateContext (context))
         return false;
 
-      lock (_contextRegistrySync) {
-        if (!_listening)
-          return false;
+      if (!registerContext (context)) {
+        context.ErrorStatusCode = 503;
+        context.SendError ();
 
-        context.Listener = this;
-
-        _contextRegistry.AddLast (context);
-
-        if (_waitQueue.Count == 0) {
-          _contextQueue.Enqueue (context);
-        }
-        else {
-          var ares = _waitQueue.Dequeue ();
-          ares.Complete (context, false);
-        }
-
-        return true;
+        return false;
       }
+
+      return true;
     }
 
     internal void UnregisterContext (HttpListenerContext context)

@@ -441,15 +441,7 @@ namespace WebSocketSharp.Net
         return true;
       }
 
-      if (!lsnr.AuthenticateContext (_context))
-        return true;
-
-      if (!lsnr.RegisterContext (_context)) {
-        _context.ErrorStatusCode = 503;
-        _context.SendError ();
-
-        return true;
-      }
+      lsnr.RegisterContext (_context);
 
       return true;
     }
