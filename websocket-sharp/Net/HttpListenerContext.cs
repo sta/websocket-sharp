@@ -234,6 +234,7 @@ namespace WebSocketSharp.Net
 
         var enc = Encoding.UTF8;
         var entity = enc.GetBytes (content);
+
         _response.ContentEncoding = enc;
         _response.ContentLength64 = entity.LongLength;
 
