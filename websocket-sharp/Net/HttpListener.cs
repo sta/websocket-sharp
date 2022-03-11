@@ -735,7 +735,7 @@ namespace WebSocketSharp.Net
     /// to invoke when the asynchronous operation completes.
     /// </param>
     /// <param name="state">
-    /// An <see cref="object"/> that represents a user defined object to
+    /// An <see cref="object"/> that specifies a user defined object to
     /// pass to <paramref name="callback"/>.
     /// </param>
     /// <exception cref="InvalidOperationException">
