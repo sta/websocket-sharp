@@ -740,13 +740,13 @@ namespace WebSocketSharp.Net
     /// </param>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   This listener has no URI prefix on which listens.
+    ///   This listener has not been started or is currently stopped.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   This listener has not been started or is currently stopped.
+    ///   This listener has no URI prefix on which listens.
     ///   </para>
     /// </exception>
     /// <exception cref="HttpListenerException">
