@@ -826,6 +826,12 @@ namespace WebSocketSharp.Net
       if (_disposed)
         throw new ObjectDisposedException (_objectName);
 
+      if (!_listening) {
+        var msg = "The listener has not been started.";
+
+        throw new InvalidOperationException (msg);
+      }
+
       if (asyncResult == null)
         throw new ArgumentNullException ("asyncResult");
 
