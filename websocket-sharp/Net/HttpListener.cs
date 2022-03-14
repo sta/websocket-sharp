@@ -813,7 +813,15 @@ namespace WebSocketSharp.Net
     /// the BeginGetContext method.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// This method was already called for <paramref name="asyncResult"/>.
+    ///   <para>
+    ///   This listener has not been started or is currently stopped.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   This method was already called for <paramref name="asyncResult"/>.
+    ///   </para>
     /// </exception>
     /// <exception cref="HttpListenerException">
     /// This method is canceled.
