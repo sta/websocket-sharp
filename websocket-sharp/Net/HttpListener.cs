@@ -57,6 +57,17 @@ namespace WebSocketSharp.Net
   /// <summary>
   /// Provides a simple, programmatically controlled HTTP listener.
   /// </summary>
+  /// <remarks>
+  ///   <para>
+  ///   The listener supports HTTP/1.1 version request and response.
+  ///   </para>
+  ///   <para>
+  ///   And the listener allows to accept WebSocket handshake requests.
+  ///   </para>
+  ///   <para>
+  ///   This class cannot be inherited.
+  ///   </para>
+  /// </remarks>
   public sealed class HttpListener : IDisposable
   {
     #region Private Fields
