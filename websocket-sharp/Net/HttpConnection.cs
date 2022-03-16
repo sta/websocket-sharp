@@ -421,8 +421,10 @@ namespace WebSocketSharp.Net
       if (!processInput (data, len))
         return false;
 
+      var req = _context.Request;
+
       if (!_context.HasErrorMessage)
-        _context.Request.FinishInitialization ();
+        req.FinishInitialization ();
 
       if (_context.HasErrorMessage) {
         _context.SendError ();
@@ -430,10 +432,10 @@ namespace WebSocketSharp.Net
         return true;
       }
 
-      var url = _context.Request.Url;
+      var uri = req.Url;
       HttpListener lsnr;
 
-      if (!_listener.TrySearchHttpListener (url, out lsnr)) {
+      if (!_listener.TrySearchHttpListener (uri, out lsnr)) {
         _context.SendError (404);
 
         return true;
