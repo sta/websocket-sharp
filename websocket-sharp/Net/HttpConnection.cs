@@ -68,7 +68,7 @@ namespace WebSocketSharp.Net
     private InputState            _inputState;
     private RequestStream         _inputStream;
     private LineState             _lineState;
-    private EndPointListener      _listener;
+    private EndPointListener      _endPointListener;
     private EndPoint              _localEndPoint;
     private static readonly int   _maxInputLength;
     private ResponseStream        _outputStream;
@@ -101,7 +101,7 @@ namespace WebSocketSharp.Net
     internal HttpConnection (Socket socket, EndPointListener listener)
     {
       _socket = socket;
-      _listener = listener;
+      _endPointListener = listener;
 
       var netStream = new NetworkStream (socket, false);
 
@@ -201,7 +201,7 @@ namespace WebSocketSharp.Net
       }
 
       _context.Unregister ();
-      _listener.RemoveConnection (this);
+      _endPointListener.RemoveConnection (this);
     }
 
     private void closeSocket ()
@@ -435,7 +435,7 @@ namespace WebSocketSharp.Net
       var uri = req.Url;
       HttpListener lsnr;
 
-      if (!_listener.TrySearchHttpListener (uri, out lsnr)) {
+      if (!_endPointListener.TrySearchHttpListener (uri, out lsnr)) {
         _context.SendError (404);
 
         return true;
