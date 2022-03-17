@@ -65,10 +65,10 @@ namespace WebSocketSharp.Net
     private static readonly int   _bufferLength;
     private HttpListenerContext   _context;
     private StringBuilder         _currentLine;
+    private EndPointListener      _endPointListener;
     private InputState            _inputState;
     private RequestStream         _inputStream;
     private LineState             _lineState;
-    private EndPointListener      _endPointListener;
     private EndPoint              _localEndPoint;
     private static readonly int   _maxInputLength;
     private ResponseStream        _outputStream;
