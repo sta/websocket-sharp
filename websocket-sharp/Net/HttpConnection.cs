@@ -433,15 +433,15 @@ namespace WebSocketSharp.Net
       }
 
       var uri = req.Url;
-      HttpListener lsnr;
+      HttpListener httplsnr;
 
-      if (!_endPointListener.TrySearchHttpListener (uri, out lsnr)) {
+      if (!_endPointListener.TrySearchHttpListener (uri, out httplsnr)) {
         _context.SendError (404);
 
         return true;
       }
 
-      lsnr.RegisterContext (_context);
+      httplsnr.RegisterContext (_context);
 
       return true;
     }
