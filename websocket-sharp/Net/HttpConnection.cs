@@ -394,8 +394,10 @@ namespace WebSocketSharp.Net
             return true;
         }
       }
-      catch (Exception ex) {
-        _context.ErrorMessage = ex.Message;
+      catch (Exception) {
+        // TODO: Logging.
+
+        _context.ErrorMessage = "Processing failure";
 
         return true;
       }
