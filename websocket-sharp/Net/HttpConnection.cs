@@ -361,6 +361,8 @@ namespace WebSocketSharp.Net
       // - true  Done processing
       // - false Need more input
 
+      var req = _context.Request;
+
       try {
         while (true) {
           int nread;
@@ -382,12 +384,12 @@ namespace WebSocketSharp.Net
           }
 
           if (_inputState == InputState.RequestLine) {
-            _context.Request.SetRequestLine (line);
+            req.SetRequestLine (line);
 
             _inputState = InputState.Headers;
           }
           else {
-            _context.Request.AddHeader (line);
+            req.AddHeader (line);
           }
 
           if (_context.HasErrorMessage)
