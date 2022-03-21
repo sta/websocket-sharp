@@ -720,9 +720,9 @@ namespace WebSocketSharp.Net
       var expect = _headers["Expect"];
 
       if (expect != null) {
-        var comparison = StringComparison.OrdinalIgnoreCase;
+        var compType = StringComparison.OrdinalIgnoreCase;
 
-        if (!expect.Equals ("100-continue", comparison)) {
+        if (!expect.Equals ("100-continue", compType)) {
           _context.ErrorMessage = "Invalid Expect header";
 
           return;
