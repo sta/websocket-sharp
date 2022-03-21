@@ -710,8 +710,8 @@ namespace WebSocketSharp.Net
 
       if (_httpMethod == "POST" || _httpMethod == "PUT") {
         if (_contentLength <= 0 && !_chunked) {
-          _context.ErrorMessage = String.Empty;
           _context.ErrorStatusCode = 411;
+          _context.ErrorMessage = "Valid Content-Length header required";
 
           return;
         }
