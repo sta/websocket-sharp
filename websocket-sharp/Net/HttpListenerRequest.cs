@@ -723,6 +723,7 @@ namespace WebSocketSharp.Net
         var compType = StringComparison.OrdinalIgnoreCase;
 
         if (!expect.Equals ("100-continue", compType)) {
+          _context.ErrorStatusCode = 417;
           _context.ErrorMessage = "Invalid Expect header";
 
           return;
