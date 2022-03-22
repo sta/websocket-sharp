@@ -729,6 +729,7 @@ namespace WebSocketSharp.Net
         }
 
         var output = _connection.GetResponseStream ();
+
         output.InternalWrite (_100continue, 0, _100continue.Length);
       }
     }
