@@ -830,8 +830,8 @@ namespace WebSocketSharp.Net
       }
 
       if (!method.IsHttpMethod (ver)) {
-        _context.ErrorMessage = "Invalid request line (method)";
         _context.ErrorStatusCode = 501;
+        _context.ErrorMessage = "Invalid request line (method)";
 
         return;
       }
