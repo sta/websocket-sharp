@@ -823,8 +823,8 @@ namespace WebSocketSharp.Net
       }
 
       if (ver != HttpVersion.Version11) {
-        _context.ErrorMessage = "Invalid request line (version)";
         _context.ErrorStatusCode = 505;
+        _context.ErrorMessage = "Invalid request line (version)";
 
         return;
       }
