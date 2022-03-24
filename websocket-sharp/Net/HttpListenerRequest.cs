@@ -849,16 +849,16 @@ namespace WebSocketSharp.Net
     /// Begins getting the certificate provided by the client asynchronously.
     /// </summary>
     /// <returns>
-    /// An <see cref="IAsyncResult"/> instance that indicates the status of the
-    /// operation.
+    /// An <see cref="IAsyncResult"/> instance that indicates the status of
+    /// the operation.
     /// </returns>
     /// <param name="requestCallback">
     /// An <see cref="AsyncCallback"/> delegate that invokes the method called
     /// when the operation is complete.
     /// </param>
     /// <param name="state">
-    /// An <see cref="object"/> that represents a user defined object to pass to
-    /// the callback delegate.
+    /// An <see cref="object"/> that specifies a user defined object to pass
+    /// to the callback delegate.
     /// </param>
     /// <exception cref="NotSupportedException">
     /// This method is not supported.
