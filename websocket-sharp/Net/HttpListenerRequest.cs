@@ -916,11 +916,12 @@ namespace WebSocketSharp.Net
     {
       var buff = new StringBuilder (64);
 
+      var fmt = "{0} {1} HTTP/{2}\r\n";
+      var headers = _headers.ToString ();
+
       buff
-      .AppendFormat (
-        "{0} {1} HTTP/{2}\r\n", _httpMethod, _rawUrl, _protocolVersion
-      )
-      .Append (_headers.ToString ());
+      .AppendFormat (fmt, _httpMethod, _rawUrl, _protocolVersion)
+      .Append (headers);
 
       return buff.ToString ();
     }
