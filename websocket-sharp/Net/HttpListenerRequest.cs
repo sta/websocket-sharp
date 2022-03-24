@@ -871,8 +871,8 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Ends an asynchronous operation to get the certificate provided by the
-    /// client.
+    /// Ends an asynchronous operation to get the certificate provided by
+    /// the client.
     /// </summary>
     /// <returns>
     /// A <see cref="X509Certificate2"/> that represents an X.509 certificate
