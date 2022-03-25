@@ -402,12 +402,9 @@ namespace WebSocketSharp.Net
       get {
         if (_queryString == null) {
           var url = Url;
+          var query = url != null ? url.Query : null;
 
-          _queryString = QueryStringCollection
-                         .Parse (
-                           url != null ? url.Query : null,
-                           Encoding.UTF8
-                         );
+          _queryString = QueryStringCollection.Parse (query, Encoding.UTF8);
         }
 
         return _queryString;
