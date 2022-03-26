@@ -406,7 +406,7 @@ namespace WebSocketSharp.Net
           var url = Url;
           var query = url != null ? url.Query : null;
 
-          _queryString = QueryStringCollection.Parse (query, Encoding.UTF8);
+          _queryString = QueryStringCollection.Parse (query, _defaultEncoding);
         }
 
         return _queryString;
