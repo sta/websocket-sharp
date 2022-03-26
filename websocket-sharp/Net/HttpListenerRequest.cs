@@ -66,6 +66,7 @@ namespace WebSocketSharp.Net
     private long                   _contentLength;
     private HttpListenerContext    _context;
     private CookieCollection       _cookies;
+    private static readonly Encoding _defaultEncoding;
     private WebHeaderCollection    _headers;
     private string                 _httpMethod;
     private Stream                 _inputStream;
@@ -86,6 +87,7 @@ namespace WebSocketSharp.Net
     static HttpListenerRequest ()
     {
       _100continue = Encoding.ASCII.GetBytes ("HTTP/1.1 100 Continue\r\n\r\n");
+      _defaultEncoding = Encoding.UTF8;
     }
 
     #endregion
