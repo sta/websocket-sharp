@@ -58,27 +58,27 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private static readonly byte[] _100continue;
-    private string[]               _acceptTypes;
-    private bool                   _chunked;
-    private HttpConnection         _connection;
-    private Encoding               _contentEncoding;
-    private long                   _contentLength;
-    private HttpListenerContext    _context;
-    private CookieCollection       _cookies;
+    private static readonly byte[]   _100continue;
+    private string[]                 _acceptTypes;
+    private bool                     _chunked;
+    private HttpConnection           _connection;
+    private Encoding                 _contentEncoding;
+    private long                     _contentLength;
+    private HttpListenerContext      _context;
+    private CookieCollection         _cookies;
     private static readonly Encoding _defaultEncoding;
-    private WebHeaderCollection    _headers;
-    private string                 _httpMethod;
-    private Stream                 _inputStream;
-    private Version                _protocolVersion;
-    private NameValueCollection    _queryString;
-    private string                 _rawUrl;
-    private Guid                   _requestTraceIdentifier;
-    private Uri                    _url;
-    private Uri                    _urlReferrer;
-    private bool                   _urlSet;
-    private string                 _userHostName;
-    private string[]               _userLanguages;
+    private WebHeaderCollection      _headers;
+    private string                   _httpMethod;
+    private Stream                   _inputStream;
+    private Version                  _protocolVersion;
+    private NameValueCollection      _queryString;
+    private string                   _rawUrl;
+    private Guid                     _requestTraceIdentifier;
+    private Uri                      _url;
+    private Uri                      _urlReferrer;
+    private bool                     _urlSet;
+    private string                   _userHostName;
+    private string[]                 _userLanguages;
 
     #endregion
 
