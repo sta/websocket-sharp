@@ -113,8 +113,11 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   An array of <see cref="string"/> that contains the names of the media
-    ///   types specified in the value of the Accept header.
+    ///   An array of <see cref="string"/> or <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   The array contains the names of the media types specified in
+    ///   the value of the Accept header.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if the header is not present.
