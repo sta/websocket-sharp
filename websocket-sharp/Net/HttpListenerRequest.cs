@@ -530,8 +530,8 @@ namespace WebSocketSharp.Net
     /// Gets the IP address and port number to which the request is sent.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the server IP address and port
-    /// number.
+    /// A <see cref="string"/> that represents the server IP address and
+    /// port number.
     /// </value>
     public string UserHostAddress {
       get {
