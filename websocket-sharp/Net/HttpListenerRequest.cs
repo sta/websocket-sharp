@@ -549,9 +549,6 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   It includes the port number if provided.
     ///   </para>
-    ///   <para>
-    ///   <see langword="null"/> if the header is not present.
-    ///   </para>
     /// </value>
     public string UserHostName {
       get {
