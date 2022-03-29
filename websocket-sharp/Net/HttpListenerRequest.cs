@@ -433,8 +433,8 @@ namespace WebSocketSharp.Net
     /// Gets the endpoint from which the request is sent.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Net.IPEndPoint"/> that represents the client IP
-    /// address and port number.
+    /// A <see cref="System.Net.IPEndPoint"/> that represents the client
+    /// IP address and port number.
     /// </value>
     public System.Net.IPEndPoint RemoteEndPoint {
       get {
