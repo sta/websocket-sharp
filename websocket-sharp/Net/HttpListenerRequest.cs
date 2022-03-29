@@ -369,8 +369,8 @@ namespace WebSocketSharp.Net
     /// Gets the endpoint to which the request is sent.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Net.IPEndPoint"/> that represents the server IP
-    /// address and port number.
+    /// A <see cref="System.Net.IPEndPoint"/> that represents the server
+    /// IP address and port number.
     /// </value>
     public System.Net.IPEndPoint LocalEndPoint {
       get {
