@@ -312,12 +312,12 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the request is sent from the local
-    /// computer.
+    /// Gets a value indicating whether the request is sent from the
+    /// local computer.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the request is sent from the same computer as the server;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the request is sent from the same computer as
+    /// the server; otherwise, <c>false</c>.
     /// </value>
     public bool IsLocal {
       get {
