@@ -400,6 +400,9 @@ namespace WebSocketSharp.Net
     ///   parameters.
     ///   </para>
     ///   <para>
+    ///   Each query parameter is decoded in UTF-8.
+    ///   </para>
+    ///   <para>
     ///   An empty collection if not included.
     ///   </para>
     /// </value>
