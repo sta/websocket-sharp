@@ -464,7 +464,10 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="Uri"/> that represents the URL parsed from the request.
+    ///   A <see cref="Uri"/> or <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   The Uri represents the URL parsed from the request.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if the URL cannot be parsed.
