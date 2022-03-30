@@ -474,7 +474,7 @@ namespace WebSocketSharp.Net
           _url = HttpUtility
                  .CreateRequestUrl (
                    _rawUrl,
-                   _userHostName ?? UserHostAddress,
+                   _userHostName,
                    IsWebSocketRequest,
                    IsSecureConnection
                  );
