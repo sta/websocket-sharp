@@ -203,8 +203,10 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents the value of the Content-Type
-    ///   header.
+    ///   A <see cref="string"/> or <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   The string represents the value of the Content-Type header.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if the header is not present.
