@@ -84,8 +84,7 @@ namespace WebSocketSharp.Net
       if (query == null)
         return new QueryStringCollection (1);
 
-      var len = query.Length;
-      if (len == 0)
+      if (query.Length == 0)
         return new QueryStringCollection (1);
 
       if (query == "?")
@@ -100,31 +99,35 @@ namespace WebSocketSharp.Net
       var ret = new QueryStringCollection ();
 
       var components = query.Split ('&');
+
       foreach (var component in components) {
-        len = component.Length;
+        var len = component.Length;
+
         if (len == 0)
           continue;
 
         if (component == "=")
           continue;
 
-        var i = component.IndexOf ('=');
-        if (i < 0) {
-          ret.Add (null, urlDecode (component, encoding));
-          continue;
+        string name = null;
+        string val = null;
+
+        var idx = component.IndexOf ('=');
+
+        if (idx < 0) {
+          val = urlDecode (component, encoding);
         }
-
-        if (i == 0) {
-          ret.Add (null, urlDecode (component.Substring (1), encoding));
-          continue;
+        else if (idx == 0) {
+          val = urlDecode (component.Substring (1), encoding);
         }
+        else {
+          name = urlDecode (component.Substring (0, idx), encoding);
 
-        var name = urlDecode (component.Substring (0, i), encoding);
-
-        var start = i + 1;
-        var val = start < len
-                  ? urlDecode (component.Substring (start), encoding)
-                  : String.Empty;
+          var start = idx + 1;
+          val = start < len
+                ? urlDecode (component.Substring (start), encoding)
+                : String.Empty;
+        }
 
         ret.Add (name, val);
       }
