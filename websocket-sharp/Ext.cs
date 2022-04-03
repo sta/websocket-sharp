@@ -1220,7 +1220,9 @@ namespace WebSocketSharp
 
     internal static string UrlDecode (this string value, Encoding encoding)
     {
-      return HttpUtility.UrlDecode (value, encoding);
+      return value.IndexOfAny (new[] { '%', '+' }) > -1
+             ? HttpUtility.UrlDecode (value, encoding)
+             : value;
     }
 
     internal static string UrlEncode (this string value, Encoding encoding)

@@ -115,17 +115,17 @@ namespace WebSocketSharp.Net
         var idx = component.IndexOf ('=');
 
         if (idx < 0) {
-          val = urlDecode (component, encoding);
+          val = component.UrlDecode (encoding);
         }
         else if (idx == 0) {
-          val = urlDecode (component.Substring (1), encoding);
+          val = component.Substring (1).UrlDecode (encoding);
         }
         else {
-          name = urlDecode (component.Substring (0, idx), encoding);
+          name = component.Substring (0, idx).UrlDecode (encoding);
 
           var start = idx + 1;
           val = start < len
-                ? urlDecode (component.Substring (start), encoding)
+                ? component.Substring (start).UrlDecode (encoding)
                 : String.Empty;
         }
 
