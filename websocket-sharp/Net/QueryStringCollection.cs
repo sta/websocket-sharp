@@ -61,17 +61,6 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Private Methods
-
-    private static string urlDecode (string s, Encoding encoding)
-    {
-      return s.IndexOfAny (new[] { '%', '+' }) > -1
-             ? HttpUtility.UrlDecode (s, encoding)
-             : s;
-    }
-
-    #endregion
-
     #region Public Methods
 
     public static QueryStringCollection Parse (string query)
