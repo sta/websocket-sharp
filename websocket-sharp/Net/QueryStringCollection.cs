@@ -87,9 +87,7 @@ namespace WebSocketSharp.Net
 
       var ret = new QueryStringCollection ();
 
-      var components = query.Split ('&');
-
-      foreach (var component in components) {
+      foreach (var component in query.Split ('&')) {
         var len = component.Length;
 
         if (len == 0)
