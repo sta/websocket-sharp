@@ -1213,9 +1213,10 @@ namespace WebSocketSharp
       this NameValueCollection headers, string protocol
     )
     {
-      var comparison = StringComparison.OrdinalIgnoreCase;
-      return headers.Contains ("Upgrade", protocol, comparison)
-             && headers.Contains ("Connection", "Upgrade", comparison);
+      var compType = StringComparison.OrdinalIgnoreCase;
+
+      return headers.Contains ("Upgrade", protocol, compType)
+             && headers.Contains ("Connection", "Upgrade", compType);
     }
 
     internal static string UrlDecode (this string value, Encoding encoding)
