@@ -1195,17 +1195,20 @@ namespace WebSocketSharp
 
     internal static string Unquote (this string value)
     {
-      var start = value.IndexOf ('"');
-      if (start == -1)
+      var first = value.IndexOf ('"');
+
+      if (first == -1)
         return value;
 
-      var end = value.LastIndexOf ('"');
-      if (end == start)
+      var last = value.LastIndexOf ('"');
+
+      if (last == first)
         return value;
 
-      var len = end - start - 1;
+      var len = last - first - 1;
+
       return len > 0
-             ? value.Substring (start + 1, len).Replace ("\\\"", "\"")
+             ? value.Substring (first + 1, len).Replace ("\\\"", "\"")
              : String.Empty;
     }
 
