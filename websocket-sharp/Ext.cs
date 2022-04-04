@@ -1149,7 +1149,9 @@ namespace WebSocketSharp
       return true;
     }
 
-    internal static bool TryGetUTF8DecodedString (this byte[] bytes, out string s)
+    internal static bool TryGetUTF8DecodedString (
+      this byte[] bytes, out string s
+    )
     {
       s = null;
 
