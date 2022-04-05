@@ -1107,44 +1107,57 @@ namespace WebSocketSharp
       message = null;
 
       var uri = uriString.ToUri ();
+
       if (uri == null) {
         message = "An invalid URI string.";
+
         return false;
       }
 
       if (!uri.IsAbsoluteUri) {
         message = "A relative URI.";
+
         return false;
       }
 
       var schm = uri.Scheme;
-      if (!(schm == "ws" || schm == "wss")) {
+      var valid = schm == "ws" || schm == "wss";
+
+      if (!valid) {
         message = "The scheme part is not 'ws' or 'wss'.";
+
         return false;
       }
 
       var port = uri.Port;
+
       if (port == 0) {
         message = "The port part is zero.";
+
         return false;
       }
 
       if (uri.Fragment.Length > 0) {
         message = "It includes the fragment component.";
+
         return false;
       }
 
-      result = port != -1
-               ? uri
-               : new Uri (
-                   String.Format (
-                     "{0}://{1}:{2}{3}",
-                     schm,
-                     uri.Host,
-                     schm == "ws" ? 80 : 443,
-                     uri.PathAndQuery
-                   )
-                 );
+      if (port == -1) {
+        port = schm == "ws" ? 80 : 443;
+        uriString = String.Format (
+                      "{0}://{1}:{2}{3}",
+                      schm,
+                      uri.Host,
+                      port,
+                      uri.PathAndQuery
+                    );
+
+        result = new Uri (uriString);
+      }
+      else {
+        result = uri;
+      }
 
       return true;
     }
