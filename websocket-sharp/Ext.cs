@@ -1078,27 +1078,6 @@ namespace WebSocketSharp
       return true;
     }
 
-    /// <summary>
-    /// Tries to create a new <see cref="Uri"/> for WebSocket with
-    /// the specified <paramref name="uriString"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the <see cref="Uri"/> was successfully created;
-    /// otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="uriString">
-    /// A <see cref="string"/> that represents a WebSocket URL to try.
-    /// </param>
-    /// <param name="result">
-    /// When this method returns, a <see cref="Uri"/> that
-    /// represents the WebSocket URL or <see langword="null"/>
-    /// if <paramref name="uriString"/> is invalid.
-    /// </param>
-    /// <param name="message">
-    /// When this method returns, a <see cref="string"/> that
-    /// represents an error message or <see langword="null"/>
-    /// if <paramref name="uriString"/> is valid.
-    /// </param>
     internal static bool TryCreateWebSocketUri (
       this string uriString, out Uri result, out string message
     )
