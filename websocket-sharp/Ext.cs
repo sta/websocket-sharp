@@ -1001,11 +1001,13 @@ namespace WebSocketSharp
         return null;
 
       System.Net.IPAddress addr;
+
       if (System.Net.IPAddress.TryParse (value, out addr))
         return addr;
 
       try {
         var addrs = System.Net.Dns.GetHostAddresses (value);
+
         return addrs[0];
       }
       catch {
