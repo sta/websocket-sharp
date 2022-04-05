@@ -1026,7 +1026,7 @@ namespace WebSocketSharp
     {
       return bracketIPv6
              && address.AddressFamily == AddressFamily.InterNetworkV6
-             ? String.Format ("[{0}]", address.ToString ())
+             ? String.Format ("[{0}]", address)
              : address.ToString ();
     }
 
