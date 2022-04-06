@@ -767,7 +767,8 @@ namespace WebSocketSharp
       Action<Exception> error
     )
     {
-      var buff = new byte[length];
+      var ret = new byte[length];
+
       var offset = 0;
       var retry = 0;
 
@@ -776,23 +777,25 @@ namespace WebSocketSharp
         ar => {
           try {
             var nread = stream.EndRead (ar);
+
             if (nread <= 0) {
               if (retry < _retry) {
                 retry++;
-                stream.BeginRead (buff, offset, length, callback, null);
+
+                stream.BeginRead (ret, offset, length, callback, null);
 
                 return;
               }
 
               if (completed != null)
-                completed (buff.SubArray (0, offset));
+                completed (ret.SubArray (0, offset));
 
               return;
             }
 
             if (nread == length) {
               if (completed != null)
-                completed (buff);
+                completed (ret);
 
               return;
             }
@@ -802,7 +805,7 @@ namespace WebSocketSharp
             offset += nread;
             length -= nread;
 
-            stream.BeginRead (buff, offset, length, callback, null);
+            stream.BeginRead (ret, offset, length, callback, null);
           }
           catch (Exception ex) {
             if (error != null)
@@ -811,7 +814,7 @@ namespace WebSocketSharp
         };
 
       try {
-        stream.BeginRead (buff, offset, length, callback, null);
+        stream.BeginRead (ret, offset, length, callback, null);
       }
       catch (Exception ex) {
         if (error != null)
