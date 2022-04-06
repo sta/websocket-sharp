@@ -480,25 +480,28 @@ namespace WebSocketSharp
 
     internal static string GetMessage (this CloseStatusCode code)
     {
-      return code == CloseStatusCode.ProtocolError
-             ? "A WebSocket protocol error has occurred."
-             : code == CloseStatusCode.UnsupportedData
-               ? "Unsupported data has been received."
-               : code == CloseStatusCode.Abnormal
-                 ? "An exception has occurred."
-                 : code == CloseStatusCode.InvalidData
-                   ? "Invalid data has been received."
-                   : code == CloseStatusCode.PolicyViolation
-                     ? "A policy violation has occurred."
-                     : code == CloseStatusCode.TooBig
-                       ? "A too big message has been received."
-                       : code == CloseStatusCode.MandatoryExtension
-                         ? "WebSocket client didn't receive expected extension(s)."
-                         : code == CloseStatusCode.ServerError
-                           ? "WebSocket server got an internal error."
-                           : code == CloseStatusCode.TlsHandshakeFailure
-                             ? "An error has occurred during a TLS handshake."
-                             : String.Empty;
+      switch (code) {
+        case CloseStatusCode.ProtocolError:
+          return "A protocol error has occurred.";
+        case CloseStatusCode.UnsupportedData:
+          return "Unsupported data has been received.";
+        case CloseStatusCode.Abnormal:
+          return "An abnormal error has occurred.";
+        case CloseStatusCode.InvalidData:
+          return "Invalid data has been received.";
+        case CloseStatusCode.PolicyViolation:
+          return "A policy violation has occurred.";
+        case CloseStatusCode.TooBig:
+          return "A too big message has been received.";
+        case CloseStatusCode.MandatoryExtension:
+          return "The client did not receive expected extension(s).";
+        case CloseStatusCode.ServerError:
+          return "The server got an internal error.";
+        case CloseStatusCode.TlsHandshakeFailure:
+          return "An error has occurred during a TLS handshake.";
+        default:
+          return String.Empty;
+      }
     }
 
     internal static string GetName (this string nameAndValue, char separator)
