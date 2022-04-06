@@ -736,9 +736,11 @@ namespace WebSocketSharp
             bufferLength = (int) length;
 
           nread = stream.Read (buff, 0, bufferLength);
+
           if (nread <= 0) {
             if (retry < _retry) {
               retry++;
+
               continue;
             }
 
@@ -748,10 +750,12 @@ namespace WebSocketSharp
           retry = 0;
 
           dest.Write (buff, 0, nread);
+
           length -= nread;
         }
 
         dest.Close ();
+
         return dest.ToArray ();
       }
     }
