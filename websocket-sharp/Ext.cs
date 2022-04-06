@@ -694,14 +694,14 @@ namespace WebSocketSharp
 
     internal static byte[] ReadBytes (this Stream stream, int length)
     {
-      var buff = new byte[length];
+      var ret = new byte[length];
 
       var offset = 0;
       var retry = 0;
       var nread = 0;
 
       while (length > 0) {
-        nread = stream.Read (buff, offset, length);
+        nread = stream.Read (ret, offset, length);
 
         if (nread <= 0) {
           if (retry < _retry) {
@@ -710,7 +710,7 @@ namespace WebSocketSharp
             continue;
           }
 
-          return buff.SubArray (0, offset);
+          return ret.SubArray (0, offset);
         }
 
         retry = 0;
@@ -719,7 +719,7 @@ namespace WebSocketSharp
         length -= nread;
       }
 
-      return buff;
+      return ret;
     }
 
     internal static byte[] ReadBytes (
