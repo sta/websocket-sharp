@@ -728,13 +728,12 @@ namespace WebSocketSharp
       using (var dest = new MemoryStream ()) {
         var buff = new byte[bufferLength];
         var retry = 0;
-        var nread = 0;
 
         while (length > 0) {
           if (length < bufferLength)
             bufferLength = (int) length;
 
-          nread = stream.Read (buff, 0, bufferLength);
+          var nread = stream.Read (buff, 0, bufferLength);
 
           if (nread <= 0) {
             if (retry < _maxRetry) {
