@@ -67,7 +67,7 @@ namespace WebSocketSharp
     #region Private Fields
 
     private static readonly byte[] _last = new byte[] { 0x00 };
-    private static readonly int    _retry = 5;
+    private static readonly int    _maxRetry = 5;
     private const string           _tspecials = "()<>@,;:\\\"/[]?={} \t";
 
     #endregion
@@ -704,7 +704,7 @@ namespace WebSocketSharp
         nread = stream.Read (ret, offset, length);
 
         if (nread <= 0) {
-          if (retry < _retry) {
+          if (retry < _maxRetry) {
             retry++;
 
             continue;
@@ -738,7 +738,7 @@ namespace WebSocketSharp
           nread = stream.Read (buff, 0, bufferLength);
 
           if (nread <= 0) {
-            if (retry < _retry) {
+            if (retry < _maxRetry) {
               retry++;
 
               continue;
@@ -779,7 +779,7 @@ namespace WebSocketSharp
             var nread = stream.EndRead (ar);
 
             if (nread <= 0) {
-              if (retry < _retry) {
+              if (retry < _maxRetry) {
                 retry++;
 
                 stream.BeginRead (ret, offset, length, callback, null);
@@ -850,7 +850,7 @@ namespace WebSocketSharp
                 var nread = stream.EndRead (ar);
 
                 if (nread <= 0) {
-                  if (retry < _retry) {
+                  if (retry < _maxRetry) {
                     retry++;
 
                     read (len);
