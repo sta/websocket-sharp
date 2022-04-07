@@ -831,6 +831,7 @@ namespace WebSocketSharp
     )
     {
       var dest = new MemoryStream ();
+
       var buff = new byte[bufferLength];
       var retry = 0;
 
@@ -847,9 +848,11 @@ namespace WebSocketSharp
             ar => {
               try {
                 var nread = stream.EndRead (ar);
+
                 if (nread <= 0) {
                   if (retry < _retry) {
                     retry++;
+
                     read (len);
 
                     return;
@@ -857,10 +860,13 @@ namespace WebSocketSharp
 
                   if (completed != null) {
                     dest.Close ();
-                    completed (dest.ToArray ());
+
+                    var ret = dest.ToArray ();
+                    completed (ret);
                   }
 
                   dest.Dispose ();
+
                   return;
                 }
 
@@ -869,10 +875,13 @@ namespace WebSocketSharp
                 if (nread == len) {
                   if (completed != null) {
                     dest.Close ();
-                    completed (dest.ToArray ());
+                
+                    var ret = dest.ToArray ();
+                    completed (ret);
                   }
 
                   dest.Dispose ();
+
                   return;
                 }
 
@@ -882,6 +891,7 @@ namespace WebSocketSharp
               }
               catch (Exception ex) {
                 dest.Dispose ();
+
                 if (error != null)
                   error (ex);
               }
@@ -895,6 +905,7 @@ namespace WebSocketSharp
       }
       catch (Exception ex) {
         dest.Dispose ();
+
         if (error != null)
           error (ex);
       }
