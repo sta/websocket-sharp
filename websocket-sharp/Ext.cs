@@ -698,10 +698,9 @@ namespace WebSocketSharp
 
       var offset = 0;
       var retry = 0;
-      var nread = 0;
 
       while (length > 0) {
-        nread = stream.Read (ret, offset, length);
+        var nread = stream.Read (ret, offset, length);
 
         if (nread <= 0) {
           if (retry < _maxRetry) {
