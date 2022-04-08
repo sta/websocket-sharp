@@ -915,6 +915,7 @@ namespace WebSocketSharp
       var ret = new T[len];
 
       var end = len - 1;
+
       for (var i = 0; i <= end; i++)
         ret[i] = array[end - i];
 
