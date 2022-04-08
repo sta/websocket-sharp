@@ -911,12 +911,12 @@ namespace WebSocketSharp
 
     internal static T[] Reverse<T> (this T[] array)
     {
-      var len = array.Length;
+      var len = array.LongLength;
       var ret = new T[len];
 
       var end = len - 1;
 
-      for (var i = 0; i <= end; i++)
+      for (long i = 0; i <= end; i++)
         ret[i] = array[end - i];
 
       return ret;
