@@ -1082,7 +1082,9 @@ namespace WebSocketSharp
 
     internal static ulong ToUInt64 (this byte[] source, ByteOrder sourceOrder)
     {
-      return BitConverter.ToUInt64 (source.ToHostOrder (sourceOrder), 0);
+      var val = source.ToHostOrder (sourceOrder);
+
+      return BitConverter.ToUInt64 (val, 0);
     }
 
     internal static IEnumerable<string> TrimEach (
