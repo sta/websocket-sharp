@@ -1294,6 +1294,7 @@ namespace WebSocketSharp
     )
     {
       var src = new MemoryStream (bytes);
+
       src.CopyToAsync (
         stream,
         bufferLength,
@@ -1305,6 +1306,7 @@ namespace WebSocketSharp
         },
         ex => {
           src.Dispose ();
+
           if (error != null)
             error (ex);
         }
