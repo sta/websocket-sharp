@@ -1075,7 +1075,9 @@ namespace WebSocketSharp
 
     internal static ushort ToUInt16 (this byte[] source, ByteOrder sourceOrder)
     {
-      return BitConverter.ToUInt16 (source.ToHostOrder (sourceOrder), 0);
+      var val = source.ToHostOrder (sourceOrder);
+
+      return BitConverter.ToUInt16 (val, 0);
     }
 
     internal static ulong ToUInt64 (this byte[] source, ByteOrder sourceOrder)
