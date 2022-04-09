@@ -442,23 +442,6 @@ namespace WebSocketSharp
       return idx > 0 ? original.Substring (0, idx) : original;
     }
 
-    internal static string GetCloseStatusMessage (this ushort code)
-    {
-      switch (code) {
-        case 1002: return "A protocol error has occurred.";
-        case 1003: return "Unsupported data has been received.";
-        case 1006: return "An abnormal error has occurred.";
-        case 1007: return "Invalid data has been received.";
-        case 1008: return "A policy violation has occurred.";
-        case 1009: return "A too big message has been received.";
-        case 1010: return "The client did not receive expected extension(s).";
-        case 1011: return "The server got an internal error.";
-        case 1015: return "An error has occurred during a TLS handshake.";
-      }
-
-      return String.Empty;
-    }
-
     internal static CookieCollection GetCookies (
       this NameValueCollection headers, bool response
     )
