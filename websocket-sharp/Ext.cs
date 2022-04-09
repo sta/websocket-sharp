@@ -326,10 +326,9 @@ namespace WebSocketSharp
     )
     {
       var buff = new byte[bufferLength];
-      var nread = 0;
 
       while (true) {
-        nread = sourceStream.Read (buff, 0, bufferLength);
+        var nread = sourceStream.Read (buff, 0, bufferLength);
 
         if (nread <= 0)
           break;
