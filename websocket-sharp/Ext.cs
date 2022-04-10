@@ -1009,13 +1009,15 @@ namespace WebSocketSharp
       if (method == CompressionMethod.None)
         return String.Empty;
 
-      var name = String.Format (
-                   "permessage-{0}", method.ToString ().ToLower ()
-                 );
+      var algo = method.ToString ().ToLower ();
+      var name = String.Format ("permessage-{0}", algo);
 
-      return parameters != null && parameters.Length > 0
-             ? String.Format ("{0}; {1}", name, parameters.ToString ("; "))
-             : name;
+      if (parameters == null || parameters.Length == 0)
+        return name;
+
+      var str = parameters.ToString ("; ");
+
+      return String.Format ("{0}; {1}", name, str);
     }
 
     internal static System.Net.IPAddress ToIPAddress (this string value)
