@@ -144,6 +144,7 @@ namespace WebSocketSharp
     {
       using (var output = stream.decompress ()) {
         output.Close ();
+
         return output.ToArray ();
       }
     }
