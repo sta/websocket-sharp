@@ -86,18 +86,21 @@ namespace WebSocketSharp
 
     private static MemoryStream compress (this Stream stream)
     {
-      var output = new MemoryStream ();
+      var ret = new MemoryStream ();
+
       if (stream.Length == 0)
-        return output;
+        return ret;
 
       stream.Position = 0;
-      using (var ds = new DeflateStream (output, CompressionMode.Compress, true)) {
+
+      using (var ds = new DeflateStream (ret, CompressionMode.Compress, true)) {
         stream.CopyTo (ds, 1024);
         ds.Close (); // BFINAL set to 1.
-        output.Write (_last, 0, 1);
-        output.Position = 0;
+        ret.Write (_last, 0, 1);
 
-        return output;
+        ret.Position = 0;
+
+        return ret;
       }
     }
 
