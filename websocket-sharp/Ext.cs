@@ -108,6 +108,7 @@ namespace WebSocketSharp
     {
       using (var output = stream.compress ()) {
         output.Close ();
+
         return output.ToArray ();
       }
     }
