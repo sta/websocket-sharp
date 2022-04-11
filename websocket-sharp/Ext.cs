@@ -124,16 +124,19 @@ namespace WebSocketSharp
 
     private static MemoryStream decompress (this Stream stream)
     {
-      var output = new MemoryStream ();
+      var ret = new MemoryStream ();
+
       if (stream.Length == 0)
-        return output;
+        return ret;
 
       stream.Position = 0;
-      using (var ds = new DeflateStream (stream, CompressionMode.Decompress, true)) {
-        ds.CopyTo (output, 1024);
-        output.Position = 0;
 
-        return output;
+      using (var ds = new DeflateStream (stream, CompressionMode.Decompress, true)) {
+        ds.CopyTo (ret, 1024);
+
+        ret.Position = 0;
+
+        return ret;
       }
     }
 
