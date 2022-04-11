@@ -133,7 +133,9 @@ namespace WebSocketSharp
 
       stream.Position = 0;
 
-      using (var ds = new DeflateStream (stream, CompressionMode.Decompress, true)) {
+      var mode = CompressionMode.Decompress;
+
+      using (var ds = new DeflateStream (stream, mode, true)) {
         ds.CopyTo (ret, 1024);
 
         ret.Position = 0;
