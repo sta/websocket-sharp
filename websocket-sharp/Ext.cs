@@ -93,7 +93,9 @@ namespace WebSocketSharp
 
       stream.Position = 0;
 
-      using (var ds = new DeflateStream (ret, CompressionMode.Compress, true)) {
+      var mode = CompressionMode.Compress;
+
+      using (var ds = new DeflateStream (ret, mode, true)) {
         stream.CopyTo (ds, 1024);
         ds.Close (); // BFINAL set to 1.
         ret.Write (_last, 0, 1);
