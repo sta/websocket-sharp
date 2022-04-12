@@ -77,7 +77,6 @@ namespace WebSocketSharp
     private static byte[] compress (this byte[] data)
     {
       if (data.LongLength == 0)
-        //return new byte[] { 0x00, 0x00, 0x00, 0xff, 0xff };
         return data;
 
       using (var input = new MemoryStream (data))
