@@ -164,13 +164,6 @@ namespace WebSocketSharp
              || value == "TRACE";
     }
 
-    private static bool isHttpMethod10 (this string value)
-    {
-      return value == "GET"
-             || value == "HEAD"
-             || value == "POST";
-    }
-
     private static bool isPredefinedScheme (this string value)
     {
       var c = value[0];
