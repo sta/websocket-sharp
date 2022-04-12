@@ -152,18 +152,6 @@ namespace WebSocketSharp
       }
     }
 
-    private static bool isHttpMethod (this string value)
-    {
-      return value == "GET"
-             || value == "HEAD"
-             || value == "POST"
-             || value == "PUT"
-             || value == "DELETE"
-             || value == "CONNECT"
-             || value == "OPTIONS"
-             || value == "TRACE";
-    }
-
     private static bool isPredefinedScheme (this string value)
     {
       var c = value[0];
