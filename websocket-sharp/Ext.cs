@@ -584,13 +584,6 @@ namespace WebSocketSharp
              || value == "TRACE";
     }
 
-    internal static bool IsHttpMethod (this string value, Version version)
-    {
-      return version == HttpVersion.Version10
-             ? value.isHttpMethod10 ()
-             : value.isHttpMethod ();
-    }
-
     internal static bool IsPortNumber (this int value)
     {
       return value > 0 && value < 65536;
