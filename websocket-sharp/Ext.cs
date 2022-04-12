@@ -572,6 +572,18 @@ namespace WebSocketSharp
       return value == c - 0;
     }
 
+    internal static bool IsHttpMethod (this string value)
+    {
+      return value == "GET"
+             || value == "HEAD"
+             || value == "POST"
+             || value == "PUT"
+             || value == "DELETE"
+             || value == "CONNECT"
+             || value == "OPTIONS"
+             || value == "TRACE";
+    }
+
     internal static bool IsHttpMethod (this string value, Version version)
     {
       return version == HttpVersion.Version10
