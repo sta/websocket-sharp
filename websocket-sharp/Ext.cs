@@ -219,15 +219,6 @@ namespace WebSocketSharp
              : stream;
     }
 
-    internal static byte[] CompressToArray (
-      this Stream stream, CompressionMethod method
-    )
-    {
-      return method == CompressionMethod.Deflate
-             ? stream.compressToArray ()
-             : stream.ToByteArray ();
-    }
-
     internal static bool Contains (this string value, params char[] anyOf)
     {
       return anyOf != null && anyOf.Length > 0
