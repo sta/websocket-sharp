@@ -201,7 +201,9 @@ namespace WebSocketSharp
       return buff.ToArray ();
     }
 
-    internal static byte[] Compress (this byte[] data, CompressionMethod method)
+    internal static byte[] Compress (
+      this byte[] data, CompressionMethod method
+    )
     {
       return method == CompressionMethod.Deflate
              ? data.compress ()
