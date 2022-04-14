@@ -104,11 +104,18 @@ namespace WebSocketSharp
     private static byte[] readEntityBody (Stream stream, string length)
     {
       long len;
-      if (!Int64.TryParse (length, out len))
-        throw new ArgumentException ("Cannot be parsed.", "length");
 
-      if (len < 0)
-        throw new ArgumentOutOfRangeException ("length", "Less than zero.");
+      if (!Int64.TryParse (length, out len)) {
+        var msg = "It cannot be parsed.";
+
+        throw new ArgumentException (msg, "length");
+      }
+
+      if (len < 0) {
+        var msg = "It is less than zero.";
+
+        throw new ArgumentOutOfRangeException ("length", msg);
+      }
 
       return len > 1024
              ? stream.ReadBytes (len, 1024)
