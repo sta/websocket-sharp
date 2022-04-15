@@ -40,15 +40,10 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
+    private byte[]              _entityBodyData;
     private NameValueCollection _headers;
     private const int           _headersMaxLength = 8192;
     private Version             _version;
-
-    #endregion
-
-    #region Internal Fields
-
-    internal byte[] EntityBodyData;
 
     #endregion
 
@@ -68,11 +63,21 @@ namespace WebSocketSharp
 
     #endregion
 
+    #region Internal Properties
+
+    internal byte[] EntityBodyData {
+      get {
+        return _entityBodyData;
+      }
+    }
+
+    #endregion
+
     #region Public Properties
 
     public string EntityBody {
       get {
-        if (EntityBodyData == null || EntityBodyData.LongLength == 0)
+        if (_entityBodyData == null || _entityBodyData.LongLength == 0)
           return String.Empty;
 
         var contentType = _headers["Content-Type"];
@@ -81,7 +86,7 @@ namespace WebSocketSharp
                   ? HttpUtility.GetEncoding (contentType)
                   : Encoding.UTF8;
 
-        return enc.GetString (EntityBodyData);
+        return enc.GetString (_entityBodyData);
       }
     }
 
@@ -179,7 +184,7 @@ namespace WebSocketSharp
         http = parser (readHeaders (stream, _headersMaxLength));
         var contentLen = http.Headers["Content-Length"];
         if (contentLen != null && contentLen.Length > 0)
-          http.EntityBodyData = readEntityBody (stream, contentLen);
+          http._entityBodyData = readEntityBody (stream, contentLen);
       }
       catch (Exception ex) {
         exception = ex;
