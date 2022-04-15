@@ -75,13 +75,13 @@ namespace WebSocketSharp
         if (EntityBodyData == null || EntityBodyData.LongLength == 0)
           return String.Empty;
 
-        Encoding enc = null;
-
         var contentType = _headers["Content-Type"];
-        if (contentType != null && contentType.Length > 0)
-          enc = HttpUtility.GetEncoding (contentType);
 
-        return (enc ?? Encoding.UTF8).GetString (EntityBodyData);
+        var enc = contentType != null && contentType.Length > 0
+                  ? HttpUtility.GetEncoding (contentType)
+                  : Encoding.UTF8;
+
+        return enc.GetString (EntityBodyData);
       }
     }
 
