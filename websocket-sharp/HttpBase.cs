@@ -133,29 +133,38 @@ namespace WebSocketSharp
     {
       var buff = new List<byte> ();
       var cnt = 0;
-      Action<int> add = i => {
-        if (i == -1)
-          throw new EndOfStreamException ("The header cannot be read from the data source.");
+      Action<int> add =
+        i => {
+          if (i == -1) {
+            var msg = "The header could not be read from the data source.";
 
-        buff.Add ((byte) i);
-        cnt++;
-      };
+            throw new EndOfStreamException (msg);
+          }
 
-      var read = false;
-      while (cnt < maxLength) {
-        if (stream.ReadByte ().IsEqualTo ('\r', add) &&
-            stream.ReadByte ().IsEqualTo ('\n', add) &&
-            stream.ReadByte ().IsEqualTo ('\r', add) &&
-            stream.ReadByte ().IsEqualTo ('\n', add)) {
-          read = true;
-          break;
+          buff.Add ((byte) i);
+
+          cnt++;
+        };
+
+      while (true) {
+        var end = stream.ReadByte ().IsEqualTo ('\r', add)
+                  && stream.ReadByte ().IsEqualTo ('\n', add)
+                  && stream.ReadByte ().IsEqualTo ('\r', add)
+                  && stream.ReadByte ().IsEqualTo ('\n', add);
+
+        if (cnt > maxLength) {
+          var msg = "The length of headers is greater than the max length.";
+
+          throw new WebSocketException (msg);
         }
+
+        if (end)
+          break;
       }
 
-      if (!read)
-        throw new WebSocketException ("The length of header part is greater than the max length.");
+      var bytes = buff.ToArray ();
 
-      return Encoding.UTF8.GetString (buff.ToArray ())
+      return Encoding.UTF8.GetString (bytes)
              .Replace (CrLf + " ", " ")
              .Replace (CrLf + "\t", " ")
              .Split (new[] { CrLf }, StringSplitOptions.RemoveEmptyEntries);
