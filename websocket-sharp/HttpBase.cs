@@ -174,26 +174,34 @@ namespace WebSocketSharp
 
     #region Protected Methods
 
-    protected static T Read<T> (Stream stream, Func<string[], T> parser, int millisecondsTimeout)
+    protected static T Read<T> (
+      Stream stream, Func<string[], T> parser, int millisecondsTimeout
+    )
       where T : HttpBase
     {
+      T ret = null;
+
       var timeout = false;
       var timer = new Timer (
-        state => {
-          timeout = true;
-          stream.Close ();
-        },
-        null,
-        millisecondsTimeout,
-        -1);
+                    state => {
+                      timeout = true;
+                      stream.Close ();
+                    },
+                    null,
+                    millisecondsTimeout,
+                    -1
+                  );
 
-      T http = null;
       Exception exception = null;
+
       try {
-        http = parser (readHeaders (stream, _headersMaxLength));
-        var contentLen = http.Headers["Content-Length"];
+        var headers = readHeaders (stream, _headersMaxLength);
+        ret = parser (headers);
+
+        var contentLen = ret.Headers["Content-Length"];
+
         if (contentLen != null && contentLen.Length > 0)
-          http._entityBodyData = readEntityBody (stream, contentLen);
+          ret._entityBodyData = readEntityBody (stream, contentLen);
       }
       catch (Exception ex) {
         exception = ex;
@@ -203,16 +211,19 @@ namespace WebSocketSharp
         timer.Dispose ();
       }
 
-      var msg = timeout
-                ? "A timeout has occurred while reading an HTTP request/response."
-                : exception != null
-                  ? "An exception has occurred while reading an HTTP request/response."
-                  : null;
+      if (timeout) {
+        var msg = "A timeout has occurred while reading an HTTP request or response.";
 
-      if (msg != null)
+        throw new WebSocketException (msg);
+      }
+
+      if (exception != null) {
+        var msg = "An exception has occurred while reading an HTTP request or response.";
+
         throw new WebSocketException (msg, exception);
+      }
 
-      return http;
+      return ret;
     }
 
     #endregion
