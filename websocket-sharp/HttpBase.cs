@@ -232,7 +232,9 @@ namespace WebSocketSharp
 
     public byte[] ToByteArray ()
     {
-      return Encoding.UTF8.GetBytes (ToString ());
+      var s = ToString ();
+
+      return Encoding.UTF8.GetBytes (s);
     }
     
     #endregion
