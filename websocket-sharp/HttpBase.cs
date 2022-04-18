@@ -138,7 +138,7 @@ namespace WebSocketSharp
                : null;
     }
 
-    private static string[] readHeaders (Stream stream, int maxLength)
+    private static string[] readHeaders (Stream stream)
     {
       var buff = new List<byte> ();
       var cnt = 0;
@@ -161,7 +161,7 @@ namespace WebSocketSharp
                   && stream.ReadByte ().IsEqualTo ('\r', add)
                   && stream.ReadByte ().IsEqualTo ('\n', add);
 
-        if (cnt > maxLength) {
+        if (cnt > _headersMaxLength) {
           var msg = "The length of the headers is greater than the max length.";
 
           throw new WebSocketException (msg);
@@ -204,7 +204,7 @@ namespace WebSocketSharp
       Exception exception = null;
 
       try {
-        var headers = readHeaders (stream, _headersMaxLength);
+        var headers = readHeaders (stream);
         ret = parser (headers);
 
         var contentLen = ret.Headers["Content-Length"];
