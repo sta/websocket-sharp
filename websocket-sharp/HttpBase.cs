@@ -179,7 +179,7 @@ namespace WebSocketSharp
 
       return Encoding.UTF8.GetString (bytes)
              .Replace (CrLf + " ", " ")
-             .Replace (CrLf + "\t", " ")
+             .Replace (CrLfHt, " ")
              .Split (new[] { CrLf }, StringSplitOptions.RemoveEmptyEntries);
     }
 
