@@ -1171,9 +1171,20 @@ namespace WebSocketSharp
     )
     {
       Action<PayloadData, bool, bool, bool> closer = close;
-      closer.BeginInvoke (
-        payloadData, send, receive, received, ar => closer.EndInvoke (ar), null
-      );
+      if (isWindows())
+      {
+        closer.BeginInvoke (
+          payloadData, send, receive, received, ar => closer.EndInvoke (ar), null
+        );
+      }
+      else
+      {
+        var workTask = Task.Run(() =>      closer.Invoke (
+          payloadData, send, receive, received
+        ));
+      }
+
+
     }
 
     private bool closeHandshake (byte[] frameAsBytes, bool receive, bool received)
@@ -1529,6 +1540,11 @@ namespace WebSocketSharp
       ThreadPool.QueueUserWorkItem (state => messages (e));
     }
 
+
+    private static bool isWindows()
+    {
+      return System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
+    }
     private void open ()
     {
       _inMessage = true;
@@ -1551,7 +1567,20 @@ namespace WebSocketSharp
         e = _messageEventQueue.Dequeue ();
       }
 
+
+    if (isWindows())
+    {
       _message.BeginInvoke (e, ar => _message.EndInvoke (ar), null);
+
+    }
+    else
+    {
+      var workTask = Task.Run(() => _message.Invoke(e));
+    }
+
+
+
+    
     }
 
     private bool ping (byte[] data)
@@ -1692,9 +1721,11 @@ namespace WebSocketSharp
     {
       string msg;
       if (!checkReceivedFrame (frame, out msg))
-        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
-
-      frame.Unmask ();
+      {
+          throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
+      }
+        
+      frame.Unmask();
       return frame.IsFragment
              ? processFragmentFrame (frame)
              : frame.IsData
@@ -1952,25 +1983,51 @@ namespace WebSocketSharp
     private void sendAsync (Opcode opcode, Stream stream, Action<bool> completed)
     {
       Func<Opcode, Stream, bool> sender = send;
-      sender.BeginInvoke (
-        opcode,
-        stream,
-        ar => {
-          try {
-            var sent = sender.EndInvoke (ar);
-            if (completed != null)
-              completed (sent);
-          }
-          catch (Exception ex) {
-            _logger.Error (ex.ToString ());
-            error (
-              "An error has occurred during the callback for an async send.",
-              ex
-            );
-          }
-        },
-        null
-      );
+      if (isWindows())
+      {
+        sender.BeginInvoke (
+          opcode,
+          stream,
+          ar => {
+            try {
+              var sent = sender.EndInvoke (ar);
+              if (completed != null)
+                completed (sent);
+            }
+            catch (Exception ex) {
+              _logger.Error (ex.ToString ());
+              error (
+                "An error has occurred during the callback for an async send.",
+                ex
+              );
+            }
+          },
+          null
+        );
+      }
+      else {
+
+        System.Threading.Tasks.Task.Run( () => {
+          return sender.Invoke (
+            opcode,
+            stream
+          );
+        }).ContinueWith( (sent) => {
+            try {
+              if (completed != null)
+                completed (sent.Result);
+            }
+            catch (Exception ex) {
+              _logger.Error (ex.ToString ());
+              error (
+                "An error has occurred during the callback for an async send.",
+                ex
+              );
+            }
+        });
+
+      }
+
     }
 
     private bool sendBytes (byte[] bytes)
@@ -2549,13 +2606,29 @@ namespace WebSocketSharp
       }
 
       Func<bool> acceptor = accept;
-      acceptor.BeginInvoke (
-        ar => {
-          if (acceptor.EndInvoke (ar))
-            open ();
-        },
-        null
-      );
+
+      if (isWindows())
+      {
+        acceptor.BeginInvoke (
+          ar => {
+            if (acceptor.EndInvoke (ar))
+              open ();
+          },
+          null
+        );
+      }
+      else
+      {
+        System.Threading.Tasks.Task.Run(() => {
+          return acceptor.Invoke();
+        }).ContinueWith((x) => {
+          if (x.Result)
+          {
+            open();
+          }
+        });
+      }
+
     }
 
     /// <summary>
@@ -3282,13 +3355,29 @@ namespace WebSocketSharp
       }
 
       Func<bool> connector = connect;
-      connector.BeginInvoke (
-        ar => {
-          if (connector.EndInvoke (ar))
-            open ();
-        },
-        null
-      );
+
+      if (isWindows())
+      {
+        connector.BeginInvoke (
+          ar => {
+            if (connector.EndInvoke (ar))
+              open ();
+          },
+          null
+        );
+      }
+      else
+      {
+        System.Threading.Tasks.Task.Run(() => {
+          return connector.Invoke();
+        }).ContinueWith( (task) => {
+          if (task.Result)
+          {
+            open();
+          }
+        });
+      }
+
     }
 
     /// <summary>
