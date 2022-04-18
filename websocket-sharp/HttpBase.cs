@@ -49,7 +49,7 @@ namespace WebSocketSharp
 
     #region Protected Fields
 
-    protected const string CrLf = "\r\n";
+    protected static readonly string CrLf;
 
     #endregion
 
@@ -58,6 +58,8 @@ namespace WebSocketSharp
     static HttpBase ()
     {
       _headersMaxLength = 8192;
+
+      CrLf = "\r\n";
     }
 
     #endregion
