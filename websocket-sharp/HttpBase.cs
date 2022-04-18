@@ -180,7 +180,7 @@ namespace WebSocketSharp
       var bytes = buff.ToArray ();
 
       return Encoding.UTF8.GetString (bytes)
-             .Replace (CrLf + " ", " ")
+             .Replace (CrLfSp, " ")
              .Replace (CrLfHt, " ")
              .Split (new[] { CrLf }, StringSplitOptions.RemoveEmptyEntries);
     }
