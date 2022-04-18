@@ -51,6 +51,7 @@ namespace WebSocketSharp
 
     protected static readonly string CrLf;
     protected static readonly string CrLfHt;
+    protected static readonly string CrLfSp;
 
     #endregion
 
@@ -62,6 +63,7 @@ namespace WebSocketSharp
 
       CrLf = "\r\n";
       CrLfHt = "\r\n\t";
+      CrLfSp = "\r\n ";
     }
 
     #endregion
