@@ -50,6 +50,7 @@ namespace WebSocketSharp
     #region Protected Fields
 
     protected static readonly string CrLf;
+    protected static readonly string CrLfHt;
 
     #endregion
 
@@ -60,6 +61,7 @@ namespace WebSocketSharp
       _headersMaxLength = 8192;
 
       CrLf = "\r\n";
+      CrLfHt = "\r\n\t";
     }
 
     #endregion
