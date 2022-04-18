@@ -42,7 +42,7 @@ namespace WebSocketSharp
 
     private byte[]              _entityBodyData;
     private NameValueCollection _headers;
-    private const int           _headersMaxLength = 8192;
+    private static readonly int _headersMaxLength;
     private Version             _version;
 
     #endregion
@@ -50,6 +50,15 @@ namespace WebSocketSharp
     #region Protected Fields
 
     protected const string CrLf = "\r\n";
+
+    #endregion
+
+    #region Static Constructor
+
+    static HttpBase ()
+    {
+      _headersMaxLength = 8192;
+    }
 
     #endregion
 
