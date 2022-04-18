@@ -153,7 +153,7 @@ namespace WebSocketSharp
                   && stream.ReadByte ().IsEqualTo ('\n', add);
 
         if (cnt > maxLength) {
-          var msg = "The length of headers is greater than the max length.";
+          var msg = "The length of the headers is greater than the max length.";
 
           throw new WebSocketException (msg);
         }
