@@ -130,7 +130,7 @@ namespace WebSocketSharp
       return enc.GetString (_entityBodyData);
     }
 
-    private static byte[] readEntityBody (Stream stream, string length)
+    private static byte[] readEntityBodyFrom (Stream stream, string length)
     {
       long len;
 
@@ -225,7 +225,7 @@ namespace WebSocketSharp
         var contentLen = ret.Headers["Content-Length"];
 
         if (contentLen != null && contentLen.Length > 0)
-          ret._entityBodyData = readEntityBody (stream, contentLen);
+          ret._entityBodyData = readEntityBodyFrom (stream, contentLen);
       }
       catch (Exception ex) {
         exception = ex;
