@@ -43,7 +43,7 @@ namespace WebSocketSharp
     private byte[]              _entityBodyData;
     private NameValueCollection _headers;
     private static readonly int _headersMaxLength;
-    private Version             _version;
+    private Version             _protocolVersion;
 
     #endregion
 
@@ -72,7 +72,7 @@ namespace WebSocketSharp
 
     protected HttpBase (Version version, NameValueCollection headers)
     {
-      _version = version;
+      _protocolVersion = version;
       _headers = headers;
     }
 
@@ -113,7 +113,7 @@ namespace WebSocketSharp
 
     public Version ProtocolVersion {
       get {
-        return _version;
+        return _protocolVersion;
       }
     }
 
