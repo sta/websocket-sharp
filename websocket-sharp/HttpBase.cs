@@ -121,6 +121,20 @@ namespace WebSocketSharp
 
     #region Private Methods
 
+    private string getEntityBody ()
+    {
+      if (_entityBodyData == null || _entityBodyData.LongLength == 0)
+        return String.Empty;
+
+      var contentType = _headers["Content-Type"];
+
+      var enc = contentType != null && contentType.Length > 0
+                ? HttpUtility.GetEncoding (contentType)
+                : Encoding.UTF8;
+
+      return enc.GetString (_entityBodyData);
+    }
+
     private static byte[] readEntityBody (Stream stream, string length)
     {
       long len;
