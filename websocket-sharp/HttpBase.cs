@@ -40,6 +40,7 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
+    private string              _entityBody;
     private byte[]              _entityBodyData;
     private NameValueCollection _headers;
     private static readonly int _headersMaxLength;
@@ -92,16 +93,10 @@ namespace WebSocketSharp
 
     public string EntityBody {
       get {
-        if (_entityBodyData == null || _entityBodyData.LongLength == 0)
-          return String.Empty;
+        if (_entityBody == null)
+          _entityBody = getEntityBody ();
 
-        var contentType = _headers["Content-Type"];
-
-        var enc = contentType != null && contentType.Length > 0
-                  ? HttpUtility.GetEncoding (contentType)
-                  : Encoding.UTF8;
-
-        return enc.GetString (_entityBodyData);
+        return _entityBody;
       }
     }
 
