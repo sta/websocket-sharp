@@ -153,7 +153,7 @@ namespace WebSocketSharp
                : null;
     }
 
-    private static string[] readHeaders (Stream stream)
+    private static string[] readHeadersFrom (Stream stream)
     {
       var buff = new List<byte> ();
       var cnt = 0;
@@ -219,7 +219,7 @@ namespace WebSocketSharp
       Exception exception = null;
 
       try {
-        var headers = readHeaders (stream);
+        var headers = readHeadersFrom (stream);
         ret = parser (headers);
 
         var contentLen = ret.Headers["Content-Length"];
