@@ -176,6 +176,7 @@ namespace WebSocketSharp
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
       _waitTime = TimeSpan.FromSeconds (1);
+      ConnectTimeout = TimeSpan.FromSeconds (90);
 
       init ();
     }
@@ -192,6 +193,7 @@ namespace WebSocketSharp
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
       _waitTime = TimeSpan.FromSeconds (1);
+	  ConnectTimeout = TimeSpan.FromSeconds (90);
 
       init ();
     }
@@ -277,6 +279,7 @@ namespace WebSocketSharp
       _message = messagec;
       _secure = _uri.Scheme == "wss";
       _waitTime = TimeSpan.FromSeconds (5);
+      ConnectTimeout = TimeSpan.FromSeconds (90);
 
       init ();
     }
@@ -772,6 +775,17 @@ namespace WebSocketSharp
           _waitTime = value;
         }
       }
+    }
+
+    /// <summary>
+    /// Gets or sets the time to wait before connection attempts time out
+    /// </summary>
+    /// <value>
+    /// A <see cref="TimeSpan"/> that represents the timeout for connecting. The default value is 90 seconds.
+    /// </value>
+    public TimeSpan ConnectTimeout {
+      get;
+      set;
     }
 
     #endregion
@@ -1992,7 +2006,7 @@ namespace WebSocketSharp
     private HttpResponse sendHandshakeRequest ()
     {
       var req = createHandshakeRequest ();
-      var res = sendHttpRequest (req, 90000);
+      var res = sendHttpRequest (req, (int)ConnectTimeout.TotalMilliseconds);
       if (res.IsUnauthorized) {
         var chal = res.Headers["WWW-Authenticate"];
         _logger.Warn (String.Format ("Received an authentication requirement for '{0}'.", chal));
@@ -2076,7 +2090,7 @@ namespace WebSocketSharp
     private void sendProxyConnectRequest ()
     {
       var req = HttpRequest.CreateConnectRequest (_uri);
-      var res = sendHttpRequest (req, 90000);
+      var res = sendHttpRequest (req, (int)ConnectTimeout.TotalMilliseconds);
       if (res.IsProxyAuthenticationRequired) {
         var chal = res.Headers["Proxy-Authenticate"];
         _logger.Warn (

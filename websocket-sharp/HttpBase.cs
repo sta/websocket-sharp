@@ -157,14 +157,6 @@ namespace WebSocketSharp
       where T : HttpBase
     {
       var timeout = false;
-      var timer = new Timer (
-        state => {
-          timeout = true;
-          stream.Close ();
-        },
-        null,
-        millisecondsTimeout,
-        -1);
 
       T http = null;
       Exception exception = null;
@@ -176,10 +168,6 @@ namespace WebSocketSharp
       }
       catch (Exception ex) {
         exception = ex;
-      }
-      finally {
-        timer.Change (-1, -1);
-        timer.Dispose ();
       }
 
       var msg = timeout
