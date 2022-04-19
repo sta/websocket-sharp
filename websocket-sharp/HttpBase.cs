@@ -170,7 +170,7 @@ namespace WebSocketSharp
         if (cnt > _headersMaxLength) {
           var msg = "The length of the headers is greater than the max length.";
 
-          throw new WebSocketException (msg);
+          throw new InvalidOperationException (msg);
         }
 
         if (end)
