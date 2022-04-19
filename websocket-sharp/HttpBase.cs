@@ -151,7 +151,7 @@ namespace WebSocketSharp
       Action<int> add =
         i => {
           if (i == -1) {
-            var msg = "The headers could not be read from the data source.";
+            var msg = "The headers could not be read from the data stream.";
 
             throw new EndOfStreamException (msg);
           }
