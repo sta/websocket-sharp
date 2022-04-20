@@ -71,9 +71,9 @@ namespace WebSocketSharp
 
     #region Protected Constructors
 
-    protected HttpBase (Version version, NameValueCollection headers)
+    protected HttpBase (Version protocolVersion, NameValueCollection headers)
     {
-      _protocolVersion = version;
+      _protocolVersion = protocolVersion;
       _headers = headers;
     }
 
