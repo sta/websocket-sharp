@@ -156,16 +156,26 @@ namespace WebSocketSharp
 
     internal static HttpRequest Parse (string[] headerParts)
     {
-      var requestLine = headerParts[0].Split (new[] { ' ' }, 3);
-      if (requestLine.Length != 3)
-        throw new ArgumentException ("Invalid request line: " + headerParts[0]);
+      var reqLineParts = headerParts[0].Split (new[] { ' ' }, 3);
+
+      if (reqLineParts.Length != 3) {
+        var msg = "It includes an invalid request line.";
+
+        throw new ArgumentException (msg);
+      }
+
+      var method = reqLineParts[0];
+      var uri = reqLineParts[1];
+
+      var num = reqLineParts[2].Substring (5);
+      var ver = new Version (num);
 
       var headers = new WebHeaderCollection ();
-      for (int i = 1; i < headerParts.Length; i++)
+
+      for (var i = 1; i < headerParts.Length; i++)
         headers.InternalSet (headerParts[i], false);
 
-      return new HttpRequest (
-        requestLine[0], requestLine[1], new Version (requestLine[2].Substring (5)), headers);
+      return new HttpRequest (method, uri, ver, headers);
     }
 
     internal static HttpRequest Read (Stream stream, int millisecondsTimeout)
