@@ -171,7 +171,7 @@ namespace WebSocketSharp
       }
 
       var method = reqLineParts[0];
-      var uri = reqLineParts[1];
+      var target = reqLineParts[1];
 
       var num = reqLineParts[2].Substring (5);
       var ver = new Version (num);
@@ -181,7 +181,7 @@ namespace WebSocketSharp
       for (var i = 1; i < headerParts.Length; i++)
         headers.InternalSet (headerParts[i], false);
 
-      return new HttpRequest (method, uri, ver, headers);
+      return new HttpRequest (method, target, ver, headers);
     }
 
     internal static HttpRequest Read (Stream stream, int millisecondsTimeout)
