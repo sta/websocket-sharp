@@ -156,6 +156,12 @@ namespace WebSocketSharp
 
     internal static HttpRequest Parse (string[] headerParts)
     {
+      if (headerParts.Length == 0) {
+        var msg = "An empty request has been received.";
+
+        throw new ArgumentException (msg);
+      }
+
       var reqLineParts = headerParts[0].Split (new[] { ' ' }, 3);
 
       if (reqLineParts.Length != 3) {
