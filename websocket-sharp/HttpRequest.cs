@@ -76,9 +76,10 @@ namespace WebSocketSharp
 
     public AuthenticationResponse AuthenticationResponse {
       get {
-        var res = Headers["Authorization"];
-        return res != null && res.Length > 0
-               ? AuthenticationResponse.Parse (res)
+        var val = Headers["Authorization"];
+
+        return val != null && val.Length > 0
+               ? AuthenticationResponse.Parse (val)
                : null;
       }
     }
