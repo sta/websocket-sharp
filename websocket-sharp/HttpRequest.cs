@@ -199,15 +199,22 @@ namespace WebSocketSharp
         return;
 
       var buff = new StringBuilder (64);
-      foreach (var cookie in cookies.Sorted)
-        if (!cookie.Expired)
-          buff.AppendFormat ("{0}; ", cookie.ToString ());
+
+      foreach (var cookie in cookies.Sorted) {
+        if (cookie.Expired)
+          continue;
+
+        buff.AppendFormat ("{0}; ", cookie);
+      }
 
       var len = buff.Length;
-      if (len > 2) {
-        buff.Length = len - 2;
-        Headers["Cookie"] = buff.ToString ();
-      }
+
+      if (len <= 2)
+        return;
+
+      buff.Length = len - 2;
+
+      Headers["Cookie"] = buff.ToString ();
     }
 
     public override string ToString ()
