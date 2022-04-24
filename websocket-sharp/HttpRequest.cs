@@ -69,8 +69,8 @@ namespace WebSocketSharp
 
     #region Internal Constructors
 
-    internal HttpRequest (string method, string uri)
-      : this (method, uri, HttpVersion.Version11, new NameValueCollection ())
+    internal HttpRequest (string method, string target)
+      : this (method, target, HttpVersion.Version11, new NameValueCollection ())
     {
       Headers["User-Agent"] = "websocket-sharp/1.0";
     }
