@@ -53,11 +53,16 @@ namespace WebSocketSharp
 
     #region Private Constructors
 
-    private HttpRequest (string method, string uri, Version version, NameValueCollection headers)
-      : base (version, headers)
+    private HttpRequest (
+      string method,
+      string target,
+      Version protocolVersion,
+      NameValueCollection headers
+    )
+      : base (protocolVersion, headers)
     {
       _method = method;
-      _uri = uri;
+      _uri = target;
     }
 
     #endregion
