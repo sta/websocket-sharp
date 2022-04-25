@@ -47,7 +47,7 @@ namespace WebSocketSharp
 
     private CookieCollection _cookies;
     private string           _method;
-    private string           _uri;
+    private string           _target;
 
     #endregion
 
@@ -62,7 +62,7 @@ namespace WebSocketSharp
       : base (protocolVersion, headers)
     {
       _method = method;
-      _uri = target;
+      _target = target;
     }
 
     #endregion
@@ -114,7 +114,7 @@ namespace WebSocketSharp
 
     public string RequestUri {
       get {
-        return _uri;
+        return _target;
       }
     }
 
@@ -228,7 +228,7 @@ namespace WebSocketSharp
       var buff = new StringBuilder (64);
 
       var fmt = "{0} {1} HTTP/{2}{3}";
-      buff.AppendFormat (fmt, _method, _uri, ProtocolVersion, CrLf);
+      buff.AppendFormat (fmt, _method, _target, ProtocolVersion, CrLf);
 
       var headers = Headers;
 
