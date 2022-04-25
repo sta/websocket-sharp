@@ -288,7 +288,7 @@ namespace WebSocketSharp.Net.WebSockets
       get {
         if (_requestUri == null) {
           _requestUri = HttpUtility.CreateRequestUrl (
-                          _request.RequestUri,
+                          _request.RequestTarget,
                           _request.Headers["Host"],
                           _request.IsWebSocketRequest,
                           _secure

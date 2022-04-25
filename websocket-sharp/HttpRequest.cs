@@ -112,7 +112,7 @@ namespace WebSocketSharp
       }
     }
 
-    public string RequestUri {
+    public string RequestTarget {
       get {
         return _target;
       }
