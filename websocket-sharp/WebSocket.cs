@@ -2136,12 +2136,16 @@ namespace WebSocketSharp
             false,
             conf.ServerCertificateValidationCallback,
             conf.ClientCertificateSelectionCallback);
-
-          sslStream.AuthenticateAsClient (
-            host,
-            conf.ClientCertificates,
-            conf.EnabledSslProtocols,
-            conf.CheckCertificateRevocation);
+          
+          // The connection couldn't be established if the certificates are empty 
+          if (conf.ClientCertificates != null)
+            sslStream.AuthenticateAsClient(
+              host,
+              conf.ClientCertificates,
+              conf.EnabledSslProtocols,
+              conf.CheckCertificateRevocation);
+          else
+            sslStream.AuthenticateAsClient(host);
 
           _stream = sslStream;
         }
