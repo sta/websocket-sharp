@@ -137,21 +137,20 @@ namespace WebSocketSharp
 
     internal static HttpRequest CreateWebSocketRequest (Uri uri)
     {
-      var req = new HttpRequest ("GET", uri.PathAndQuery);
-      var headers = req.Headers;
+      var ret = new HttpRequest ("GET", uri.PathAndQuery);
 
-      // Only includes a port number in the Host header value if it's non-default.
-      // See: https://tools.ietf.org/html/rfc6455#page-17
       var port = uri.Port;
       var schm = uri.Scheme;
-      headers["Host"] = (port == 80 && schm == "ws") || (port == 443 && schm == "wss")
-                        ? uri.DnsSafeHost
-                        : uri.Authority;
+      var defaultPort = (port == 80 && schm == "ws")
+                        || (port == 443 && schm == "wss");
 
+      var headers = ret.Headers;
+
+      headers["Host"] = !defaultPort ? uri.Authority : uri.DnsSafeHost;
       headers["Upgrade"] = "websocket";
       headers["Connection"] = "Upgrade";
 
-      return req;
+      return ret;
     }
 
     internal HttpResponse GetResponse (Stream stream, int millisecondsTimeout)
