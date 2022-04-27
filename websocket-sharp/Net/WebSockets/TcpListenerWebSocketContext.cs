@@ -105,7 +105,7 @@ namespace WebSocketSharp.Net.WebSockets
       _serverEndPoint = sock.LocalEndPoint;
       _userEndPoint = sock.RemoteEndPoint;
 
-      _request = HttpRequest.Read (_stream, 90000);
+      _request = HttpRequest.ReadRequest (_stream, 90000);
       _websocket = new WebSocket (this, protocol);
     }
 
@@ -438,7 +438,7 @@ namespace WebSocketSharp.Net.WebSockets
       var bytes = res.ToByteArray ();
       _stream.Write (bytes, 0, bytes.Length);
 
-      return HttpRequest.Read (_stream, 15000);
+      return HttpRequest.ReadRequest (_stream, 15000);
     }
 
     #endregion
