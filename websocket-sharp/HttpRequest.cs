@@ -155,10 +155,12 @@ namespace WebSocketSharp
 
     internal HttpResponse GetResponse (Stream stream, int millisecondsTimeout)
     {
-      var buff = ToByteArray ();
-      stream.Write (buff, 0, buff.Length);
+      var bytes = ToByteArray ();
+      stream.Write (bytes, 0, bytes.Length);
 
-      return Read<HttpResponse> (stream, HttpResponse.Parse, millisecondsTimeout);
+      return Read<HttpResponse> (
+               stream, HttpResponse.Parse, millisecondsTimeout
+             );
     }
 
     internal static HttpRequest Parse (string[] headerParts)
