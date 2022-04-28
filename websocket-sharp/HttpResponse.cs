@@ -155,16 +155,34 @@ namespace WebSocketSharp
 
     internal static HttpResponse Parse (string[] headerParts)
     {
-      var statusLine = headerParts[0].Split (new[] { ' ' }, 3);
-      if (statusLine.Length != 3)
-        throw new ArgumentException ("Invalid status line: " + headerParts[0]);
+      var len = headerParts.Length;
+
+      if (len == 0) {
+        var msg = "An empty response has been received.";
+
+        throw new ArgumentException (msg);
+      }
+
+      var statusLineParts = headerParts[0].Split (new[] { ' ' }, 3);
+
+      if (statusLineParts.Length != 3) {
+        var msg = "It includes an invalid status line.";
+
+        throw new ArgumentException (msg);
+      }
+
+      var code = statusLineParts[1];
+      var reason = statusLineParts[2];
+
+      var num = statusLineParts[0].Substring (5);
+      var ver = new Version (num);
 
       var headers = new WebHeaderCollection ();
-      for (int i = 1; i < headerParts.Length; i++)
+
+      for (var i = 1; i < len; i++)
         headers.InternalSet (headerParts[i], true);
 
-      return new HttpResponse (
-        statusLine[1], statusLine[2], new Version (statusLine[0].Substring (5)), headers);
+      return new HttpResponse (code, reason, ver, headers);
     }
 
     internal static HttpResponse Read (Stream stream, int millisecondsTimeout)
