@@ -158,9 +158,7 @@ namespace WebSocketSharp
       var bytes = ToByteArray ();
       stream.Write (bytes, 0, bytes.Length);
 
-      return Read<HttpResponse> (
-               stream, HttpResponse.Parse, millisecondsTimeout
-             );
+      return HttpResponse.ReadResponse (stream, millisecondsTimeout);
     }
 
     internal static HttpRequest Parse (string[] headerParts)
