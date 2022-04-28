@@ -185,7 +185,9 @@ namespace WebSocketSharp
       return new HttpResponse (code, reason, ver, headers);
     }
 
-    internal static HttpResponse Read (Stream stream, int millisecondsTimeout)
+    internal static HttpResponse ReadResponse (
+      Stream stream, int millisecondsTimeout
+    )
     {
       return Read<HttpResponse> (stream, Parse, millisecondsTimeout);
     }
