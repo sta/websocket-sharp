@@ -212,20 +212,24 @@ namespace WebSocketSharp
 
     public override string ToString ()
     {
-      var output = new StringBuilder (64);
-      output.AppendFormat ("HTTP/{0} {1} {2}{3}", ProtocolVersion, _code, _reason, CrLf);
+      var buff = new StringBuilder (64);
+
+      var fmt = "HTTP/{0} {1} {2}{3}";
+      buff.AppendFormat (fmt, ProtocolVersion, _code, _reason, CrLf);
 
       var headers = Headers;
-      foreach (var key in headers.AllKeys)
-        output.AppendFormat ("{0}: {1}{2}", key, headers[key], CrLf);
 
-      output.Append (CrLf);
+      foreach (var key in headers.AllKeys)
+        buff.AppendFormat ("{0}: {1}{2}", key, headers[key], CrLf);
+
+      buff.Append (CrLf);
 
       var entity = EntityBody;
-      if (entity.Length > 0)
-        output.Append (entity);
 
-      return output.ToString ();
+      if (entity.Length > 0)
+        buff.Append (entity);
+
+      return buff.ToString ();
     }
 
     #endregion
