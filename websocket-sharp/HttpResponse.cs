@@ -202,8 +202,12 @@ namespace WebSocketSharp
         return;
 
       var headers = Headers;
-      foreach (var cookie in cookies.Sorted)
-        headers.Add ("Set-Cookie", cookie.ToResponseString ());
+
+      foreach (var cookie in cookies.Sorted) {
+        var val = cookie.ToResponseString ();
+
+        headers.Add ("Set-Cookie", val);
+      }
     }
 
     public override string ToString ()
