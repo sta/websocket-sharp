@@ -145,10 +145,11 @@ namespace WebSocketSharp
 
     internal static HttpResponse CreateUnauthorizedResponse (string challenge)
     {
-      var res = new HttpResponse (HttpStatusCode.Unauthorized);
-      res.Headers["WWW-Authenticate"] = challenge;
+      var ret = new HttpResponse (HttpStatusCode.Unauthorized);
 
-      return res;
+      ret.Headers["WWW-Authenticate"] = challenge;
+
+      return ret;
     }
 
     internal static HttpResponse CreateWebSocketResponse ()
