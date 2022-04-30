@@ -201,13 +201,8 @@ namespace WebSocketSharp.Server
 
       set {
         lock (_sync) {
-          string msg;
-
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
-
+          if (!canSet ())
             return;
-          }
 
           foreach (var host in _hosts.Values)
             host.KeepClean = value;
@@ -268,13 +263,8 @@ namespace WebSocketSharp.Server
         }
 
         lock (_sync) {
-          string msg;
-
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
-
+          if (!canSet ())
             return;
-          }
 
           foreach (var host in _hosts.Values)
             host.WaitTime = value;
@@ -288,23 +278,9 @@ namespace WebSocketSharp.Server
 
     #region Private Methods
 
-    private bool canSet (out string message)
+    private bool canSet ()
     {
-      message = null;
-
-      if (_state == ServerState.Start) {
-        message = "The server has already started.";
-
-        return false;
-      }
-
-      if (_state == ServerState.ShuttingDown) {
-        message = "The server is shutting down.";
-
-        return false;
-      }
-
-      return true;
+      return _state == ServerState.Ready || _state == ServerState.Stop;
     }
 
     #endregion

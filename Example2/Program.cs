@@ -14,8 +14,8 @@ namespace Example2
       // Create a new instance of the WebSocketServer class.
       //
       // If you would like to provide the secure connection, you should
-      // create a new instance with the 'secure' parameter set to true,
-      // or a wss scheme WebSocket URL.
+      // create a new instance with the 'secure' parameter set to true or
+      // with a wss scheme WebSocket URL.
 
       var wssv = new WebSocketServer (4649);
       //var wssv = new WebSocketServer (5963, true);
@@ -73,7 +73,7 @@ namespace Example2
           // Return user name, password, and roles.
           return name == "nobita"
                  ? new NetworkCredential (name, "password", "gunfighter")
-                 : null; // If the user credentials aren't found.
+                 : null; // If the user credentials are not found.
         };
        */
 
@@ -88,40 +88,48 @@ namespace Example2
       /*
       wssv.AddWebSocketService<Chat> (
         "/Chat",
-        () =>
-          new Chat ("Anon#") {
-            // To send the Sec-WebSocket-Protocol header that has a subprotocol name.
-            Protocol = "chat",
-            // To ignore the Sec-WebSocket-Extensions header.
-            IgnoreExtensions = true,
-            // To emit a WebSocket.OnMessage event when receives a ping.
-            EmitOnPing = true,
-            // To validate the Origin header.
-            OriginValidator = val => {
-                // Check the value of the Origin header, and return true if valid.
-                Uri origin;
-                return !val.IsNullOrEmpty ()
-                       && Uri.TryCreate (val, UriKind.Absolute, out origin)
-                       && origin.Host == "localhost";
-              },
-            // To validate the cookies.
-            CookiesValidator = (req, res) => {
-                // Check the cookies in 'req', and set the cookies to send to
-                // the client with 'res' if necessary.
-                foreach (Cookie cookie in req) {
-                  cookie.Expired = true;
-                  res.Add (cookie);
-                }
+        s => {
+          s.Prefix = "Anon#";
 
-                return true; // If valid.
+          // To send the Sec-WebSocket-Protocol header that has a subprotocol name.
+          s.Protocol = "chat";
+
+          // To ignore the Sec-WebSocket-Extensions header.
+          s.IgnoreExtensions = true;
+
+          // To emit a WebSocket.OnMessage event when receives a ping.
+          s.EmitOnPing = true;
+
+          // To validate the Origin header.
+          s.OriginValidator = val => {
+              // Check the value of the Origin header, and return true if valid.
+              Uri origin;
+
+              return !val.IsNullOrEmpty ()
+                     && Uri.TryCreate (val, UriKind.Absolute, out origin)
+                     && origin.Host == "localhost";
+            };
+
+          // To validate the cookies.
+          s.CookiesValidator = (req, res) => {
+              // Check the cookies in 'req', and set the cookies to send to
+              // the client with 'res' if necessary.
+              foreach (var cookie in req) {
+                cookie.Expired = true;
+                res.Add (cookie);
               }
-          }
+
+              return true; // If valid.
+            };
+        }
       );
        */
 
       wssv.Start ();
+
       if (wssv.IsListening) {
         Console.WriteLine ("Listening on port {0}, and providing WebSocket services:", wssv.Port);
+
         foreach (var path in wssv.WebSocketServices.Paths)
           Console.WriteLine ("- {0}", path);
       }
