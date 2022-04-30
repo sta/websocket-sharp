@@ -136,10 +136,11 @@ namespace WebSocketSharp
 
     internal static HttpResponse CreateCloseResponse (HttpStatusCode code)
     {
-      var res = new HttpResponse (code);
-      res.Headers["Connection"] = "close";
+      var ret = new HttpResponse (code);
 
-      return res;
+      ret.Headers["Connection"] = "close";
+
+      return ret;
     }
 
     internal static HttpResponse CreateUnauthorizedResponse (string challenge)
