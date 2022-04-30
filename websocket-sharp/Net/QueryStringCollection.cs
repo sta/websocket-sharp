@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005-2009 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2018 sta.blockhead
+ * Copyright (c) 2018-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -61,17 +61,6 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Private Methods
-
-    private static string urlDecode (string s, Encoding encoding)
-    {
-      return s.IndexOfAny (new[] { '%', '+' }) > -1
-             ? HttpUtility.UrlDecode (s, encoding)
-             : s;
-    }
-
-    #endregion
-
     #region Public Methods
 
     public static QueryStringCollection Parse (string query)
@@ -84,8 +73,7 @@ namespace WebSocketSharp.Net
       if (query == null)
         return new QueryStringCollection (1);
 
-      var len = query.Length;
-      if (len == 0)
+      if (query.Length == 0)
         return new QueryStringCollection (1);
 
       if (query == "?")
@@ -99,32 +87,34 @@ namespace WebSocketSharp.Net
 
       var ret = new QueryStringCollection ();
 
-      var components = query.Split ('&');
-      foreach (var component in components) {
-        len = component.Length;
+      foreach (var component in query.Split ('&')) {
+        var len = component.Length;
+
         if (len == 0)
           continue;
 
         if (component == "=")
           continue;
 
-        var i = component.IndexOf ('=');
-        if (i < 0) {
-          ret.Add (null, urlDecode (component, encoding));
-          continue;
+        string name = null;
+        string val = null;
+
+        var idx = component.IndexOf ('=');
+
+        if (idx < 0) {
+          val = component.UrlDecode (encoding);
         }
-
-        if (i == 0) {
-          ret.Add (null, urlDecode (component.Substring (1), encoding));
-          continue;
+        else if (idx == 0) {
+          val = component.Substring (1).UrlDecode (encoding);
         }
+        else {
+          name = component.Substring (0, idx).UrlDecode (encoding);
 
-        var name = urlDecode (component.Substring (0, i), encoding);
-
-        var start = i + 1;
-        var val = start < len
-                  ? urlDecode (component.Substring (start), encoding)
-                  : String.Empty;
+          var start = idx + 1;
+          val = start < len
+                ? component.Substring (start).UrlDecode (encoding)
+                : String.Empty;
+        }
 
         ret.Add (name, val);
       }

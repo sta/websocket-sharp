@@ -12,18 +12,24 @@ namespace Example2
     private string     _prefix;
 
     public Chat ()
-      : this (null)
     {
+      _prefix = "anon#";
     }
 
-    public Chat (string prefix)
-    {
-      _prefix = !prefix.IsNullOrEmpty () ? prefix : "anon#";
+    public string Prefix {
+      get {
+        return _prefix;
+      }
+
+      set {
+        _prefix = !value.IsNullOrEmpty () ? value : "anon#";
+      }
     }
 
     private string getName ()
     {
-      var name = Context.QueryString["name"];
+      var name = QueryString["name"];
+
       return !name.IsNullOrEmpty () ? name : _prefix + getNumber ();
     }
 
@@ -34,17 +40,31 @@ namespace Example2
 
     protected override void OnClose (CloseEventArgs e)
     {
-      Sessions.Broadcast (String.Format ("{0} got logged off...", _name));
+      if (_name == null)
+        return;
+
+      var fmt = "{0} got logged off...";
+      var msg = String.Format (fmt, _name);
+
+      Sessions.Broadcast (msg);
     }
 
     protected override void OnMessage (MessageEventArgs e)
     {
-      Sessions.Broadcast (String.Format ("{0}: {1}", _name, e.Data));
+      var fmt = "{0}: {1}";
+      var msg = String.Format (fmt, _name, e.Data);
+
+      Sessions.Broadcast (msg);
     }
 
     protected override void OnOpen ()
     {
       _name = getName ();
+
+      var fmt = "{0} has logged in!";
+      var msg = String.Format (fmt, _name);
+
+      Sessions.Broadcast (msg);
     }
   }
 }

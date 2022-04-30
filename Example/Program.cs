@@ -18,13 +18,8 @@ namespace Example
       // If you would like to connect to the server with the secure connection,
       // you should create a new instance with a wss scheme WebSocket URL.
 
-      using (var nf = new Notifier ())
-      using (var ws = new WebSocket ("ws://echo.websocket.org"))
-      //using (var ws = new WebSocket ("wss://echo.websocket.org"))
-      //using (var ws = new WebSocket ("ws://localhost:4649/Echo"))
+      using (var ws = new WebSocket ("ws://localhost:4649/Echo"))
       //using (var ws = new WebSocket ("wss://localhost:5963/Echo"))
-      //using (var ws = new WebSocket ("ws://localhost:4649/Echo?name=nobita"))
-      //using (var ws = new WebSocket ("wss://localhost:5963/Echo?name=nobita"))
       //using (var ws = new WebSocket ("ws://localhost:4649/Chat"))
       //using (var ws = new WebSocket ("wss://localhost:5963/Chat"))
       //using (var ws = new WebSocket ("ws://localhost:4649/Chat?name=nobita"))
@@ -34,32 +29,24 @@ namespace Example
 
         ws.OnOpen += (sender, e) => ws.Send ("Hi, there!");
 
-        ws.OnMessage += (sender, e) =>
-            nf.Notify (
-              new NotificationMessage {
-                Summary = "WebSocket Message",
-                Body = !e.IsPing ? e.Data : "Received a ping.",
-                Icon = "notification-message-im"
-              }
-            );
+        ws.OnMessage += (sender, e) => {
+            var fmt = "[WebSocket Message] {0}";
+            var body = !e.IsPing ? e.Data : "A ping was received.";
 
-        ws.OnError += (sender, e) =>
-            nf.Notify (
-              new NotificationMessage {
-                Summary = "WebSocket Error",
-                Body = e.Message,
-                Icon = "notification-message-im"
-              }
-            );
+            Console.WriteLine (fmt, body);
+          };
 
-        ws.OnClose += (sender, e) =>
-            nf.Notify (
-              new NotificationMessage {
-                Summary = String.Format ("WebSocket Close ({0})", e.Code),
-                Body = e.Reason,
-                Icon = "notification-message-im"
-              }
-            );
+        ws.OnError += (sender, e) => {
+            var fmt = "[WebSocket Error] {0}";
+
+            Console.WriteLine (fmt, e.Message);
+          };
+
+        ws.OnClose += (sender, e) => {
+            var fmt = "[WebSocket Close ({0})] {1}";
+
+            Console.WriteLine (fmt, e.Code, e.Reason);
+          };
 #if DEBUG
         // To change the logging level.
         ws.Log.Level = LogLevel.Trace;
@@ -77,13 +64,12 @@ namespace Example
         /*
         ws.SslConfiguration.ServerCertificateValidationCallback =
           (sender, certificate, chain, sslPolicyErrors) => {
-            ws.Log.Debug (
-              String.Format (
-                "Certificate:\n- Issuer: {0}\n- Subject: {1}",
-                certificate.Issuer,
-                certificate.Subject
-              )
-            );
+            var fmt = "Certificate:\n- Issuer: {0}\n- Subject: {1}";
+            var msg = String.Format (
+                        fmt, certificate.Issuer, certificate.Subject
+                      );
+
+            ws.Log.Debug (msg);
 
             return true; // If the server certificate is valid.
           };
@@ -112,10 +98,13 @@ namespace Example
         //ws.ConnectAsync ();
 
         Console.WriteLine ("\nType 'exit' to exit.\n");
+
         while (true) {
           Thread.Sleep (1000);
           Console.Write ("> ");
+
           var msg = Console.ReadLine ();
+
           if (msg == "exit")
             break;
 

@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2021 sta.blockhead
+ * Copyright (c) 2012-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -346,13 +346,8 @@ namespace WebSocketSharp.Server
 
       set {
         lock (_sync) {
-          string msg;
-
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
-
+          if (!canSet ())
             return;
-          }
 
           _listener.AuthenticationSchemes = value;
         }
@@ -441,13 +436,8 @@ namespace WebSocketSharp.Server
           throw new ArgumentException ("An absolute root.", "value");
 
         lock (_sync) {
-          string msg;
-
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
-
+          if (!canSet ())
             return;
-          }
 
           _docRootPath = value;
         }
@@ -563,13 +553,8 @@ namespace WebSocketSharp.Server
 
       set {
         lock (_sync) {
-          string msg;
-
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
-
+          if (!canSet ())
             return;
-          }
 
           _listener.Realm = value;
         }
@@ -606,13 +591,8 @@ namespace WebSocketSharp.Server
 
       set {
         lock (_sync) {
-          string msg;
-
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
-
+          if (!canSet ())
             return;
-          }
 
           _listener.ReuseAddress = value;
         }
@@ -681,13 +661,8 @@ namespace WebSocketSharp.Server
 
       set {
         lock (_sync) {
-          string msg;
-
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
-
+          if (!canSet ())
             return;
-          }
 
           _listener.UserCredentialsFinder = value;
         }
@@ -795,36 +770,27 @@ namespace WebSocketSharp.Server
       }
 
       try {
-        try {
-          _services.Stop (1006, String.Empty);
-        }
-        finally {
-          _listener.Abort ();
-        }
+        _services.Stop (1006, String.Empty);
       }
-      catch {
+      catch (Exception ex) {
+        _log.Fatal (ex.Message);
+        _log.Debug (ex.ToString ());
+      }
+
+      try {
+        _listener.Abort ();
+      }
+      catch (Exception ex) {
+        _log.Fatal (ex.Message);
+        _log.Debug (ex.ToString ());
       }
 
       _state = ServerState.Stop;
     }
 
-    private bool canSet (out string message)
+    private bool canSet ()
     {
-      message = null;
-
-      if (_state == ServerState.Start) {
-        message = "The server has already started.";
-
-        return false;
-      }
-
-      if (_state == ServerState.ShuttingDown) {
-        message = "The server is shutting down.";
-
-        return false;
-      }
-
-      return true;
+      return _state == ServerState.Ready || _state == ServerState.Stop;
     }
 
     private bool checkCertificate (out string message)
@@ -863,6 +829,7 @@ namespace WebSocketSharp.Server
 
       var schm = secure ? "https" : "http";
       var pref = String.Format ("{0}://{1}:{2}/", schm, hostname, port);
+
       lsnr.Prefixes.Add (pref);
 
       return lsnr;
@@ -964,7 +931,7 @@ namespace WebSocketSharp.Server
                 processRequest (ctx);
               }
               catch (Exception ex) {
-                _log.Fatal (ex.Message);
+                _log.Error (ex.Message);
                 _log.Debug (ex.ToString ());
 
                 ctx.Connection.Close (true);
@@ -972,13 +939,27 @@ namespace WebSocketSharp.Server
             }
           );
         }
-        catch (HttpListenerException) {
-          _log.Info ("The underlying listener is stopped.");
+        catch (HttpListenerException ex) {
+          if (_state == ServerState.ShuttingDown) {
+            _log.Info ("The underlying listener is stopped.");
+
+            return;
+          }
+
+          _log.Fatal (ex.Message);
+          _log.Debug (ex.ToString ());
 
           break;
         }
-        catch (InvalidOperationException) {
-          _log.Info ("The underlying listener is stopped.");
+        catch (InvalidOperationException ex) {
+          if (_state == ServerState.ShuttingDown) {
+            _log.Info ("The underlying listener is stopped.");
+
+            return;
+          }
+
+          _log.Fatal (ex.Message);
+          _log.Debug (ex.ToString ());
 
           break;
         }
@@ -989,27 +970,27 @@ namespace WebSocketSharp.Server
           if (ctx != null)
             ctx.Connection.Close (true);
 
+          if (_state == ServerState.ShuttingDown)
+            return;
+
           break;
         }
       }
 
-      if (_state != ServerState.ShuttingDown)
-        abort ();
+      abort ();
     }
 
     private void start ()
     {
       lock (_sync) {
-        if (_state == ServerState.Start) {
-          _log.Info ("The server has already started.");
-
+        if (_state == ServerState.Start || _state == ServerState.ShuttingDown)
           return;
-        }
 
-        if (_state == ServerState.ShuttingDown) {
-          _log.Warn ("The server is shutting down.");
+        if (_secure) {
+          string msg;
 
-          return;
+          if (!checkCertificate (out msg))
+            throw new InvalidOperationException (msg);
         }
 
         _services.Start ();
@@ -1038,7 +1019,8 @@ namespace WebSocketSharp.Server
         throw new InvalidOperationException (msg, ex);
       }
 
-      _receiveThread = new Thread (new ThreadStart (receiveRequest));
+      var receiver = new ThreadStart (receiveRequest);
+      _receiveThread = new Thread (receiver);
       _receiveThread.IsBackground = true;
 
       _receiveThread.Start ();
@@ -1047,45 +1029,29 @@ namespace WebSocketSharp.Server
     private void stop (ushort code, string reason)
     {
       lock (_sync) {
-        if (_state == ServerState.ShuttingDown) {
-          _log.Info ("The server is shutting down.");
-
+        if (_state != ServerState.Start)
           return;
-        }
-
-        if (_state == ServerState.Stop) {
-          _log.Info ("The server has already stopped.");
-
-          return;
-        }
 
         _state = ServerState.ShuttingDown;
       }
 
       try {
-        var threw = false;
-
-        try {
-          _services.Stop (code, reason);
-        }
-        catch {
-          threw = true;
-
-          throw;
-        }
-        finally {
-          try {
-            stopReceiving (5000);
-          }
-          catch {
-            if (!threw)
-              throw;
-          }
-        }
+        _services.Stop (code, reason);
       }
-      finally {
-        _state = ServerState.Stop;
+      catch (Exception ex) {
+        _log.Fatal (ex.Message);
+        _log.Debug (ex.ToString ());
       }
+
+      try {
+        stopReceiving (5000);
+      }
+      catch (Exception ex) {
+        _log.Fatal (ex.Message);
+        _log.Debug (ex.ToString ());
+      }
+
+      _state = ServerState.Stop;
     }
 
     private void stopReceiving (int millisecondsTimeout)
@@ -1342,24 +1308,8 @@ namespace WebSocketSharp.Server
     /// </exception>
     public void Start ()
     {
-      if (_secure) {
-        string msg;
-
-        if (!checkCertificate (out msg))
-          throw new InvalidOperationException (msg);
-      }
-
-      if (_state == ServerState.Start) {
-        _log.Info ("The server has already started.");
-
+      if (_state == ServerState.Start || _state == ServerState.ShuttingDown)
         return;
-      }
-
-      if (_state == ServerState.ShuttingDown) {
-        _log.Warn ("The server is shutting down.");
-
-        return;
-      }
 
       start ();
     }
@@ -1373,23 +1323,8 @@ namespace WebSocketSharp.Server
     /// </remarks>
     public void Stop ()
     {
-      if (_state == ServerState.Ready) {
-        _log.Info ("The server is not started.");
-
+      if (_state != ServerState.Start)
         return;
-      }
-
-      if (_state == ServerState.ShuttingDown) {
-        _log.Info ("The server is shutting down.");
-
-        return;
-      }
-
-      if (_state == ServerState.Stop) {
-        _log.Info ("The server has already stopped.");
-
-        return;
-      }
 
       stop (1001, String.Empty);
     }
