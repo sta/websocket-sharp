@@ -45,7 +45,9 @@ namespace WebSocketSharp
 
     #region Private Constructors
 
-    private HttpResponse (string code, string reason, Version version, NameValueCollection headers)
+    private HttpResponse (
+      string code, string reason, Version version, NameValueCollection headers
+    )
       : base (version, headers)
     {
       _code = code;
@@ -62,7 +64,12 @@ namespace WebSocketSharp
     }
 
     internal HttpResponse (HttpStatusCode code, string reason)
-      : this (((int) code).ToString (), reason, HttpVersion.Version11, new NameValueCollection ())
+      : this (
+          ((int) code).ToString (),
+          reason,
+          HttpVersion.Version11,
+          new NameValueCollection ()
+        )
     {
       Headers["Server"] = "websocket-sharp/1.0";
     }
