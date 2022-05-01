@@ -2105,9 +2105,7 @@ namespace WebSocketSharp
           throw new WebSocketException ("A proxy authentication is required.");
       }
 
-      var code = res.StatusCode;
-
-      if (code < 200 || code > 299)
+      if (!res.IsSuccess)
         throw new WebSocketException (
           "The proxy has failed a connection to the requested host and port.");
     }
