@@ -104,6 +104,12 @@ namespace WebSocketSharp
       }
     }
 
+    public bool IsSuccess {
+      get {
+        return _code >= 200 && _code <= 299;
+      }
+    }
+
     public bool IsUnauthorized {
       get {
         return _code == 401;
