@@ -38,7 +38,7 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private string _code;
+    private int    _code;
     private string _reason;
 
     #endregion
@@ -46,7 +46,7 @@ namespace WebSocketSharp
     #region Private Constructors
 
     private HttpResponse (
-      string code, string reason, Version version, NameValueCollection headers
+      int code, string reason, Version version, NameValueCollection headers
     )
       : base (version, headers)
     {
@@ -65,7 +65,7 @@ namespace WebSocketSharp
 
     internal HttpResponse (HttpStatusCode code, string reason)
       : this (
-          ((int) code).ToString (),
+          (int) code,
           reason,
           HttpVersion.Version11,
           new NameValueCollection ()
@@ -94,26 +94,26 @@ namespace WebSocketSharp
 
     public bool IsProxyAuthenticationRequired {
       get {
-        return _code == "407";
+        return _code == 407;
       }
     }
 
     public bool IsRedirect {
       get {
-        return _code == "301" || _code == "302";
+        return _code == 301 || _code == 302;
       }
     }
 
     public bool IsUnauthorized {
       get {
-        return _code == "401";
+        return _code == 401;
       }
     }
 
     public bool IsWebSocketResponse {
       get {
         return ProtocolVersion > HttpVersion.Version10
-               && _code == "101"
+               && _code == 101
                && Headers.Upgrades ("websocket");
       }
     }
@@ -124,7 +124,7 @@ namespace WebSocketSharp
       }
     }
 
-    public string StatusCode {
+    public int StatusCode {
       get {
         return _code;
       }
@@ -182,11 +182,13 @@ namespace WebSocketSharp
         throw new ArgumentException (msg);
       }
 
-      var code = statusLineParts[1];
+      var s = statusLineParts[1];
+      var code = Int32.Parse (s);
+
       var reason = statusLineParts[2];
 
-      var num = statusLineParts[0].Substring (5);
-      var ver = new Version (num);
+      s = statusLineParts[0].Substring (5);
+      var ver = new Version (s);
 
       var headers = new WebHeaderCollection ();
 
