@@ -154,13 +154,14 @@ namespace WebSocketSharp
 
     internal static HttpResponse CreateWebSocketResponse ()
     {
-      var res = new HttpResponse (HttpStatusCode.SwitchingProtocols);
+      var ret = new HttpResponse (HttpStatusCode.SwitchingProtocols);
 
-      var headers = res.Headers;
+      var headers = ret.Headers;
+
       headers["Upgrade"] = "websocket";
       headers["Connection"] = "Upgrade";
 
-      return res;
+      return ret;
     }
 
     internal static HttpResponse Parse (string[] headerParts)
