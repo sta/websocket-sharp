@@ -2077,37 +2077,55 @@ namespace WebSocketSharp
     {
       var req = HttpRequest.CreateConnectRequest (_uri);
       var res = sendHttpRequest (req, 90000);
+
       if (res.IsProxyAuthenticationRequired) {
-        var chal = res.Headers["Proxy-Authenticate"];
-        _logger.Warn (
-          String.Format ("Received a proxy authentication requirement for '{0}'.", chal));
+        if (_proxyCredentials == null) {
+          var msg = "No credential for the proxy is specified.";
 
-        if (chal.IsNullOrEmpty ())
-          throw new WebSocketException ("No proxy authentication challenge is specified.");
-
-        var authChal = AuthenticationChallenge.Parse (chal);
-        if (authChal == null)
-          throw new WebSocketException ("An invalid proxy authentication challenge is specified.");
-
-        if (_proxyCredentials != null) {
-          if (res.HasConnectionClose) {
-            releaseClientResources ();
-            _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-            _stream = _tcpClient.GetStream ();
-          }
-
-          var authRes = new AuthenticationResponse (authChal, _proxyCredentials, 0);
-          req.Headers["Proxy-Authorization"] = authRes.ToString ();
-          res = sendHttpRequest (req, 15000);
+          throw new WebSocketException (msg);
         }
 
-        if (res.IsProxyAuthenticationRequired)
-          throw new WebSocketException ("A proxy authentication is required.");
+        var val = res.Headers["Proxy-Authenticate"];
+
+        if (val.IsNullOrEmpty ()) {
+          var msg = "No proxy authentication challenge is specified.";
+
+          throw new WebSocketException (msg);
+        }
+
+        var achal = AuthenticationChallenge.Parse (val);
+
+        if (achal == null) {
+          var msg = "An invalid proxy authentication challenge is specified.";
+
+          throw new WebSocketException (msg);
+        }
+
+        var ares = new AuthenticationResponse (achal, _proxyCredentials, 0);
+
+        req.Headers["Proxy-Authorization"] = ares.ToString ();
+
+        if (res.HasConnectionClose) {
+          releaseClientResources ();
+
+          _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+          _stream = _tcpClient.GetStream ();
+        }
+
+        res = sendHttpRequest (req, 15000);
+
+        if (res.IsProxyAuthenticationRequired) {
+          var msg = "A proxy authentication is required.";
+
+          throw new WebSocketException (msg);
+        }
       }
 
-      if (!res.IsSuccess)
-        throw new WebSocketException (
-          "The proxy has failed a connection to the requested host and port.");
+      if (!res.IsSuccess) {
+        var msg = "The proxy has failed a connection to the requested URL.";
+
+        throw new WebSocketException (msg);
+      }
     }
 
     // As client
