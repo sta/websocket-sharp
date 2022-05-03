@@ -2115,7 +2115,7 @@ namespace WebSocketSharp
         res = sendHttpRequest (req, 15000);
 
         if (res.IsProxyAuthenticationRequired) {
-          var msg = "A proxy authentication is required.";
+          var msg = "The proxy authentication has failed.";
 
           throw new WebSocketException (msg);
         }
