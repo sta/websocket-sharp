@@ -2009,7 +2009,7 @@ namespace WebSocketSharp
 
         if (_credentials != null &&
             (!_preAuth || _authChallenge.Scheme == AuthenticationSchemes.Digest)) {
-          if (res.HasConnectionClose) {
+          if (res.CloseConnection) {
             releaseClientResources ();
             setClientStream ();
           }
@@ -2105,7 +2105,7 @@ namespace WebSocketSharp
 
         req.Headers["Proxy-Authorization"] = ares.ToString ();
 
-        if (res.HasConnectionClose) {
+        if (res.CloseConnection) {
           releaseClientResources ();
 
           _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);

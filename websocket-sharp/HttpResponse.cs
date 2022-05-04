@@ -84,7 +84,7 @@ namespace WebSocketSharp
       }
     }
 
-    public bool HasConnectionClose {
+    public bool CloseConnection {
       get {
         var compType = StringComparison.OrdinalIgnoreCase;
 
