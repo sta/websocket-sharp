@@ -1993,58 +1993,86 @@ namespace WebSocketSharp
     {
       var req = createHandshakeRequest ();
       var res = sendHttpRequest (req, 90000);
+
       if (res.IsUnauthorized) {
-        var chal = res.Headers["WWW-Authenticate"];
-        _logger.Warn (String.Format ("Received an authentication requirement for '{0}'.", chal));
-        if (chal.IsNullOrEmpty ()) {
+        if (_credentials == null) {
+          _logger.Error ("No credential is specified.");
+
+          return res;
+        }
+
+        var val = res.Headers["WWW-Authenticate"];
+
+        if (val.IsNullOrEmpty ()) {
           _logger.Error ("No authentication challenge is specified.");
+
           return res;
         }
 
-        _authChallenge = AuthenticationChallenge.Parse (chal);
-        if (_authChallenge == null) {
+        var achal = AuthenticationChallenge.Parse (val);
+
+        if (achal == null) {
           _logger.Error ("An invalid authentication challenge is specified.");
+
           return res;
         }
 
-        if (_credentials != null &&
-            (!_preAuth || _authChallenge.Scheme == AuthenticationSchemes.Digest)) {
-          if (res.CloseConnection) {
-            releaseClientResources ();
-            setClientStream ();
-          }
+        _authChallenge = achal;
 
-          var authRes = new AuthenticationResponse (_authChallenge, _credentials, _nonceCount);
-          _nonceCount = authRes.NonceCount;
-          req.Headers["Authorization"] = authRes.ToString ();
-          res = sendHttpRequest (req, 15000);
+        var failed = _preAuth
+                     && _authChallenge.Scheme == AuthenticationSchemes.Basic;
+
+        if (failed) {
+          _logger.Error ("The authentication has failed.");
+
+          return res;
         }
+
+        var ares = new AuthenticationResponse (
+                     _authChallenge, _credentials, _nonceCount
+                   );
+
+        _nonceCount = ares.NonceCount;
+
+        req.Headers["Authorization"] = ares.ToString ();
+
+        if (res.CloseConnection) {
+          releaseClientResources ();
+          setClientStream ();
+        }
+
+        res = sendHttpRequest (req, 15000);
       }
 
       if (res.IsRedirect) {
-        var url = res.Headers["Location"];
-        _logger.Warn (String.Format ("Received a redirection to '{0}'.", url));
-        if (_enableRedirection) {
-          if (url.IsNullOrEmpty ()) {
-            _logger.Error ("No url to redirect is located.");
-            return res;
-          }
+        if (!_enableRedirection)
+          return res;
 
-          Uri uri;
-          string msg;
-          if (!url.TryCreateWebSocketUri (out uri, out msg)) {
-            _logger.Error ("An invalid url to redirect is located: " + msg);
-            return res;
-          }
+        var val = res.Headers["Location"];
 
-          releaseClientResources ();
+        if (val.IsNullOrEmpty ()) {
+          _logger.Error ("No url to redirect is located.");
 
-          _uri = uri;
-          _secure = uri.Scheme == "wss";
-
-          setClientStream ();
-          return sendHandshakeRequest ();
+          return res;
         }
+
+        Uri uri;
+        string msg;
+
+        if (!val.TryCreateWebSocketUri (out uri, out msg)) {
+          _logger.Error ("An invalid url to redirect is located.");
+
+          return res;
+        }
+
+        releaseClientResources ();
+
+        _uri = uri;
+        _secure = uri.Scheme == "wss";
+
+        setClientStream ();
+
+        return sendHandshakeRequest ();
       }
 
       return res;
