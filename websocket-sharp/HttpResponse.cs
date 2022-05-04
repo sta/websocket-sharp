@@ -78,17 +78,17 @@ namespace WebSocketSharp
 
     #region Public Properties
 
-    public CookieCollection Cookies {
-      get {
-        return Headers.GetCookies (true);
-      }
-    }
-
     public bool CloseConnection {
       get {
         var compType = StringComparison.OrdinalIgnoreCase;
 
         return Headers.Contains ("Connection", "close", compType);
+      }
+    }
+
+    public CookieCollection Cookies {
+      get {
+        return Headers.GetCookies (true);
       }
     }
 
