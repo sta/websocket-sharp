@@ -1359,18 +1359,7 @@ namespace WebSocketSharp
       if (_extensionsRequested)
         headers["Sec-WebSocket-Extensions"] = createExtensions ();
 
-      AuthenticationResponse ares = null;
-
-      if (_authChallenge != null && _credentials != null) {
-        ares = new AuthenticationResponse (
-                 _authChallenge, _credentials, _nonceCount
-               );
-
-        _nonceCount = ares.NonceCount;
-      }
-      else if (_preAuth) {
-        ares = new AuthenticationResponse (_credentials);
-      }
+      var ares = createAuthenticationResponse ();
 
       if (ares != null)
         headers["Authorization"] = ares.ToString ();
