@@ -1321,32 +1321,38 @@ namespace WebSocketSharp
       var ret = HttpRequest.CreateWebSocketRequest (_uri);
 
       var headers = ret.Headers;
+
+      headers["Sec-WebSocket-Key"] = _base64Key;
+      headers["Sec-WebSocket-Version"] = _version;
+
       if (!_origin.IsNullOrEmpty ())
         headers["Origin"] = _origin;
 
-      headers["Sec-WebSocket-Key"] = _base64Key;
-
       _protocolsRequested = _protocols != null;
+
       if (_protocolsRequested)
         headers["Sec-WebSocket-Protocol"] = _protocols.ToString (", ");
 
       _extensionsRequested = _compression != CompressionMethod.None;
+
       if (_extensionsRequested)
         headers["Sec-WebSocket-Extensions"] = createExtensions ();
 
-      headers["Sec-WebSocket-Version"] = _version;
+      AuthenticationResponse ares = null;
 
-      AuthenticationResponse authRes = null;
       if (_authChallenge != null && _credentials != null) {
-        authRes = new AuthenticationResponse (_authChallenge, _credentials, _nonceCount);
-        _nonceCount = authRes.NonceCount;
+        ares = new AuthenticationResponse (
+                 _authChallenge, _credentials, _nonceCount
+               );
+
+        _nonceCount = ares.NonceCount;
       }
       else if (_preAuth) {
-        authRes = new AuthenticationResponse (_credentials);
+        ares = new AuthenticationResponse (_credentials);
       }
 
-      if (authRes != null)
-        headers["Authorization"] = authRes.ToString ();
+      if (ares != null)
+        headers["Authorization"] = ares.ToString ();
 
       if (_cookies.Count > 0)
         ret.SetCookies (_cookies);
