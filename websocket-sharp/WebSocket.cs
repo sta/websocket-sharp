@@ -1292,18 +1292,20 @@ namespace WebSocketSharp
 
       if (_compression != CompressionMethod.None) {
         var str = _compression.ToExtensionString (
-          "server_no_context_takeover", "client_no_context_takeover");
+                    "server_no_context_takeover", "client_no_context_takeover"
+                  );
 
         buff.AppendFormat ("{0}, ", str);
       }
 
       var len = buff.Length;
-      if (len > 2) {
-        buff.Length = len - 2;
-        return buff.ToString ();
-      }
 
-      return null;
+      if (len <= 2)
+        return null;
+
+      buff.Length = len - 2;
+
+      return buff.ToString ();
     }
 
     // As server
