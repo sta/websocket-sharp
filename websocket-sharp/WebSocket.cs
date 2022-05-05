@@ -1284,6 +1284,25 @@ namespace WebSocketSharp
         return true;
       }
     }
+    
+    // As client
+    private AuthenticationResponse createAuthenticationResponse ()
+    {
+      if (_credentials == null)
+        return null;
+
+      if (_authChallenge != null) {
+        var ret = new AuthenticationResponse (
+                    _authChallenge, _credentials, _nonceCount
+                  );
+
+        _nonceCount = ret.NonceCount;
+
+        return ret;
+      }
+
+      return _preAuth ? new AuthenticationResponse (_credentials) : null;
+    }
 
     // As client
     private string createExtensions ()
