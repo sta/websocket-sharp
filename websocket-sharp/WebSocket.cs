@@ -1354,10 +1354,13 @@ namespace WebSocketSharp
       if (_protocolsRequested)
         headers["Sec-WebSocket-Protocol"] = _protocols.ToString (", ");
 
-      _extensionsRequested = _compression != CompressionMethod.None;
+      var exts = createExtensions ();
 
-      if (_extensionsRequested)
-        headers["Sec-WebSocket-Extensions"] = createExtensions ();
+      if (exts != null) {
+        headers["Sec-WebSocket-Extensions"] = exts;
+
+        _extensionsRequested = true;
+      }
 
       var ares = createAuthenticationResponse ();
 
