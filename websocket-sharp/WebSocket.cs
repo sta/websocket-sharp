@@ -1349,10 +1349,11 @@ namespace WebSocketSharp
       if (!_origin.IsNullOrEmpty ())
         headers["Origin"] = _origin;
 
-      _protocolsRequested = _protocols != null;
-
-      if (_protocolsRequested)
+      if (_protocols != null) {
         headers["Sec-WebSocket-Protocol"] = _protocols.ToString (", ");
+        
+        _protocolsRequested = true;
+      }
 
       var exts = createExtensions ();
 
