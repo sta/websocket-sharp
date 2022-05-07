@@ -1331,6 +1331,7 @@ namespace WebSocketSharp
     private HttpResponse createHandshakeFailureResponse (HttpStatusCode code)
     {
       var ret = HttpResponse.CreateCloseResponse (code);
+
       ret.Headers["Sec-WebSocket-Version"] = _version;
 
       return ret;
