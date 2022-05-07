@@ -1381,6 +1381,7 @@ namespace WebSocketSharp
       var ret = HttpResponse.CreateWebSocketResponse ();
 
       var headers = ret.Headers;
+
       headers["Sec-WebSocket-Accept"] = CreateResponseKey (_base64Key);
 
       if (_protocol != null)
