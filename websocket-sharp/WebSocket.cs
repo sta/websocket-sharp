@@ -1407,6 +1407,7 @@ namespace WebSocketSharp
         return true;
 
       message = _handshakeRequestChecker (context);
+
       return message == null;
     }
 
