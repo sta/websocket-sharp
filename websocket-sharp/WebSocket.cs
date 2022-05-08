@@ -1413,8 +1413,11 @@ namespace WebSocketSharp
 
     private MessageEventArgs dequeueFromMessageEventQueue ()
     {
-      lock (_forMessageEventQueue)
-        return _messageEventQueue.Count > 0 ? _messageEventQueue.Dequeue () : null;
+      lock (_forMessageEventQueue) {
+        return _messageEventQueue.Count > 0
+               ? _messageEventQueue.Dequeue ()
+               : null;
+      }
     }
 
     // As client
