@@ -1424,17 +1424,22 @@ namespace WebSocketSharp
     private void doHandshake ()
     {
       setClientStream ();
+
       var res = sendHandshakeRequest ();
 
       string msg;
+
       if (!checkHandshakeResponse (res, out msg))
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
 
       if (_protocolsRequested)
         _protocol = res.Headers["Sec-WebSocket-Protocol"];
 
-      if (_extensionsRequested)
-        processSecWebSocketExtensionsServerHeader (res.Headers["Sec-WebSocket-Extensions"]);
+      if (_extensionsRequested) {
+        var val = res.Headers["Sec-WebSocket-Extensions"];
+
+        processSecWebSocketExtensionsServerHeader (val);
+      }
 
       processCookies (res.Cookies);
     }
