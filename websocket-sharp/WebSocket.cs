@@ -1001,19 +1001,19 @@ namespace WebSocketSharp
       message = null;
 
       if (response.IsRedirect) {
-        message = "The handshake response indicates the redirection.";
+        message = "The redirection is indicated.";
 
         return false;
       }
 
       if (response.IsUnauthorized) {
-        message = "The handshake response requires the authentication.";
+        message = "The authentication is required.";
 
         return false;
       }
 
       if (!response.IsWebSocketResponse) {
-        message = "The handshake response is not a WebSocket handshake response.";
+        message = "Not a WebSocket handshake response.";
 
         return false;
       }
