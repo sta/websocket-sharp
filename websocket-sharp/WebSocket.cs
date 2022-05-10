@@ -1046,7 +1046,7 @@ namespace WebSocketSharp
 
       val = headers["Sec-WebSocket-Version"];
 
-      if (!validateSecWebSocketVersionServerHeader (val)) {
+      if (val != null && val != _version) {
         message = "The Sec-WebSocket-Version header is invalid.";
 
         return false;
