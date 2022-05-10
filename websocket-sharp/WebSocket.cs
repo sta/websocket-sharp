@@ -982,43 +982,61 @@ namespace WebSocketSharp
     }
 
     // As client
-    private bool checkHandshakeResponse (HttpResponse response, out string message)
+    private bool checkHandshakeResponse (
+      HttpResponse response, out string message
+    )
     {
       message = null;
 
       if (response.IsRedirect) {
-        message = "Indicates the redirection.";
+        message = "The handshake response indicates the redirection.";
+
         return false;
       }
 
       if (response.IsUnauthorized) {
-        message = "Requires the authentication.";
+        message = "The handshake response requires the authentication.";
+
         return false;
       }
 
       if (!response.IsWebSocketResponse) {
-        message = "Not a WebSocket handshake response.";
+        message = "The handshake response is not a WebSocket handshake response.";
+
         return false;
       }
 
       var headers = response.Headers;
-      if (!validateSecWebSocketAcceptHeader (headers["Sec-WebSocket-Accept"])) {
-        message = "Includes no Sec-WebSocket-Accept header, or it has an invalid value.";
+
+      var val = headers["Sec-WebSocket-Accept"];
+
+      if (!validateSecWebSocketAcceptHeader (val)) {
+        message = "The Sec-WebSocket-Accept header is non-existent or invalid.";
+
         return false;
       }
 
-      if (!validateSecWebSocketProtocolServerHeader (headers["Sec-WebSocket-Protocol"])) {
-        message = "Includes no Sec-WebSocket-Protocol header, or it has an invalid value.";
+      val = headers["Sec-WebSocket-Protocol"];
+
+      if (!validateSecWebSocketProtocolServerHeader (val)) {
+        message = "The Sec-WebSocket-Protocol header is non-existent or invalid.";
+
         return false;
       }
 
-      if (!validateSecWebSocketExtensionsServerHeader (headers["Sec-WebSocket-Extensions"])) {
-        message = "Includes an invalid Sec-WebSocket-Extensions header.";
+      val = headers["Sec-WebSocket-Extensions"];
+
+      if (!validateSecWebSocketExtensionsServerHeader (val)) {
+        message = "The Sec-WebSocket-Extensions header is invalid.";
+
         return false;
       }
 
-      if (!validateSecWebSocketVersionServerHeader (headers["Sec-WebSocket-Version"])) {
-        message = "Includes an invalid Sec-WebSocket-Version header.";
+      val = headers["Sec-WebSocket-Version"];
+
+      if (!validateSecWebSocketVersionServerHeader (val)) {
+        message = "The Sec-WebSocket-Version header is invalid.";
+
         return false;
       }
 
