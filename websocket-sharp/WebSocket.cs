@@ -2362,12 +2362,6 @@ namespace WebSocketSharp
       return _protocolsRequested && _protocols.Contains (p => p == value);
     }
 
-    // As client
-    private bool validateSecWebSocketVersionServerHeader (string value)
-    {
-      return value == null || value == _version;
-    }
-
     #endregion
 
     #region Internal Methods
