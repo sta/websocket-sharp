@@ -931,49 +931,61 @@ namespace WebSocketSharp
       message = null;
 
       if (!context.IsWebSocketRequest) {
-        message = "Not a handshake request.";
+        message = "Not a WebSocket handshake request.";
+
         return false;
       }
 
       if (context.RequestUri == null) {
-        message = "It specifies an invalid Request-URI.";
+        message = "The Request-URI is invalid.";
+
         return false;
       }
 
       var headers = context.Headers;
 
       var key = headers["Sec-WebSocket-Key"];
+
       if (key == null) {
-        message = "It includes no Sec-WebSocket-Key header.";
+        message = "The Sec-WebSocket-Key header is non-existent.";
+
         return false;
       }
 
       if (key.Length == 0) {
-        message = "It includes an invalid Sec-WebSocket-Key header.";
+        message = "The Sec-WebSocket-Key header is invalid.";
+
         return false;
       }
 
       var version = headers["Sec-WebSocket-Version"];
+
       if (version == null) {
-        message = "It includes no Sec-WebSocket-Version header.";
+        message = "The Sec-WebSocket-Version header is non-existent.";
+
         return false;
       }
 
       if (version != _version) {
-        message = "It includes an invalid Sec-WebSocket-Version header.";
+        message = "The Sec-WebSocket-Version header is invalid.";
+
         return false;
       }
 
       var protocol = headers["Sec-WebSocket-Protocol"];
+
       if (protocol != null && protocol.Length == 0) {
-        message = "It includes an invalid Sec-WebSocket-Protocol header.";
+        message = "The Sec-WebSocket-Protocol header is invalid.";
+
         return false;
       }
 
       if (!_ignoreExtensions) {
         var extensions = headers["Sec-WebSocket-Extensions"];
+
         if (extensions != null && extensions.Length == 0) {
-          message = "It includes an invalid Sec-WebSocket-Extensions header.";
+          message = "The Sec-WebSocket-Extensions header is invalid.";
+
           return false;
         }
       }
