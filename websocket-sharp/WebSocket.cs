@@ -1022,8 +1022,14 @@ namespace WebSocketSharp
 
       var val = headers["Sec-WebSocket-Accept"];
 
-      if (!validateSecWebSocketAcceptHeader (val)) {
-        message = "The Sec-WebSocket-Accept header is non-existent or invalid.";
+      if (val == null) {
+        message = "The Sec-WebSocket-Accept header is non-existent.";
+
+        return false;
+      }
+
+      if (val != CreateResponseKey (_base64Key)) {
+        message = "The Sec-WebSocket-Accept header is invalid.";
 
         return false;
       }
