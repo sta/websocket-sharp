@@ -2363,18 +2363,6 @@ namespace WebSocketSharp
       return true;
     }
 
-    // As client
-    private bool validateSecWebSocketProtocolServerHeader (string value)
-    {
-      if (value == null)
-        return !_protocolsRequested;
-
-      if (value.Length == 0)
-        return false;
-
-      return _protocolsRequested && _protocols.Contains (p => p == value);
-    }
-
     #endregion
 
     #region Internal Methods
