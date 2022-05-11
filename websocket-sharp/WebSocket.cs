@@ -1036,10 +1036,23 @@ namespace WebSocketSharp
 
       val = headers["Sec-WebSocket-Protocol"];
 
-      if (!validateSecWebSocketProtocolServerHeader (val)) {
-        message = "The Sec-WebSocket-Protocol header is non-existent or invalid.";
+      if (val == null) {
+        if (_protocolsRequested) {
+          message = "The Sec-WebSocket-Protocol header is non-existent.";
 
-        return false;
+          return false;
+        }
+      }
+      else {
+        var valid = val.Length > 0
+                    && _protocolsRequested
+                    && _protocols.Contains (p => p == val);
+
+        if (!valid) {
+          message = "The Sec-WebSocket-Protocol header is invalid.";
+
+          return false;
+        }
       }
 
       val = headers["Sec-WebSocket-Extensions"];
