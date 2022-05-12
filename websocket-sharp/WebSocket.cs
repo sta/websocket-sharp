@@ -2330,27 +2330,34 @@ namespace WebSocketSharp
         return false;
 
       var comp = _compression != CompressionMethod.None;
-      foreach (var e in value.SplitHeaderValue (',')) {
-        var ext = e.Trim ();
+
+      foreach (var elm in value.SplitHeaderValue (',')) {
+        var ext = elm.Trim ();
+
         if (comp && ext.IsCompressionExtension (_compression)) {
           if (!ext.Contains ("server_no_context_takeover")) {
-            _logger.Error ("The server hasn't sent back 'server_no_context_takeover'.");
+            var msg = "The server has not sent back 'server_no_context_takeover'.";
+            _logger.Error (msg);
+
             return false;
           }
 
-          if (!ext.Contains ("client_no_context_takeover"))
-            _logger.Warn ("The server hasn't sent back 'client_no_context_takeover'.");
+          if (!ext.Contains ("client_no_context_takeover")) {
+            var msg = "The server has not sent back 'client_no_context_takeover'.";
 
-          var method = _compression.ToExtensionString ();
-          var invalid =
-            ext.SplitHeaderValue (';').Contains (
-              t => {
-                t = t.Trim ();
-                return t != method
-                       && t != "server_no_context_takeover"
-                       && t != "client_no_context_takeover";
-              }
-            );
+            _logger.Warn (msg);
+          }
+
+          var name = _compression.ToExtensionString ();
+          var invalid = ext.SplitHeaderValue (';').Contains (
+                          t => {
+                            t = t.Trim ();
+
+                            return t != name
+                                   && t != "server_no_context_takeover"
+                                   && t != "client_no_context_takeover";
+                          }
+                        );
 
           if (invalid)
             return false;
