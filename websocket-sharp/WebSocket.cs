@@ -2335,15 +2335,21 @@ namespace WebSocketSharp
         var ext = elm.Trim ();
 
         if (comp && ext.IsCompressionExtension (_compression)) {
-          if (!ext.Contains ("server_no_context_takeover")) {
-            var msg = "The server has not sent back 'server_no_context_takeover'.";
+          var param1 = "server_no_context_takeover";
+          var param2 = "client_no_context_takeover";
+
+          if (!ext.Contains (param1)) {
+            var fmt = "The server did not send back '{0}'.";
+            var msg = String.Format (fmt, param1);
+
             _logger.Error (msg);
 
             return false;
           }
 
-          if (!ext.Contains ("client_no_context_takeover")) {
-            var msg = "The server has not sent back 'client_no_context_takeover'.";
+          if (!ext.Contains (param2)) {
+            var fmt = "The server did not send back '{0}'.";
+            var msg = String.Format (fmt, param2);
 
             _logger.Warn (msg);
           }
@@ -2354,8 +2360,8 @@ namespace WebSocketSharp
                             t = t.Trim ();
 
                             return t != name
-                                   && t != "server_no_context_takeover"
-                                   && t != "client_no_context_takeover";
+                                   && t != param1
+                                   && t != param2;
                           }
                         );
 
