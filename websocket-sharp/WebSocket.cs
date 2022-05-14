@@ -1001,23 +1001,28 @@ namespace WebSocketSharp
         return false;
       }
 
-      var headers = response.Headers;
-      if (!validateSecWebSocketAcceptHeader (headers["Sec-WebSocket-Accept"])) {
+      var headersSource = response.Headers;
+      var headers = new NameValueCollection();
+      foreach (var name in headersSource.AllKeys) {
+                headers[name.ToLower()] = headersSource[name];
+      }
+
+      if (!validateSecWebSocketAcceptHeader (headers[("Sec-WebSocket-Accept").ToLower()])) {
         message = "Includes no Sec-WebSocket-Accept header, or it has an invalid value.";
         return false;
       }
 
-      if (!validateSecWebSocketProtocolServerHeader (headers["Sec-WebSocket-Protocol"])) {
+      if (!validateSecWebSocketProtocolServerHeader (headers[("Sec-WebSocket-Protocol").ToLower()])) {
         message = "Includes no Sec-WebSocket-Protocol header, or it has an invalid value.";
         return false;
       }
 
-      if (!validateSecWebSocketExtensionsServerHeader (headers["Sec-WebSocket-Extensions"])) {
+      if (!validateSecWebSocketExtensionsServerHeader (headers[("Sec-WebSocket-Extensions").ToLower()])) {
         message = "Includes an invalid Sec-WebSocket-Extensions header.";
         return false;
       }
 
-      if (!validateSecWebSocketVersionServerHeader (headers["Sec-WebSocket-Version"])) {
+      if (!validateSecWebSocketVersionServerHeader (headers[("Sec-WebSocket-Version").ToLower()])) {
         message = "Includes an invalid Sec-WebSocket-Version header.";
         return false;
       }
@@ -1405,10 +1410,10 @@ namespace WebSocketSharp
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
 
       if (_protocolsRequested)
-        _protocol = res.Headers["Sec-WebSocket-Protocol"];
+        _protocol = res.Headers[("Sec-WebSocket-Protocol").ToLower()];
 
       if (_extensionsRequested)
-        processSecWebSocketExtensionsServerHeader (res.Headers["Sec-WebSocket-Extensions"]);
+        processSecWebSocketExtensionsServerHeader (res.Headers[("Sec-WebSocket-Extensions").ToLower()]);
 
       processCookies (res.Cookies);
     }
