@@ -2359,9 +2359,11 @@ namespace WebSocketSharp
                           t => {
                             t = t.Trim ();
 
-                            return t != name
-                                   && t != param1
-                                   && t != param2;
+                            var valid = t == name
+                                        || t == param1
+                                        || t == param2;
+
+                            return !valid;
                           }
                         );
 
