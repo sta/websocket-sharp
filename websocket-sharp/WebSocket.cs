@@ -2347,13 +2347,6 @@ namespace WebSocketSharp
             return false;
           }
 
-          if (!ext.Contains (param2)) {
-            var fmt = "The server did not send back '{0}'.";
-            var msg = String.Format (fmt, param2);
-
-            _logger.Warn (msg);
-          }
-
           var name = _compression.ToExtensionString ();
           var invalid = ext.SplitHeaderValue (';').Contains (
                           t => {
