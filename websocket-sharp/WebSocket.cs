@@ -2369,6 +2369,8 @@ namespace WebSocketSharp
 
           if (invalid)
             return false;
+
+          comp = false;
         }
         else {
           return false;
