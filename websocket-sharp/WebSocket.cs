@@ -1042,9 +1042,9 @@ namespace WebSocketSharp
         return false;
       }
 
-      val = headers["Sec-WebSocket-Protocol"];
+      var subp = headers["Sec-WebSocket-Protocol"];
 
-      if (val == null) {
+      if (subp == null) {
         if (_protocolsRequested) {
           message = "The Sec-WebSocket-Protocol header is non-existent.";
 
@@ -1052,9 +1052,9 @@ namespace WebSocketSharp
         }
       }
       else {
-        var valid = val.Length > 0
+        var valid = subp.Length > 0
                     && _protocolsRequested
-                    && _protocols.Contains (p => p == val);
+                    && _protocols.Contains (p => p == subp);
 
         if (!valid) {
           message = "The Sec-WebSocket-Protocol header is invalid.";
