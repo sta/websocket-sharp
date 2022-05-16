@@ -1034,6 +1034,14 @@ namespace WebSocketSharp
         return false;
       }
 
+      val = headers["Sec-WebSocket-Version"];
+
+      if (val != null && val != _version) {
+        message = "The Sec-WebSocket-Version header is invalid.";
+
+        return false;
+      }
+
       val = headers["Sec-WebSocket-Protocol"];
 
       if (val == null) {
@@ -1059,14 +1067,6 @@ namespace WebSocketSharp
 
       if (!validateSecWebSocketExtensionsServerHeader (val)) {
         message = "The Sec-WebSocket-Extensions header is invalid.";
-
-        return false;
-      }
-
-      val = headers["Sec-WebSocket-Version"];
-
-      if (val != null && val != _version) {
-        message = "The Sec-WebSocket-Version header is invalid.";
 
         return false;
       }
