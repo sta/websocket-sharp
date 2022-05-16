@@ -1063,9 +1063,9 @@ namespace WebSocketSharp
         }
       }
 
-      val = headers["Sec-WebSocket-Extensions"];
+      var exts = headers["Sec-WebSocket-Extensions"];
 
-      if (!validateSecWebSocketExtensionsServerHeader (val)) {
+      if (!validateSecWebSocketExtensionsServerHeader (exts)) {
         message = "The Sec-WebSocket-Extensions header is invalid.";
 
         return false;
