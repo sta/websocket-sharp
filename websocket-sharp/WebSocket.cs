@@ -958,15 +958,15 @@ namespace WebSocketSharp
         return false;
       }
 
-      var version = headers["Sec-WebSocket-Version"];
+      var ver = headers["Sec-WebSocket-Version"];
 
-      if (version == null) {
+      if (ver == null) {
         message = "The Sec-WebSocket-Version header is non-existent.";
 
         return false;
       }
 
-      if (version != _version) {
+      if (ver != _version) {
         message = "The Sec-WebSocket-Version header is invalid.";
 
         return false;
