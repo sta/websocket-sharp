@@ -1020,15 +1020,15 @@ namespace WebSocketSharp
 
       var headers = response.Headers;
 
-      var val = headers["Sec-WebSocket-Accept"];
+      var key = headers["Sec-WebSocket-Accept"];
 
-      if (val == null) {
+      if (key == null) {
         message = "The Sec-WebSocket-Accept header is non-existent.";
 
         return false;
       }
 
-      if (val != CreateResponseKey (_base64Key)) {
+      if (key != CreateResponseKey (_base64Key)) {
         message = "The Sec-WebSocket-Accept header is invalid.";
 
         return false;
