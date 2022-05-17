@@ -972,9 +972,9 @@ namespace WebSocketSharp
         return false;
       }
 
-      var protocol = headers["Sec-WebSocket-Protocol"];
+      var subps = headers["Sec-WebSocket-Protocol"];
 
-      if (protocol != null && protocol.Length == 0) {
+      if (subps != null && subps.Length == 0) {
         message = "The Sec-WebSocket-Protocol header is invalid.";
 
         return false;
