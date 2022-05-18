@@ -2242,6 +2242,7 @@ namespace WebSocketSharp
       if (_proxyUri != null) {
         _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
         _stream = _tcpClient.GetStream ();
+
         sendProxyConnectRequest ();
       }
       else {
@@ -2252,27 +2253,36 @@ namespace WebSocketSharp
       if (_secure) {
         var conf = getSslConfiguration ();
         var host = conf.TargetHost;
-        if (host != _uri.DnsSafeHost)
+
+        if (host != _uri.DnsSafeHost) {
+          var msg = "An invalid host name is specified.";
+
           throw new WebSocketException (
-            CloseStatusCode.TlsHandshakeFailure, "An invalid host name is specified.");
+                  CloseStatusCode.TlsHandshakeFailure, msg
+                );
+        }
 
         try {
           var sslStream = new SslStream (
-            _stream,
-            false,
-            conf.ServerCertificateValidationCallback,
-            conf.ClientCertificateSelectionCallback);
+                            _stream,
+                            false,
+                            conf.ServerCertificateValidationCallback,
+                            conf.ClientCertificateSelectionCallback
+                          );
 
           sslStream.AuthenticateAsClient (
             host,
             conf.ClientCertificates,
             conf.EnabledSslProtocols,
-            conf.CheckCertificateRevocation);
+            conf.CheckCertificateRevocation
+          );
 
           _stream = sslStream;
         }
         catch (Exception ex) {
-          throw new WebSocketException (CloseStatusCode.TlsHandshakeFailure, ex);
+          throw new WebSocketException (
+                  CloseStatusCode.TlsHandshakeFailure, ex
+                );
         }
       }
     }
