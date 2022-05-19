@@ -2159,11 +2159,19 @@ namespace WebSocketSharp
     }
 
     // As client
-    private HttpResponse sendHttpRequest (HttpRequest request, int millisecondsTimeout)
+    private HttpResponse sendHttpRequest (
+      HttpRequest request, int millisecondsTimeout
+    )
     {
-      _logger.Debug ("A request to the server:\n" + request.ToString ());
+      var msg = "An HTTP request to the server:\n" + request.ToString ();
+
+      _logger.Debug (msg);
+
       var res = request.GetResponse (_stream, millisecondsTimeout);
-      _logger.Debug ("A response to this request:\n" + res.ToString ());
+
+      msg = "An HTTP response from the server:\n" + res.ToString ();
+
+      _logger.Debug (msg);
 
       return res;
     }
