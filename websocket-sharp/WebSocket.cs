@@ -2179,13 +2179,14 @@ namespace WebSocketSharp
     // As server
     private bool sendHttpResponse (HttpResponse response)
     {
-      _logger.Debug (
-        String.Format (
-          "A response to {0}:\n{1}", _context.UserEndPoint, response
-        )
-      );
+      var fmt = "An HTTP response to {0}:\n{1}";
+      var msg = String.Format (fmt, _context.UserEndPoint, response);
 
-      return sendBytes (response.ToByteArray ());
+      _logger.Debug (msg);
+
+      var bytes = response.ToByteArray ();
+
+      return sendBytes (bytes);
     }
 
     // As client
