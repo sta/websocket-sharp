@@ -63,6 +63,17 @@ namespace WebSocketSharp
     {
     }
 
+    internal HttpResponse (int code, string reason)
+      : this (
+          code,
+          reason,
+          HttpVersion.Version11,
+          new NameValueCollection ()
+        )
+    {
+      Headers["Server"] = "websocket-sharp/1.0";
+    }
+
     internal HttpResponse (HttpStatusCode code, string reason)
       : this (
           (int) code,
