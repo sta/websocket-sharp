@@ -58,6 +58,11 @@ namespace WebSocketSharp
 
     #region Internal Constructors
 
+    internal HttpResponse (int code)
+      : this (code, code.GetStatusDescription ())
+    {
+    }
+
     internal HttpResponse (HttpStatusCode code)
       : this (code, code.GetDescription ())
     {
