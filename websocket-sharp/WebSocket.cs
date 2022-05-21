@@ -1427,7 +1427,7 @@ namespace WebSocketSharp
     // As server
     private HttpResponse createHandshakeResponse ()
     {
-      var ret = HttpResponse.CreateWebSocketResponse ();
+      var ret = HttpResponse.CreateWebSocketHandshakeResponse ();
 
       var headers = ret.Headers;
 

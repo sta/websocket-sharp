@@ -168,7 +168,7 @@ namespace WebSocketSharp
       return ret;
     }
 
-    internal static HttpResponse CreateWebSocketResponse ()
+    internal static HttpResponse CreateWebSocketHandshakeResponse ()
     {
       var ret = new HttpResponse (HttpStatusCode.SwitchingProtocols);
 
