@@ -64,7 +64,7 @@ namespace WebSocketSharp
     }
 
     internal HttpResponse (HttpStatusCode code)
-      : this (code, code.GetDescription ())
+      : this ((int) code)
     {
     }
 
