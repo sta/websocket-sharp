@@ -862,20 +862,16 @@ namespace WebSocketSharp
     // As server
     private bool acceptHandshake ()
     {
-      _logger.Debug (
-        String.Format (
-          "A handshake request from {0}:\n{1}", _context.UserEndPoint, _context
-        )
-      );
+      var fmt = "A handshake request from {0}:\n{1}";
+      var msg = String.Format (fmt, _context.UserEndPoint, _context);
 
-      string msg;
+      _logger.Debug (msg);
+
       if (!checkHandshakeRequest (_context, out msg)) {
         _logger.Error (msg);
 
-        refuseHandshake (
-          CloseStatusCode.ProtocolError,
-          "A handshake error has occurred while attempting to accept."
-        );
+        var reason = "A handshake error has occurred while attempting to accept.";
+        refuseHandshake (CloseStatusCode.ProtocolError, reason);
 
         return false;
       }
@@ -883,10 +879,8 @@ namespace WebSocketSharp
       if (!customCheckHandshakeRequest (_context, out msg)) {
         _logger.Error (msg);
 
-        refuseHandshake (
-          CloseStatusCode.PolicyViolation,
-          "A handshake error has occurred while attempting to accept."
-        );
+        var reason = "A handshake error has occurred while attempting to accept.";
+        refuseHandshake (CloseStatusCode.PolicyViolation, reason);
 
         return false;
       }
@@ -895,15 +889,19 @@ namespace WebSocketSharp
 
       if (_protocol != null) {
         var vals = _context.SecWebSocketProtocols;
+
         processSecWebSocketProtocolClientHeader (vals);
       }
 
       if (!_ignoreExtensions) {
         var val = _context.Headers["Sec-WebSocket-Extensions"];
+
         processSecWebSocketExtensionsClientHeader (val);
       }
 
-      return sendHttpResponse (createHandshakeResponse ());
+      var res = createHandshakeResponse ();
+
+      return sendHttpResponse (res);
     }
 
     private bool canSet (out string message)
