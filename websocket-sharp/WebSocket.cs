@@ -1793,23 +1793,25 @@ namespace WebSocketSharp
         return;
 
       var buff = new StringBuilder (80);
+
       var comp = false;
 
       foreach (var elm in value.SplitHeaderValue (',')) {
-        var extension = elm.Trim ();
-        if (extension.Length == 0)
+        var ext = elm.Trim ();
+
+        if (ext.Length == 0)
           continue;
 
         if (!comp) {
-          if (extension.IsCompressionExtension (CompressionMethod.Deflate)) {
+          if (ext.IsCompressionExtension (CompressionMethod.Deflate)) {
             _compression = CompressionMethod.Deflate;
 
-            buff.AppendFormat (
-              "{0}, ",
-              _compression.ToExtensionString (
-                "client_no_context_takeover", "server_no_context_takeover"
-              )
-            );
+            var str = _compression.ToExtensionString (
+                        "client_no_context_takeover",
+                        "server_no_context_takeover"
+                      );
+
+            buff.AppendFormat ("{0}, ", str);
 
             comp = true;
           }
@@ -1817,10 +1819,12 @@ namespace WebSocketSharp
       }
 
       var len = buff.Length;
+
       if (len <= 2)
         return;
 
       buff.Length = len - 2;
+
       _extensions = buff.ToString ();
     }
 
