@@ -135,7 +135,7 @@ namespace WebSocketSharp
       return ret;
     }
 
-    internal static HttpRequest CreateWebSocketRequest (Uri uri)
+    internal static HttpRequest CreateWebSocketHandshakeRequest (Uri uri)
     {
       var ret = new HttpRequest ("GET", uri.PathAndQuery);
 

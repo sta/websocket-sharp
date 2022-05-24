@@ -1387,7 +1387,7 @@ namespace WebSocketSharp
     // As client
     private HttpRequest createHandshakeRequest ()
     {
-      var ret = HttpRequest.CreateWebSocketRequest (_uri);
+      var ret = HttpRequest.CreateWebSocketHandshakeRequest (_uri);
 
       var headers = ret.Headers;
 
