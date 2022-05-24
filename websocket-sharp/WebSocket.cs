@@ -1399,7 +1399,7 @@ namespace WebSocketSharp
 
       if (_protocols != null) {
         headers["Sec-WebSocket-Protocol"] = _protocols.ToString (", ");
-        
+
         _protocolsRequested = true;
       }
 
