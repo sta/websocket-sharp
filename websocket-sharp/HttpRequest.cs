@@ -122,10 +122,10 @@ namespace WebSocketSharp
 
     #region Internal Methods
 
-    internal static HttpRequest CreateConnectRequest (Uri uri)
+    internal static HttpRequest CreateConnectRequest (Uri targetUri)
     {
-      var host = uri.DnsSafeHost;
-      var port = uri.Port;
+      var host = targetUri.DnsSafeHost;
+      var port = targetUri.Port;
       var authority = String.Format ("{0}:{1}", host, port);
 
       var ret = new HttpRequest ("CONNECT", authority);
