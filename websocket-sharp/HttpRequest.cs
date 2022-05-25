@@ -135,18 +135,18 @@ namespace WebSocketSharp
       return ret;
     }
 
-    internal static HttpRequest CreateWebSocketHandshakeRequest (Uri uri)
+    internal static HttpRequest CreateWebSocketHandshakeRequest (Uri targetUri)
     {
-      var ret = new HttpRequest ("GET", uri.PathAndQuery);
+      var ret = new HttpRequest ("GET", targetUri.PathAndQuery);
 
-      var port = uri.Port;
-      var schm = uri.Scheme;
+      var port = targetUri.Port;
+      var schm = targetUri.Scheme;
       var defaultPort = (port == 80 && schm == "ws")
                         || (port == 443 && schm == "wss");
 
       var headers = ret.Headers;
 
-      headers["Host"] = !defaultPort ? uri.Authority : uri.DnsSafeHost;
+      headers["Host"] = !defaultPort ? targetUri.Authority : targetUri.DnsSafeHost;
       headers["Upgrade"] = "websocket";
       headers["Connection"] = "Upgrade";
 
