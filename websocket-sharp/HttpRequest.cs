@@ -139,14 +139,17 @@ namespace WebSocketSharp
     {
       var ret = new HttpRequest ("GET", targetUri.PathAndQuery);
 
+      var headers = ret.Headers;
+
       var port = targetUri.Port;
       var schm = targetUri.Scheme;
       var defaultPort = (port == 80 && schm == "ws")
                         || (port == 443 && schm == "wss");
 
-      var headers = ret.Headers;
+      headers["Host"] = !defaultPort
+                        ? targetUri.Authority
+                        : targetUri.DnsSafeHost;
 
-      headers["Host"] = !defaultPort ? targetUri.Authority : targetUri.DnsSafeHost;
       headers["Upgrade"] = "websocket";
       headers["Connection"] = "Upgrade";
 
