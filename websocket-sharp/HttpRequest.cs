@@ -56,10 +56,10 @@ namespace WebSocketSharp
     private HttpRequest (
       string method,
       string target,
-      Version protocolVersion,
+      Version version,
       NameValueCollection headers
     )
-      : base (protocolVersion, headers)
+      : base (version, headers)
     {
       _method = method;
       _target = target;
