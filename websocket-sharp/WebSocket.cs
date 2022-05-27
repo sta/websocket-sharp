@@ -1833,6 +1833,7 @@ namespace WebSocketSharp
     {
       if (value == null) {
         _compression = CompressionMethod.None;
+
         return;
       }
 
