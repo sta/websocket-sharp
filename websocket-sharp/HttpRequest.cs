@@ -182,9 +182,7 @@ namespace WebSocketSharp
 
       var method = reqLineParts[0];
       var target = reqLineParts[1];
-
-      var num = reqLineParts[2].Substring (5);
-      var ver = new Version (num);
+      var ver = reqLineParts[2].Substring (5).ToVersion ();
 
       var headers = new WebHeaderCollection ();
 
