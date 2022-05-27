@@ -1061,6 +1061,11 @@ namespace WebSocketSharp
       return BitConverter.ToUInt64 (val, 0);
     }
 
+    internal static Version ToVersion (this string versionString)
+    {
+      return new Version (versionString);
+    }
+
     internal static IEnumerable<string> TrimEach (
       this IEnumerable<string> source
     )
