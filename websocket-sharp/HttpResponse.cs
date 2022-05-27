@@ -202,9 +202,7 @@ namespace WebSocketSharp
       var code = Int32.Parse (s);
 
       var reason = statusLineParts[2];
-
-      s = statusLineParts[0].Substring (5);
-      var ver = new Version (s);
+      var ver = statusLineParts[0].Substring (5).ToVersion ();
 
       var headers = new WebHeaderCollection ();
 
