@@ -1010,6 +1010,11 @@ namespace WebSocketSharp
       return String.Format ("{0}; {1}", ename, eparams);
     }
 
+    internal static int ToInt32 (this string numericString)
+    {
+      return Int32.Parse (numericString);
+    }
+
     internal static System.Net.IPAddress ToIPAddress (this string value)
     {
       if (value == null || value.Length == 0)
