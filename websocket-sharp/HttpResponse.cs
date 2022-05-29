@@ -198,9 +198,7 @@ namespace WebSocketSharp
         throw new ArgumentException (msg);
       }
 
-      var s = statusLineParts[1];
-      var code = Int32.Parse (s);
-
+      var code = statusLineParts[1].ToInt32 ();
       var reason = statusLineParts[2];
       var ver = statusLineParts[0].Substring (5).ToVersion ();
 
