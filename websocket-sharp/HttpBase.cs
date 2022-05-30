@@ -89,6 +89,23 @@ namespace WebSocketSharp
 
     #endregion
 
+    #region Protected Properties
+
+    protected string HeaderSection {
+      get {
+        var buff = new StringBuilder (64);
+
+        foreach (var key in _headers.AllKeys)
+          buff.AppendFormat ("{0}: {1}{2}", key, _headers[key], CrLf);
+
+        buff.Append (CrLf);
+
+        return buff.ToString ();
+      }
+    }
+
+    #endregion
+
     #region Public Properties
 
     public string EntityBody {
