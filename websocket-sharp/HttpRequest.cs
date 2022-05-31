@@ -91,10 +91,7 @@ namespace WebSocketSharp
       get {
         var buff = new StringBuilder (64);
 
-        var fmt = "{0} {1} HTTP/{2}{3}";
-        buff.AppendFormat (fmt, _method, _target, ProtocolVersion, CrLf);
-
-        buff.Append (HeaderSection);
+        buff.Append (RequestLine).Append (HeaderSection);
 
         return buff.ToString ();
       }
