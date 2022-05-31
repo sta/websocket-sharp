@@ -77,6 +77,23 @@ namespace WebSocketSharp
 
     #endregion
 
+    #region Internal Properties
+
+    internal string MessageHeader {
+      get {
+        var buff = new StringBuilder (64);
+
+        var fmt = "{0} {1} HTTP/{2}{3}";
+        buff.AppendFormat (fmt, _method, _target, ProtocolVersion, CrLf);
+
+        buff.Append (HeaderSection);
+
+        return buff.ToString ();
+      }
+    }
+
+    #endregion
+
     #region Public Properties
 
     public AuthenticationResponse AuthenticationResponse {
