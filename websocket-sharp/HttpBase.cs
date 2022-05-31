@@ -117,6 +117,12 @@ namespace WebSocketSharp
       }
     }
 
+    public bool HasEntityBody {
+      get {
+        return _entityBodyData != null;
+      }
+    }
+
     public NameValueCollection Headers {
       get {
         return _headers;
