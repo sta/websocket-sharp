@@ -253,15 +253,7 @@ namespace WebSocketSharp
     {
       var buff = new StringBuilder (64);
 
-      var fmt = "{0} {1} HTTP/{2}{3}";
-      buff.AppendFormat (fmt, _method, _target, ProtocolVersion, CrLf);
-
-      var headers = Headers;
-
-      foreach (var key in headers.AllKeys)
-        buff.AppendFormat ("{0}: {1}{2}", key, headers[key], CrLf);
-
-      buff.Append (CrLf);
+      buff.Append (MessageHeader);
 
       var entity = EntityBody;
 
