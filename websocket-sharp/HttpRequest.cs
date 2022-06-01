@@ -89,11 +89,7 @@ namespace WebSocketSharp
 
     internal string MessageHeader {
       get {
-        var buff = new StringBuilder (64);
-
-        buff.Append (RequestLine).Append (HeaderSection);
-
-        return buff.ToString ();
+        return RequestLine + HeaderSection;
       }
     }
 
