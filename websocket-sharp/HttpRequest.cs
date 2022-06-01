@@ -255,10 +255,8 @@ namespace WebSocketSharp
 
       buff.Append (MessageHeader);
 
-      var entity = EntityBody;
-
-      if (entity.Length > 0)
-        buff.Append (entity);
+      if (HasEntityBody)
+        buff.Append (EntityBody);
 
       return buff.ToString ();
     }
