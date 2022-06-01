@@ -96,6 +96,12 @@ namespace WebSocketSharp
       }
     }
 
+    internal string MessageHeader {
+      get {
+        return StatusLine + HeaderSection;
+      }
+    }
+
     #endregion
 
     #region Public Properties
