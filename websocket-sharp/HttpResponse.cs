@@ -86,6 +86,18 @@ namespace WebSocketSharp
 
     #endregion
 
+    #region Internal Properties
+
+    internal string StatusLine {
+      get {
+        var fmt = "HTTP/{0} {1} {2}{3}";
+
+        return String.Format (fmt, ProtocolVersion, _code, _reason, CrLf);
+      }
+    }
+
+    #endregion
+
     #region Public Properties
 
     public bool CloseConnection {
