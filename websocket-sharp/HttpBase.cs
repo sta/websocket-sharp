@@ -242,8 +242,8 @@ namespace WebSocketSharp
       Exception exception = null;
 
       try {
-        var headers = readMessageHeaderFrom (stream);
-        ret = parser (headers);
+        var header = readMessageHeaderFrom (stream);
+        ret = parser (header);
 
         var contentLen = ret.Headers["Content-Length"];
 
