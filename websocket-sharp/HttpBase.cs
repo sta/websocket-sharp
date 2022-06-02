@@ -81,7 +81,7 @@ namespace WebSocketSharp
 
     #region Internal Properties
 
-    internal byte[] EntityBodyData {
+    internal byte[] MessageBodyData {
       get {
         return _entityBodyData;
       }
