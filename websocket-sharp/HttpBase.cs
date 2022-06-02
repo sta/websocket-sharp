@@ -123,7 +123,7 @@ namespace WebSocketSharp
     public string MessageBody {
       get {
         if (_messageBody == null)
-          _messageBody = getEntityBody ();
+          _messageBody = getMessageBody ();
 
         return _messageBody;
       }
@@ -139,7 +139,7 @@ namespace WebSocketSharp
 
     #region Private Methods
 
-    private string getEntityBody ()
+    private string getMessageBody ()
     {
       if (_messageBodyData == null || _messageBodyData.LongLength == 0)
         return String.Empty;
