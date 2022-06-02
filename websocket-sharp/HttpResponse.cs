@@ -255,7 +255,7 @@ namespace WebSocketSharp
 
     public override string ToString ()
     {
-      return HasEntityBody ? MessageHeader + EntityBody : MessageHeader;
+      return HasEntityBody ? MessageHeader + MessageBody : MessageHeader;
     }
 
     #endregion
