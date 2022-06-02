@@ -40,10 +40,10 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private string              _messageBody;
-    private byte[]              _messageBodyData;
     private NameValueCollection _headers;
     private static readonly int _headersMaxLength;
+    private string              _messageBody;
+    private byte[]              _messageBodyData;
     private Version             _protocolVersion;
 
     #endregion
