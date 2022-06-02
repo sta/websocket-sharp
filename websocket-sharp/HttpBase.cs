@@ -108,7 +108,7 @@ namespace WebSocketSharp
 
     #region Public Properties
 
-    public bool HasEntityBody {
+    public bool HasMessageBody {
       get {
         return _messageBodyData != null;
       }
