@@ -108,15 +108,6 @@ namespace WebSocketSharp
 
     #region Public Properties
 
-    public string MessageBody {
-      get {
-        if (_messageBody == null)
-          _messageBody = getEntityBody ();
-
-        return _messageBody;
-      }
-    }
-
     public bool HasEntityBody {
       get {
         return _entityBodyData != null;
@@ -126,6 +117,15 @@ namespace WebSocketSharp
     public NameValueCollection Headers {
       get {
         return _headers;
+      }
+    }
+
+    public string MessageBody {
+      get {
+        if (_messageBody == null)
+          _messageBody = getEntityBody ();
+
+        return _messageBody;
       }
     }
 
