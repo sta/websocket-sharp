@@ -255,24 +255,7 @@ namespace WebSocketSharp
 
     public override string ToString ()
     {
-      var buff = new StringBuilder (64);
-
-      var fmt = "HTTP/{0} {1} {2}{3}";
-      buff.AppendFormat (fmt, ProtocolVersion, _code, _reason, CrLf);
-
-      var headers = Headers;
-
-      foreach (var key in headers.AllKeys)
-        buff.AppendFormat ("{0}: {1}{2}", key, headers[key], CrLf);
-
-      buff.Append (CrLf);
-
-      var entity = EntityBody;
-
-      if (entity.Length > 0)
-        buff.Append (entity);
-
-      return buff.ToString ();
+      return HasEntityBody ? MessageHeader + EntityBody : MessageHeader;
     }
 
     #endregion
