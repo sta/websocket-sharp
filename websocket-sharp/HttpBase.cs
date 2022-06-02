@@ -40,7 +40,7 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private string              _entityBody;
+    private string              _messageBody;
     private byte[]              _entityBodyData;
     private NameValueCollection _headers;
     private static readonly int _headersMaxLength;
@@ -110,10 +110,10 @@ namespace WebSocketSharp
 
     public string MessageBody {
       get {
-        if (_entityBody == null)
-          _entityBody = getEntityBody ();
+        if (_messageBody == null)
+          _messageBody = getEntityBody ();
 
-        return _entityBody;
+        return _messageBody;
       }
     }
 
