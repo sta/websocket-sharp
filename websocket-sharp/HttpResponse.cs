@@ -198,9 +198,9 @@ namespace WebSocketSharp
       return ret;
     }
 
-    internal static HttpResponse Parse (string[] headerParts)
+    internal static HttpResponse Parse (string[] messageHeader)
     {
-      var len = headerParts.Length;
+      var len = messageHeader.Length;
 
       if (len == 0) {
         var msg = "An empty response has been received.";
@@ -208,7 +208,7 @@ namespace WebSocketSharp
         throw new ArgumentException (msg);
       }
 
-      var statusLineParts = headerParts[0].Split (new[] { ' ' }, 3);
+      var statusLineParts = messageHeader[0].Split (new[] { ' ' }, 3);
 
       if (statusLineParts.Length != 3) {
         var msg = "It includes an invalid status line.";
@@ -223,7 +223,7 @@ namespace WebSocketSharp
       var headers = new WebHeaderCollection ();
 
       for (var i = 1; i < len; i++)
-        headers.InternalSet (headerParts[i], true);
+        headers.InternalSet (messageHeader[i], true);
 
       return new HttpResponse (code, reason, ver, headers);
     }
