@@ -182,15 +182,15 @@ namespace WebSocketSharp
       return HttpResponse.ReadResponse (stream, millisecondsTimeout);
     }
 
-    internal static HttpRequest Parse (string[] headerParts)
+    internal static HttpRequest Parse (string[] messageHeader)
     {
-      if (headerParts.Length == 0) {
+      if (messageHeader.Length == 0) {
         var msg = "An empty request has been received.";
 
         throw new ArgumentException (msg);
       }
 
-      var reqLineParts = headerParts[0].Split (new[] { ' ' }, 3);
+      var reqLineParts = messageHeader[0].Split (new[] { ' ' }, 3);
 
       if (reqLineParts.Length != 3) {
         var msg = "It includes an invalid request line.";
@@ -204,8 +204,8 @@ namespace WebSocketSharp
 
       var headers = new WebHeaderCollection ();
 
-      for (var i = 1; i < headerParts.Length; i++)
-        headers.InternalSet (headerParts[i], false);
+      for (var i = 1; i < messageHeader.Length; i++)
+        headers.InternalSet (messageHeader[i], false);
 
       return new HttpRequest (method, target, ver, headers);
     }
