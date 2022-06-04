@@ -184,7 +184,9 @@ namespace WebSocketSharp
 
     internal static HttpRequest Parse (string[] messageHeader)
     {
-      if (messageHeader.Length == 0) {
+      var len = messageHeader.Length;
+
+      if (len == 0) {
         var msg = "An empty request has been received.";
 
         throw new ArgumentException (msg);
@@ -204,7 +206,7 @@ namespace WebSocketSharp
 
       var headers = new WebHeaderCollection ();
 
-      for (var i = 1; i < messageHeader.Length; i++)
+      for (var i = 1; i < len; i++)
         headers.InternalSet (messageHeader[i], false);
 
       return new HttpRequest (method, target, ver, headers);
