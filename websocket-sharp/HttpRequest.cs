@@ -192,17 +192,17 @@ namespace WebSocketSharp
         throw new ArgumentException (msg);
       }
 
-      var reqLineParts = messageHeader[0].Split (new[] { ' ' }, 3);
+      var rlParts = messageHeader[0].Split (new[] { ' ' }, 3);
 
-      if (reqLineParts.Length != 3) {
+      if (rlParts.Length != 3) {
         var msg = "It includes an invalid request line.";
 
         throw new ArgumentException (msg);
       }
 
-      var method = reqLineParts[0];
-      var target = reqLineParts[1];
-      var ver = reqLineParts[2].Substring (5).ToVersion ();
+      var method = rlParts[0];
+      var target = rlParts[1];
+      var ver = rlParts[2].Substring (5).ToVersion ();
 
       var headers = new WebHeaderCollection ();
 
