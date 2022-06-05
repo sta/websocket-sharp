@@ -208,17 +208,17 @@ namespace WebSocketSharp
         throw new ArgumentException (msg);
       }
 
-      var statusLineParts = messageHeader[0].Split (new[] { ' ' }, 3);
+      var slParts = messageHeader[0].Split (new[] { ' ' }, 3);
 
-      if (statusLineParts.Length != 3) {
+      if (slParts.Length != 3) {
         var msg = "It includes an invalid status line.";
 
         throw new ArgumentException (msg);
       }
 
-      var code = statusLineParts[1].ToInt32 ();
-      var reason = statusLineParts[2];
-      var ver = statusLineParts[0].Substring (5).ToVersion ();
+      var code = slParts[1].ToInt32 ();
+      var reason = slParts[2];
+      var ver = slParts[0].Substring (5).ToVersion ();
 
       var headers = new WebHeaderCollection ();
 
