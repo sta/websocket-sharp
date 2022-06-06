@@ -90,9 +90,13 @@ namespace WebSocketSharp
 
     internal string StatusLine {
       get {
-        var fmt = "HTTP/{0} {1} {2}{3}";
-
-        return String.Format (fmt, ProtocolVersion, _code, _reason, CrLf);
+        return _reason != null
+               ? String.Format (
+                   "HTTP/{0} {1} {2}{3}", ProtocolVersion, _code, _reason, CrLf
+                 )
+               : String.Format (
+                   "HTTP/{0} {1}{2}", ProtocolVersion, _code, CrLf
+                 );
       }
     }
 
@@ -209,15 +213,16 @@ namespace WebSocketSharp
       }
 
       var slParts = messageHeader[0].Split (new[] { ' ' }, 3);
+      var plen = slParts.Length;
 
-      if (slParts.Length != 3) {
+      if (plen < 2) {
         var msg = "It includes an invalid status line.";
 
         throw new ArgumentException (msg);
       }
 
       var code = slParts[1].ToInt32 ();
-      var reason = slParts[2];
+      var reason = plen == 3 ? slParts[2] : null;
       var ver = slParts[0].Substring (5).ToVersion ();
 
       var headers = new WebHeaderCollection ();
