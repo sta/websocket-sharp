@@ -81,9 +81,9 @@ namespace WebSocketSharp
 
     internal string RequestLine {
       get {
-        var fmt = "{0} {1} HTTP/{2}{3}";
-
-        return String.Format (fmt, _method, _target, ProtocolVersion, CrLf);
+        return String.Format (
+                 "{0} {1} HTTP/{2}{3}", _method, _target, ProtocolVersion, CrLf
+               );
       }
     }
 
