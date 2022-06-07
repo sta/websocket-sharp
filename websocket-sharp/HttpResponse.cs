@@ -100,12 +100,6 @@ namespace WebSocketSharp
       }
     }
 
-    internal string MessageHeader {
-      get {
-        return StatusLine + HeaderSection;
-      }
-    }
-
     #endregion
 
     #region Public Properties
@@ -153,6 +147,12 @@ namespace WebSocketSharp
         return ProtocolVersion > HttpVersion.Version10
                && _code == 101
                && Headers.Upgrades ("websocket");
+      }
+    }
+
+    public override string MessageHeader {
+      get {
+        return StatusLine + HeaderSection;
       }
     }
 

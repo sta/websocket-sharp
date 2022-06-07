@@ -129,6 +129,8 @@ namespace WebSocketSharp
       }
     }
 
+    public abstract string MessageHeader { get; }
+
     public Version ProtocolVersion {
       get {
         return _protocolVersion;

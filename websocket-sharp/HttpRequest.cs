@@ -87,12 +87,6 @@ namespace WebSocketSharp
       }
     }
 
-    internal string MessageHeader {
-      get {
-        return RequestLine + HeaderSection;
-      }
-    }
-
     #endregion
 
     #region Public Properties
@@ -127,6 +121,12 @@ namespace WebSocketSharp
         return _method == "GET"
                && ProtocolVersion > HttpVersion.Version10
                && Headers.Upgrades ("websocket");
+      }
+    }
+
+    public override string MessageHeader {
+      get {
+        return RequestLine + HeaderSection;
       }
     }
 
