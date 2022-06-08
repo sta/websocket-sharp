@@ -258,11 +258,6 @@ namespace WebSocketSharp
       }
     }
 
-    public override string ToString ()
-    {
-      return HasMessageBody ? MessageHeader + MessageBody : MessageHeader;
-    }
-
     #endregion
   }
 }

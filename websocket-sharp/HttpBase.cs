@@ -285,7 +285,14 @@ namespace WebSocketSharp
 
       return Encoding.UTF8.GetBytes (s);
     }
-    
+
+    public override string ToString ()
+    {
+      return _messageBodyData != null
+             ? MessageHeader + MessageBody
+             : MessageHeader;
+    }
+
     #endregion
   }
 }

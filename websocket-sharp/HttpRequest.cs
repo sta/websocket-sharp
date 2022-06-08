@@ -247,11 +247,6 @@ namespace WebSocketSharp
       Headers["Cookie"] = buff.ToString ();
     }
 
-    public override string ToString ()
-    {
-      return HasMessageBody ? MessageHeader + MessageBody : MessageHeader;
-    }
-
     #endregion
   }
 }
