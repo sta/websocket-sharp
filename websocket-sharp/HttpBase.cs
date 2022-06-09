@@ -281,9 +281,18 @@ namespace WebSocketSharp
 
     public byte[] ToByteArray ()
     {
-      var s = ToString ();
+      var headerData = Encoding.UTF8.GetBytes (MessageHeader);
 
-      return Encoding.UTF8.GetBytes (s);
+      if (_messageBodyData == null)
+        return headerData;
+
+      var buff = new MemoryStream ();
+
+      buff.Write (headerData, 0, headerData.Length);
+      buff.WriteBytes (_messageBodyData, 1024);
+      buff.Close ();
+
+      return buff.ToArray ();
     }
 
     public override string ToString ()
