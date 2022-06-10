@@ -41,7 +41,7 @@ namespace WebSocketSharp
     #region Private Fields
 
     private NameValueCollection _headers;
-    private static readonly int _headersMaxLength;
+    private static readonly int _maxMessageHeaderLength;
     private string              _messageBody;
     private byte[]              _messageBodyData;
     private Version             _protocolVersion;
@@ -60,7 +60,7 @@ namespace WebSocketSharp
 
     static HttpBase ()
     {
-      _headersMaxLength = 8192;
+      _maxMessageHeaderLength = 8192;
 
       CrLf = "\r\n";
       CrLfHt = "\r\n\t";
@@ -201,7 +201,7 @@ namespace WebSocketSharp
                   && stream.ReadByte ().IsEqualTo ('\r', add)
                   && stream.ReadByte ().IsEqualTo ('\n', add);
 
-        if (cnt > _headersMaxLength) {
+        if (cnt > _maxMessageHeaderLength) {
           var msg = "The length of the headers is greater than the max length.";
 
           throw new InvalidOperationException (msg);
