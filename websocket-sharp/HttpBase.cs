@@ -185,7 +185,7 @@ namespace WebSocketSharp
       Action<int> add =
         i => {
           if (i == -1) {
-            var msg = "The headers could not be read from the data stream.";
+            var msg = "The header could not be read from the data stream.";
 
             throw new EndOfStreamException (msg);
           }
@@ -202,7 +202,7 @@ namespace WebSocketSharp
                   && stream.ReadByte ().IsEqualTo ('\n', add);
 
         if (cnt > _maxMessageHeaderLength) {
-          var msg = "The length of the headers is greater than the max length.";
+          var msg = "The length of the header is greater than the max length.";
 
           throw new InvalidOperationException (msg);
         }
