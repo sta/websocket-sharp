@@ -30,6 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using WebSocketSharp.Net;
@@ -283,16 +284,9 @@ namespace WebSocketSharp
     {
       var headerData = Encoding.UTF8.GetBytes (MessageHeader);
 
-      if (_messageBodyData == null)
-        return headerData;
-
-      var buff = new MemoryStream ();
-
-      buff.Write (headerData, 0, headerData.Length);
-      buff.WriteBytes (_messageBodyData, 1024);
-      buff.Close ();
-
-      return buff.ToArray ();
+      return _messageBodyData != null
+             ? headerData.Concat (_messageBodyData).ToArray ()
+             : headerData;
     }
 
     public override string ToString ()
