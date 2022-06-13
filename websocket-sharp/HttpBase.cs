@@ -262,13 +262,13 @@ namespace WebSocketSharp
       }
 
       if (timeout) {
-        var msg = "A timeout has occurred while reading an HTTP request or response.";
+        var msg = "A timeout has occurred.";
 
         throw new WebSocketException (msg);
       }
 
       if (exception != null) {
-        var msg = "An exception has occurred while reading an HTTP request or response.";
+        var msg = "An exception has occurred.";
 
         throw new WebSocketException (msg, exception);
       }
