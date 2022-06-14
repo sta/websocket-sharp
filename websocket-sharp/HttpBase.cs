@@ -196,21 +196,21 @@ namespace WebSocketSharp
           cnt++;
         };
 
-      while (true) {
-        var end = stream.ReadByte ().IsEqualTo ('\r', add)
-                  && stream.ReadByte ().IsEqualTo ('\n', add)
-                  && stream.ReadByte ().IsEqualTo ('\r', add)
-                  && stream.ReadByte ().IsEqualTo ('\n', add);
+      var end = false;
+
+      do {
+        end = stream.ReadByte ().IsEqualTo ('\r', add)
+              && stream.ReadByte ().IsEqualTo ('\n', add)
+              && stream.ReadByte ().IsEqualTo ('\r', add)
+              && stream.ReadByte ().IsEqualTo ('\n', add);
 
         if (cnt > _maxMessageHeaderLength) {
           var msg = "The length of the header is greater than the max length.";
 
           throw new InvalidOperationException (msg);
         }
-
-        if (end)
-          break;
       }
+      while (!end);
 
       var bytes = buff.ToArray ();
 
