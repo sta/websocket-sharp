@@ -207,7 +207,7 @@ namespace WebSocketSharp
       var len = messageHeader.Length;
 
       if (len == 0) {
-        var msg = "An empty response has been received.";
+        var msg = "An empty response header.";
 
         throw new ArgumentException (msg);
       }
