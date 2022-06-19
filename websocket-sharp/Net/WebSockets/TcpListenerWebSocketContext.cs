@@ -263,10 +263,9 @@ namespace WebSocketSharp.Net.WebSockets
       get {
         if (_queryString == null) {
           var uri = RequestUri;
-          _queryString = QueryStringCollection.Parse (
-                           uri != null ? uri.Query : null,
-                           Encoding.UTF8
-                         );
+          var query = uri != null ? uri.Query : null;
+
+          _queryString = QueryStringCollection.Parse (query, Encoding.UTF8);
         }
 
         return _queryString;
