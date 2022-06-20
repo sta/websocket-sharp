@@ -493,6 +493,7 @@ namespace WebSocketSharp.Net.WebSockets
     {
       var res = HttpResponse.CreateCloseResponse (code);
       var bytes = res.ToByteArray ();
+
       _stream.Write (bytes, 0, bytes.Length);
 
       _stream.Close ();
