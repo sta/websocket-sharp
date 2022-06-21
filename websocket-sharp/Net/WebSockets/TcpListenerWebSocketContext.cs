@@ -460,6 +460,7 @@ namespace WebSocketSharp.Net.WebSockets
       auth =
         () => {
           retry++;
+
           if (retry > 99)
             return false;
 
@@ -473,10 +474,12 @@ namespace WebSocketSharp.Net.WebSockets
 
           if (user != null && user.Identity.IsAuthenticated) {
             _user = user;
+
             return true;
           }
 
           _request = sendAuthenticationChallenge (chal);
+
           return auth ();
         };
 
