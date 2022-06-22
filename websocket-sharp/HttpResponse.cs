@@ -240,6 +240,13 @@ namespace WebSocketSharp
       return Read<HttpResponse> (stream, Parse, millisecondsTimeout);
     }
 
+    internal void WriteTo (Stream stream)
+    {
+      var bytes = ToByteArray ();
+
+      stream.Write (bytes, 0, bytes.Length);
+    }
+
     #endregion
 
     #region Public Methods
