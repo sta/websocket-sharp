@@ -494,10 +494,7 @@ namespace WebSocketSharp.Net.WebSockets
 
     internal void Close (HttpStatusCode code)
     {
-      var res = HttpResponse.CreateCloseResponse (code);
-      var bytes = res.ToByteArray ();
-
-      _stream.Write (bytes, 0, bytes.Length);
+      HttpResponse.CreateCloseResponse (code).WriteTo (_stream);
 
       _stream.Close ();
       _tcpClient.Close ();
