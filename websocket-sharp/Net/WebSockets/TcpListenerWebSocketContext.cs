@@ -503,6 +503,16 @@ namespace WebSocketSharp.Net.WebSockets
       _tcpClient.Close ();
     }
 
+    internal void SendAuthenticationChallenge (string challenge)
+    {
+      var res = HttpResponse.CreateUnauthorizedResponse (challenge);
+      var bytes = res.ToByteArray ();
+
+      _stream.Write (bytes, 0, bytes.Length);
+
+      _request = HttpRequest.ReadRequest (_stream, 15000);
+    }
+
     #endregion
 
     #region Public Methods
