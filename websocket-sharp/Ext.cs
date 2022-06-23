@@ -1020,6 +1020,11 @@ namespace WebSocketSharp
              : name;
     }
 
+    internal static int ToInt32 (this string numericString)
+    {
+      return Int32.Parse (numericString);
+    }
+
     internal static System.Net.IPAddress ToIPAddress (this string value)
     {
       if (value == null || value.Length == 0)
@@ -1063,6 +1068,11 @@ namespace WebSocketSharp
     internal static ulong ToUInt64 (this byte[] source, ByteOrder sourceOrder)
     {
       return BitConverter.ToUInt64 (source.ToHostOrder (sourceOrder), 0);
+    }
+
+    internal static Version ToVersion (this string versionString)
+    {
+      return new Version (versionString);
     }
 
     internal static IEnumerable<string> TrimEach (

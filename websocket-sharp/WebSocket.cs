@@ -862,20 +862,16 @@ namespace WebSocketSharp
     // As server
     private bool acceptHandshake ()
     {
-      _logger.Debug (
-        String.Format (
-          "A handshake request from {0}:\n{1}", _context.UserEndPoint, _context
-        )
-      );
+      var fmt = "A handshake request from {0}:\n{1}";
+      var msg = String.Format (fmt, _context.UserEndPoint, _context);
 
-      string msg;
+      _logger.Debug (msg);
+
       if (!checkHandshakeRequest (_context, out msg)) {
         _logger.Error (msg);
 
-        refuseHandshake (
-          CloseStatusCode.ProtocolError,
-          "A handshake error has occurred while attempting to accept."
-        );
+        var reason = "A handshake error has occurred while attempting to accept.";
+        refuseHandshake (CloseStatusCode.ProtocolError, reason);
 
         return false;
       }
@@ -883,10 +879,8 @@ namespace WebSocketSharp
       if (!customCheckHandshakeRequest (_context, out msg)) {
         _logger.Error (msg);
 
-        refuseHandshake (
-          CloseStatusCode.PolicyViolation,
-          "A handshake error has occurred while attempting to accept."
-        );
+        var reason = "A handshake error has occurred while attempting to accept.";
+        refuseHandshake (CloseStatusCode.PolicyViolation, reason);
 
         return false;
       }
@@ -895,15 +889,19 @@ namespace WebSocketSharp
 
       if (_protocol != null) {
         var vals = _context.SecWebSocketProtocols;
+
         processSecWebSocketProtocolClientHeader (vals);
       }
 
       if (!_ignoreExtensions) {
         var val = _context.Headers["Sec-WebSocket-Extensions"];
+
         processSecWebSocketExtensionsClientHeader (val);
       }
 
-      return sendHttpResponse (createHandshakeResponse ());
+      var res = createHandshakeResponse ();
+
+      return sendHttpResponse (res);
     }
 
     private bool canSet (out string message)
@@ -931,49 +929,61 @@ namespace WebSocketSharp
       message = null;
 
       if (!context.IsWebSocketRequest) {
-        message = "Not a handshake request.";
+        message = "Not a WebSocket handshake request.";
+
         return false;
       }
 
       if (context.RequestUri == null) {
-        message = "It specifies an invalid Request-URI.";
+        message = "The Request-URI is invalid.";
+
         return false;
       }
 
       var headers = context.Headers;
 
       var key = headers["Sec-WebSocket-Key"];
+
       if (key == null) {
-        message = "It includes no Sec-WebSocket-Key header.";
+        message = "The Sec-WebSocket-Key header is non-existent.";
+
         return false;
       }
 
       if (key.Length == 0) {
-        message = "It includes an invalid Sec-WebSocket-Key header.";
+        message = "The Sec-WebSocket-Key header is invalid.";
+
         return false;
       }
 
-      var version = headers["Sec-WebSocket-Version"];
-      if (version == null) {
-        message = "It includes no Sec-WebSocket-Version header.";
+      var ver = headers["Sec-WebSocket-Version"];
+
+      if (ver == null) {
+        message = "The Sec-WebSocket-Version header is non-existent.";
+
         return false;
       }
 
-      if (version != _version) {
-        message = "It includes an invalid Sec-WebSocket-Version header.";
+      if (ver != _version) {
+        message = "The Sec-WebSocket-Version header is invalid.";
+
         return false;
       }
 
-      var protocol = headers["Sec-WebSocket-Protocol"];
-      if (protocol != null && protocol.Length == 0) {
-        message = "It includes an invalid Sec-WebSocket-Protocol header.";
+      var subps = headers["Sec-WebSocket-Protocol"];
+
+      if (subps != null && subps.Length == 0) {
+        message = "The Sec-WebSocket-Protocol header is invalid.";
+
         return false;
       }
 
       if (!_ignoreExtensions) {
-        var extensions = headers["Sec-WebSocket-Extensions"];
-        if (extensions != null && extensions.Length == 0) {
-          message = "It includes an invalid Sec-WebSocket-Extensions header.";
+        var exts = headers["Sec-WebSocket-Extensions"];
+
+        if (exts != null && exts.Length == 0) {
+          message = "The Sec-WebSocket-Extensions header is invalid.";
+
           return false;
         }
       }
@@ -982,43 +992,80 @@ namespace WebSocketSharp
     }
 
     // As client
-    private bool checkHandshakeResponse (HttpResponse response, out string message)
+    private bool checkHandshakeResponse (
+      HttpResponse response, out string message
+    )
     {
       message = null;
 
       if (response.IsRedirect) {
-        message = "Indicates the redirection.";
+        message = "The redirection is indicated.";
+
         return false;
       }
 
       if (response.IsUnauthorized) {
-        message = "Requires the authentication.";
+        message = "The authentication is required.";
+
         return false;
       }
 
       if (!response.IsWebSocketResponse) {
         message = "Not a WebSocket handshake response.";
+
         return false;
       }
 
       var headers = response.Headers;
-      if (!validateSecWebSocketAcceptHeader (headers["Sec-WebSocket-Accept"])) {
-        message = "Includes no Sec-WebSocket-Accept header, or it has an invalid value.";
+
+      var key = headers["Sec-WebSocket-Accept"];
+
+      if (key == null) {
+        message = "The Sec-WebSocket-Accept header is non-existent.";
+
         return false;
       }
 
-      if (!validateSecWebSocketProtocolServerHeader (headers["Sec-WebSocket-Protocol"])) {
-        message = "Includes no Sec-WebSocket-Protocol header, or it has an invalid value.";
+      if (key != CreateResponseKey (_base64Key)) {
+        message = "The Sec-WebSocket-Accept header is invalid.";
+
         return false;
       }
 
-      if (!validateSecWebSocketExtensionsServerHeader (headers["Sec-WebSocket-Extensions"])) {
-        message = "Includes an invalid Sec-WebSocket-Extensions header.";
+      var ver = headers["Sec-WebSocket-Version"];
+
+      if (ver != null && ver != _version) {
+        message = "The Sec-WebSocket-Version header is invalid.";
+
         return false;
       }
 
-      if (!validateSecWebSocketVersionServerHeader (headers["Sec-WebSocket-Version"])) {
-        message = "Includes an invalid Sec-WebSocket-Version header.";
+      var subp = headers["Sec-WebSocket-Protocol"];
+
+      if (subp == null) {
+        if (_protocolsRequested) {
+          message = "The Sec-WebSocket-Protocol header is non-existent.";
+
+          return false;
+        }
+      }
+      else {
+        var valid = subp.Length > 0
+                    && _protocolsRequested
+                    && _protocols.Contains (p => p == subp);
+
+        if (!valid) {
+          message = "The Sec-WebSocket-Protocol header is invalid.";
+
+          return false;
+        }
+      }
+
+      var exts = headers["Sec-WebSocket-Extensions"];
+
+      if (!validateSecWebSocketExtensionsServerHeader (exts)) {
+        message = "The Sec-WebSocket-Extensions header is invalid.";
+
         return false;
       }
 
@@ -1284,6 +1331,25 @@ namespace WebSocketSharp
         return true;
       }
     }
+    
+    // As client
+    private AuthenticationResponse createAuthenticationResponse ()
+    {
+      if (_credentials == null)
+        return null;
+
+      if (_authChallenge != null) {
+        var ret = new AuthenticationResponse (
+                    _authChallenge, _credentials, _nonceCount
+                  );
+
+        _nonceCount = ret.NonceCount;
+
+        return ret;
+      }
+
+      return _preAuth ? new AuthenticationResponse (_credentials) : null;
+    }
 
     // As client
     private string createExtensions ()
@@ -1292,24 +1358,27 @@ namespace WebSocketSharp
 
       if (_compression != CompressionMethod.None) {
         var str = _compression.ToExtensionString (
-          "server_no_context_takeover", "client_no_context_takeover");
+                    "server_no_context_takeover", "client_no_context_takeover"
+                  );
 
         buff.AppendFormat ("{0}, ", str);
       }
 
       var len = buff.Length;
-      if (len > 2) {
-        buff.Length = len - 2;
-        return buff.ToString ();
-      }
 
-      return null;
+      if (len <= 2)
+        return null;
+
+      buff.Length = len - 2;
+
+      return buff.ToString ();
     }
 
     // As server
     private HttpResponse createHandshakeFailureResponse (HttpStatusCode code)
     {
       var ret = HttpResponse.CreateCloseResponse (code);
+
       ret.Headers["Sec-WebSocket-Version"] = _version;
 
       return ret;
@@ -1318,35 +1387,34 @@ namespace WebSocketSharp
     // As client
     private HttpRequest createHandshakeRequest ()
     {
-      var ret = HttpRequest.CreateWebSocketRequest (_uri);
+      var ret = HttpRequest.CreateWebSocketHandshakeRequest (_uri);
 
       var headers = ret.Headers;
+
+      headers["Sec-WebSocket-Key"] = _base64Key;
+      headers["Sec-WebSocket-Version"] = _version;
+
       if (!_origin.IsNullOrEmpty ())
         headers["Origin"] = _origin;
 
-      headers["Sec-WebSocket-Key"] = _base64Key;
-
-      _protocolsRequested = _protocols != null;
-      if (_protocolsRequested)
+      if (_protocols != null) {
         headers["Sec-WebSocket-Protocol"] = _protocols.ToString (", ");
 
-      _extensionsRequested = _compression != CompressionMethod.None;
-      if (_extensionsRequested)
-        headers["Sec-WebSocket-Extensions"] = createExtensions ();
-
-      headers["Sec-WebSocket-Version"] = _version;
-
-      AuthenticationResponse authRes = null;
-      if (_authChallenge != null && _credentials != null) {
-        authRes = new AuthenticationResponse (_authChallenge, _credentials, _nonceCount);
-        _nonceCount = authRes.NonceCount;
-      }
-      else if (_preAuth) {
-        authRes = new AuthenticationResponse (_credentials);
+        _protocolsRequested = true;
       }
 
-      if (authRes != null)
-        headers["Authorization"] = authRes.ToString ();
+      var exts = createExtensions ();
+
+      if (exts != null) {
+        headers["Sec-WebSocket-Extensions"] = exts;
+
+        _extensionsRequested = true;
+      }
+
+      var ares = createAuthenticationResponse ();
+
+      if (ares != null)
+        headers["Authorization"] = ares.ToString ();
 
       if (_cookies.Count > 0)
         ret.SetCookies (_cookies);
@@ -1357,9 +1425,10 @@ namespace WebSocketSharp
     // As server
     private HttpResponse createHandshakeResponse ()
     {
-      var ret = HttpResponse.CreateWebSocketResponse ();
+      var ret = HttpResponse.CreateWebSocketHandshakeResponse ();
 
       var headers = ret.Headers;
+
       headers["Sec-WebSocket-Accept"] = CreateResponseKey (_base64Key);
 
       if (_protocol != null)
@@ -1385,30 +1454,39 @@ namespace WebSocketSharp
         return true;
 
       message = _handshakeRequestChecker (context);
+
       return message == null;
     }
 
     private MessageEventArgs dequeueFromMessageEventQueue ()
     {
-      lock (_forMessageEventQueue)
-        return _messageEventQueue.Count > 0 ? _messageEventQueue.Dequeue () : null;
+      lock (_forMessageEventQueue) {
+        return _messageEventQueue.Count > 0
+               ? _messageEventQueue.Dequeue ()
+               : null;
+      }
     }
 
     // As client
     private void doHandshake ()
     {
       setClientStream ();
+
       var res = sendHandshakeRequest ();
 
       string msg;
+
       if (!checkHandshakeResponse (res, out msg))
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
 
       if (_protocolsRequested)
         _protocol = res.Headers["Sec-WebSocket-Protocol"];
 
-      if (_extensionsRequested)
-        processSecWebSocketExtensionsServerHeader (res.Headers["Sec-WebSocket-Extensions"]);
+      if (_extensionsRequested) {
+        var val = res.Headers["Sec-WebSocket-Extensions"];
+
+        processSecWebSocketExtensionsServerHeader (val);
+      }
 
       processCookies (res.Cookies);
     }
@@ -1715,23 +1793,25 @@ namespace WebSocketSharp
         return;
 
       var buff = new StringBuilder (80);
+
       var comp = false;
 
       foreach (var elm in value.SplitHeaderValue (',')) {
-        var extension = elm.Trim ();
-        if (extension.Length == 0)
+        var ext = elm.Trim ();
+
+        if (ext.Length == 0)
           continue;
 
         if (!comp) {
-          if (extension.IsCompressionExtension (CompressionMethod.Deflate)) {
+          if (ext.IsCompressionExtension (CompressionMethod.Deflate)) {
             _compression = CompressionMethod.Deflate;
 
-            buff.AppendFormat (
-              "{0}, ",
-              _compression.ToExtensionString (
-                "client_no_context_takeover", "server_no_context_takeover"
-              )
-            );
+            var str = _compression.ToExtensionString (
+                        "client_no_context_takeover",
+                        "server_no_context_takeover"
+                      );
+
+            buff.AppendFormat ("{0}, ", str);
 
             comp = true;
           }
@@ -1739,10 +1819,12 @@ namespace WebSocketSharp
       }
 
       var len = buff.Length;
+
       if (len <= 2)
         return;
 
       buff.Length = len - 2;
+
       _extensions = buff.ToString ();
     }
 
@@ -1751,6 +1833,7 @@ namespace WebSocketSharp
     {
       if (value == null) {
         _compression = CompressionMethod.None;
+
         return;
       }
 
@@ -1993,69 +2076,105 @@ namespace WebSocketSharp
     {
       var req = createHandshakeRequest ();
       var res = sendHttpRequest (req, 90000);
+
       if (res.IsUnauthorized) {
-        var chal = res.Headers["WWW-Authenticate"];
-        _logger.Warn (String.Format ("Received an authentication requirement for '{0}'.", chal));
-        if (chal.IsNullOrEmpty ()) {
+        if (_credentials == null) {
+          _logger.Error ("No credential is specified.");
+
+          return res;
+        }
+
+        var val = res.Headers["WWW-Authenticate"];
+
+        if (val.IsNullOrEmpty ()) {
           _logger.Error ("No authentication challenge is specified.");
+
           return res;
         }
 
-        _authChallenge = AuthenticationChallenge.Parse (chal);
-        if (_authChallenge == null) {
+        var achal = AuthenticationChallenge.Parse (val);
+
+        if (achal == null) {
           _logger.Error ("An invalid authentication challenge is specified.");
+
           return res;
         }
 
-        if (_credentials != null &&
-            (!_preAuth || _authChallenge.Scheme == AuthenticationSchemes.Digest)) {
-          if (res.HasConnectionClose) {
-            releaseClientResources ();
-            setClientStream ();
-          }
+        _authChallenge = achal;
 
-          var authRes = new AuthenticationResponse (_authChallenge, _credentials, _nonceCount);
-          _nonceCount = authRes.NonceCount;
-          req.Headers["Authorization"] = authRes.ToString ();
-          res = sendHttpRequest (req, 15000);
+        var failed = _preAuth
+                     && _authChallenge.Scheme == AuthenticationSchemes.Basic;
+
+        if (failed) {
+          _logger.Error ("The authentication has failed.");
+
+          return res;
         }
+
+        var ares = new AuthenticationResponse (
+                     _authChallenge, _credentials, _nonceCount
+                   );
+
+        _nonceCount = ares.NonceCount;
+
+        req.Headers["Authorization"] = ares.ToString ();
+
+        if (res.CloseConnection) {
+          releaseClientResources ();
+          setClientStream ();
+        }
+
+        res = sendHttpRequest (req, 15000);
       }
 
       if (res.IsRedirect) {
-        var url = res.Headers["Location"];
-        _logger.Warn (String.Format ("Received a redirection to '{0}'.", url));
-        if (_enableRedirection) {
-          if (url.IsNullOrEmpty ()) {
-            _logger.Error ("No url to redirect is located.");
-            return res;
-          }
+        if (!_enableRedirection)
+          return res;
 
-          Uri uri;
-          string msg;
-          if (!url.TryCreateWebSocketUri (out uri, out msg)) {
-            _logger.Error ("An invalid url to redirect is located: " + msg);
-            return res;
-          }
+        var val = res.Headers["Location"];
 
-          releaseClientResources ();
+        if (val.IsNullOrEmpty ()) {
+          _logger.Error ("No url to redirect is located.");
 
-          _uri = uri;
-          _secure = uri.Scheme == "wss";
-
-          setClientStream ();
-          return sendHandshakeRequest ();
+          return res;
         }
+
+        Uri uri;
+        string msg;
+
+        if (!val.TryCreateWebSocketUri (out uri, out msg)) {
+          _logger.Error ("An invalid url to redirect is located.");
+
+          return res;
+        }
+
+        releaseClientResources ();
+
+        _uri = uri;
+        _secure = uri.Scheme == "wss";
+
+        setClientStream ();
+
+        return sendHandshakeRequest ();
       }
 
       return res;
     }
 
     // As client
-    private HttpResponse sendHttpRequest (HttpRequest request, int millisecondsTimeout)
+    private HttpResponse sendHttpRequest (
+      HttpRequest request, int millisecondsTimeout
+    )
     {
-      _logger.Debug ("A request to the server:\n" + request.ToString ());
+      var msg = "An HTTP request to the server:\n" + request.ToString ();
+
+      _logger.Debug (msg);
+
       var res = request.GetResponse (_stream, millisecondsTimeout);
-      _logger.Debug ("A response to this request:\n" + res.ToString ());
+
+      msg = "An HTTP response from the server:\n" + res.ToString ();
+
+      _logger.Debug (msg);
 
       return res;
     }
@@ -2063,13 +2182,14 @@ namespace WebSocketSharp
     // As server
     private bool sendHttpResponse (HttpResponse response)
     {
-      _logger.Debug (
-        String.Format (
-          "A response to {0}:\n{1}", _context.UserEndPoint, response
-        )
-      );
+      var fmt = "An HTTP response to {0}:\n{1}";
+      var msg = String.Format (fmt, _context.UserEndPoint, response);
 
-      return sendBytes (response.ToByteArray ());
+      _logger.Debug (msg);
+
+      var bytes = response.ToByteArray ();
+
+      return sendBytes (bytes);
     }
 
     // As client
@@ -2077,37 +2197,55 @@ namespace WebSocketSharp
     {
       var req = HttpRequest.CreateConnectRequest (_uri);
       var res = sendHttpRequest (req, 90000);
+
       if (res.IsProxyAuthenticationRequired) {
-        var chal = res.Headers["Proxy-Authenticate"];
-        _logger.Warn (
-          String.Format ("Received a proxy authentication requirement for '{0}'.", chal));
+        if (_proxyCredentials == null) {
+          var msg = "No credential for the proxy is specified.";
 
-        if (chal.IsNullOrEmpty ())
-          throw new WebSocketException ("No proxy authentication challenge is specified.");
-
-        var authChal = AuthenticationChallenge.Parse (chal);
-        if (authChal == null)
-          throw new WebSocketException ("An invalid proxy authentication challenge is specified.");
-
-        if (_proxyCredentials != null) {
-          if (res.HasConnectionClose) {
-            releaseClientResources ();
-            _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-            _stream = _tcpClient.GetStream ();
-          }
-
-          var authRes = new AuthenticationResponse (authChal, _proxyCredentials, 0);
-          req.Headers["Proxy-Authorization"] = authRes.ToString ();
-          res = sendHttpRequest (req, 15000);
+          throw new WebSocketException (msg);
         }
 
-        if (res.IsProxyAuthenticationRequired)
-          throw new WebSocketException ("A proxy authentication is required.");
+        var val = res.Headers["Proxy-Authenticate"];
+
+        if (val.IsNullOrEmpty ()) {
+          var msg = "No proxy authentication challenge is specified.";
+
+          throw new WebSocketException (msg);
+        }
+
+        var achal = AuthenticationChallenge.Parse (val);
+
+        if (achal == null) {
+          var msg = "An invalid proxy authentication challenge is specified.";
+
+          throw new WebSocketException (msg);
+        }
+
+        var ares = new AuthenticationResponse (achal, _proxyCredentials, 0);
+
+        req.Headers["Proxy-Authorization"] = ares.ToString ();
+
+        if (res.CloseConnection) {
+          releaseClientResources ();
+
+          _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+          _stream = _tcpClient.GetStream ();
+        }
+
+        res = sendHttpRequest (req, 15000);
+
+        if (res.IsProxyAuthenticationRequired) {
+          var msg = "The proxy authentication has failed.";
+
+          throw new WebSocketException (msg);
+        }
       }
 
-      if (res.StatusCode[0] != '2')
-        throw new WebSocketException (
-          "The proxy has failed a connection to the requested host and port.");
+      if (!res.IsSuccess) {
+        var msg = "The proxy has failed a connection to the requested URL.";
+
+        throw new WebSocketException (msg);
+      }
     }
 
     // As client
@@ -2116,6 +2254,7 @@ namespace WebSocketSharp
       if (_proxyUri != null) {
         _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
         _stream = _tcpClient.GetStream ();
+
         sendProxyConnectRequest ();
       }
       else {
@@ -2126,27 +2265,36 @@ namespace WebSocketSharp
       if (_secure) {
         var conf = getSslConfiguration ();
         var host = conf.TargetHost;
-        if (host != _uri.DnsSafeHost)
+
+        if (host != _uri.DnsSafeHost) {
+          var msg = "An invalid host name is specified.";
+
           throw new WebSocketException (
-            CloseStatusCode.TlsHandshakeFailure, "An invalid host name is specified.");
+                  CloseStatusCode.TlsHandshakeFailure, msg
+                );
+        }
 
         try {
           var sslStream = new SslStream (
-            _stream,
-            false,
-            conf.ServerCertificateValidationCallback,
-            conf.ClientCertificateSelectionCallback);
+                            _stream,
+                            false,
+                            conf.ServerCertificateValidationCallback,
+                            conf.ClientCertificateSelectionCallback
+                          );
 
           sslStream.AuthenticateAsClient (
             host,
             conf.ClientCertificates,
             conf.EnabledSslProtocols,
-            conf.CheckCertificateRevocation);
+            conf.CheckCertificateRevocation
+          );
 
           _stream = sslStream;
         }
         catch (Exception ex) {
-          throw new WebSocketException (CloseStatusCode.TlsHandshakeFailure, ex);
+          throw new WebSocketException (
+                  CloseStatusCode.TlsHandshakeFailure, ex
+                );
         }
       }
     }
@@ -2192,12 +2340,6 @@ namespace WebSocketSharp
     }
 
     // As client
-    private bool validateSecWebSocketAcceptHeader (string value)
-    {
-      return value != null && value == CreateResponseKey (_base64Key);
-    }
-
-    // As client
     private bool validateSecWebSocketExtensionsServerHeader (string value)
     {
       if (value == null)
@@ -2210,30 +2352,40 @@ namespace WebSocketSharp
         return false;
 
       var comp = _compression != CompressionMethod.None;
-      foreach (var e in value.SplitHeaderValue (',')) {
-        var ext = e.Trim ();
+
+      foreach (var elm in value.SplitHeaderValue (',')) {
+        var ext = elm.Trim ();
+
         if (comp && ext.IsCompressionExtension (_compression)) {
-          if (!ext.Contains ("server_no_context_takeover")) {
-            _logger.Error ("The server hasn't sent back 'server_no_context_takeover'.");
+          var param1 = "server_no_context_takeover";
+          var param2 = "client_no_context_takeover";
+
+          if (!ext.Contains (param1)) {
+            var fmt = "The server did not send back '{0}'.";
+            var msg = String.Format (fmt, param1);
+
+            _logger.Error (msg);
+
             return false;
           }
 
-          if (!ext.Contains ("client_no_context_takeover"))
-            _logger.Warn ("The server hasn't sent back 'client_no_context_takeover'.");
+          var name = _compression.ToExtensionString ();
+          var invalid = ext.SplitHeaderValue (';').Contains (
+                          t => {
+                            t = t.Trim ();
 
-          var method = _compression.ToExtensionString ();
-          var invalid =
-            ext.SplitHeaderValue (';').Contains (
-              t => {
-                t = t.Trim ();
-                return t != method
-                       && t != "server_no_context_takeover"
-                       && t != "client_no_context_takeover";
-              }
-            );
+                            var valid = t == name
+                                        || t == param1
+                                        || t == param2;
+
+                            return !valid;
+                          }
+                        );
 
           if (invalid)
             return false;
+
+          comp = false;
         }
         else {
           return false;
@@ -2241,24 +2393,6 @@ namespace WebSocketSharp
       }
 
       return true;
-    }
-
-    // As client
-    private bool validateSecWebSocketProtocolServerHeader (string value)
-    {
-      if (value == null)
-        return !_protocolsRequested;
-
-      if (value.Length == 0)
-        return false;
-
-      return _protocolsRequested && _protocols.Contains (p => p == value);
-    }
-
-    // As client
-    private bool validateSecWebSocketVersionServerHeader (string value)
-    {
-      return value == null || value == _version;
     }
 
     #endregion
