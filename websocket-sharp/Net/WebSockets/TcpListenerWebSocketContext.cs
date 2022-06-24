@@ -113,6 +113,12 @@ namespace WebSocketSharp.Net.WebSockets
 
     #region Internal Properties
 
+    internal string HttpMethod {
+      get {
+        return _request.HttpMethod;
+      }
+    }
+
     internal Logger Log {
       get {
         return _log;
@@ -505,6 +511,11 @@ namespace WebSocketSharp.Net.WebSockets
       HttpResponse.CreateUnauthorizedResponse (challenge).WriteTo (_stream);
 
       _request = HttpRequest.ReadRequest (_stream, 15000);
+    }
+
+    internal void SetUser (IPrincipal value)
+    {
+      _user = value;
     }
 
     #endregion

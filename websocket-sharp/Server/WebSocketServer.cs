@@ -707,7 +707,38 @@ namespace WebSocketSharp.Server
       if (_authSchemes == AuthenticationSchemes.None)
         return false;
 
-      return context.Authenticate (_authSchemes, _realmInUse, _userCredFinder);
+      var chal = new AuthenticationChallenge (_authSchemes, _realmInUse)
+                 .ToString ();
+
+      var retry = -1;
+      Func<bool> auth = null;
+      auth =
+        () => {
+          retry++;
+
+          if (retry > 99)
+            return false;
+
+          var user = HttpUtility.CreateUser (
+                       context.Headers["Authorization"],
+                       _authSchemes,
+                       _realmInUse,
+                       context.HttpMethod,
+                       _userCredFinder
+                     );
+
+          if (user != null && user.Identity.IsAuthenticated) {
+            context.SetUser (user);
+
+            return true;
+          }
+
+          context.SendAuthenticationChallenge (chal);
+
+          return auth ();
+        };
+
+      return auth ();
     }
 
     private bool canSet ()
