@@ -318,7 +318,7 @@ namespace WebSocketSharp.Net.WebSockets
     ///   a valid WebSocket handshake request.
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> if the header is not present.
+    ///   <see langword="null"/> if not included.
     ///   </para>
     /// </value>
     public override string SecWebSocketKey {
