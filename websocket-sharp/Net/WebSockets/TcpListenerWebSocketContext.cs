@@ -382,8 +382,8 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the endpoint to which the handshake request is sent.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Net.IPEndPoint"/> that represents the server IP
-    /// address and port number.
+    /// A <see cref="System.Net.IPEndPoint"/> that represents the server
+    /// IP address and port number.
     /// </value>
     public override System.Net.IPEndPoint ServerEndPoint {
       get {
