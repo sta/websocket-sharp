@@ -244,7 +244,7 @@ namespace WebSocketSharp.Net.WebSockets
     ///   A <see cref="string"/> that represents the value of the Origin header.
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> if the header is not present.
+    ///   <see langword="null"/> if not included.
     ///   </para>
     /// </value>
     public override string Origin {
