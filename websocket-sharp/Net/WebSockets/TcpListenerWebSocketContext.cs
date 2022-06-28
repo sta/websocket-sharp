@@ -81,6 +81,7 @@ namespace WebSocketSharp.Net.WebSockets
       _log = log;
 
       var netStream = tcpClient.GetStream ();
+
       if (secure) {
         var sslStream = new SslStream (
                           netStream,
