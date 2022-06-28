@@ -45,8 +45,8 @@ using System.Text;
 namespace WebSocketSharp.Net.WebSockets
 {
   /// <summary>
-  /// Provides the access to the information in a WebSocket handshake request to
-  /// a <see cref="TcpListener"/> instance.
+  /// Provides the access to the information in a WebSocket handshake request
+  /// to a <see cref="TcpListener"/> instance.
   /// </summary>
   internal class TcpListenerWebSocketContext : WebSocketContext
   {
