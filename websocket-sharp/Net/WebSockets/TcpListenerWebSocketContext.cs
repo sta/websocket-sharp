@@ -466,6 +466,23 @@ namespace WebSocketSharp.Net.WebSockets
       _user = value;
     }
 
+    internal bool SetUser (
+      AuthenticationSchemes scheme,
+      string realm,
+      Func<IIdentity, NetworkCredential> credentialsFinder
+    )
+    {
+      _user = HttpUtility.CreateUser (
+                _request.Headers["Authorization"],
+                scheme,
+                realm,
+                _request.HttpMethod,
+                credentialsFinder
+              );
+
+      return _user != null;
+    }
+
     #endregion
 
     #region Public Methods
