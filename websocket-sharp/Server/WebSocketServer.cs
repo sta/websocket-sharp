@@ -719,19 +719,8 @@ namespace WebSocketSharp.Server
           if (retry > 99)
             return false;
 
-          var user = HttpUtility.CreateUser (
-                       context.Headers["Authorization"],
-                       _authSchemes,
-                       _realmInUse,
-                       context.HttpMethod,
-                       _userCredFinder
-                     );
-
-          if (user != null && user.Identity.IsAuthenticated) {
-            context.SetUser (user);
-
+          if (context.SetUser (_authSchemes, _realmInUse, _userCredFinder))
             return true;
-          }
 
           context.SendAuthenticationChallenge (chal);
 

@@ -472,15 +472,23 @@ namespace WebSocketSharp.Net.WebSockets
       Func<IIdentity, NetworkCredential> credentialsFinder
     )
     {
-      _user = HttpUtility.CreateUser (
-                _request.Headers["Authorization"],
-                scheme,
-                realm,
-                _request.HttpMethod,
-                credentialsFinder
-              );
+      var user = HttpUtility.CreateUser (
+                   _request.Headers["Authorization"],
+                   scheme,
+                   realm,
+                   _request.HttpMethod,
+                   credentialsFinder
+                 );
 
-      return _user != null;
+      if (user == null)
+        return false;
+
+      if (!user.Identity.IsAuthenticated)
+        return false;
+
+      _user = user;
+
+      return true;
     }
 
     #endregion
