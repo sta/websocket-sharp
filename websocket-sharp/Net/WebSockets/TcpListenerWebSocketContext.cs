@@ -461,11 +461,6 @@ namespace WebSocketSharp.Net.WebSockets
       _request = HttpRequest.ReadRequest (_stream, 15000);
     }
 
-    internal void SetUser (IPrincipal value)
-    {
-      _user = value;
-    }
-
     internal bool SetUser (
       AuthenticationSchemes scheme,
       string realm,
