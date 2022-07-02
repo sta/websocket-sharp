@@ -222,6 +222,17 @@ namespace WebSocketSharp
 
     #endregion
 
+    #region Internal Methods
+
+    internal void WriteTo (Stream stream)
+    {
+      var bytes = ToByteArray ();
+
+      stream.Write (bytes, 0, bytes.Length);
+    }
+
+    #endregion
+
     #region Protected Methods
 
     protected static T Read<T> (
