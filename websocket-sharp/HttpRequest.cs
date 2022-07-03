@@ -176,8 +176,7 @@ namespace WebSocketSharp
 
     internal HttpResponse GetResponse (Stream stream, int millisecondsTimeout)
     {
-      var bytes = ToByteArray ();
-      stream.Write (bytes, 0, bytes.Length);
+      WriteTo (stream);
 
       return HttpResponse.ReadResponse (stream, millisecondsTimeout);
     }
