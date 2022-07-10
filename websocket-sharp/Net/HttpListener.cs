@@ -507,23 +507,12 @@ namespace WebSocketSharp.Net
       }
 
       var realm = getRealm ();
-      var user = HttpUtility.CreateUser (
-                   req.Headers["Authorization"],
-                   schm,
-                   realm,
-                   req.HttpMethod,
-                   _userCredFinder
-                 );
 
-      var authenticated = user != null && user.Identity.IsAuthenticated;
-
-      if (!authenticated) {
+      if (!context.SetUser (schm, realm, _userCredFinder)) {
         context.SendAuthenticationChallenge (schm, realm);
 
         return false;
       }
-
-      context.User = user;
 
       return true;
     }
