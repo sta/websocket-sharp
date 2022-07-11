@@ -493,8 +493,7 @@ namespace WebSocketSharp.Net
 
     private bool authenticateContext (HttpListenerContext context)
     {
-      var req = context.Request;
-      var schm = selectAuthenticationScheme (req);
+      var schm = selectAuthenticationScheme (context.Request);
 
       if (schm == AuthenticationSchemes.Anonymous)
         return true;
