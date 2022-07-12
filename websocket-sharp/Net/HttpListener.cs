@@ -491,7 +491,7 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private bool authenticateContext (HttpListenerContext context)
+    private bool authenticateClient (HttpListenerContext context)
     {
       var schm = selectAuthenticationScheme (context.Request);
 
@@ -674,7 +674,7 @@ namespace WebSocketSharp.Net
 
     internal bool RegisterContext (HttpListenerContext context)
     {
-      if (!authenticateContext (context))
+      if (!authenticateClient (context))
         return false;
 
       if (!registerContext (context)) {
