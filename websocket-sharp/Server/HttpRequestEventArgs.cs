@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2017 sta.blockhead
+ * Copyright (c) 2012-2021 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,21 +35,21 @@ using WebSocketSharp.Net;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Represents the event data for the HTTP request events of
-  /// the <see cref="HttpServer"/>.
+  /// Represents the event data for the HTTP request events of the
+  /// <see cref="HttpServer"/> class.
   /// </summary>
   /// <remarks>
   ///   <para>
   ///   An HTTP request event occurs when the <see cref="HttpServer"/>
-  ///   receives an HTTP request.
+  ///   instance receives an HTTP request.
   ///   </para>
   ///   <para>
   ///   You should access the <see cref="Request"/> property if you would
   ///   like to get the request data sent from a client.
   ///   </para>
   ///   <para>
-  ///   And you should access the <see cref="Response"/> property if you would
-  ///   like to get the response data to return to the client.
+  ///   And you should access the <see cref="Response"/> property if you
+  ///   would like to get the response data to return to the client.
   ///   </para>
   /// </remarks>
   public class HttpRequestEventArgs : EventArgs
@@ -127,6 +127,7 @@ namespace WebSocketSharp.Server
     private string createFilePath (string childPath)
     {
       childPath = childPath.TrimStart ('/', '\\');
+
       return new StringBuilder (_docRootPath, 32)
              .AppendFormat ("/{0}", childPath)
              .ToString ()
@@ -155,8 +156,8 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Reads the specified file from the document folder of
-    /// the <see cref="HttpServer"/>.
+    /// Reads the specified file from the document folder of the
+    /// <see cref="HttpServer"/> class.
     /// </summary>
     /// <returns>
     ///   <para>
@@ -168,7 +169,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </returns>
     /// <param name="path">
-    /// A <see cref="string"/> that represents a virtual path to
+    /// A <see cref="string"/> that specifies a virtual path to
     /// find the file from the document folder.
     /// </param>
     /// <exception cref="ArgumentNullException">
@@ -196,22 +197,24 @@ namespace WebSocketSharp.Server
       if (path.IndexOf ("..") > -1)
         throw new ArgumentException ("It contains '..'.", "path");
 
+      path = createFilePath (path);
       byte[] contents;
-      tryReadFile (createFilePath (path), out contents);
+
+      tryReadFile (path, out contents);
 
       return contents;
     }
 
     /// <summary>
     /// Tries to read the specified file from the document folder of
-    /// the <see cref="HttpServer"/>.
+    /// the <see cref="HttpServer"/> class.
     /// </summary>
     /// <returns>
     /// <c>true</c> if it succeeds to read; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="path">
-    /// A <see cref="string"/> that represents a virtual path to
-    /// find the file from the document folder.
+    /// A <see cref="string"/> that specifies a virtual path to find
+    /// the file from the document folder.
     /// </param>
     /// <param name="contents">
     ///   <para>
@@ -247,7 +250,9 @@ namespace WebSocketSharp.Server
       if (path.IndexOf ("..") > -1)
         throw new ArgumentException ("It contains '..'.", "path");
 
-      return tryReadFile (createFilePath (path), out contents);
+      path = createFilePath (path);
+
+      return tryReadFile (path, out contents);
     }
 
     #endregion

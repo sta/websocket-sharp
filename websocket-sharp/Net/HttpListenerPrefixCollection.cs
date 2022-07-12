@@ -138,8 +138,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Add (string uriPrefix)
     {
-      if (_listener.IsDisposed)
-        throw new ObjectDisposedException (_listener.GetType ().ToString ());
+      _listener.CheckDisposed ();
 
       HttpListenerPrefix.CheckPrefix (uriPrefix);
 
@@ -161,8 +160,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Clear ()
     {
-      if (_listener.IsDisposed)
-        throw new ObjectDisposedException (_listener.GetType ().ToString ());
+      _listener.CheckDisposed ();
 
       if (_listener.IsListening)
         EndPointManager.RemoveListener (_listener);
@@ -190,8 +188,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public bool Contains (string uriPrefix)
     {
-      if (_listener.IsDisposed)
-        throw new ObjectDisposedException (_listener.GetType ().ToString ());
+      _listener.CheckDisposed ();
 
       if (uriPrefix == null)
         throw new ArgumentNullException ("uriPrefix");
@@ -226,8 +223,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void CopyTo (string[] array, int offset)
     {
-      if (_listener.IsDisposed)
-        throw new ObjectDisposedException (_listener.GetType ().ToString ());
+      _listener.CheckDisposed ();
 
       _prefixes.CopyTo (array, offset);
     }
@@ -263,8 +259,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public bool Remove (string uriPrefix)
     {
-      if (_listener.IsDisposed)
-        throw new ObjectDisposedException (_listener.GetType ().ToString ());
+      _listener.CheckDisposed ();
 
       if (uriPrefix == null)
         throw new ArgumentNullException ("uriPrefix");

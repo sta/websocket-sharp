@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2018 sta.blockhead
+ * Copyright (c) 2012-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -187,8 +187,8 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the endpoint to which the handshake request is sent.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Net.IPEndPoint"/> that represents the server IP
-    /// address and port number.
+    /// A <see cref="System.Net.IPEndPoint"/> that represents the server
+    /// IP address and port number.
     /// </value>
     public abstract System.Net.IPEndPoint ServerEndPoint { get; }
 
@@ -205,8 +205,8 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the endpoint from which the handshake request is sent.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Net.IPEndPoint"/> that represents the client IP
-    /// address and port number.
+    /// A <see cref="System.Net.IPEndPoint"/> that represents the client
+    /// IP address and port number.
     /// </value>
     public abstract System.Net.IPEndPoint UserEndPoint { get; }
 

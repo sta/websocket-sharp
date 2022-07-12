@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Ximian, Inc. (http://www.ximian.com)
- * Copyright (c) 2012-2016 sta.blockhead
+ * Copyright (c) 2012-2021 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,13 +55,12 @@ namespace WebSocketSharp.Net
 
     private AsyncCallback       _callback;
     private bool                _completed;
+    private bool                _completedSynchronously;
     private HttpListenerContext _context;
     private bool                _endCalled;
     private Exception           _exception;
-    private bool                _inGet;
     private object              _state;
     private object              _sync;
-    private bool                _syncCompleted;
     private ManualResetEvent    _waitHandle;
 
     #endregion
@@ -72,12 +71,23 @@ namespace WebSocketSharp.Net
     {
       _callback = callback;
       _state = state;
+
       _sync = new object ();
     }
 
     #endregion
 
     #region Internal Properties
+
+    internal HttpListenerContext Context
+    {
+      get {
+        if (_exception != null)
+          throw _exception;
+
+        return _context;
+      }
+    }
 
     internal bool EndCalled {
       get {
@@ -89,13 +99,9 @@ namespace WebSocketSharp.Net
       }
     }
 
-    internal bool InGet {
+    internal object SyncRoot {
       get {
-        return _inGet;
-      }
-
-      set {
-        _inGet = value;
+        return _sync;
       }
     }
 
@@ -111,14 +117,18 @@ namespace WebSocketSharp.Net
 
     public WaitHandle AsyncWaitHandle {
       get {
-        lock (_sync)
-          return _waitHandle ?? (_waitHandle = new ManualResetEvent (_completed));
+        lock (_sync) {
+          if (_waitHandle == null)
+            _waitHandle = new ManualResetEvent (_completed);
+
+          return _waitHandle;
+        }
       }
     }
 
     public bool CompletedSynchronously {
       get {
-        return _syncCompleted;
+        return _completedSynchronously;
       }
     }
 
@@ -133,24 +143,22 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private static void complete (HttpListenerAsyncResult asyncResult)
+    private void complete ()
     {
-      lock (asyncResult._sync) {
-        asyncResult._completed = true;
+      lock (_sync) {
+        _completed = true;
 
-        var waitHandle = asyncResult._waitHandle;
-        if (waitHandle != null)
-          waitHandle.Set ();
+        if (_waitHandle != null)
+          _waitHandle.Set ();
       }
 
-      var callback = asyncResult._callback;
-      if (callback == null)
+      if (_callback == null)
         return;
 
       ThreadPool.QueueUserWorkItem (
         state => {
           try {
-            callback (asyncResult);
+            _callback (this);
           }
           catch {
           }
@@ -165,32 +173,19 @@ namespace WebSocketSharp.Net
 
     internal void Complete (Exception exception)
     {
-      _exception = _inGet && (exception is ObjectDisposedException)
-                   ? new HttpListenerException (995, "The listener is closed.")
-                   : exception;
+      _exception = exception;
 
-      complete (this);
+      complete ();
     }
 
-    internal void Complete (HttpListenerContext context)
-    {
-      Complete (context, false);
-    }
-
-    internal void Complete (HttpListenerContext context, bool syncCompleted)
+    internal void Complete (
+      HttpListenerContext context, bool completedSynchronously
+    )
     {
       _context = context;
-      _syncCompleted = syncCompleted;
+      _completedSynchronously = completedSynchronously;
 
-      complete (this);
-    }
-
-    internal HttpListenerContext GetContext ()
-    {
-      if (_exception != null)
-        throw _exception;
-
-      return _context;
+      complete ();
     }
 
     #endregion

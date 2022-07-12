@@ -61,16 +61,16 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private List<HttpListenerPrefix> _all; // host == '+'
-    private static readonly string   _defaultCertFolderPath;
-    private IPEndPoint               _endpoint;
-    private List<HttpListenerPrefix> _prefixes;
-    private bool                     _secure;
-    private Socket                   _socket;
-    private ServerSslConfiguration   _sslConfig;
-    private List<HttpListenerPrefix> _unhandled; // host == '*'
-    private List<HttpConnection>     _unregistered;
-    private object                   _unregisteredSync;
+    private List<HttpListenerPrefix>                   _all; // host == '+'
+    private Dictionary<HttpConnection, HttpConnection> _connections;
+    private object                                     _connectionsSync;
+    private static readonly string                     _defaultCertFolderPath;
+    private IPEndPoint                                 _endpoint;
+    private List<HttpListenerPrefix>                   _prefixes;
+    private bool                                       _secure;
+    private Socket                                     _socket;
+    private ServerSslConfiguration                     _sslConfig;
+    private List<HttpListenerPrefix>                   _unhandled; // host == '*'
 
     #endregion
 
@@ -116,8 +116,8 @@ namespace WebSocketSharp.Net
       }
 
       _prefixes = new List<HttpListenerPrefix> ();
-      _unregistered = new List<HttpConnection> ();
-      _unregisteredSync = ((ICollection) _unregistered).SyncRoot;
+      _connections = new Dictionary<HttpConnection, HttpConnection> ();
+      _connectionsSync = ((ICollection) _connections).SyncRoot;
 
       _socket = new Socket (
                   endpoint.Address.AddressFamily,
@@ -191,22 +191,22 @@ namespace WebSocketSharp.Net
     {
       HttpConnection[] conns = null;
 
-      var cnt = 0;
-
-      lock (_unregisteredSync) {
-        cnt = _unregistered.Count;
+      lock (_connectionsSync) {
+        var cnt = _connections.Count;
 
         if (cnt == 0)
           return;
 
         conns = new HttpConnection[cnt];
 
-        _unregistered.CopyTo (conns, 0);
-        _unregistered.Clear ();
+        var vals = _connections.Values;
+        vals.CopyTo (conns, 0);
+
+        _connections.Clear ();
       }
 
-      for (var i = cnt - 1; i >= 0; i--)
-        conns[i].Close (true);
+      foreach (var conn in conns)
+        conn.Close (true);
     }
 
     private static RSACryptoServiceProvider createRSAFromFile (string path)
@@ -312,8 +312,8 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      lock (listener._unregisteredSync)
-        listener._unregistered.Add (conn);
+      lock (listener._connectionsSync)
+        listener._connections.Add (conn, conn);
 
       conn.BeginReadRequest ();
     }
@@ -380,8 +380,8 @@ namespace WebSocketSharp.Net
 
     internal void RemoveConnection (HttpConnection connection)
     {
-      lock (_unregisteredSync)
-        _unregistered.Remove (connection);
+      lock (_connectionsSync)
+        _connections.Remove (connection);
     }
 
     internal bool TrySearchHttpListener (Uri uri, out HttpListener listener)

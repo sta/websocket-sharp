@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2015 sta.blockhead
+ * Copyright (c) 2012-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,27 +47,44 @@ namespace WebSocketSharp
 
     private CookieCollection _cookies;
     private string           _method;
-    private string           _uri;
+    private string           _target;
 
     #endregion
 
     #region Private Constructors
 
-    private HttpRequest (string method, string uri, Version version, NameValueCollection headers)
+    private HttpRequest (
+      string method,
+      string target,
+      Version version,
+      NameValueCollection headers
+    )
       : base (version, headers)
     {
       _method = method;
-      _uri = uri;
+      _target = target;
     }
 
     #endregion
 
     #region Internal Constructors
 
-    internal HttpRequest (string method, string uri)
-      : this (method, uri, HttpVersion.Version11, new NameValueCollection ())
+    internal HttpRequest (string method, string target)
+      : this (method, target, HttpVersion.Version11, new NameValueCollection ())
     {
       Headers["User-Agent"] = "websocket-sharp/1.0";
+    }
+
+    #endregion
+
+    #region Internal Properties
+
+    internal string RequestLine {
+      get {
+        return String.Format (
+                 "{0} {1} HTTP/{2}{3}", _method, _target, ProtocolVersion, CrLf
+               );
+      }
     }
 
     #endregion
@@ -76,9 +93,10 @@ namespace WebSocketSharp
 
     public AuthenticationResponse AuthenticationResponse {
       get {
-        var res = Headers["Authorization"];
-        return res != null && res.Length > 0
-               ? AuthenticationResponse.Parse (res)
+        var val = Headers["Authorization"];
+
+        return val != null && val.Length > 0
+               ? AuthenticationResponse.Parse (val)
                : null;
       }
     }
@@ -106,9 +124,15 @@ namespace WebSocketSharp
       }
     }
 
-    public string RequestUri {
+    public override string MessageHeader {
       get {
-        return _uri;
+        return RequestLine + HeaderSection;
+      }
+    }
+
+    public string RequestTarget {
+      get {
+        return _target;
       }
     }
 
@@ -116,59 +140,80 @@ namespace WebSocketSharp
 
     #region Internal Methods
 
-    internal static HttpRequest CreateConnectRequest (Uri uri)
+    internal static HttpRequest CreateConnectRequest (Uri targetUri)
     {
-      var host = uri.DnsSafeHost;
-      var port = uri.Port;
+      var host = targetUri.DnsSafeHost;
+      var port = targetUri.Port;
       var authority = String.Format ("{0}:{1}", host, port);
-      var req = new HttpRequest ("CONNECT", authority);
-      req.Headers["Host"] = port == 80 ? host : authority;
 
-      return req;
+      var ret = new HttpRequest ("CONNECT", authority);
+
+      ret.Headers["Host"] = port != 80 ? authority : host;
+
+      return ret;
     }
 
-    internal static HttpRequest CreateWebSocketRequest (Uri uri)
+    internal static HttpRequest CreateWebSocketHandshakeRequest (Uri targetUri)
     {
-      var req = new HttpRequest ("GET", uri.PathAndQuery);
-      var headers = req.Headers;
+      var ret = new HttpRequest ("GET", targetUri.PathAndQuery);
 
-      // Only includes a port number in the Host header value if it's non-default.
-      // See: https://tools.ietf.org/html/rfc6455#page-17
-      var port = uri.Port;
-      var schm = uri.Scheme;
-      headers["Host"] = (port == 80 && schm == "ws") || (port == 443 && schm == "wss")
-                        ? uri.DnsSafeHost
-                        : uri.Authority;
+      var headers = ret.Headers;
+
+      var port = targetUri.Port;
+      var schm = targetUri.Scheme;
+      var defaultPort = (port == 80 && schm == "ws")
+                        || (port == 443 && schm == "wss");
+
+      headers["Host"] = !defaultPort
+                        ? targetUri.Authority
+                        : targetUri.DnsSafeHost;
 
       headers["Upgrade"] = "websocket";
       headers["Connection"] = "Upgrade";
 
-      return req;
+      return ret;
     }
 
     internal HttpResponse GetResponse (Stream stream, int millisecondsTimeout)
     {
-      var buff = ToByteArray ();
-      stream.Write (buff, 0, buff.Length);
+      WriteTo (stream);
 
-      return Read<HttpResponse> (stream, HttpResponse.Parse, millisecondsTimeout);
+      return HttpResponse.ReadResponse (stream, millisecondsTimeout);
     }
 
-    internal static HttpRequest Parse (string[] headerParts)
+    internal static HttpRequest Parse (string[] messageHeader)
     {
-      var requestLine = headerParts[0].Split (new[] { ' ' }, 3);
-      if (requestLine.Length != 3)
-        throw new ArgumentException ("Invalid request line: " + headerParts[0]);
+      var len = messageHeader.Length;
+
+      if (len == 0) {
+        var msg = "An empty request header.";
+
+        throw new ArgumentException (msg);
+      }
+
+      var rlParts = messageHeader[0].Split (new[] { ' ' }, 3);
+
+      if (rlParts.Length != 3) {
+        var msg = "It includes an invalid request line.";
+
+        throw new ArgumentException (msg);
+      }
+
+      var method = rlParts[0];
+      var target = rlParts[1];
+      var ver = rlParts[2].Substring (5).ToVersion ();
 
       var headers = new WebHeaderCollection ();
-      for (int i = 1; i < headerParts.Length; i++)
-        headers.InternalSet (headerParts[i], false);
 
-      return new HttpRequest (
-        requestLine[0], requestLine[1], new Version (requestLine[2].Substring (5)), headers);
+      for (var i = 1; i < len; i++)
+        headers.InternalSet (messageHeader[i], false);
+
+      return new HttpRequest (method, target, ver, headers);
     }
 
-    internal static HttpRequest Read (Stream stream, int millisecondsTimeout)
+    internal static HttpRequest ReadRequest (
+      Stream stream, int millisecondsTimeout
+    )
     {
       return Read<HttpRequest> (stream, Parse, millisecondsTimeout);
     }
@@ -183,33 +228,22 @@ namespace WebSocketSharp
         return;
 
       var buff = new StringBuilder (64);
-      foreach (var cookie in cookies.Sorted)
-        if (!cookie.Expired)
-          buff.AppendFormat ("{0}; ", cookie.ToString ());
+
+      foreach (var cookie in cookies.Sorted) {
+        if (cookie.Expired)
+          continue;
+
+        buff.AppendFormat ("{0}; ", cookie);
+      }
 
       var len = buff.Length;
-      if (len > 2) {
-        buff.Length = len - 2;
-        Headers["Cookie"] = buff.ToString ();
-      }
-    }
 
-    public override string ToString ()
-    {
-      var output = new StringBuilder (64);
-      output.AppendFormat ("{0} {1} HTTP/{2}{3}", _method, _uri, ProtocolVersion, CrLf);
+      if (len <= 2)
+        return;
 
-      var headers = Headers;
-      foreach (var key in headers.AllKeys)
-        output.AppendFormat ("{0}: {1}{2}", key, headers[key], CrLf);
+      buff.Length = len - 2;
 
-      output.Append (CrLf);
-
-      var entity = EntityBody;
-      if (entity.Length > 0)
-        output.Append (entity);
-
-      return output.ToString ();
+      Headers["Cookie"] = buff.ToString ();
     }
 
     #endregion

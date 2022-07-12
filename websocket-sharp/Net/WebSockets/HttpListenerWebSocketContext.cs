@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2018 sta.blockhead
+ * Copyright (c) 2012-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,8 +35,8 @@ using System.Security.Principal;
 namespace WebSocketSharp.Net.WebSockets
 {
   /// <summary>
-  /// Provides the access to the information in a WebSocket handshake request to
-  /// a <see cref="HttpListener"/> instance.
+  /// Provides the access to the information in a WebSocket handshake request
+  /// to a <see cref="HttpListener"/> instance.
   /// </summary>
   public class HttpListenerWebSocketContext : WebSocketContext
   {
@@ -186,7 +186,7 @@ namespace WebSocketSharp.Net.WebSockets
     ///   A <see cref="string"/> that represents the value of the Origin header.
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> if the header is not present.
+    ///   <see langword="null"/> if not included.
     ///   </para>
     /// </value>
     public override string Origin {
@@ -244,7 +244,7 @@ namespace WebSocketSharp.Net.WebSockets
     ///   a valid WebSocket handshake request.
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> if the header is not present.
+    ///   <see langword="null"/> if not included.
     ///   </para>
     /// </value>
     public override string SecWebSocketKey {
@@ -270,11 +270,13 @@ namespace WebSocketSharp.Net.WebSockets
     public override IEnumerable<string> SecWebSocketProtocols {
       get {
         var val = _context.Request.Headers["Sec-WebSocket-Protocol"];
+
         if (val == null || val.Length == 0)
           yield break;
 
         foreach (var elm in val.Split (',')) {
           var protocol = elm.Trim ();
+
           if (protocol.Length == 0)
             continue;
 
@@ -293,7 +295,7 @@ namespace WebSocketSharp.Net.WebSockets
     ///   version specified by the client.
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> if the header is not present.
+    ///   <see langword="null"/> if not included.
     ///   </para>
     /// </value>
     public override string SecWebSocketVersion {
@@ -306,8 +308,8 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the endpoint to which the handshake request is sent.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Net.IPEndPoint"/> that represents the server IP
-    /// address and port number.
+    /// A <see cref="System.Net.IPEndPoint"/> that represents the server
+    /// IP address and port number.
     /// </value>
     public override System.Net.IPEndPoint ServerEndPoint {
       get {
@@ -337,8 +339,8 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the endpoint from which the handshake request is sent.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Net.IPEndPoint"/> that represents the client IP
-    /// address and port number.
+    /// A <see cref="System.Net.IPEndPoint"/> that represents the client
+    /// IP address and port number.
     /// </value>
     public override System.Net.IPEndPoint UserEndPoint {
       get {
