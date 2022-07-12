@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2016 sta.blockhead
+ * Copyright (c) 2012-2021 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ namespace WebSocketSharp.Server
   /// <summary>
   /// Exposes a set of methods and properties used to define the behavior of
   /// a WebSocket service provided by the <see cref="WebSocketServer"/> or
-  /// <see cref="HttpServer"/>.
+  /// <see cref="HttpServer"/> class.
   /// </summary>
   /// <remarks>
   /// This class is an abstract class.
@@ -87,24 +87,6 @@ namespace WebSocketSharp.Server
     protected NameValueCollection Headers {
       get {
         return _context != null ? _context.Headers : null;
-      }
-    }
-
-    /// <summary>
-    /// Gets the logging function.
-    /// </summary>
-    /// <value>
-    ///   <para>
-    ///   A <see cref="Logger"/> that provides the logging function.
-    ///   </para>
-    ///   <para>
-    ///   <see langword="null"/> if the session has not started yet.
-    ///   </para>
-    /// </value>
-    [Obsolete ("This property will be removed.")]
-    protected Logger Log {
-      get {
-        return _websocket != null ? _websocket.Log : null;
       }
     }
 
@@ -251,6 +233,7 @@ namespace WebSocketSharp.Server
       set {
         if (_websocket != null) {
           _websocket.EmitOnPing = value;
+
           return;
         }
 
@@ -364,18 +347,23 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        if (ConnectionState != WebSocketState.Connecting) {
+        if (_websocket != null) {
           var msg = "The session has already started.";
+
           throw new InvalidOperationException (msg);
         }
 
         if (value == null || value.Length == 0) {
           _protocol = null;
+
           return;
         }
 
-        if (!value.IsToken ())
-          throw new ArgumentException ("Not a token.", "value");
+        if (!value.IsToken ()) {
+          var msg = "It is not a token.";
+
+          throw new ArgumentException (msg, "value");
+        }
 
         _protocol = value;
       }
@@ -413,6 +401,7 @@ namespace WebSocketSharp.Server
       if (_cookiesValidator != null) {
         var req = context.CookieCollection;
         var res = context.WebSocket.CookieCollection;
+
         if (!_cookiesValidator (req, res))
           return "It includes no cookie or an invalid one.";
       }
@@ -426,6 +415,7 @@ namespace WebSocketSharp.Server
         return;
 
       _sessions.Remove (_id);
+
       OnClose (e);
     }
 
@@ -442,12 +432,15 @@ namespace WebSocketSharp.Server
     private void onOpen (object sender, EventArgs e)
     {
       _id = _sessions.Add (this);
+
       if (_id == null) {
         _websocket.Close (CloseStatusCode.Away);
+
         return;
       }
 
       _startTime = DateTime.Now;
+
       OnOpen ();
     }
 
@@ -455,15 +448,10 @@ namespace WebSocketSharp.Server
 
     #region Internal Methods
 
-    internal void Start (WebSocketContext context, WebSocketSessionManager sessions)
+    internal void Start (
+      WebSocketContext context, WebSocketSessionManager sessions
+    )
     {
-      if (_websocket != null) {
-        _websocket.Log.Error ("A session instance cannot be reused.");
-        context.WebSocket.Close (HttpStatusCode.ServiceUnavailable);
-
-        return;
-      }
-
       _context = context;
       _sessions = sessions;
 
@@ -474,6 +462,7 @@ namespace WebSocketSharp.Server
       _websocket.Protocol = _protocol;
 
       var waitTime = sessions.WaitTime;
+
       if (waitTime != _websocket.WaitTime)
         _websocket.WaitTime = waitTime;
 
@@ -503,6 +492,7 @@ namespace WebSocketSharp.Server
     {
       if (_websocket == null) {
         var msg = "The session has not started yet.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -519,7 +509,7 @@ namespace WebSocketSharp.Server
     /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that represents the status code indicating
+    ///   A <see cref="ushort"/> that specifies the status code indicating
     ///   the reason for the close.
     ///   </para>
     ///   <para>
@@ -530,7 +520,7 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="reason">
     ///   <para>
-    ///   A <see cref="string"/> that represents the reason for the close.
+    ///   A <see cref="string"/> that specifies the reason for the close.
     ///   </para>
     ///   <para>
     ///   The size must be 123 bytes or less in UTF-8.
@@ -571,6 +561,7 @@ namespace WebSocketSharp.Server
     {
       if (_websocket == null) {
         var msg = "The session has not started yet.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -590,12 +581,12 @@ namespace WebSocketSharp.Server
     ///   One of the <see cref="CloseStatusCode"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It represents the status code indicating the reason for the close.
+    ///   It specifies the status code indicating the reason for the close.
     ///   </para>
     /// </param>
     /// <param name="reason">
     ///   <para>
-    ///   A <see cref="string"/> that represents the reason for the close.
+    ///   A <see cref="string"/> that specifies the reason for the close.
     ///   </para>
     ///   <para>
     ///   The size must be 123 bytes or less in UTF-8.
@@ -630,6 +621,7 @@ namespace WebSocketSharp.Server
     {
       if (_websocket == null) {
         var msg = "The session has not started yet.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -655,6 +647,7 @@ namespace WebSocketSharp.Server
     {
       if (_websocket == null) {
         var msg = "The session has not started yet.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -676,7 +669,7 @@ namespace WebSocketSharp.Server
     /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that represents the status code indicating
+    ///   A <see cref="ushort"/> that specifies the status code indicating
     ///   the reason for the close.
     ///   </para>
     ///   <para>
@@ -687,7 +680,7 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="reason">
     ///   <para>
-    ///   A <see cref="string"/> that represents the reason for the close.
+    ///   A <see cref="string"/> that specifies the reason for the close.
     ///   </para>
     ///   <para>
     ///   The size must be 123 bytes or less in UTF-8.
@@ -728,6 +721,7 @@ namespace WebSocketSharp.Server
     {
       if (_websocket == null) {
         var msg = "The session has not started yet.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -752,12 +746,12 @@ namespace WebSocketSharp.Server
     ///   One of the <see cref="CloseStatusCode"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It represents the status code indicating the reason for the close.
+    ///   It specifies the status code indicating the reason for the close.
     ///   </para>
     /// </param>
     /// <param name="reason">
     ///   <para>
-    ///   A <see cref="string"/> that represents the reason for the close.
+    ///   A <see cref="string"/> that specifies the reason for the close.
     ///   </para>
     ///   <para>
     ///   The size must be 123 bytes or less in UTF-8.
@@ -792,38 +786,11 @@ namespace WebSocketSharp.Server
     {
       if (_websocket == null) {
         var msg = "The session has not started yet.";
+
         throw new InvalidOperationException (msg);
       }
 
       _websocket.CloseAsync (code, reason);
-    }
-
-    /// <summary>
-    /// Calls the <see cref="OnError"/> method with the specified message.
-    /// </summary>
-    /// <param name="message">
-    /// A <see cref="string"/> that represents the error message.
-    /// </param>
-    /// <param name="exception">
-    /// An <see cref="Exception"/> instance that represents the cause of
-    /// the error if present.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="message"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="message"/> is an empty string.
-    /// </exception>
-    [Obsolete ("This method will be removed.")]
-    protected void Error (string message, Exception exception)
-    {
-      if (message == null)
-        throw new ArgumentNullException ("message");
-
-      if (message.Length == 0)
-        throw new ArgumentException ("An empty string.", "message");
-
-      OnError (new ErrorEventArgs (message, exception));
     }
 
     /// <summary>
@@ -867,10 +834,67 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Sends a ping to a client using the WebSocket connection.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the send has done with no error and a pong has been
+    /// received within a time; otherwise, <c>false</c>.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
+    /// </exception>
+    protected bool Ping ()
+    {
+      if (_websocket == null) {
+        var msg = "The session has not started yet.";
+
+        throw new InvalidOperationException (msg);
+      }
+
+      return _websocket.Ping ();
+    }
+
+    /// <summary>
+    /// Sends a ping with the specified message to a client using
+    /// the WebSocket connection.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the send has done with no error and a pong has been
+    /// received within a time; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="message">
+    ///   <para>
+    ///   A <see cref="string"/> that specifies the message to send.
+    ///   </para>
+    ///   <para>
+    ///   The size must be 125 bytes or less in UTF-8.
+    ///   </para>
+    /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="message"/> could not be UTF-8-encoded.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The size of <paramref name="message"/> is greater than 125 bytes.
+    /// </exception>
+    protected bool Ping (string message)
+    {
+      if (_websocket == null) {
+        var msg = "The session has not started yet.";
+
+        throw new InvalidOperationException (msg);
+      }
+
+      return _websocket.Ping (message);
+    }
+
+    /// <summary>
     /// Sends the specified data to a client using the WebSocket connection.
     /// </summary>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that represents the binary data to send.
+    /// An array of <see cref="byte"/> that specifies the binary data to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// The current state of the connection is not Open.
@@ -882,6 +906,7 @@ namespace WebSocketSharp.Server
     {
       if (_websocket == null) {
         var msg = "The current state of the connection is not Open.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -920,6 +945,7 @@ namespace WebSocketSharp.Server
     {
       if (_websocket == null) {
         var msg = "The current state of the connection is not Open.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -930,7 +956,7 @@ namespace WebSocketSharp.Server
     /// Sends the specified data to a client using the WebSocket connection.
     /// </summary>
     /// <param name="data">
-    /// A <see cref="string"/> that represents the text data to send.
+    /// A <see cref="string"/> that specifies the text data to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// The current state of the connection is not Open.
@@ -945,6 +971,7 @@ namespace WebSocketSharp.Server
     {
       if (_websocket == null) {
         var msg = "The current state of the connection is not Open.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -952,7 +979,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the data from the specified stream to a client using
+    /// Sends the data from the specified stream instance to a client using
     /// the WebSocket connection.
     /// </summary>
     /// <param name="stream">
@@ -993,6 +1020,7 @@ namespace WebSocketSharp.Server
     {
       if (_websocket == null) {
         var msg = "The current state of the connection is not Open.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -1007,7 +1035,7 @@ namespace WebSocketSharp.Server
     /// This method does not wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that represents the binary data to send.
+    /// An array of <see cref="byte"/> that specifies the binary data to send.
     /// </param>
     /// <param name="completed">
     ///   <para>
@@ -1032,6 +1060,7 @@ namespace WebSocketSharp.Server
     {
       if (_websocket == null) {
         var msg = "The current state of the connection is not Open.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -1087,6 +1116,7 @@ namespace WebSocketSharp.Server
     {
       if (_websocket == null) {
         var msg = "The current state of the connection is not Open.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -1101,7 +1131,7 @@ namespace WebSocketSharp.Server
     /// This method does not wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
-    /// A <see cref="string"/> that represents the text data to send.
+    /// A <see cref="string"/> that specifies the text data to send.
     /// </param>
     /// <param name="completed">
     ///   <para>
@@ -1129,6 +1159,7 @@ namespace WebSocketSharp.Server
     {
       if (_websocket == null) {
         var msg = "The current state of the connection is not Open.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -1136,8 +1167,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the data from the specified stream to a client asynchronously
-    /// using the WebSocket connection.
+    /// Sends the data from the specified stream instance to a client
+    /// asynchronously using the WebSocket connection.
     /// </summary>
     /// <remarks>
     /// This method does not wait for the send to be complete.
@@ -1193,6 +1224,7 @@ namespace WebSocketSharp.Server
     {
       if (_websocket == null) {
         var msg = "The current state of the connection is not Open.";
+
         throw new InvalidOperationException (msg);
       }
 

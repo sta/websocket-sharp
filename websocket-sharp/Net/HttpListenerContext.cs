@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2020 sta.blockhead
+ * Copyright (c) 2012-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -153,12 +153,13 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the client information (identity, authentication, and security roles).
+    /// Gets the client information (identity, authentication, and security
+    /// roles).
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="IPrincipal"/> instance or <see langword="null"/> if not
-    ///   authenticated.
+    ///   A <see cref="IPrincipal"/> instance or <see langword="null"/>
+    ///   if not authenticated.
     ///   </para>
     ///   <para>
     ///   The instance describes the client.
@@ -192,53 +193,9 @@ namespace WebSocketSharp.Net
                );
     }
 
-    private void sendAuthenticationChallenge (string challenge)
-    {
-      _response.StatusCode = 401;
-      _response.Headers.InternalSet ("WWW-Authenticate", challenge, true);
-
-      _response.Close ();
-    }
-
     #endregion
 
     #region Internal Methods
-
-    internal bool Authenticate ()
-    {
-      var schm = _listener.SelectAuthenticationScheme (_request);
-
-      if (schm == AuthenticationSchemes.Anonymous)
-        return true;
-
-      if (schm == AuthenticationSchemes.None) {
-        _errorStatusCode = 403;
-        _errorMessage = "Authentication not allowed";
-        SendError ();
-
-        return false;
-      }
-
-      var realm = _listener.GetRealm ();
-      var user = HttpUtility.CreateUser (
-                   _request.Headers["Authorization"],
-                   schm,
-                   realm,
-                   _request.HttpMethod,
-                   _listener.GetUserCredentialsFinder ()
-                 );
-
-      if (user == null || !user.Identity.IsAuthenticated) {
-        var chal = new AuthenticationChallenge (schm, realm).ToString ();
-        sendAuthenticationChallenge (chal);
-
-        return false;
-      }
-
-      _user = user;
-
-      return true;
-    }
 
     internal HttpListenerWebSocketContext GetWebSocketContext (string protocol)
     {
@@ -247,9 +204,16 @@ namespace WebSocketSharp.Net
       return _websocketContext;
     }
 
-    internal bool Register ()
+    internal void SendAuthenticationChallenge (
+      AuthenticationSchemes scheme, string realm
+    )
     {
-      return _listener.RegisterContext (this);
+      _response.StatusCode = 401;
+
+      var chal = new AuthenticationChallenge (scheme, realm).ToString ();
+      _response.Headers.InternalSet ("WWW-Authenticate", chal, true);
+
+      _response.Close ();
     }
 
     internal void SendError ()
@@ -266,6 +230,7 @@ namespace WebSocketSharp.Net
 
         var enc = Encoding.UTF8;
         var entity = enc.GetBytes (content);
+
         _response.ContentEncoding = enc;
         _response.ContentLength64 = entity.LongLength;
 
@@ -276,8 +241,51 @@ namespace WebSocketSharp.Net
       }
     }
 
+    internal void SendError (int statusCode)
+    {
+      _errorStatusCode = statusCode;
+
+      SendError ();
+    }
+
+    internal void SendError (int statusCode, string message)
+    {
+      _errorStatusCode = statusCode;
+      _errorMessage = message;
+
+      SendError ();
+    }
+
+    internal bool SetUser (
+      AuthenticationSchemes scheme,
+      string realm,
+      Func<IIdentity, NetworkCredential> credentialsFinder
+    )
+    {
+      var user = HttpUtility.CreateUser (
+                   _request.Headers["Authorization"],
+                   scheme,
+                   realm,
+                   _request.HttpMethod,
+                   credentialsFinder
+                 );
+
+      if (user == null)
+        return false;
+
+      if (!user.Identity.IsAuthenticated)
+        return false;
+
+      _user = user;
+
+      return true;
+    }
+
     internal void Unregister ()
     {
+      if (_listener == null)
+        return;
+
       _listener.UnregisterContext (this);
     }
 

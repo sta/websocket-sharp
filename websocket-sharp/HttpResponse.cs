@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,14 +38,16 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private string _code;
+    private int    _code;
     private string _reason;
 
     #endregion
 
     #region Private Constructors
 
-    private HttpResponse (string code, string reason, Version version, NameValueCollection headers)
+    private HttpResponse (
+      int code, string reason, Version version, NameValueCollection headers
+    )
       : base (version, headers)
     {
       _code = code;
@@ -56,20 +58,59 @@ namespace WebSocketSharp
 
     #region Internal Constructors
 
-    internal HttpResponse (HttpStatusCode code)
-      : this (code, code.GetDescription ())
+    internal HttpResponse (int code)
+      : this (code, code.GetStatusDescription ())
     {
     }
 
-    internal HttpResponse (HttpStatusCode code, string reason)
-      : this (((int) code).ToString (), reason, HttpVersion.Version11, new NameValueCollection ())
+    internal HttpResponse (HttpStatusCode code)
+      : this ((int) code)
+    {
+    }
+
+    internal HttpResponse (int code, string reason)
+      : this (
+          code,
+          reason,
+          HttpVersion.Version11,
+          new NameValueCollection ()
+        )
     {
       Headers["Server"] = "websocket-sharp/1.0";
+    }
+
+    internal HttpResponse (HttpStatusCode code, string reason)
+      : this ((int) code, reason)
+    {
+    }
+
+    #endregion
+
+    #region Internal Properties
+
+    internal string StatusLine {
+      get {
+        return _reason != null
+               ? String.Format (
+                   "HTTP/{0} {1} {2}{3}", ProtocolVersion, _code, _reason, CrLf
+                 )
+               : String.Format (
+                   "HTTP/{0} {1}{2}", ProtocolVersion, _code, CrLf
+                 );
+      }
     }
 
     #endregion
 
     #region Public Properties
+
+    public bool CloseConnection {
+      get {
+        var compType = StringComparison.OrdinalIgnoreCase;
+
+        return Headers.Contains ("Connection", "close", compType);
+      }
+    }
 
     public CookieCollection Cookies {
       get {
@@ -77,36 +118,41 @@ namespace WebSocketSharp
       }
     }
 
-    public bool HasConnectionClose {
-      get {
-        var comparison = StringComparison.OrdinalIgnoreCase;
-        return Headers.Contains ("Connection", "close", comparison);
-      }
-    }
-
     public bool IsProxyAuthenticationRequired {
       get {
-        return _code == "407";
+        return _code == 407;
       }
     }
 
     public bool IsRedirect {
       get {
-        return _code == "301" || _code == "302";
+        return _code == 301 || _code == 302;
+      }
+    }
+
+    public bool IsSuccess {
+      get {
+        return _code >= 200 && _code <= 299;
       }
     }
 
     public bool IsUnauthorized {
       get {
-        return _code == "401";
+        return _code == 401;
       }
     }
 
     public bool IsWebSocketResponse {
       get {
         return ProtocolVersion > HttpVersion.Version10
-               && _code == "101"
+               && _code == 101
                && Headers.Upgrades ("websocket");
+      }
+    }
+
+    public override string MessageHeader {
+      get {
+        return StatusLine + HeaderSection;
       }
     }
 
@@ -116,7 +162,7 @@ namespace WebSocketSharp
       }
     }
 
-    public string StatusCode {
+    public int StatusCode {
       get {
         return _code;
       }
@@ -128,46 +174,68 @@ namespace WebSocketSharp
 
     internal static HttpResponse CreateCloseResponse (HttpStatusCode code)
     {
-      var res = new HttpResponse (code);
-      res.Headers["Connection"] = "close";
+      var ret = new HttpResponse (code);
 
-      return res;
+      ret.Headers["Connection"] = "close";
+
+      return ret;
     }
 
     internal static HttpResponse CreateUnauthorizedResponse (string challenge)
     {
-      var res = new HttpResponse (HttpStatusCode.Unauthorized);
-      res.Headers["WWW-Authenticate"] = challenge;
+      var ret = new HttpResponse (HttpStatusCode.Unauthorized);
 
-      return res;
+      ret.Headers["WWW-Authenticate"] = challenge;
+
+      return ret;
     }
 
-    internal static HttpResponse CreateWebSocketResponse ()
+    internal static HttpResponse CreateWebSocketHandshakeResponse ()
     {
-      var res = new HttpResponse (HttpStatusCode.SwitchingProtocols);
+      var ret = new HttpResponse (HttpStatusCode.SwitchingProtocols);
 
-      var headers = res.Headers;
+      var headers = ret.Headers;
+
       headers["Upgrade"] = "websocket";
       headers["Connection"] = "Upgrade";
 
-      return res;
+      return ret;
     }
 
-    internal static HttpResponse Parse (string[] headerParts)
+    internal static HttpResponse Parse (string[] messageHeader)
     {
-      var statusLine = headerParts[0].Split (new[] { ' ' }, 3);
-      if (statusLine.Length != 3)
-        throw new ArgumentException ("Invalid status line: " + headerParts[0]);
+      var len = messageHeader.Length;
+
+      if (len == 0) {
+        var msg = "An empty response header.";
+
+        throw new ArgumentException (msg);
+      }
+
+      var slParts = messageHeader[0].Split (new[] { ' ' }, 3);
+      var plen = slParts.Length;
+
+      if (plen < 2) {
+        var msg = "It includes an invalid status line.";
+
+        throw new ArgumentException (msg);
+      }
+
+      var code = slParts[1].ToInt32 ();
+      var reason = plen == 3 ? slParts[2] : null;
+      var ver = slParts[0].Substring (5).ToVersion ();
 
       var headers = new WebHeaderCollection ();
-      for (int i = 1; i < headerParts.Length; i++)
-        headers.InternalSet (headerParts[i], true);
 
-      return new HttpResponse (
-        statusLine[1], statusLine[2], new Version (statusLine[0].Substring (5)), headers);
+      for (var i = 1; i < len; i++)
+        headers.InternalSet (messageHeader[i], true);
+
+      return new HttpResponse (code, reason, ver, headers);
     }
 
-    internal static HttpResponse Read (Stream stream, int millisecondsTimeout)
+    internal static HttpResponse ReadResponse (
+      Stream stream, int millisecondsTimeout
+    )
     {
       return Read<HttpResponse> (stream, Parse, millisecondsTimeout);
     }
@@ -182,26 +250,12 @@ namespace WebSocketSharp
         return;
 
       var headers = Headers;
-      foreach (var cookie in cookies.Sorted)
-        headers.Add ("Set-Cookie", cookie.ToResponseString ());
-    }
 
-    public override string ToString ()
-    {
-      var output = new StringBuilder (64);
-      output.AppendFormat ("HTTP/{0} {1} {2}{3}", ProtocolVersion, _code, _reason, CrLf);
+      foreach (var cookie in cookies.Sorted) {
+        var val = cookie.ToResponseString ();
 
-      var headers = Headers;
-      foreach (var key in headers.AllKeys)
-        output.AppendFormat ("{0}: {1}{2}", key, headers[key], CrLf);
-
-      output.Append (CrLf);
-
-      var entity = EntityBody;
-      if (entity.Length > 0)
-        output.Append (entity);
-
-      return output.ToString ();
+        headers.Add ("Set-Cookie", val);
+      }
     }
 
     #endregion

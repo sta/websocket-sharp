@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2015-2017 sta.blockhead
+ * Copyright (c) 2015-2021 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ using System;
 namespace WebSocketSharp.Server
 {
   internal class WebSocketServiceHost<TBehavior> : WebSocketServiceHost
-    where TBehavior : WebSocketBehavior
+    where TBehavior : WebSocketBehavior, new ()
   {
     #region Private Fields
 
@@ -42,21 +42,11 @@ namespace WebSocketSharp.Server
     #region Internal Constructors
 
     internal WebSocketServiceHost (
-      string path, Func<TBehavior> creator, Logger log
-    )
-      : this (path, creator, null, log)
-    {
-    }
-
-    internal WebSocketServiceHost (
-      string path,
-      Func<TBehavior> creator,
-      Action<TBehavior> initializer,
-      Logger log
+      string path, Action<TBehavior> initializer, Logger log
     )
       : base (path, log)
     {
-      _creator = createCreator (creator, initializer);
+      _creator = createSessionCreator (initializer);
     }
 
     #endregion
@@ -73,15 +63,16 @@ namespace WebSocketSharp.Server
 
     #region Private Methods
 
-    private Func<TBehavior> createCreator (
-      Func<TBehavior> creator, Action<TBehavior> initializer
+    private static Func<TBehavior> createSessionCreator (
+      Action<TBehavior> initializer
     )
     {
       if (initializer == null)
-        return creator;
+        return () => new TBehavior ();
 
       return () => {
-               var ret = creator ();
+               var ret = new TBehavior ();
+
                initializer (ret);
 
                return ret;

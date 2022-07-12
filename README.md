@@ -268,7 +268,7 @@ namespace Example
     protected override void OnMessage (MessageEventArgs e)
     {
       var msg = e.Data == "BALUS"
-                ? "I've been balused already..."
+                ? "Are you kidding?"
                 : "I'm not available now.";
 
       Send (msg);
@@ -280,6 +280,7 @@ namespace Example
     public static void Main (string[] args)
     {
       var wssv = new WebSocketServer ("ws://dragonsnest.far");
+
       wssv.AddWebSocketService<Laputa> ("/Laputa");
       wssv.Start ();
       Console.ReadKey (true);
@@ -331,13 +332,18 @@ public class Chat : WebSocketBehavior
   private string _suffix;
 
   public Chat ()
-    : this (null)
   {
+    _suffix = String.Empty;
   }
 
-  public Chat (string suffix)
-  {
-    _suffix = suffix ?? String.Empty;
+  public string Suffix {
+    get {
+      return _suffix;
+    }
+
+    set {
+      _suffix = value ?? String.Empty;
+    }
   }
 
   protected override void OnMessage (MessageEventArgs e)
@@ -365,16 +371,15 @@ Creating a new instance of the `WebSocketServer` class.
 
 ```csharp
 var wssv = new WebSocketServer (4649);
+
 wssv.AddWebSocketService<Echo> ("/Echo");
 wssv.AddWebSocketService<Chat> ("/Chat");
-wssv.AddWebSocketService<Chat> ("/ChatWithNyan", () => new Chat (" Nyan!"));
+wssv.AddWebSocketService<Chat> ("/ChatWithNyan", s => s.Suffix = " Nyan!");
 ```
 
-You can add any WebSocket service to your `WebSocketServer` with the specified behavior and absolute path to the service, by using the `WebSocketServer.AddWebSocketService<TBehaviorWithNew> (string)` or `WebSocketServer.AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method.
+You can add any WebSocket service to your `WebSocketServer` with the specified behavior and absolute path to the service, by using the `WebSocketServer.AddWebSocketService<TBehavior> (string)` or `WebSocketServer.AddWebSocketService<TBehavior> (string, Action<TBehavior>)` method.
 
-The type of `TBehaviorWithNew` must inherit the `WebSocketBehavior` class, and must have a public parameterless constructor.
-
-The type of `TBehavior` must inherit the `WebSocketBehavior` class.
+The type of `TBehavior` must inherit the `WebSocketBehavior` class, and must have a public parameterless constructor.
 
 So you can use a class in the above Step 2 to add the service.
 
@@ -395,12 +400,8 @@ wssv.Start ();
 Stopping the WebSocket server.
 
 ```csharp
-wssv.Stop (code, reason);
+wssv.Stop ();
 ```
-
-The `WebSocketServer.Stop` method is overloaded.
-
-You can use the `WebSocketServer.Stop ()`, `WebSocketServer.Stop (ushort, string)`, or `WebSocketServer.Stop (WebSocketSharp.CloseStatusCode, string)` method to stop the server.
 
 ### HTTP Server with the WebSocket ###
 
@@ -408,13 +409,14 @@ I have modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`,
 
 So websocket-sharp provides the `WebSocketSharp.Server.HttpServer` class.
 
-You can add any WebSocket service to your `HttpServer` with the specified behavior and path to the service, by using the `HttpServer.AddWebSocketService<TBehaviorWithNew> (string)` or `HttpServer.AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method.
+You can add any WebSocket service to your `HttpServer` with the specified behavior and path to the service, by using the `HttpServer.AddWebSocketService<TBehavior> (string)` or `HttpServer.AddWebSocketService<TBehavior> (string, Action<TBehavior>)` method.
 
 ```csharp
 var httpsv = new HttpServer (4649);
+
 httpsv.AddWebSocketService<Echo> ("/Echo");
 httpsv.AddWebSocketService<Chat> ("/Chat");
-httpsv.AddWebSocketService<Chat> ("/ChatWithNyan", () => new Chat (" Nyan!"));
+httpsv.AddWebSocketService<Chat> ("/ChatWithNyan", s => s.Suffix = " Nyan!");
 ```
 
 For more information, would you see **[Example3]**?
@@ -423,7 +425,7 @@ For more information, would you see **[Example3]**?
 
 #### Per-message Compression ####
 
-websocket-sharp supports the [Per-message Compression][compression] extension (but does not support it with the [context take over]).
+websocket-sharp supports the [Per-message Compression][rfc7692] extension (but does not support it with the [context take over]).
 
 As a WebSocket client, if you would like to enable this extension, you should set the `WebSocket.Compression` property to a compression method before calling the connect method.
 
@@ -446,11 +448,7 @@ As a WebSocket server, if you would like to ignore the extensions requested from
 ```csharp
 wssv.AddWebSocketService<Chat> (
   "/Chat",
-  () =>
-    new Chat () {
-      // To ignore the extensions requested from a client.
-      IgnoreExtensions = true
-    }
+  s => s.IgnoreExtensions = true // To ignore the extensions requested from a client.
 );
 ```
 
@@ -486,8 +484,9 @@ As a WebSocket server, you should create a new instance of the `WebSocketServer`
 
 ```csharp
 var wssv = new WebSocketServer (5963, true);
-wssv.SslConfiguration.ServerCertificate =
-  new X509Certificate2 ("/path/to/cert.pfx", "password for cert.pfx");
+wssv.SslConfiguration.ServerCertificate = new X509Certificate2 (
+                                            "/path/to/cert.pfx", "password for cert.pfx"
+                                          );
 ```
 
 ### HTTP Authentication ###
@@ -545,7 +544,7 @@ And if you would like to send the cookies in the handshake request, you should s
 ws.SetCookie (new Cookie ("name", "nobita"));
 ```
 
-As a WebSocket server, if you would like to get the query string included in a handshake request, you should access the `WebSocketBehavior.Context.QueryString` property, such as the following.
+As a WebSocket server, if you would like to get the query string included in a handshake request, you should access the `WebSocketBehavior.QueryString` property, such as the following.
 
 ```csharp
 public class Chat : WebSocketBehavior
@@ -555,7 +554,7 @@ public class Chat : WebSocketBehavior
 
   protected override void OnOpen ()
   {
-    _name = Context.QueryString["name"];
+    _name = QueryString["name"];
   }
 
   ...
@@ -566,31 +565,32 @@ If you would like to get the value of the Origin header included in a handshake 
 
 If you would like to get the cookies included in a handshake request, you should access the `WebSocketBehavior.Context.CookieCollection` property.
 
-And if you would like to validate the Origin header, cookies, or both, you should set each validation for it with your `WebSocketBehavior`, for example, by using the `WebSocketServer.AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, such as the following.
+And if you would like to validate the Origin header, cookies, or both, you should set each validation for it with your `WebSocketBehavior`, for example, by using the `WebSocketServer.AddWebSocketService<TBehavior> (string, Action<TBehavior>)` method with initializing, such as the following.
 
 ```csharp
 wssv.AddWebSocketService<Chat> (
   "/Chat",
-  () =>
-    new Chat () {
-      OriginValidator = val => {
-          // Check the value of the Origin header, and return true if valid.
-          Uri origin;
-          return !val.IsNullOrEmpty ()
-                 && Uri.TryCreate (val, UriKind.Absolute, out origin)
-                 && origin.Host == "example.com";
-        },
-      CookiesValidator = (req, res) => {
-          // Check the cookies in 'req', and set the cookies to send to
-          // the client with 'res' if necessary.
-          foreach (Cookie cookie in req) {
-            cookie.Expired = true;
-            res.Add (cookie);
-          }
+  s => {
+    s.OriginValidator = val => {
+        // Check the value of the Origin header, and return true if valid.
+        Uri origin;
 
-          return true; // If valid.
+        return !val.IsNullOrEmpty ()
+               && Uri.TryCreate (val, UriKind.Absolute, out origin)
+               && origin.Host == "example.com";
+      };
+
+    s.CookiesValidator = (req, res) => {
+        // Check the cookies in 'req', and set the cookies to send to
+        // the client with 'res' if necessary.
+        foreach (var cookie in req) {
+          cookie.Expired = true;
+          res.Add (cookie);
         }
-    }
+
+        return true; // If valid.
+      };
+  }
 );
 ```
 
@@ -640,7 +640,7 @@ Examples using websocket-sharp.
 
 ### Example ###
 
-[Example] connects to the [Echo server].
+[Example] connects to the server executed by [Example2] or [Example3].
 
 ### Example2 ###
 
@@ -658,7 +658,7 @@ websocket-sharp supports **RFC 6455**, and it is based on the following referenc
 
 - [The WebSocket Protocol][rfc6455]
 - [The WebSocket API][api]
-- [Compression Extensions for WebSocket][compression]
+- [Compression Extensions for WebSocket][rfc7692]
 
 Thanks for translating to japanese.
 
@@ -670,7 +670,6 @@ Thanks for translating to japanese.
 websocket-sharp is provided under [The MIT License].
 
 
-[Echo server]: http://www.websocket.org/echo.html
 [Example]: https://github.com/sta/websocket-sharp/tree/master/Example
 [Example2]: https://github.com/sta/websocket-sharp/tree/master/Example2
 [Example3]: https://github.com/sta/websocket-sharp/tree/master/Example3
@@ -688,8 +687,7 @@ websocket-sharp is provided under [The MIT License].
 [WebSocket-Sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity
 [api]: http://www.w3.org/TR/websockets
 [api_ja]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
-[compression]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19
-[context take over]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19#section-8.1.1
+[context take over]: https://datatracker.ietf.org/doc/html/rfc7692#section-7.1.1
 [draft-hixie-thewebsocketprotocol-75]: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75
 [draft-ietf-hybi-thewebsocketprotocol-00]: http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00
 [draft75]: https://github.com/sta/websocket-sharp/tree/draft75
@@ -698,3 +696,4 @@ websocket-sharp is provided under [The MIT License].
 [rfc2617]: http://tools.ietf.org/html/rfc2617
 [rfc6455]: http://tools.ietf.org/html/rfc6455
 [rfc6455_ja]: http://www.hcn.zaq.ne.jp/___/WEB/RFC6455-ja.html
+[rfc7692]: https://datatracker.ietf.org/doc/html/rfc7692

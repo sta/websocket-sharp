@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2021 sta.blockhead
+ * Copyright (c) 2012-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,30 +47,51 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private long   _bodyLeft;
-    private byte[] _buffer;
     private int    _count;
     private bool   _disposed;
+    private byte[] _initialBuffer;
+    private Stream _innerStream;
     private int    _offset;
-    private Stream _stream;
 
     #endregion
 
     #region Internal Constructors
 
-    internal RequestStream (Stream stream, byte[] buffer, int offset, int count)
-      : this (stream, buffer, offset, count, -1)
-    {
-    }
-
     internal RequestStream (
-      Stream stream, byte[] buffer, int offset, int count, long contentLength
+      Stream innerStream,
+      byte[] initialBuffer,
+      int offset,
+      int count,
+      long contentLength
     )
     {
-      _stream = stream;
-      _buffer = buffer;
+      _innerStream = innerStream;
+      _initialBuffer = initialBuffer;
       _offset = offset;
       _count = count;
       _bodyLeft = contentLength;
+    }
+
+    #endregion
+
+    #region Internal Properties
+
+    internal int Count {
+      get {
+        return _count;
+      }
+    }
+
+    internal byte[] InitialBuffer {
+      get {
+        return _initialBuffer;
+      }
+    }
+
+    internal int Offset {
+      get {
+        return _offset;
+      }
     }
 
     #endregion
@@ -115,11 +136,11 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private int fillFromBuffer (byte[] buffer, int offset, int count)
+    private int fillFromInitialBuffer (byte[] buffer, int offset, int count)
     {
       // This method returns a int:
-      // - > 0 The number of bytes read from the internal buffer
-      // - 0   No more bytes read from the internal buffer
+      // - > 0 The number of bytes read from the initial buffer
+      // - 0   No more bytes read from the initial buffer
       // - -1  No more content data
 
       if (_bodyLeft == 0)
@@ -134,7 +155,7 @@ namespace WebSocketSharp.Net
       if (_bodyLeft > 0 && _bodyLeft < count)
         count = (int) _bodyLeft;
 
-      Buffer.BlockCopy (_buffer, _offset, buffer, offset, count);
+      Buffer.BlockCopy (_initialBuffer, _offset, buffer, offset, count);
 
       _offset += count;
       _count -= count;
@@ -183,25 +204,27 @@ namespace WebSocketSharp.Net
       }
 
       if (count == 0)
-        return _stream.BeginRead (buffer, offset, 0, callback, state);
+        return _innerStream.BeginRead (buffer, offset, 0, callback, state);
 
-      var nread = fillFromBuffer (buffer, offset, count);
+      var nread = fillFromInitialBuffer (buffer, offset, count);
 
       if (nread != 0) {
         var ares = new HttpStreamAsyncResult (callback, state);
+
         ares.Buffer = buffer;
         ares.Offset = offset;
         ares.Count = count;
         ares.SyncRead = nread > 0 ? nread : 0;
+
         ares.Complete ();
 
         return ares;
       }
 
-      if (_bodyLeft >= 0 && _bodyLeft < count)
+      if (_bodyLeft > 0 && _bodyLeft < count)
         count = (int) _bodyLeft;
 
-      return _stream.BeginRead (buffer, offset, count, callback, state);
+      return _innerStream.BeginRead (buffer, offset, count, callback, state);
     }
 
     public override IAsyncResult BeginWrite (
@@ -236,7 +259,7 @@ namespace WebSocketSharp.Net
         return ares.SyncRead;
       }
 
-      var nread = _stream.EndRead (asyncResult);
+      var nread = _innerStream.EndRead (asyncResult);
 
       if (nread > 0 && _bodyLeft > 0)
         _bodyLeft -= nread;
@@ -287,7 +310,7 @@ namespace WebSocketSharp.Net
       if (count == 0)
         return 0;
 
-      var nread = fillFromBuffer (buffer, offset, count);
+      var nread = fillFromInitialBuffer (buffer, offset, count);
 
       if (nread == -1)
         return 0;
@@ -295,7 +318,10 @@ namespace WebSocketSharp.Net
       if (nread > 0)
         return nread;
 
-      nread = _stream.Read (buffer, offset, count);
+      if (_bodyLeft > 0 && _bodyLeft < count)
+        count = (int) _bodyLeft;
+
+      nread = _innerStream.Read (buffer, offset, count);
 
       if (nread > 0 && _bodyLeft > 0)
         _bodyLeft -= nread;

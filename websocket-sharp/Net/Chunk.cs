@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2003 Ximian, Inc (http://www.ximian.com)
- * Copyright (c) 2014-2015 sta.blockhead
+ * Copyright (c) 2014-2021 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -74,13 +74,15 @@ namespace WebSocketSharp.Net
     public int Read (byte[] buffer, int offset, int count)
     {
       var left = _data.Length - _offset;
+
       if (left == 0)
-        return left;
+        return 0;
 
       if (count > left)
         count = left;
 
       Buffer.BlockCopy (_data, _offset, buffer, offset, count);
+
       _offset += count;
 
       return count;
