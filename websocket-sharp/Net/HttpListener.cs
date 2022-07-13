@@ -624,6 +624,9 @@ namespace WebSocketSharp.Net
 
     private bool registerContext (HttpListenerContext context)
     {
+      if (!_listening)
+        return false;
+
       lock (_contextRegistrySync) {
         if (!_listening)
           return false;
