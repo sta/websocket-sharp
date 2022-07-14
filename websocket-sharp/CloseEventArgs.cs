@@ -137,6 +137,16 @@ namespace WebSocketSharp
       }
     }
 
+    public Exception Exception
+    {
+        get => _payloadData.Exception;
+    }
+
+    public string CallerDbgInfo
+    {
+        get => _payloadData.CallerDbgInfo;
+    }
+
     #endregion
   }
 }

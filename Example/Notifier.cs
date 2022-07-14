@@ -11,16 +11,16 @@ namespace Example
   internal class Notifier : IDisposable
   {
     private volatile bool              _enabled;
-    private ManualResetEvent           _exited;
     private Queue<NotificationMessage> _queue;
     private object                     _sync;
+    private ManualResetEvent           _waitHandle;
 
     public Notifier ()
     {
       _enabled = true;
-      _exited = new ManualResetEvent (false);
       _queue = new Queue<NotificationMessage> ();
       _sync = ((ICollection) _queue).SyncRoot;
+      _waitHandle = new ManualResetEvent (false);
 
       ThreadPool.QueueUserWorkItem (
         state => {
@@ -40,9 +40,8 @@ namespace Example
             }
           }
 
-          _exited.Set ();
-        }
-      );
+          _waitHandle.Set ();
+        });
     }
 
     public int Count {
@@ -61,16 +60,15 @@ namespace Example
     public void Close ()
     {
       _enabled = false;
-      _exited.WaitOne ();
-      _exited.Close ();
+      _waitHandle.WaitOne ();
+      _waitHandle.Close ();
     }
 
     public void Notify (NotificationMessage message)
     {
-      lock (_sync) {
+      lock (_sync)
         if (_enabled)
           _queue.Enqueue (message);
-      }
     }
 
     void IDisposable.Dispose ()

@@ -32,6 +32,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using WebSocketSharp.Net;
 
 namespace WebSocketSharp.Server
@@ -354,15 +355,15 @@ namespace WebSocketSharp.Server
 
     private void broadcastAsync (Opcode opcode, byte[] data, Action completed)
     {
-      ThreadPool.QueueUserWorkItem (
-        state => broadcast (opcode, data, completed)
+      Task.Factory.StartNew (
+        () => broadcast (opcode, data, completed)
       );
     }
 
     private void broadcastAsync (Opcode opcode, Stream stream, Action completed)
     {
-      ThreadPool.QueueUserWorkItem (
-        state => broadcast (opcode, stream, completed)
+      Task.Factory.StartNew (
+        () => broadcast (opcode, stream, completed)
       );
     }
 

@@ -29,6 +29,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace WebSocketSharp
 {
@@ -104,7 +105,11 @@ namespace WebSocketSharp
       _length = length;
     }
 
-    internal PayloadData (ushort code, string reason)
+    internal PayloadData (ushort code, string reason, 
+        Exception exception = null, 
+        [CallerMemberName] string function = null,
+        [CallerFilePath] string sourceFilePath = "",
+        [CallerLineNumber] int sourceLineNumber = 0)
     {
       _code = code;
       _reason = reason ?? String.Empty;
@@ -114,6 +119,9 @@ namespace WebSocketSharp
 
       _codeSet = true;
       _reasonSet = true;
+
+      Exception = exception;
+      CallerDbgInfo = FormatCaller(function, sourceFilePath, sourceLineNumber);
     }
 
     #endregion
@@ -190,6 +198,10 @@ namespace WebSocketSharp
       }
     }
 
+    public Exception Exception { get; }
+
+    public string CallerDbgInfo { get; }
+
     #endregion
 
     #region Internal Methods
@@ -230,5 +242,16 @@ namespace WebSocketSharp
     }
 
     #endregion
+
+    private static readonly char[] pathDelims = new[] { '\\', '/' };
+    private static string FormatCaller(string function, string sourceFilePath, int sourceLineNumber)
+    {
+        // the path is stored as windows path and on linux, system.io.getfilename won't work
+        var ix = sourceFilePath.LastIndexOfAny(pathDelims);
+        if (ix >= 0 && ix < sourceFilePath.Length - 1)
+            sourceFilePath = sourceFilePath.Substring(ix + 1);
+
+        return $"{function} in {sourceFilePath}:{sourceLineNumber}";
+    }
   }
 }

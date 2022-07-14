@@ -294,7 +294,7 @@ namespace WebSocketSharp.Net
 
         if (conn.processInput (conn._requestBuffer.GetBuffer (), len)) {
           if (!conn._context.HasError)
-            conn._context.Request.FinishInitialization ();
+            conn._context.Request.FinishInitialization (len - conn._position);
 
           if (conn._context.HasError) {
             conn.SendError ();

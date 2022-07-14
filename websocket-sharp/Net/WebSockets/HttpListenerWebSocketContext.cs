@@ -42,8 +42,8 @@ namespace WebSocketSharp.Net.WebSockets
   {
     #region Private Fields
 
-    private HttpListenerContext _context;
-    private WebSocket           _websocket;
+    private readonly HttpListenerContext _context;
+    private readonly ServerWebSocket           _websocket;
 
     #endregion
 
@@ -54,7 +54,7 @@ namespace WebSocketSharp.Net.WebSockets
     )
     {
       _context = context;
-      _websocket = new WebSocket (this, protocol);
+      _websocket = new ServerWebSocket (this, protocol);
     }
 
     #endregion
@@ -353,7 +353,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// <value>
     /// A <see cref="WebSocketSharp.WebSocket"/>.
     /// </value>
-    public override WebSocket WebSocket {
+    public override ServerWebSocket WebSocket {
       get {
         return _websocket;
       }

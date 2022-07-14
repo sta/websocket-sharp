@@ -46,11 +46,17 @@ using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Server
 {
+	public interface IHttpServerRequestHandler
+	{
+		Task HandleHttpRequest(HttpListenerContext context);
+	}
+
   /// <summary>
   /// Provides a simple HTTP server that allows to accept
   /// WebSocket handshake requests.
@@ -736,6 +742,10 @@ namespace WebSocketSharp.Server
       }
     }
 
+
+    public IHttpServerRequestHandler RequestHandler { get; set; }
+
+
     #endregion
 
     #region Public Events
@@ -882,25 +892,42 @@ namespace WebSocketSharp.Server
       _sync = new object ();
     }
 
-    private void processRequest (HttpListenerContext context)
+    private async Task processRequest (HttpListenerContext context)
     {
-      var method = context.Request.HttpMethod;
-      var evt = method == "GET"
-                ? OnGet
-                : method == "HEAD"
-                  ? OnHead
-                  : method == "POST"
+        var handler = RequestHandler;
+        if (handler != null)
+        {
+            try
+            {
+                await handler.HandleHttpRequest(context);
+            }
+            catch
+            {
+            }
+
+            context.Response.Close(); // it's closed. but let's close it twice to be sure
+
+            return; // if there is the handler, he always handles it. exit, done.
+        }
+
+        // the legacy stuff
+        var method = context.Request.HttpMethod;
+        var evt = method == "GET"
+            ? OnGet
+            : method == "HEAD"
+                ? OnHead
+                : method == "POST"
                     ? OnPost
                     : method == "PUT"
-                      ? OnPut
-                      : method == "DELETE"
-                        ? OnDelete
-                        : method == "CONNECT"
-                          ? OnConnect
-                          : method == "OPTIONS"
-                            ? OnOptions
-                            : method == "TRACE"
-                              ? OnTrace
+                        ? OnPut
+                        : method == "DELETE"
+                            ? OnDelete
+                            : method == "CONNECT"
+                                ? OnConnect
+                                : method == "OPTIONS"
+                                    ? OnOptions
+                                    : method == "TRACE"
+                                        ? OnTrace
                               : null;
 
       if (evt != null)
@@ -908,7 +935,7 @@ namespace WebSocketSharp.Server
       else
         context.Response.StatusCode = 501; // Not Implemented
 
-      context.Response.Close ();
+        context.Response.Close ();
     }
 
     private void processRequest (HttpListenerWebSocketContext context)
@@ -936,15 +963,14 @@ namespace WebSocketSharp.Server
         HttpListenerContext ctx = null;
         try {
           ctx = _listener.GetContext ();
-          ThreadPool.QueueUserWorkItem (
-            state => {
+          Task.Factory.StartNew (async () => {
               try {
                 if (ctx.Request.IsUpgradeRequest ("websocket")) {
                   processRequest (ctx.AcceptWebSocket (null));
                   return;
                 }
 
-                processRequest (ctx);
+                await processRequest (ctx);
               }
               catch (Exception ex) {
                 _log.Fatal (ex.Message);

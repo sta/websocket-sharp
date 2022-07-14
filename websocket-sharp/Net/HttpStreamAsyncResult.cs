@@ -39,6 +39,7 @@
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace WebSocketSharp.Net
 {
@@ -168,8 +169,25 @@ namespace WebSocketSharp.Net
         if (_waitHandle != null)
           _waitHandle.Set ();
 
-        if (_callback != null)
-          _callback.BeginInvoke (this, ar => _callback.EndInvoke (ar), null);
+        if (_callback == null)
+            return;
+
+#if NET_CORE
+          void TheTask()
+          {
+              try
+              {
+                  _callback(this);
+              }
+              catch
+              {
+              }
+          }
+
+          _ = Task.Factory.StartNew(TheTask);
+#else
+        _callback.BeginInvoke (this, ar => _callback.EndInvoke (ar), null);
+#endif
       }
     }
 

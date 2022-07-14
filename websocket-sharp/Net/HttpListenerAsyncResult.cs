@@ -46,6 +46,7 @@
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace WebSocketSharp.Net
 {
@@ -147,7 +148,7 @@ namespace WebSocketSharp.Net
       if (callback == null)
         return;
 
-      ThreadPool.QueueUserWorkItem (
+      Task.Factory.StartNew (
         state => {
           try {
             callback (asyncResult);

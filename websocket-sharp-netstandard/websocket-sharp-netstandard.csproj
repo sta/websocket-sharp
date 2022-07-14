@@ -1,0 +1,105 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>websocket_sharp_core</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;NET_CORE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;NET_CORE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\websocket-sharp\ByteOrder.cs" Link="ByteOrder.cs" />
+    <Compile Include="..\websocket-sharp\ClientWebSocket.cs" Link="ClientWebSocket.cs" />
+    <Compile Include="..\websocket-sharp\CloseEventArgs.cs" Link="CloseEventArgs.cs" />
+    <Compile Include="..\websocket-sharp\CloseStatusCode.cs" Link="CloseStatusCode.cs" />
+    <Compile Include="..\websocket-sharp\CompressionMethod.cs" Link="CompressionMethod.cs" />
+    <Compile Include="..\websocket-sharp\ErrorEventArgs.cs" Link="ErrorEventArgs.cs" />
+    <Compile Include="..\websocket-sharp\Ext.cs" Link="Ext.cs" />
+    <Compile Include="..\websocket-sharp\Fin.cs" Link="Fin.cs" />
+    <Compile Include="..\websocket-sharp\HttpBase.cs" Link="HttpBase.cs" />
+    <Compile Include="..\websocket-sharp\HttpRequest.cs" Link="HttpRequest.cs" />
+    <Compile Include="..\websocket-sharp\HttpResponse.cs" Link="HttpResponse.cs" />
+    <Compile Include="..\websocket-sharp\LogData.cs" Link="LogData.cs" />
+    <Compile Include="..\websocket-sharp\Logger.cs" Link="Logger.cs" />
+    <Compile Include="..\websocket-sharp\LogLevel.cs" Link="LogLevel.cs" />
+    <Compile Include="..\websocket-sharp\Mask.cs" Link="Mask.cs" />
+    <Compile Include="..\websocket-sharp\MessageEventArgs.cs" Link="MessageEventArgs.cs" />
+    <Compile Include="..\websocket-sharp\Net\AuthenticationBase.cs" Link="Net\AuthenticationBase.cs" />
+    <Compile Include="..\websocket-sharp\Net\AuthenticationChallenge.cs" Link="Net\AuthenticationChallenge.cs" />
+    <Compile Include="..\websocket-sharp\Net\AuthenticationResponse.cs" Link="Net\AuthenticationResponse.cs" />
+    <Compile Include="..\websocket-sharp\Net\AuthenticationSchemes.cs" Link="Net\AuthenticationSchemes.cs" />
+    <Compile Include="..\websocket-sharp\Net\Chunk.cs" Link="Net\Chunk.cs" />
+    <Compile Include="..\websocket-sharp\Net\ChunkedRequestStream.cs" Link="Net\ChunkedRequestStream.cs" />
+    <Compile Include="..\websocket-sharp\Net\ChunkStream.cs" Link="Net\ChunkStream.cs" />
+    <Compile Include="..\websocket-sharp\Net\ClientSslConfiguration.cs" Link="Net\ClientSslConfiguration.cs" />
+    <Compile Include="..\websocket-sharp\Net\Cookie.cs" Link="Net\Cookie.cs" />
+    <Compile Include="..\websocket-sharp\Net\CookieCollection.cs" Link="Net\CookieCollection.cs" />
+    <Compile Include="..\websocket-sharp\Net\CookieException.cs" Link="Net\CookieException.cs" />
+    <Compile Include="..\websocket-sharp\Net\EndPointListener.cs" Link="Net\EndPointListener.cs" />
+    <Compile Include="..\websocket-sharp\Net\EndPointManager.cs" Link="Net\EndPointManager.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpBasicIdentity.cs" Link="Net\HttpBasicIdentity.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpConnection.cs" Link="Net\HttpConnection.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpDigestIdentity.cs" Link="Net\HttpDigestIdentity.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpHeaderInfo.cs" Link="Net\HttpHeaderInfo.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpHeaderType.cs" Link="Net\HttpHeaderType.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpListener.cs" Link="Net\HttpListener.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpListenerAsyncResult.cs" Link="Net\HttpListenerAsyncResult.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpListenerContext.cs" Link="Net\HttpListenerContext.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpListenerException.cs" Link="Net\HttpListenerException.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpListenerPrefix.cs" Link="Net\HttpListenerPrefix.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpListenerPrefixCollection.cs" Link="Net\HttpListenerPrefixCollection.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpListenerRequest.cs" Link="Net\HttpListenerRequest.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpListenerResponse.cs" Link="Net\HttpListenerResponse.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpRequestHeader.cs" Link="Net\HttpRequestHeader.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpResponseHeader.cs" Link="Net\HttpResponseHeader.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpStatusCode.cs" Link="Net\HttpStatusCode.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpStreamAsyncResult.cs" Link="Net\HttpStreamAsyncResult.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpUtility.cs" Link="Net\HttpUtility.cs" />
+    <Compile Include="..\websocket-sharp\Net\HttpVersion.cs" Link="Net\HttpVersion.cs" />
+    <Compile Include="..\websocket-sharp\Net\InputChunkState.cs" Link="Net\InputChunkState.cs" />
+    <Compile Include="..\websocket-sharp\Net\InputState.cs" Link="Net\InputState.cs" />
+    <Compile Include="..\websocket-sharp\Net\LineState.cs" Link="Net\LineState.cs" />
+    <Compile Include="..\websocket-sharp\Net\NetworkCredential.cs" Link="Net\NetworkCredential.cs" />
+    <Compile Include="..\websocket-sharp\Net\QueryStringCollection.cs" Link="Net\QueryStringCollection.cs" />
+    <Compile Include="..\websocket-sharp\Net\ReadBufferState.cs" Link="Net\ReadBufferState.cs" />
+    <Compile Include="..\websocket-sharp\Net\RequestStream.cs" Link="Net\RequestStream.cs" />
+    <Compile Include="..\websocket-sharp\Net\ResponseStream.cs" Link="Net\ResponseStream.cs" />
+    <Compile Include="..\websocket-sharp\Net\ServerSslConfiguration.cs" Link="Net\ServerSslConfiguration.cs" />
+    <Compile Include="..\websocket-sharp\Net\SslConfiguration.cs" Link="Net\SslConfiguration.cs" />
+    <Compile Include="..\websocket-sharp\Net\WebHeaderCollection.cs" Link="Net\WebHeaderCollection.cs" />
+    <Compile Include="..\websocket-sharp\Net\WebSockets\HttpListenerWebSocketContext.cs" Link="Net\WebSockets\HttpListenerWebSocketContext.cs" />
+    <Compile Include="..\websocket-sharp\Net\WebSockets\TcpListenerWebSocketContext.cs" Link="Net\WebSockets\TcpListenerWebSocketContext.cs" />
+    <Compile Include="..\websocket-sharp\Net\WebSockets\WebSocketContext.cs" Link="Net\WebSockets\WebSocketContext.cs" />
+    <Compile Include="..\websocket-sharp\Opcode.cs" Link="Opcode.cs" />
+    <Compile Include="..\websocket-sharp\PayloadData.cs" Link="PayloadData.cs" />
+    <Compile Include="..\websocket-sharp\Rsv.cs" Link="Rsv.cs" />
+    <Compile Include="..\websocket-sharp\ServerExt.cs" Link="ServerExt.cs" />
+    <Compile Include="..\websocket-sharp\ServerWebSocket.cs" Link="ServerWebSocket.cs" />
+    <Compile Include="..\websocket-sharp\Server\HttpRequestEventArgs.cs" Link="Server\HttpRequestEventArgs.cs" />
+    <Compile Include="..\websocket-sharp\Server\HttpServer.cs" Link="Server\HttpServer.cs" />
+    <Compile Include="..\websocket-sharp\Server\IWebSocketSession.cs" Link="Server\IWebSocketSession.cs" />
+    <Compile Include="..\websocket-sharp\Server\ServerState.cs" Link="Server\ServerState.cs" />
+    <Compile Include="..\websocket-sharp\Server\WebSocketBehavior.cs" Link="Server\WebSocketBehavior.cs" />
+    <Compile Include="..\websocket-sharp\Server\WebSocketServer.cs" Link="Server\WebSocketServer.cs" />
+    <Compile Include="..\websocket-sharp\Server\WebSocketServiceHost.cs" Link="Server\WebSocketServiceHost.cs" />
+    <Compile Include="..\websocket-sharp\Server\WebSocketServiceHost`1.cs" Link="Server\WebSocketServiceHost`1.cs" />
+    <Compile Include="..\websocket-sharp\Server\WebSocketServiceManager.cs" Link="Server\WebSocketServiceManager.cs" />
+    <Compile Include="..\websocket-sharp\Server\WebSocketSessionManager.cs" Link="Server\WebSocketSessionManager.cs" />
+    <Compile Include="..\websocket-sharp\WebSocket.cs" Link="WebSocket.cs" />
+    <Compile Include="..\websocket-sharp\WebSocketException.cs" Link="WebSocketException.cs" />
+    <Compile Include="..\websocket-sharp\WebSocketFrame.cs" Link="WebSocketFrame.cs" />
+    <Compile Include="..\websocket-sharp\WebSocketState.cs" Link="WebSocketState.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Net\WebSockets\" />
+    <Folder Include="Server\" />
+  </ItemGroup>
+
+</Project>

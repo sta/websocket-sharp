@@ -293,8 +293,12 @@ namespace WebSocketSharp.Net
 
     public override void Flush ()
     {
-      if (!_disposed && (_sendChunked || _response.SendChunked))
-        flush (false);
+        // he won't send it if ContentLength64 is 0 although body is not empty... so help him
+        if (!_sendChunked && !_response.HeadersSent && _body != null && _body.Length > 0 && _response.ContentLength64 < _body.Length)
+            _response.ContentLength64 = _body.Length;
+
+        if (!_disposed && (_sendChunked || _response.SendChunked))
+            flush (false);
     }
 
     public override int Read (byte[] buffer, int offset, int count)

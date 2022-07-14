@@ -687,7 +687,7 @@ namespace WebSocketSharp.Net
       }
     }
 
-    internal void FinishInitialization ()
+    internal void FinishInitialization (int contentLength)
     {
       if (_protocolVersion == HttpVersion.Version10) {
         finishInitialization10 ();
@@ -714,10 +714,18 @@ namespace WebSocketSharp.Net
 
       if (_httpMethod == "POST" || _httpMethod == "PUT") {
         if (_contentLength <= 0 && !_chunked) {
-          _context.ErrorMessage = String.Empty;
-          _context.ErrorStatus = 411;
+            if (contentLength >= 0)
+            {
+                // we cannot reject a request if it does not have content-length provided
+                _contentLength = contentLength;
+            }
+            else
+            {
+                _context.ErrorMessage = String.Empty;
+                _context.ErrorStatus = 411;
+            }
 
-          return;
+            return;
         }
       }
 

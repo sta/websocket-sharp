@@ -43,6 +43,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
 
@@ -844,8 +845,8 @@ namespace WebSocketSharp.Server
         TcpClient cl = null;
         try {
           cl = _listener.AcceptTcpClient ();
-          ThreadPool.QueueUserWorkItem (
-            state => {
+          Task.Factory.StartNew (
+            () => {
               try {
                 var ctx = new TcpListenerWebSocketContext (
                             cl, null, _secure, _sslConfigInUse, _log
@@ -854,7 +855,7 @@ namespace WebSocketSharp.Server
                 processRequest (ctx);
               }
               catch (Exception ex) {
-                _log.Error (ex.Message);
+                _log.Error (ex.ToString());
                 _log.Debug (ex.ToString ());
 
                 cl.Close ();
@@ -867,7 +868,6 @@ namespace WebSocketSharp.Server
             _log.Info ("The underlying listener is stopped.");
             break;
           }
-
           _log.Fatal (ex.Message);
           _log.Debug (ex.ToString ());
 

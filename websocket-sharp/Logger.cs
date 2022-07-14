@@ -27,8 +27,8 @@
 #endregion
 
 using System;
-using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace WebSocketSharp
 {
@@ -57,7 +57,7 @@ namespace WebSocketSharp
     private volatile string         _file;
     private volatile LogLevel       _level;
     private Action<LogData, string> _output;
-    private object                  _sync;
+    private readonly object         _sync;
 
     #endregion
 
@@ -187,28 +187,27 @@ namespace WebSocketSharp
 
     #region Private Methods
 
-    private static void defaultOutput (LogData data, string path)
+    private static void defaultOutput(LogData data, string path)
     {
-      var log = data.ToString ();
-      Console.WriteLine (log);
-      if (path != null && path.Length > 0)
-        writeToFile (log, path);
+        // do not write to console, it pollutes linux stdout
+        if (string.IsNullOrEmpty(path))
+            return;
+
+        var log = data.ToString();
+        writeToFile(log, path);
     }
 
-    private void output (string message, LogLevel level)
+    private void output (string message, LogLevel level, string caller)
     {
       lock (_sync) {
         if (_level > level)
           return;
 
-        LogData data = null;
         try {
-          data = new LogData (level, new StackFrame (2, true), message);
+          var data = new LogData (level, caller, message);
           _output (data, _file);
         }
-        catch (Exception ex) {
-          data = new LogData (LogLevel.Fatal, new StackFrame (0, true), ex.Message);
-          Console.WriteLine (data.ToString ());
+        catch {
         }
       }
     }
@@ -222,6 +221,13 @@ namespace WebSocketSharp
 
     #endregion
 
+
+    private static string BuildCaller(string caller, string callerFile, int callerLine)
+    {
+	    return $"fn={caller} in {callerFile}:{callerLine}";
+    }
+
+
     #region Public Methods
 
     /// <summary>
@@ -234,12 +240,15 @@ namespace WebSocketSharp
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
     /// </param>
-    public void Debug (string message)
+    /// <param name="caller"></param>
+    /// <param name="callerFile"></param>
+    /// <param name="callerLine"></param>
+    public void Debug (string message, [CallerMemberName]string caller = null, [CallerFilePath] string callerFile = null, [CallerLineNumber] int callerLine = 0)
     {
       if (_level > LogLevel.Debug)
         return;
 
-      output (message, LogLevel.Debug);
+      output (message, LogLevel.Debug, BuildCaller(caller, callerFile, callerLine));
     }
 
     /// <summary>
@@ -252,12 +261,15 @@ namespace WebSocketSharp
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
     /// </param>
-    public void Error (string message)
+    /// <param name="caller"></param>
+    /// <param name="callerFile"></param>
+    /// <param name="callerLine"></param>
+    public void Error (string message, [CallerMemberName]string caller = null, [CallerFilePath] string callerFile = null, [CallerLineNumber] int callerLine = 0)
     {
       if (_level > LogLevel.Error)
         return;
 
-      output (message, LogLevel.Error);
+      output (message, LogLevel.Error, BuildCaller(caller, callerFile, callerLine));
     }
 
     /// <summary>
@@ -266,9 +278,12 @@ namespace WebSocketSharp
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
     /// </param>
-    public void Fatal (string message)
+    /// <param name="caller"></param>
+    /// <param name="callerFile"></param>
+    /// <param name="callerLine"></param>
+    public void Fatal (string message, [CallerMemberName]string caller = null, [CallerFilePath] string callerFile = null, [CallerLineNumber] int callerLine = 0)
     {
-      output (message, LogLevel.Fatal);
+      output (message, LogLevel.Fatal, BuildCaller(caller, callerFile, callerLine));
     }
 
     /// <summary>
@@ -281,12 +296,15 @@ namespace WebSocketSharp
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
     /// </param>
-    public void Info (string message)
+    /// <param name="caller"></param>
+    /// <param name="callerFile"></param>
+    /// <param name="callerLine"></param>
+    public void Info (string message, [CallerMemberName]string caller = null, [CallerFilePath] string callerFile = null, [CallerLineNumber] int callerLine = 0)
     {
       if (_level > LogLevel.Info)
         return;
 
-      output (message, LogLevel.Info);
+      output (message, LogLevel.Info, BuildCaller(caller, callerFile, callerLine));
     }
 
     /// <summary>
@@ -299,13 +317,17 @@ namespace WebSocketSharp
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
     /// </param>
-    public void Trace (string message)
+    /// <param name="caller"></param>
+    /// <param name="callerFile"></param>
+    /// <param name="callerLine"></param>
+    public void Trace (string message, [CallerMemberName]string caller = null, [CallerFilePath] string callerFile = null, [CallerLineNumber] int callerLine = 0)
     {
       if (_level > LogLevel.Trace)
         return;
 
-      output (message, LogLevel.Trace);
+      output (message, LogLevel.Trace, BuildCaller(caller, callerFile, callerLine));
     }
+
 
     /// <summary>
     /// Outputs <paramref name="message"/> as a log with <see cref="LogLevel.Warn"/>.
@@ -317,12 +339,15 @@ namespace WebSocketSharp
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
     /// </param>
-    public void Warn (string message)
+    /// <param name="caller"></param>
+    /// <param name="callerFile"></param>
+    /// <param name="callerLine"></param>
+    public void Warn (string message, [CallerMemberName]string caller = null, [CallerFilePath] string callerFile = null, [CallerLineNumber] int callerLine = 0)
     {
       if (_level > LogLevel.Warn)
         return;
 
-      output (message, LogLevel.Warn);
+      output (message, LogLevel.Warn, BuildCaller(caller, callerFile, callerLine));
     }
 
     #endregion

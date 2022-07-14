@@ -33,6 +33,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 
 namespace WebSocketSharp.Server
@@ -370,15 +371,15 @@ namespace WebSocketSharp.Server
 
     private void broadcastAsync (Opcode opcode, byte[] data, Action completed)
     {
-      ThreadPool.QueueUserWorkItem (
-        state => broadcast (opcode, data, completed)
+      Task.Factory.StartNew (
+        () => broadcast (opcode, data, completed)
       );
     }
 
     private void broadcastAsync (Opcode opcode, Stream stream, Action completed)
     {
-      ThreadPool.QueueUserWorkItem (
-        state => broadcast (opcode, stream, completed)
+      Task.Factory.StartNew (
+        () => broadcast (opcode, stream, completed)
       );
     }
 
@@ -438,7 +439,7 @@ namespace WebSocketSharp.Server
 
         _sweepTimer.Enabled = false;
         foreach (var session in _sessions.Values.ToList ())
-          session.Context.WebSocket.Close (payloadData, bytes);
+          session.Context.WebSocket.PerformCloseSessionSequence (payloadData, bytes);
 
         _state = ServerState.Stop;
       }

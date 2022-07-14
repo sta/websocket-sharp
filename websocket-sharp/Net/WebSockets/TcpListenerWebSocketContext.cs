@@ -62,7 +62,7 @@ namespace WebSocketSharp.Net.WebSockets
     private TcpClient           _tcpClient;
     private IPrincipal          _user;
     private System.Net.EndPoint _userEndPoint;
-    private WebSocket           _websocket;
+    private ServerWebSocket     _websocket;
 
     #endregion
 
@@ -106,7 +106,7 @@ namespace WebSocketSharp.Net.WebSockets
       _userEndPoint = sock.RemoteEndPoint;
 
       _request = HttpRequest.Read (_stream, 90000);
-      _websocket = new WebSocket (this, protocol);
+      _websocket = new ServerWebSocket (this, protocol);
     }
 
     #endregion
@@ -422,7 +422,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// <value>
     /// A <see cref="WebSocketSharp.WebSocket"/>.
     /// </value>
-    public override WebSocket WebSocket {
+    public override ServerWebSocket WebSocket {
       get {
         return _websocket;
       }

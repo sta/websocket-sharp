@@ -27,6 +27,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using WebSocketSharp.Net;
@@ -47,7 +48,7 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private WebSocketContext                               _context;
-    private Func<CookieCollection, CookieCollection, bool> _cookiesValidator;
+    private Func<CookieCollection, IEnumerable<Cookie>, bool> _cookiesValidator;
     private bool                                           _emitOnPing;
     private string                                         _id;
     private bool                                           _ignoreExtensions;
@@ -55,7 +56,7 @@ namespace WebSocketSharp.Server
     private string                                         _protocol;
     private WebSocketSessionManager                        _sessions;
     private DateTime                                       _startTime;
-    private WebSocket                                      _websocket;
+    private ServerWebSocket                                _websocket;
 
     #endregion
 
@@ -220,7 +221,7 @@ namespace WebSocketSharp.Server
     ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
-    public Func<CookieCollection, CookieCollection, bool> CookiesValidator {
+    public Func<CookieCollection, IEnumerable<Cookie>, bool> CookiesValidator {
       get {
         return _cookiesValidator;
       }
@@ -412,8 +413,7 @@ namespace WebSocketSharp.Server
 
       if (_cookiesValidator != null) {
         var req = context.CookieCollection;
-        var res = context.WebSocket.CookieCollection;
-        if (!_cookiesValidator (req, res))
+        if (!_cookiesValidator (req, context.WebSocket.Cookies))
           return "It includes no cookie or an invalid one.";
       }
 

@@ -217,7 +217,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// <value>
     /// A <see cref="WebSocketSharp.WebSocket"/>.
     /// </value>
-    public abstract WebSocket WebSocket { get; }
+    public abstract ServerWebSocket WebSocket { get; }
 
     #endregion
   }

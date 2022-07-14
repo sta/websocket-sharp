@@ -41,7 +41,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Net;
 using System.Text;
 
 namespace WebSocketSharp.Net
@@ -257,7 +256,7 @@ namespace WebSocketSharp.Net
 
     private static void throwProtocolViolation (string message)
     {
-      throw new WebException (message, null, WebExceptionStatus.ServerProtocolViolation, null);
+      throw new WebSocketProtocolViolationException (message);
     }
 
     private void write (byte[] buffer, ref int offset, int length)

@@ -106,4 +106,18 @@ namespace WebSocketSharp
 
     #endregion
   }
+
+  public class WebSocketProtocolViolationException : WebSocketException
+  {
+      internal WebSocketProtocolViolationException (Exception innerException)
+          : base (innerException)
+      {
+      }
+
+
+      internal WebSocketProtocolViolationException(string message)
+          : base(message)
+      {
+      }
+  }
 }
