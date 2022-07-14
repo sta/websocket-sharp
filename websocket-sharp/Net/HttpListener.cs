@@ -936,9 +936,6 @@ namespace WebSocketSharp.Net
         throw new ObjectDisposedException (_objectName);
 
       lock (_contextRegistrySync) {
-        if (_disposed)
-          throw new ObjectDisposedException (_objectName);
-
         if (_listening)
           return;
 
