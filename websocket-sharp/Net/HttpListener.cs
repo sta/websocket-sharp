@@ -571,9 +571,11 @@ namespace WebSocketSharp.Net
         return;
 
       var ctxs = new HttpListenerContext[cnt];
-      _contextRegistry.CopyTo (ctxs, 0);
 
-      _contextRegistry.Clear ();
+      lock (_contextRegistrySync) {
+        _contextRegistry.CopyTo (ctxs, 0);
+        _contextRegistry.Clear ();
+      }
 
       foreach (var ctx in ctxs)
         ctx.Connection.Close (true);
@@ -958,22 +960,19 @@ namespace WebSocketSharp.Net
         throw new ObjectDisposedException (_objectName);
 
       lock (_contextRegistrySync) {
-        if (_disposed)
-          throw new ObjectDisposedException (_objectName);
-
         if (!_listening)
           return;
 
         _listening = false;
-
-        cleanupContextQueue (false);
-        cleanupContextRegistry ();
-
-        var msg = "The listener is stopped.";
-        cleanupWaitQueue (msg);
-
-        EndPointManager.RemoveListener (this);
       }
+
+      cleanupContextQueue (false);
+      cleanupContextRegistry ();
+
+      var msg = "The listener is stopped.";
+      cleanupWaitQueue (msg);
+
+      EndPointManager.RemoveListener (this);
     }
 
     #endregion
