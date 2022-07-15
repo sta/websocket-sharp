@@ -80,6 +80,7 @@ namespace WebSocketSharp.Net
     private object                                           _contextRegistrySync;
     private static readonly string                           _defaultRealm;
     private bool                                             _disposed;
+    private bool                                             _disposing;
     private bool                                             _ignoreWriteExceptions;
     private volatile bool                                    _listening;
     private Logger                                           _log;
@@ -598,13 +599,20 @@ namespace WebSocketSharp.Net
 
     private void close (bool force)
     {
-      if (!_listening) {
-        _disposed = true;
+      lock (_contextRegistrySync) {
+        if (_disposing)
+          return;
 
-        return;
+        _disposing = true;
+
+        if (!_listening) {
+          _disposed = true;
+
+          return;
+        }
+
+        _listening = false;
       }
-
-      _listening = false;
 
       cleanupContextQueue (force);
       cleanupContextRegistry ();
@@ -709,12 +717,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         return;
 
-      lock (_contextRegistrySync) {
-        if (_disposed)
-          return;
-
-        close (true);
-      }
+      close (true);
     }
 
     /// <summary>
@@ -787,12 +790,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         return;
 
-      lock (_contextRegistrySync) {
-        if (_disposed)
-          return;
-
-        close (false);
-      }
+      close (false);
     }
 
     /// <summary>
@@ -984,12 +982,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         return;
 
-      lock (_contextRegistrySync) {
-        if (_disposed)
-          return;
-
-        close (true);
-      }
+      close (true);
     }
 
     #endregion
