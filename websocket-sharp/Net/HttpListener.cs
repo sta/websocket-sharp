@@ -522,10 +522,14 @@ namespace WebSocketSharp.Net
     )
     {
       lock (_contextRegistrySync) {
+        if (_disposing) {
+          var msg = "The listener is closed.";
+
+          throw new HttpListenerException (995, msg);
+        }
+
         if (!_listening) {
-          var msg = _disposed
-                    ? "The listener is closed."
-                    : "The listener is stopped.";
+          var msg = "The listener is stopped.";
 
           throw new HttpListenerException (995, msg);
         }
