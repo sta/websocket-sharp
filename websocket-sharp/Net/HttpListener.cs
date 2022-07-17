@@ -89,6 +89,7 @@ namespace WebSocketSharp.Net
     private string                                           _realm;
     private bool                                             _reuseAddress;
     private ServerSslConfiguration                           _sslConfig;
+    private object                                           _sync;
     private Func<IIdentity, NetworkCredential>               _userCredFinder;
     private Queue<HttpListenerAsyncResult>                   _waitQueue;
 
@@ -119,6 +120,7 @@ namespace WebSocketSharp.Net
       _log = new Logger ();
       _objectName = GetType ().ToString ();
       _prefixes = new HttpListenerPrefixCollection (this);
+      _sync = new object ();
       _waitQueue = new Queue<HttpListenerAsyncResult> ();
     }
 
