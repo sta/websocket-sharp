@@ -939,13 +939,18 @@ namespace WebSocketSharp.Net
       if (_disposed)
         throw new ObjectDisposedException (_objectName);
 
-      lock (_contextRegistrySync) {
-        if (_listening)
-          return;
+      lock (_sync) {
+        if (_disposed)
+          throw new ObjectDisposedException (_objectName);
 
-        EndPointManager.AddListener (this);
+        lock (_contextRegistrySync) {
+          if (_listening)
+            return;
 
-        _listening = true;
+          EndPointManager.AddListener (this);
+
+          _listening = true;
+        }
       }
     }
 
