@@ -965,20 +965,25 @@ namespace WebSocketSharp.Net
       if (_disposed)
         throw new ObjectDisposedException (_objectName);
 
-      lock (_contextRegistrySync) {
-        if (!_listening)
-          return;
+      lock (_sync) {
+        if (_disposed)
+          throw new ObjectDisposedException (_objectName);
 
-        _listening = false;
+        lock (_contextRegistrySync) {
+          if (!_listening)
+            return;
+
+          _listening = false;
+        }
+
+        cleanupContextQueue (false);
+        cleanupContextRegistry ();
+
+        var msg = "The listener is stopped.";
+        cleanupWaitQueue (msg);
+
+        EndPointManager.RemoveListener (this);
       }
-
-      cleanupContextQueue (false);
-      cleanupContextRegistry ();
-
-      var msg = "The listener is stopped.";
-      cleanupWaitQueue (msg);
-
-      EndPointManager.RemoveListener (this);
     }
 
     #endregion
