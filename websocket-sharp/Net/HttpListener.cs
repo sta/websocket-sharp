@@ -605,30 +605,32 @@ namespace WebSocketSharp.Net
 
     private void close (bool force)
     {
-      lock (_contextRegistrySync) {
-        if (_disposing)
+      lock (_sync) {
+        if (_disposed)
           return;
 
-        _disposing = true;
+        lock (_contextRegistrySync) {
+          _disposing = true;
 
-        if (!_listening) {
-          _disposed = true;
+          if (!_listening) {
+            _disposed = true;
 
-          return;
+            return;
+          }
+
+          _listening = false;
         }
 
-        _listening = false;
+        cleanupContextQueue (force);
+        cleanupContextRegistry ();
+
+        var msg = "The listener is closed.";
+        cleanupWaitQueue (msg);
+
+        EndPointManager.RemoveListener (this);
+
+        _disposed = true;
       }
-
-      cleanupContextQueue (force);
-      cleanupContextRegistry ();
-
-      var msg = "The listener is closed.";
-      cleanupWaitQueue (msg);
-
-      EndPointManager.RemoveListener (this);
-
-      _disposed = true;
     }
 
     private string getRealm ()
