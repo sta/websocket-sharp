@@ -80,7 +80,6 @@ namespace WebSocketSharp.Net
     private object                                           _contextRegistrySync;
     private static readonly string                           _defaultRealm;
     private bool                                             _disposed;
-    private bool                                             _disposing;
     private bool                                             _ignoreWriteExceptions;
     private volatile bool                                    _listening;
     private Logger                                           _log;
@@ -604,8 +603,6 @@ namespace WebSocketSharp.Net
           return;
 
         lock (_contextRegistrySync) {
-          _disposing = true;
-
           if (!_listening) {
             _disposed = true;
 
