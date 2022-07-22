@@ -261,10 +261,10 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Outputs <paramref name="message"/> as a log with <see cref="LogLevel.Fatal"/>.
+    /// Outputs the specified message as a log with the Fatal level.
     /// </summary>
     /// <param name="message">
-    /// A <see cref="string"/> that represents the message to output as a log.
+    /// A <see cref="string"/> that specifies the message to output.
     /// </param>
     public void Fatal (string message)
     {
