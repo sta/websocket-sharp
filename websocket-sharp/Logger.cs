@@ -272,14 +272,14 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Outputs <paramref name="message"/> as a log with <see cref="LogLevel.Info"/>.
+    /// Outputs the specified message as a log with the Info level.
     /// </summary>
     /// <remarks>
-    /// If the current logging level is higher than <see cref="LogLevel.Info"/>,
-    /// this method doesn't output <paramref name="message"/> as a log.
+    /// If the current logging level is higher than the Info level,
+    /// this method does not output the message as a log.
     /// </remarks>
     /// <param name="message">
-    /// A <see cref="string"/> that represents the message to output as a log.
+    /// A <see cref="string"/> that specifies the message to output.
     /// </param>
     public void Info (string message)
     {
