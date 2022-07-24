@@ -201,13 +201,16 @@ namespace WebSocketSharp
         if (_level > level)
           return;
 
-        LogData data = null;
         try {
-          data = new LogData (level, new StackFrame (2, true), message);
+          var data = new LogData (level, new StackFrame (2, true), message);
+
           _output (data, _file);
         }
         catch (Exception ex) {
-          data = new LogData (LogLevel.Fatal, new StackFrame (0, true), ex.Message);
+          var data = new LogData (
+                       LogLevel.Fatal, new StackFrame (0, true), ex.Message
+                     );
+
           Console.WriteLine (data.ToString ());
         }
       }
