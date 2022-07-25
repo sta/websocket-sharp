@@ -189,10 +189,12 @@ namespace WebSocketSharp
 
     private static void defaultOutput (LogData data, string path)
     {
-      var log = data.ToString ();
-      Console.WriteLine (log);
+      var val = data.ToString ();
+
+      Console.WriteLine (val);
+
       if (path != null && path.Length > 0)
-        writeToFile (log, path);
+        writeToFile (val, path);
     }
 
     private void output (string message, LogLevel level)
