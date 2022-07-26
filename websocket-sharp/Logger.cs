@@ -115,10 +115,10 @@ namespace WebSocketSharp
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets the current path to the log file.
+    /// Gets or sets the path to the log file.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the current path to the log file if any.
+    /// A <see cref="string"/> that represents the path to the log file if any.
     /// </value>
     public string File {
       get {
