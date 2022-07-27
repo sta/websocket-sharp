@@ -138,7 +138,12 @@ namespace WebSocketSharp
     /// A log with lower than the value of this property cannot be outputted.
     /// </remarks>
     /// <value>
-    /// One of the <see cref="LogLevel"/> enum values, specifies the current logging level.
+    ///   <para>
+    ///   One of the <see cref="LogLevel"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It represents the current logging level.
+    ///   </para>
     /// </value>
     public LogLevel Level {
       get {
