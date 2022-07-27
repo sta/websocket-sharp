@@ -146,10 +146,8 @@ namespace WebSocketSharp
       }
 
       set {
-        lock (_sync) {
+        lock (_sync)
           _level = value;
-          Warn (String.Format ("The current logging level has been changed to {0}.", _level));
-        }
       }
     }
 
