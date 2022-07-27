@@ -126,14 +126,8 @@ namespace WebSocketSharp
       }
 
       set {
-        lock (_sync) {
+        lock (_sync)
           _file = value;
-
-          var fmt = "The current path to the log file has been changed to {0}.";
-          var msg = String.Format (fmt , _file);
-
-          Warn (msg);
-        }
       }
     }
 
