@@ -176,10 +176,8 @@ namespace WebSocketSharp
       }
 
       set {
-        lock (_sync) {
+        lock (_sync)
           _output = value ?? defaultOutput;
-          Warn ("The current output action has been changed.");
-        }
       }
     }
 
