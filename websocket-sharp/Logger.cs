@@ -157,17 +157,22 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets or sets the current output action used to output a log.
+    /// Gets or sets the delegate used to output a log.
     /// </summary>
     /// <value>
     ///   <para>
-    ///   An <c>Action&lt;LogData, string&gt;</c> delegate that references the method(s) used to
-    ///   output a log. A <see cref="string"/> parameter passed to this delegate is the value of
+    ///   An <c>Action&lt;LogData, string&gt;</c> delegate.
+    ///   </para>
+    ///   <para>
+    ///   It references the method used to output a log.
+    ///   </para>
+    ///   <para>
+    ///   The string parameter passed to the delegate is the value of
     ///   the <see cref="Logger.File"/> property.
     ///   </para>
     ///   <para>
-    ///   If the value to set is <see langword="null"/>, the current output action is changed to
-    ///   the default output action.
+    ///   If the value to set is <see langword="null"/>, the default
+    ///   output method is set.
     ///   </para>
     /// </value>
     public Action<LogData, string> Output {
