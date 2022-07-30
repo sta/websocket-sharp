@@ -161,7 +161,7 @@ namespace WebSocketSharp
     /// </summary>
     /// <value>
     ///   <para>
-    ///   An <c>Action&lt;LogData, string&gt;</c> delegate.
+    ///   An <see cref="T:System.Action{LogData, string}"/> delegate.
     ///   </para>
     ///   <para>
     ///   It references the method used to output a log.
