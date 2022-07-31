@@ -108,6 +108,7 @@ namespace WebSocketSharp
       _level = level;
       _file = file;
       _output = output ?? defaultOutput;
+
       _sync = new object ();
     }
 
