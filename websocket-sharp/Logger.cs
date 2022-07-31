@@ -77,7 +77,7 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Logger"/> class with
-    /// the specified logging <paramref name="level"/>.
+    /// the specified logging level.
     /// </summary>
     /// <param name="level">
     /// One of the <see cref="LogLevel"/> enum values.
