@@ -89,19 +89,22 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Logger"/> class with
-    /// the specified logging <paramref name="level"/>, path to the log <paramref name="file"/>,
-    /// and <paramref name="output"/> action.
+    /// the specified logging level, path to the log file, and delegate
+    /// used to output a log.
     /// </summary>
     /// <param name="level">
     /// One of the <see cref="LogLevel"/> enum values.
     /// </param>
     /// <param name="file">
-    /// A <see cref="string"/> that represents the path to the log file.
+    /// A <see cref="string"/> that specifies the path to the log file.
     /// </param>
     /// <param name="output">
-    /// An <c>Action&lt;LogData, string&gt;</c> delegate that references the method(s) used to
-    /// output a log. A <see cref="string"/> parameter passed to this delegate is
-    /// <paramref name="file"/>.
+    ///   <para>
+    ///   An <see cref="T:System.Action{LogData, string}"/> delegate.
+    ///   </para>
+    ///   <para>
+    ///   It is used to output a log.
+    ///   </para>
     /// </param>
     public Logger (LogLevel level, string file, Action<LogData, string> output)
     {
