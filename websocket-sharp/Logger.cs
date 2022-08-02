@@ -93,7 +93,8 @@ namespace WebSocketSharp
     /// used to output a log.
     /// </summary>
     /// <param name="level">
-    /// One of the <see cref="LogLevel"/> enum values.
+    /// One of the <see cref="LogLevel"/> enum values that specifies
+    /// the logging level.
     /// </param>
     /// <param name="file">
     /// A <see cref="string"/> that specifies the path to the log file.
