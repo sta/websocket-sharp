@@ -100,12 +100,8 @@ namespace WebSocketSharp
     /// A <see cref="string"/> that specifies the path to the log file.
     /// </param>
     /// <param name="output">
-    ///   <para>
-    ///   An <see cref="T:System.Action{LogData, string}"/> delegate.
-    ///   </para>
-    ///   <para>
-    ///   It is used to output a log.
-    ///   </para>
+    /// An <see cref="T:System.Action{LogData, string}"/> that specifies
+    /// the delegate used to output a log.
     /// </param>
     public Logger (LogLevel level, string file, Action<LogData, string> output)
     {
