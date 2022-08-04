@@ -37,17 +37,17 @@ namespace WebSocketSharp
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   If you output a log with lower than the value of the <see cref="Logger.Level"/> property,
+  ///   If you output a log with lower than the current logging level,
   ///   it cannot be outputted.
   ///   </para>
   ///   <para>
-  ///   The default output action writes a log to the standard output stream and the log file
-  ///   if the <see cref="Logger.File"/> property has a valid path to it.
+  ///   The default output method writes a log to the standard output
+  ///   stream and the log file if it has a valid path.
   ///   </para>
   ///   <para>
-  ///   If you would like to use the custom output action, you should set
-  ///   the <see cref="Logger.Output"/> property to any <c>Action&lt;LogData, string&gt;</c>
-  ///   delegate.
+  ///   If you would like to use the custom output method, you should
+  ///   specify it with the constructor or the <see cref="Logger.Output"/>
+  ///   property.
   ///   </para>
   /// </remarks>
   public class Logger
