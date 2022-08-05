@@ -67,8 +67,7 @@ namespace WebSocketSharp
     /// Initializes a new instance of the <see cref="Logger"/> class.
     /// </summary>
     /// <remarks>
-    /// This constructor initializes the current logging level with
-    /// <see cref="LogLevel.Error"/>.
+    /// This constructor initializes the logging level with the Error level.
     /// </remarks>
     public Logger ()
       : this (LogLevel.Error, null, null)
