@@ -79,7 +79,8 @@ namespace WebSocketSharp
     /// the specified logging level.
     /// </summary>
     /// <param name="level">
-    /// One of the <see cref="LogLevel"/> enum values.
+    /// One of the <see cref="LogLevel"/> enum values that specifies
+    /// the logging level.
     /// </param>
     public Logger (LogLevel level)
       : this (level, null, null)
