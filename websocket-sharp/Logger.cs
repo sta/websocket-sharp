@@ -42,7 +42,7 @@ namespace WebSocketSharp
   ///   </para>
   ///   <para>
   ///   The default output method writes a log to the standard output
-  ///   stream and the log file if it has a valid path.
+  ///   stream and the text file if it has a valid path.
   ///   </para>
   ///   <para>
   ///   If you would like to use the custom output method, you should
