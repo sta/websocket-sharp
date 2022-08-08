@@ -53,6 +53,7 @@ namespace WebSocketSharp
       _level = level;
       _caller = caller;
       _message = message ?? String.Empty;
+
       _date = DateTime.Now;
     }
 
