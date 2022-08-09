@@ -126,22 +126,34 @@ namespace WebSocketSharp
       var type = method.DeclaringType;
 #if DEBUG
       var lineNum = _caller.GetFileLineNumber ();
-      var headerAndCaller =
-        String.Format ("{0}{1}.{2}:{3}|", header, type.Name, method.Name, lineNum);
+      var headerAndCaller = String.Format (
+                              "{0}{1}.{2}:{3}|",
+                              header,
+                              type.Name,
+                              method.Name,
+                              lineNum
+                            );
 #else
-      var headerAndCaller = String.Format ("{0}{1}.{2}|", header, type.Name, method.Name);
+      var headerAndCaller = String.Format (
+                              "{0}{1}.{2}|", header, type.Name, method.Name
+                            );
 #endif
       var msgs = _message.Replace ("\r\n", "\n").TrimEnd ('\n').Split ('\n');
+
       if (msgs.Length <= 1)
         return String.Format ("{0}{1}", headerAndCaller, _message);
 
-      var buff = new StringBuilder (String.Format ("{0}{1}\n", headerAndCaller, msgs[0]), 64);
+      var buff = new StringBuilder (64);
+
+      buff.AppendFormat ("{0}{1}\n", headerAndCaller, msgs[0]);
 
       var fmt = String.Format ("{{0,{0}}}{{1}}\n", header.Length);
+
       for (var i = 1; i < msgs.Length; i++)
         buff.AppendFormat (fmt, "", msgs[i]);
 
       buff.Length--;
+
       return buff.ToString ();
     }
 
