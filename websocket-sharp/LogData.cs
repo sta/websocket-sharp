@@ -114,10 +114,10 @@ namespace WebSocketSharp
     #region Public Methods
 
     /// <summary>
-    /// Returns a <see cref="string"/> that represents the current <see cref="LogData"/>.
+    /// Returns a string that represents the current instance.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that represents the current <see cref="LogData"/>.
+    /// A <see cref="string"/> that represents the current instance.
     /// </returns>
     public override string ToString ()
     {
