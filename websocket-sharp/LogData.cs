@@ -78,7 +78,8 @@ namespace WebSocketSharp
     /// Gets the date and time when the log data was created.
     /// </summary>
     /// <value>
-    /// A <see cref="DateTime"/> that represents the date and time when the log data was created.
+    /// A <see cref="DateTime"/> that represents the date and time when
+    /// the log data was created.
     /// </value>
     public DateTime Date {
       get {
