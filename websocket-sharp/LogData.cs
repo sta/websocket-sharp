@@ -65,7 +65,8 @@ namespace WebSocketSharp
     /// Gets the information of the logging method caller.
     /// </summary>
     /// <value>
-    /// A <see cref="StackFrame"/> that provides the information of the logging method caller.
+    /// A <see cref="StackFrame"/> that provides the information of
+    /// the logging method caller.
     /// </value>
     public StackFrame Caller {
       get {
