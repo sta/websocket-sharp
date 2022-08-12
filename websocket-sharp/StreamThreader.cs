@@ -28,25 +28,33 @@ namespace WebSocketSharp
 
         private void StreamReader(IAsyncResult at)
         {
-            int len = Stream.EndRead(at);
-            if (len == 0) return;
-
-            var oldpos = _stream.Position;
-            _stream.Position = _stream.Length;
-            _stream.WriteBytes(buff.SubArray(0, len), len);
-            _stream.Position = oldpos;
-
-            if (!Loop()) return;
-
-            if (_stream.Position != 0)
+            try
             {
-                var oldstream = _stream;
-                _stream.CopyTo(_stream = new MemoryStream(), (int)(_stream.Length - _stream.Position));
-                oldstream.Dispose();
-                _stream.Position = 0;
-            }
+                int len = Stream.EndRead(at);
+                if (len == 0) return;
 
-            Stream.BeginRead(buff, 0, buffersize, StreamReader, null);
+                var oldpos = _stream.Position;
+                _stream.Position = _stream.Length;
+                _stream.WriteBytes(buff.SubArray(0, len), len);
+                _stream.Position = oldpos;
+
+                if (!Loop()) return;
+
+                if (_stream.Position != 0)
+                {
+                    var oldstream = _stream;
+                    _stream.CopyTo(_stream = new MemoryStream(), (int)(_stream.Length - _stream.Position));
+                    oldstream.Dispose();
+                    _stream.Position = 0;
+                }
+
+                Stream.BeginRead(buff, 0, buffersize, StreamReader, null);
+            }
+            catch (Exception ex)
+            {
+                socket._logger.Fatal(ex.ToString());
+                socket.fatal("An exception has occurred while receiving.", ex);
+            }
         }
 
         private bool Loop()

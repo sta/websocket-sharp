@@ -96,7 +96,7 @@ namespace WebSocketSharp
     private bool                           _ignoreExtensions;
     private bool                           _inContinuation;
     internal volatile bool                  _inMessage;
-    private volatile Logger                _logger;
+    internal volatile Logger                _logger;
     private static readonly int            _maxRetryCountForConnect;
     private Action<MessageEventArgs>       _message;
     private Queue<MessageEventArgs>        _messageEventQueue;
@@ -1508,7 +1508,7 @@ namespace WebSocketSharp
       }
     }
 
-    private void fatal (string message, Exception exception)
+    internal void fatal (string message, Exception exception)
     {
       var code = exception is WebSocketException
                  ? ((WebSocketException) exception).Code
