@@ -124,38 +124,28 @@ namespace WebSocketSharp
     /// </returns>
     public override string ToString ()
     {
-      var header = String.Format ("{0}|{1,-5}|", _date, _level);
+      var date = String.Format ("[{0}]", _date);
+      var level = String.Format ("{0,-5}", _level.ToString ().ToUpper ());
+
       var method = _caller.GetMethod ();
       var type = method.DeclaringType;
 #if DEBUG
-      var lineNum = _caller.GetFileLineNumber ();
-      var headerAndCaller = String.Format (
-                              "{0}{1}.{2}:{3}|",
-                              header,
-                              type.Name,
-                              method.Name,
-                              lineNum
-                            );
+      var num = _caller.GetFileLineNumber ();
+      var caller = String.Format ("{0}.{1}:{2}", type.Name, method.Name, num);
 #else
-      var headerAndCaller = String.Format (
-                              "{0}{1}.{2}|", header, type.Name, method.Name
-                            );
+      var caller = String.Format ("{0}.{1}", type.Name, method.Name);
 #endif
       var msgs = _message.Replace ("\r\n", "\n").TrimEnd ('\n').Split ('\n');
 
       if (msgs.Length <= 1)
-        return String.Format ("{0}{1}", headerAndCaller, _message);
+        return String.Format ("{0} {1} {2} {3}", date, level, caller, _message);
 
       var buff = new StringBuilder (64);
 
-      buff.AppendFormat ("{0}{1}\n", headerAndCaller, msgs[0]);
+      buff.AppendFormat ("{0} {1} {2}\n\n", date, level, caller);
 
-      var fmt = String.Format ("{{0,{0}}}{{1}}\n", header.Length);
-
-      for (var i = 1; i < msgs.Length; i++)
-        buff.AppendFormat (fmt, "", msgs[i]);
-
-      buff.Length--;
+      for (var i = 0; i < msgs.Length; i++)
+        buff.AppendFormat ("  {0}\n", msgs[i]);
 
       return buff.ToString ();
     }
