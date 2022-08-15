@@ -278,6 +278,9 @@ namespace WebSocketSharp
     /// </param>
     public void Fatal (string message)
     {
+      if (_level > LogLevel.Fatal)
+        return;
+
       output (message, LogLevel.Fatal);
     }
 
