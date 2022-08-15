@@ -489,6 +489,12 @@ ws.SslConfiguration.ServerCertificateValidationCallback =
 
 The default callback always returns `true`.
 
+If you need to specify SSL protocol, you could change the enum, for example:
+
+```csharp
+ws.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.None
+```
+
 As a WebSocket server, you should create a new instance of the `WebSocketServer` or `HttpServer` class with some settings for the secure connection, such as the following.
 
 ```csharp
@@ -639,6 +645,12 @@ And if you would like to output a log, you should use any of the output methods.
 
 ```csharp
 ws.Log.Debug ("This is a debug message.");
+```
+
+If you would like to disable all log output, you can specify the `None` enum.
+
+```csharp
+ws.Log.Level = LogLevel.None;
 ```
 
 The `WebSocketServer` and `HttpServer` classes have the same logging function.
