@@ -1223,25 +1223,6 @@ namespace WebSocketSharp
       );
     }
 
-    private bool closeHandshake (byte[] frameAsBytes, bool receive, bool received)
-    {
-      var sent = frameAsBytes != null && sendBytes (frameAsBytes);
-
-      var wait = !received && sent && receive && _receivingExited != null;
-      if (wait)
-        received = _receivingExited.WaitOne (_waitTime);
-
-      var ret = sent && received;
-
-      _logger.Debug (
-        String.Format (
-          "Was clean?: {0}\n  sent: {1}\n  received: {2}", ret, sent, received
-        )
-      );
-
-      return ret;
-    }
-
     private bool closeHandshake (
       PayloadData payloadData, bool send, bool receive, bool received
     )
