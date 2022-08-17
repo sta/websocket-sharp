@@ -2309,7 +2309,7 @@ namespace WebSocketSharp
 
         var st = new StreamThreader()
         {
-            Stream = _stream as NetworkStream,
+            Stream = _stream,
             socket = this
         };
         st.Run();

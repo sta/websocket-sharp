@@ -10,7 +10,7 @@ namespace WebSocketSharp
     internal class StreamThreader
     {
         public WebSocket socket;
-        public NetworkStream Stream;
+        public Stream Stream;
         public int buffersize = 1000000;
 
         private MemoryStream _stream = new MemoryStream();
