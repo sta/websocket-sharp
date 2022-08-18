@@ -1228,6 +1228,7 @@ namespace WebSocketSharp
     )
     {
       var sent = false;
+
       if (send) {
         var frame = WebSocketFrame.CreateCloseFrame (payloadData, _client);
         sent = sendBytes (frame.ToArray ());
@@ -1237,16 +1238,20 @@ namespace WebSocketSharp
       }
 
       var wait = !received && sent && receive && _receivingExited != null;
+
       if (wait)
         received = _receivingExited.WaitOne (_waitTime);
 
       var ret = sent && received;
 
-      _logger.Debug (
-        String.Format (
-          "Was clean?: {0}\n  sent: {1}\n  received: {2}", ret, sent, received
-        )
-      );
+      var msg = String.Format (
+                  "The close was clean? {0} (sent: {1} received: {2})",
+                  ret,
+                  sent,
+                  received
+                );
+
+      _logger.Debug (msg);
 
       return ret;
     }
