@@ -2407,12 +2407,14 @@ namespace WebSocketSharp
     {
       lock (_forState) {
         if (_readyState == WebSocketState.Closing) {
-          _logger.Info ("The closing is already in progress.");
+          _logger.Trace ("The closing is already in progress.");
+
           return;
         }
 
         if (_readyState == WebSocketState.Closed) {
-          _logger.Info ("The connection has already been closed.");
+          _logger.Trace ("The connection has already been closed.");
+
           return;
         }
 
@@ -2428,11 +2430,14 @@ namespace WebSocketSharp
 
       var res = sent && received;
 
-      _logger.Debug (
-        String.Format (
-          "Was clean?: {0}\n  sent: {1}\n  received: {2}", res, sent, received
-        )
-      );
+      var msg = String.Format (
+                  "The closing was clean? {0} (sent: {1} received: {2})",
+                  res,
+                  sent,
+                  received
+                );
+
+      _logger.Debug (msg);
 
       releaseServerResources ();
       releaseCommonResources ();
