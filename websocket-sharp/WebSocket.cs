@@ -1231,7 +1231,9 @@ namespace WebSocketSharp
 
       if (send) {
         var frame = WebSocketFrame.CreateCloseFrame (payloadData, _client);
-        sent = sendBytes (frame.ToArray ());
+        var bytes = frame.ToArray ();
+
+        sent = sendBytes (bytes);
 
         if (_client)
           frame.Unmask ();
@@ -1245,7 +1247,7 @@ namespace WebSocketSharp
       var ret = sent && received;
 
       var msg = String.Format (
-                  "The close was clean? {0} (sent: {1} received: {2})",
+                  "The closing was clean? {0} (sent: {1} received: {2})",
                   ret,
                   sent,
                   received
