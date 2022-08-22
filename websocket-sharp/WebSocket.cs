@@ -1176,7 +1176,7 @@ namespace WebSocketSharp
 
       _logger.Trace ("Begin closing the connection.");
 
-      var res = closeHandshake (payloadData, send, receive, received);
+      var res = closeHandshake (payloadData, send, received);
 
       releaseResources ();
 
@@ -1227,7 +1227,7 @@ namespace WebSocketSharp
     }
 
     private bool closeHandshake (
-      PayloadData payloadData, bool send, bool receive, bool received
+      PayloadData payloadData, bool send, bool received
     )
     {
       var sent = false;
@@ -1242,7 +1242,7 @@ namespace WebSocketSharp
           frame.Unmask ();
       }
 
-      var wait = !received && sent && receive && _receivingExited != null;
+      var wait = !received && sent && _receivingExited != null;
 
       if (wait)
         received = _receivingExited.WaitOne (_waitTime);
