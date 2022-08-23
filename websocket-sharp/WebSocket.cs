@@ -1143,17 +1143,17 @@ namespace WebSocketSharp
       }
 
       if (code == 1005) { // == no status
-        close (PayloadData.Empty, true, true, false);
+        close (PayloadData.Empty, true, false);
+
         return;
       }
 
       var send = !code.IsReserved ();
-      close (new PayloadData (code, reason), send, send, false);
+
+      close (new PayloadData (code, reason), send, false);
     }
 
-    private void close (
-      PayloadData payloadData, bool send, bool receive, bool received
-    )
+    private void close (PayloadData payloadData, bool send, bool received)
     {
       lock (_forState) {
         if (_readyState == WebSocketState.Closing) {
@@ -1169,7 +1169,6 @@ namespace WebSocketSharp
         }
 
         send = send && _readyState == WebSocketState.Open;
-        receive = send && receive;
 
         _readyState = WebSocketState.Closing;
       }
@@ -1208,21 +1207,21 @@ namespace WebSocketSharp
       }
 
       if (code == 1005) { // == no status
-        closeAsync (PayloadData.Empty, true, true, false);
+        closeAsync (PayloadData.Empty, true, false);
         return;
       }
 
       var send = !code.IsReserved ();
-      closeAsync (new PayloadData (code, reason), send, send, false);
+
+      closeAsync (new PayloadData (code, reason), send, false);
     }
 
-    private void closeAsync (
-      PayloadData payloadData, bool send, bool receive, bool received
-    )
+    private void closeAsync (PayloadData payloadData, bool send, bool received)
     {
-      Action<PayloadData, bool, bool, bool> closer = close;
+      Action<PayloadData, bool, bool> closer = close;
+
       closer.BeginInvoke (
-        payloadData, send, receive, received, ar => closer.EndInvoke (ar), null
+        payloadData, send, received, ar => closer.EndInvoke (ar), null
       );
     }
 
@@ -1511,7 +1510,8 @@ namespace WebSocketSharp
     private void fatal (string message, ushort code)
     {
       var payload = new PayloadData (code, message);
-      close (payload, !code.IsReserved (), false, false);
+
+      close (payload, !code.IsReserved (), false);
     }
 
     private void fatal (string message, CloseStatusCode code)
@@ -1649,7 +1649,7 @@ namespace WebSocketSharp
     private bool processCloseFrame (WebSocketFrame frame)
     {
       var payload = frame.PayloadData;
-      close (payload, !payload.HasReservedCode, false, true);
+      close (payload, !payload.HasReservedCode, true);
 
       return false;
     }
