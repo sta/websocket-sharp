@@ -1200,23 +1200,27 @@ namespace WebSocketSharp
     private void closeAsync (ushort code, string reason)
     {
       if (_readyState == WebSocketState.Closing) {
-        _logger.Info ("The closing is already in progress.");
+        _logger.Trace ("The closing is already in progress.");
+
         return;
       }
 
       if (_readyState == WebSocketState.Closed) {
-        _logger.Info ("The connection has already been closed.");
+        _logger.Trace ("The connection has already been closed.");
+
         return;
       }
 
-      if (code == 1005) { // == no status
+      if (code == 1005) {
         closeAsync (PayloadData.Empty, true, false);
+
         return;
       }
 
+      var data = new PayloadData (code, reason);
       var send = !code.IsReserved ();
 
-      closeAsync (new PayloadData (code, reason), send, false);
+      closeAsync (data, send, false);
     }
 
     private void closeAsync (PayloadData payloadData, bool send, bool received)
