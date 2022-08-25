@@ -1516,9 +1516,9 @@ namespace WebSocketSharp
 
     private void fatal (string message, ushort code)
     {
-      var payload = new PayloadData (code, message);
+      var data = new PayloadData (code, message);
 
-      close (payload, false, false);
+      close (data, false, false);
     }
 
     private void fatal (string message, CloseStatusCode code)
