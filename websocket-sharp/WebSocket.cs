@@ -1767,10 +1767,12 @@ namespace WebSocketSharp
     private bool processReceivedFrame (WebSocketFrame frame)
     {
       string msg;
+
       if (!checkReceivedFrame (frame, out msg))
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
 
       frame.Unmask ();
+
       return frame.IsFragment
              ? processFragmentFrame (frame)
              : frame.IsData
