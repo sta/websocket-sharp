@@ -1097,33 +1097,40 @@ namespace WebSocketSharp
       message = null;
 
       var masked = frame.IsMasked;
+
       if (_client && masked) {
         message = "A frame from the server is masked.";
+
         return false;
       }
 
       if (!_client && !masked) {
         message = "A frame from a client is not masked.";
+
         return false;
       }
 
       if (_inContinuation && frame.IsData) {
-        message = "A data frame has been received while receiving continuation frames.";
+        message = "A data frame was received while receiving continuation frames.";
+
         return false;
       }
 
       if (frame.IsCompressed && _compression == CompressionMethod.None) {
-        message = "A compressed frame has been received without any agreement for it.";
+        message = "A compressed frame was received without any agreement for it.";
+
         return false;
       }
 
       if (frame.Rsv2 == Rsv.On) {
         message = "The RSV2 of a frame is non-zero without any negotiation for it.";
+
         return false;
       }
 
       if (frame.Rsv3 == Rsv.On) {
         message = "The RSV3 of a frame is non-zero without any negotiation for it.";
+
         return false;
       }
 
