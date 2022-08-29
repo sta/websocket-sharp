@@ -1863,7 +1863,7 @@ namespace WebSocketSharp
       _logger.Fatal ("An unsupported frame was received.");
       _logger.Debug ("The frame is" + frame.PrintToString (false));
 
-      fatal ("There is no way to handle it.", 1008);
+      fatal ("There is no way to handle it.", 1003);
 
       return false;
     }
