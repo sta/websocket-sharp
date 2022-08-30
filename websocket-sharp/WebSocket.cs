@@ -1691,7 +1691,6 @@ namespace WebSocketSharp
     private bool processFragmentFrame (WebSocketFrame frame)
     {
       if (!_inContinuation) {
-        // Must process first fragment.
         if (frame.IsContinuation)
           return true;
 
@@ -1702,13 +1701,16 @@ namespace WebSocketSharp
       }
 
       _fragmentsBuffer.WriteBytes (frame.PayloadData.ApplicationData, 1024);
+
       if (frame.IsFinal) {
         using (_fragmentsBuffer) {
           var data = _fragmentsCompressed
                      ? _fragmentsBuffer.DecompressToArray (_compression)
                      : _fragmentsBuffer.ToArray ();
 
-          enqueueToMessageEventQueue (new MessageEventArgs (_fragmentsOpcode, data));
+          var e = new MessageEventArgs (_fragmentsOpcode, data);
+
+          enqueueToMessageEventQueue (e);
         }
 
         _fragmentsBuffer = null;
