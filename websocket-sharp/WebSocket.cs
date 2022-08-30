@@ -1679,11 +1679,14 @@ namespace WebSocketSharp
 
     private bool processDataFrame (WebSocketFrame frame)
     {
-      enqueueToMessageEventQueue (
-        frame.IsCompressed
-        ? new MessageEventArgs (
-            frame.Opcode, frame.PayloadData.ApplicationData.Decompress (_compression))
-        : new MessageEventArgs (frame));
+      var e = frame.IsCompressed
+              ? new MessageEventArgs (
+                  frame.Opcode,
+                  frame.PayloadData.ApplicationData.Decompress (_compression)
+                )
+              : new MessageEventArgs (frame);
+
+      enqueueToMessageEventQueue (e);
 
       return true;
     }
