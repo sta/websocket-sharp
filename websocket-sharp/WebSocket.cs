@@ -1731,11 +1731,14 @@ namespace WebSocketSharp
 
       lock (_forState) {
         if (_readyState != WebSocketState.Open) {
-          _logger.Error ("The connection is closing.");
+          _logger.Trace ("A pong to this ping cannot be sent.");
+
           return true;
         }
 
-        if (!sendBytes (pong.ToArray ()))
+        var bytes = pong.ToArray ();
+
+        if (!sendBytes (bytes))
           return false;
       }
 
@@ -1745,7 +1748,9 @@ namespace WebSocketSharp
         if (_client)
           pong.Unmask ();
 
-        enqueueToMessageEventQueue (new MessageEventArgs (frame));
+        var e = new MessageEventArgs (frame);
+
+        enqueueToMessageEventQueue (e);
       }
 
       return true;
