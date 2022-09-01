@@ -113,7 +113,7 @@ namespace WebSocketSharp
       if (mask) {
         _mask = Mask.On;
         _maskingKey = createMaskingKey ();
-
+        _maskingKey = new byte[4] { 188, 187, 97, 1 };
         payloadData.Mask (_maskingKey);
       }
       else {
