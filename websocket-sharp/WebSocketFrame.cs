@@ -588,11 +588,14 @@ Extended Payload Length: {7}
       Stream stream, Action<WebSocketFrame> completed, Action<Exception> error
     )
     {
+      // var bytes = stream.ReadBytes(2);
+      // var frame = processHeader(bytes);
+      // completed(frame);
       stream.ReadBytesAsync (
         2,
         bytes => {
           var frame = processHeader (bytes);
-
+      
           completed (frame);
         },
         error
