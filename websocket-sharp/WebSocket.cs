@@ -2335,24 +2335,35 @@ namespace WebSocketSharp
             _stream,
             false,
             frame => {
-              if (!processReceivedFrame (frame) || _readyState == WebSocketState.Closed) {
+              var exit = !processReceivedFrame (frame)
+                         || _readyState == WebSocketState.Closed;
+
+              if (exit) {
                 var exited = _receivingExited;
+
                 if (exited != null)
                   exited.Set ();
 
                 return;
               }
 
-              // Receive next asap because the Ping or Close needs a response to it.
               receive ();
 
-              if (_inMessage || !HasMessage || _readyState != WebSocketState.Open)
+              if (_inMessage)
+                return;
+
+              if (!HasMessage)
+                return;
+
+              if (_readyState != WebSocketState.Open)
                 return;
 
               message ();
             },
             ex => {
-              _logger.Fatal (ex.ToString ());
+              _logger.Fatal (ex.Message);
+              _logger.Debug (ex.ToString ());
+
               fatal ("An exception has occurred while receiving.", ex);
             }
           );
