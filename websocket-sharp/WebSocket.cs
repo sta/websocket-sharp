@@ -1556,11 +1556,19 @@ namespace WebSocketSharp
     private void message ()
     {
       MessageEventArgs e = null;
+
       lock (_forMessageEventQueue) {
-        if (_inMessage || _messageEventQueue.Count == 0 || _readyState != WebSocketState.Open)
+        if (_inMessage)
+          return;
+
+        if (_messageEventQueue.Count == 0)
+          return;
+
+        if (_readyState != WebSocketState.Open)
           return;
 
         _inMessage = true;
+
         e = _messageEventQueue.Dequeue ();
       }
 
