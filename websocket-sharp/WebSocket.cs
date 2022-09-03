@@ -1613,13 +1613,22 @@ namespace WebSocketSharp
         OnMessage.Emit (this, e);
       }
       catch (Exception ex) {
-        _logger.Error (ex.ToString ());
-        error ("An error has occurred during an OnMessage event.", ex);
+        _logger.Error (ex.Message);
+        _logger.Debug (ex.ToString ());
+
+        error ("An exception has occurred during an OnMessage event.", ex);
       }
 
       lock (_forMessageEventQueue) {
-        if (_messageEventQueue.Count == 0 || _readyState != WebSocketState.Open) {
+        if (_messageEventQueue.Count == 0) {
           _inMessage = false;
+
+          return;
+        }
+
+        if (_readyState != WebSocketState.Open) {
+          _inMessage = false;
+
           return;
         }
 
