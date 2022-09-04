@@ -1567,9 +1567,9 @@ namespace WebSocketSharp
         if (_readyState != WebSocketState.Open)
           return;
 
-        _inMessage = true;
-
         e = _messageEventQueue.Dequeue ();
+
+        _inMessage = true;
       }
 
       _message (e);
