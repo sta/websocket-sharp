@@ -2300,6 +2300,9 @@ namespace WebSocketSharp
       }
     }
 
+    
+    private GrowableMemoryOwner<byte> _readBufferOwner = GrowableMemoryOwner<byte>.Rent(1024);
+    
     private void startReceiving ()
     {
       if (_messageEventQueue.Count > 0)
@@ -2315,7 +2318,7 @@ namespace WebSocketSharp
         {
           try
           {
-            var frame1 = WebSocketFrame.ReadFrame(_stream, false);
+            var frame1 = WebSocketFrame.ReadFrame(_stream, false, _readBufferOwner);
             if (!processReceivedFrame (frame1) || _readyState == WebSocketState.Closed) 
             {
               var exited = _receivingExited;
@@ -2336,22 +2339,22 @@ namespace WebSocketSharp
           }
       
         }
-        var frame = WebSocketFrame.ReadFrame(_stream, false);
-        if (!processReceivedFrame (frame) || _readyState == WebSocketState.Closed) 
-        {
-          var exited = _receivingExited;
-          if (exited != null)
-            exited.Set ();
-      
-          return;
-        }
-      
-        // receive();
-        
-        if (_inMessage || !HasMessage || _readyState != WebSocketState.Open)
-          return;
-      
-        message();
+        // var frame = WebSocketFrame.ReadFrame(_stream, false);
+        // if (!processReceivedFrame (frame) || _readyState == WebSocketState.Closed) 
+        // {
+        //   var exited = _receivingExited;
+        //   if (exited != null)
+        //     exited.Set ();
+        //
+        //   return;
+        // }
+        //
+        // // receive();
+        //
+        // if (_inMessage || !HasMessage || _readyState != WebSocketState.Open)
+        //   return;
+        //
+        // message();
       };
       // receive =
       //   () =>

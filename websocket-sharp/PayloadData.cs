@@ -37,6 +37,7 @@ namespace WebSocketSharp
     #region Private Fields
 
     private byte[] _data;
+    private Memory<byte> _memoryData;
     private long   _extDataLength;
     private long   _length;
 
@@ -95,6 +96,14 @@ namespace WebSocketSharp
       _data = code.Append (reason);
       _length = _data.LongLength;
     }
+
+    // internal PayloadData(ReadOnlySpan<byte> span, long length)
+    // {
+    //   // _data = span;
+    //   // _data = span;
+    //   // _memoryData = span;
+    //   _length = length;
+    // }
 
     #endregion
 

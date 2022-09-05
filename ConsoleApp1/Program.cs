@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using WebSocketSharp;
 
+long counter = 0;
 var sharpws = new WebSocketSharp.WebSocket(
     // "wss://demo.piesocket.com/v3/channel_1?api_key=VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV&notify_self");
     "wss://fstream.binance.com/stream");
@@ -17,5 +18,6 @@ Console.ReadKey();
 
 void SharpwsOnOnMessage(object? sender, MessageEventArgs e)
 {
+    counter++;
     Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] sharps {e.Data}");
 }    

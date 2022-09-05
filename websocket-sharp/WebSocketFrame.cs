@@ -665,6 +665,10 @@ Extended Payload Length: {7}
     )
     {
       var exactLen = frame.ExactPayloadLength;
+      // if (memoryOwner.Memory.Length < (int)exactLen)
+      // {
+      //   memoryOwner.Grow();
+      // }
 
       if (exactLen > PayloadData.MaxLength) {
         var msg = "A frame has too long payload length.";
@@ -676,6 +680,7 @@ Extended Payload Length: {7}
         frame._payloadData = PayloadData.Empty;
 
         return frame;
+        // return memoryOwner.Memory.Span;
       }
 
       var len = (long) exactLen;
@@ -683,7 +688,12 @@ Extended Payload Length: {7}
                   ? stream.ReadBytes ((int) exactLen)
                   : stream.ReadBytes (len, 1024);
 
-      if (bytes.LongLength != len) {
+      // var bytes = frame._payloadLength < 127
+      //   ? stream.ReadBytesAsSpan((int)exactLen, memoryOwner.Memory.Span)
+      //   : stream.ReadBytesAsSpan(len, )
+      // var bytes = stream.ReadBytesAsSpan((int)exactLen, memoryOwner.Memory.Span);
+
+      if (bytes.Length != len) {
         var msg = "The payload data of a frame could not be read.";
 
         throw new WebSocketException (msg);
@@ -787,7 +797,7 @@ Extended Payload Length: {7}
              );
     }
 
-    internal static WebSocketFrame ReadFrame (Stream stream, bool unmask)
+    internal static WebSocketFrame ReadFrame (Stream stream, bool unmask, GrowableMemoryOwner<byte> memoryOwner)
     {
       var frame = readHeader (stream);
 

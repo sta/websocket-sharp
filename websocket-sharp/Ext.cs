@@ -664,6 +664,38 @@ namespace WebSocketSharp
       return String.Format (fmt, val);
     }
 
+    internal static ReadOnlySpan<byte> ReadBytesAsSpan(this Stream stream, int length, Span<byte> buffer)
+    {
+      // var ret = new byte[length];
+
+      var offset = 0;
+      var retry = 0;
+
+      while (length > 0) {
+        // var nread = stream.Read (ret, offset, length);
+        var nread = stream.Read(buffer);
+
+        if (nread <= 0) {
+          if (retry < _maxRetry) {
+            retry++;
+
+            continue;
+          }
+
+          // return ret.SubArray (0, offset);
+          return buffer.Slice(0, offset);
+        }
+
+        retry = 0;
+
+        offset += nread;
+        length -= nread;
+      }
+
+      // return ret;
+      return buffer;
+    }
+    
     internal static byte[] ReadBytes (this Stream stream, int length)
     {
       var ret = new byte[length];
