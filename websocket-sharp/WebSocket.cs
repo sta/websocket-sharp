@@ -2378,12 +2378,6 @@ namespace WebSocketSharp
               if (_inMessage)
                 return;
 
-              if (!HasMessage)
-                return;
-
-              if (_readyState != WebSocketState.Open)
-                return;
-
               message ();
             },
             ex => {
