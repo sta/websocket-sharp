@@ -76,7 +76,7 @@ namespace WebSocketSharp
     internal WebSocketFrame (
       Fin fin, Opcode opcode, byte[] data, bool compressed, bool mask
     )
-      : this (fin, opcode, new PayloadData (data), compressed, mask)
+      : this (fin, opcode, new PayloadData (ref data), compressed, mask)
     {
     }
 
@@ -515,6 +515,8 @@ Extended Payload Length: {7}
       frame._mask = mask;
       frame._payloadLength = payloadLen;
 
+      // BufferPool.Return(ref header);
+      // BufferPool.Return(header);
       return frame;
     }
 
@@ -699,7 +701,7 @@ Extended Payload Length: {7}
         throw new WebSocketException (msg);
       }
 
-      frame._payloadData = new PayloadData (bytes, len);
+      frame._payloadData = new PayloadData (ref bytes, len);
 
       return frame;
     }
@@ -737,7 +739,7 @@ Extended Payload Length: {7}
             throw new WebSocketException (msg);
           }
 
-          frame._payloadData = new PayloadData (bytes, len);
+          frame._payloadData = new PayloadData (ref bytes, len);
 
           completed (frame);
         };
@@ -784,7 +786,7 @@ Extended Payload Length: {7}
     internal static WebSocketFrame CreatePingFrame (byte[] data, bool mask)
     {
       return new WebSocketFrame (
-               Fin.Final, Opcode.Ping, new PayloadData (data), false, mask
+               Fin.Final, Opcode.Ping, new PayloadData (ref data), false, mask
              );
     }
 

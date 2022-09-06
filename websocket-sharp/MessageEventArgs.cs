@@ -71,6 +71,7 @@ namespace WebSocketSharp
       _opcode = opcode;
       _rawData = rawData;
     }
+    
 
     #endregion
 

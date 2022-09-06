@@ -37,3 +37,4 @@ internal struct GrowableMemoryOwner<T> : IDisposable
 
     public void Dispose() => _buffer.Dispose();
 }
+

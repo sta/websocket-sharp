@@ -1585,6 +1585,11 @@ namespace WebSocketSharp
       while (true);
     }
 
+    public void ReturnUsed(byte[] bytes)
+    {
+      BufferPool.Return(bytes);
+    }
+
     private void messages (MessageEventArgs e)
     {
       try {
@@ -2329,6 +2334,7 @@ namespace WebSocketSharp
             }
 
             _message(new MessageEventArgs(frame1));
+            // BufferPool.Return(frame1.PayloadData.ApplicationData);
             // Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] sharps {Encoding.UTF8.GetString(frame1.PayloadData.ApplicationData)}");
             // Console.WriteLine(Encoding.UTF8.GetString(frame1.PayloadData.ApplicationData));
             // message();

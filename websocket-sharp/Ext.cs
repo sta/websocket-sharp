@@ -46,6 +46,7 @@
 #endregion
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
@@ -698,7 +699,25 @@ namespace WebSocketSharp
     
     internal static byte[] ReadBytes (this Stream stream, int length)
     {
-      var ret = new byte[length];
+      byte[] ret;
+      // if (length == 2)
+      {
+        // ret = BufferPool.Rent(length);
+      }
+      // if (length < 16)
+      // else
+      {
+         ret = new byte[length];
+      }
+      // else
+      {
+        // ret = BufferPool.Rent(length);
+        // ret = BufferOwner.Rent(length);
+      }
+      
+        // var ret = new byte[length];
+      // var ret = ArrayPool<byte>.Shared.Rent(length);
+      // var rett = BufferOwner.Rent(length);
 
       var offset = 0;
       var retry = 0;

@@ -27,8 +27,11 @@
 #endregion
 
 using System;
+using System.Buffers;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks.Dataflow;
 
 namespace WebSocketSharp
 {
@@ -72,7 +75,8 @@ namespace WebSocketSharp
 
     static PayloadData ()
     {
-      Empty = new PayloadData (WebSocket.EmptyBytes, 0);
+      var bytes = new byte[0];
+      Empty = new PayloadData (ref bytes, 0);
       MaxLength = Int64.MaxValue;
     }
 
@@ -80,12 +84,12 @@ namespace WebSocketSharp
 
     #region Internal Constructors
 
-    internal PayloadData (byte[] data)
-      : this (data, data.LongLength)
+    internal PayloadData (ref byte[] data)
+      : this (ref data, data.LongLength)
     {
     }
 
-    internal PayloadData (byte[] data, long length)
+    internal PayloadData (ref byte[] data, long length)
     {
       _data = data;
       _length = length;
@@ -213,5 +217,34 @@ namespace WebSocketSharp
     }
 
     #endregion
+  }
+
+  public static class BufferPool
+  {
+    private static Stack<byte[]> buffers = new();
+    private static ConcurrentDictionary<int, ConcurrentBag<byte>> b;
+    private static ConcurrentDictionary<int, byte[]> buff = new();
+    private static byte[] _used;
+
+    public static byte[] Rent(int size)
+    {
+      // b.TryGetValue()
+      buff.TryGetValue(size, out var bytes);
+      if (bytes is null)
+      {
+        bytes = new byte[size];
+        // buff.Add(size, bytes);
+      }
+
+      return bytes;
+      // _used = _arrayPool.Rent(size);
+      // return _arrayPool.Rent(size);
+    }
+
+    public static void Return(byte[] bytes)
+    {
+      // buff.Add(bytes.Length, bytes);
+      buff.TryAdd(bytes.Length, bytes);
+    }
   }
 }
