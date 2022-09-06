@@ -63,6 +63,11 @@ namespace WebSocketSharp
       _rawData = frame.PayloadData.ApplicationData;
     }
 
+    internal MessageEventArgs(byte[] bytes)
+    {
+      _rawData = bytes;
+    }
+
     internal MessageEventArgs (Opcode opcode, byte[] rawData)
     {
       if ((ulong) rawData.LongLength > PayloadData.MaxLength)

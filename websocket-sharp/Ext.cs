@@ -708,6 +708,7 @@ namespace WebSocketSharp
       // else
       {
          ret = new byte[length];
+        // ret = BufferPool.Rent(length);
       }
       // else
       {

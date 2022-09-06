@@ -451,7 +451,7 @@ Extended Payload Length: {7}
              );
     }
 
-    private static WebSocketFrame processHeader (byte[] header)
+    private static WebSocketFrame processHeader (ref byte[] header)
     {
       if (header.Length != 2) {
         var msg = "The header part of a frame could not be read.";
@@ -480,11 +480,11 @@ Extended Payload Length: {7}
       // Payload Length
       var payloadLen = (byte) (header[1] & 0x7f);
 
-      if (!opcode.IsSupported ()) {
-        var msg = "A frame has an unsupported opcode.";
-
-        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
-      }
+      // if (!opcode.IsSupported ()) {
+      //   var msg = "A frame has an unsupported opcode.";
+      //
+      //   throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
+      // }
 
       if (!opcode.IsData () && rsv1 == Rsv.On) {
         var msg = "A non data frame is compressed.";
@@ -583,7 +583,7 @@ Extended Payload Length: {7}
     {
       var bytes = stream.ReadBytes (2);
 
-      return processHeader (bytes);
+      return processHeader (ref bytes);
     }
 
     private static void readHeaderAsync (
@@ -596,7 +596,7 @@ Extended Payload Length: {7}
       stream.ReadBytesAsync (
         2,
         bytes => {
-          var frame = processHeader (bytes);
+          var frame = processHeader (ref bytes);
       
           completed (frame);
         },

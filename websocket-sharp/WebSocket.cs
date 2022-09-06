@@ -2333,7 +2333,10 @@ namespace WebSocketSharp
               return;
             }
 
-            _message(new MessageEventArgs(frame1));
+            // _message(new MessageEventArgs(frame1));
+            // messagec(new MessageEventArgs(frame1));
+            var e = new MessageEventArgs(frame1);
+            OnMessage.Emit (this, e);
             // BufferPool.Return(frame1.PayloadData.ApplicationData);
             // Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] sharps {Encoding.UTF8.GetString(frame1.PayloadData.ApplicationData)}");
             // Console.WriteLine(Encoding.UTF8.GetString(frame1.PayloadData.ApplicationData));

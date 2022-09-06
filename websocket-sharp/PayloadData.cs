@@ -219,24 +219,42 @@ namespace WebSocketSharp
     #endregion
   }
 
+  public struct BufforWrapper
+  {
+    public byte[] Bytes { get; set; }
+    public int Length { get; set; }
+  }
+
   public static class BufferPool
   {
     private static Stack<byte[]> buffers = new();
-    private static ConcurrentDictionary<int, ConcurrentBag<byte>> b;
+
+    private static ConcurrentDictionary<int, ConcurrentBag<byte[]>> b = new();
     private static ConcurrentDictionary<int, byte[]> buff = new();
     private static byte[] _used;
 
     public static byte[] Rent(int size)
     {
-      // b.TryGetValue()
-      buff.TryGetValue(size, out var bytes);
-      if (bytes is null)
+      if (b.TryGetValue(size, out var bag))
       {
-        bytes = new byte[size];
-        // buff.Add(size, bytes);
+        if (bag.TryTake(out var result))
+        {
+          return result;
+        }
+
+        return new byte[size];
       }
 
-      return bytes;
+      b.TryAdd(size, new ConcurrentBag<byte[]>());
+      return new byte[size];
+      // buff.TryGetValue(size, out var bytes);
+      // if (bytes is null)
+      // {
+      //   bytes = new byte[size];
+      //   // buff.Add(size, bytes);
+      // }
+      //
+      // return bytes;
       // _used = _arrayPool.Rent(size);
       // return _arrayPool.Rent(size);
     }
@@ -244,7 +262,9 @@ namespace WebSocketSharp
     public static void Return(byte[] bytes)
     {
       // buff.Add(bytes.Length, bytes);
-      buff.TryAdd(bytes.Length, bytes);
+      Array.Clear(bytes);
+      // buff.TryAdd(bytes.Length, bytes);
+      b[bytes.Length].Add(bytes);
     }
   }
 }
