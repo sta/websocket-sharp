@@ -700,12 +700,12 @@ namespace WebSocketSharp
     internal static byte[] ReadBytes (this Stream stream, int length)
     {
       byte[] ret;
-      // if (length == 2)
+      if (length == 2)
       {
-        // ret = BufferPool.Rent(length);
+        ret = BufferPool.Rent(length);
       }
       // if (length < 16)
-      // else
+      else
       {
          ret = new byte[length];
         // ret = BufferPool.Rent(length);

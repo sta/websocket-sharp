@@ -516,7 +516,7 @@ Extended Payload Length: {7}
       frame._payloadLength = payloadLen;
 
       // BufferPool.Return(ref header);
-      // BufferPool.Return(header);
+      BufferPool.Return(header);
       return frame;
     }
 
