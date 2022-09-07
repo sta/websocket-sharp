@@ -1,0 +1,31 @@
+name: main-workflow
+on:
+  push:
+    branches:
+    - main
+    - refbytes
+  workflow_dispatch: #for manual execution
+
+jobs:
+ build-and-test:
+   name: Publish package
+   runs-on: ubuntu-22.04
+   env:
+    DOTNET_NOLOGO: true
+   steps:
+   - name: Checkout repository
+     uses: actions/checkout@v2.3.4 #powered by github, i.e safe
+   - name: Setup .NET Core SDK
+     uses: actions/setup-dotnet@v1.8.2 #powered by github, i.e safe
+     with:
+       dotnet-version: '6.0.102'
+   - name: build app - release
+     run: dotnet build -c ReleaseUbuntu
+   - name: create and publish package
+     env:
+       MAJOR: 0
+     run: |
+       export VERSION="$MAJOR.$(date '+%Y.%-m').${{ github.run_number }}-${{ github.sha }}"
+       echo "Version: $VERSION"
+       dotnet pack --configuration ReleaseUbuntu -p:Version=$VERSION --no-build --no-restore
+       dotnet nuget push websocket-sharp/bin/Release/websocket-sharp.$VERSION.nupkg -s https://nuget.pkg.github.com/jgratka-alpha/index.json -k ${{ github.token }}
