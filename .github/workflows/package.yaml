@@ -29,4 +29,4 @@ jobs:
        echo "Version: $VERSION"
        dotnet pack --configuration Release -p:Version=$VERSION --no-build --no-restore
        dotnet nuget add source --username jgratka-alpha --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/jgratka-alpha/index.json"
-       dotnet nuget push websocket-sharp/bin/Release/websocket-sharp.$VERSION.nupkg -s https://nuget.pkg.github.com/jgratka-alpha/index.json -k ${{ github.token }}
+       dotnet nuget push websocket-sharp/bin/Release/websocket-sharp.$VERSION.nupkg -s https://nuget.pkg.github.com/jgratka-alpha/index.json -k ${{ secrets.GITHUB_TOKEN }}
