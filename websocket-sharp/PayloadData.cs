@@ -29,7 +29,6 @@
 using System;
 using System.Buffers;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks.Dataflow;
 
@@ -100,14 +99,6 @@ namespace WebSocketSharp
       _data = code.Append (reason);
       _length = _data.LongLength;
     }
-
-    // internal PayloadData(ReadOnlySpan<byte> span, long length)
-    // {
-    //   // _data = span;
-    //   // _data = span;
-    //   // _memoryData = span;
-    //   _length = length;
-    // }
 
     #endregion
 
@@ -217,54 +208,5 @@ namespace WebSocketSharp
     }
 
     #endregion
-  }
-
-  public struct BufforWrapper
-  {
-    public byte[] Bytes { get; set; }
-    public int Length { get; set; }
-  }
-
-  public static class BufferPool
-  {
-    private static Stack<byte[]> buffers = new();
-
-    private static ConcurrentDictionary<int, ConcurrentBag<byte[]>> b = new();
-    private static ConcurrentDictionary<int, byte[]> buff = new();
-    private static byte[] _used;
-
-    public static byte[] Rent(int size)
-    {
-      if (b.TryGetValue(size, out var bag))
-      {
-        if (bag.TryTake(out var result))
-        {
-          return result;
-        }
-
-        return new byte[size];
-      }
-
-      b.TryAdd(size, new ConcurrentBag<byte[]>());
-      return new byte[size];
-      // buff.TryGetValue(size, out var bytes);
-      // if (bytes is null)
-      // {
-      //   bytes = new byte[size];
-      //   // buff.Add(size, bytes);
-      // }
-      //
-      // return bytes;
-      // _used = _arrayPool.Rent(size);
-      // return _arrayPool.Rent(size);
-    }
-
-    public static void Return(byte[] bytes)
-    {
-      // buff.Add(bytes.Length, bytes);
-      Array.Clear(bytes);
-      // buff.TryAdd(bytes.Length, bytes);
-      b[bytes.Length].Add(bytes);
-    }
   }
 }

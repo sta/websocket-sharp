@@ -1585,11 +1585,6 @@ namespace WebSocketSharp
       while (true);
     }
 
-    public void ReturnUsed(byte[] bytes)
-    {
-      BufferPool.Return(bytes);
-    }
-
     private void messages (MessageEventArgs e)
     {
       try {
@@ -2316,84 +2311,21 @@ namespace WebSocketSharp
       _pongReceived = new ManualResetEvent (false);
       _receivingExited = new ManualResetEvent (false);
 
-      Action receive = null;
-      receive = () =>
+      while (true)
       {
-        while (true)
-        {
-          try
+          var frame1 = WebSocketFrame.ReadFrame(_stream, false, _readBufferOwner);
+          if (!processReceivedFrame (frame1) || _readyState == WebSocketState.Closed) 
           {
-            var frame1 = WebSocketFrame.ReadFrame(_stream, false, _readBufferOwner);
-            if (!processReceivedFrame (frame1) || _readyState == WebSocketState.Closed) 
-            {
-              var exited = _receivingExited;
-              if (exited != null)
-                exited.Set ();
+            var exited = _receivingExited;
+            if (exited != null)
+              exited.Set ();
       
-              return;
-            }
-
-            // _message(new MessageEventArgs(frame1));
-            // messagec(new MessageEventArgs(frame1));
-            var e = new MessageEventArgs(frame1);
-            OnMessage.Emit (this, e);
-            // BufferPool.Return(frame1.PayloadData.ApplicationData);
-            // Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] sharps {Encoding.UTF8.GetString(frame1.PayloadData.ApplicationData)}");
-            // Console.WriteLine(Encoding.UTF8.GetString(frame1.PayloadData.ApplicationData));
-            // message();
-            //ping
+            return;
           }
-          catch (Exception e)
-          {
-          }
-      
-        }
-        // var frame = WebSocketFrame.ReadFrame(_stream, false);
-        // if (!processReceivedFrame (frame) || _readyState == WebSocketState.Closed) 
-        // {
-        //   var exited = _receivingExited;
-        //   if (exited != null)
-        //     exited.Set ();
-        //
-        //   return;
-        // }
-        //
-        // // receive();
-        //
-        // if (_inMessage || !HasMessage || _readyState != WebSocketState.Open)
-        //   return;
-        //
-        // message();
-      };
-      // receive =
-      //   () =>
-      //     WebSocketFrame.ReadFrameAsync (
-      //       _stream,
-      //       false,
-      //       frame => {
-      //         if (!processReceivedFrame (frame) || _readyState == WebSocketState.Closed) {
-      //           var exited = _receivingExited;
-      //           if (exited != null)
-      //             exited.Set ();
-      //
-      //           return;
-      //         }
-      //
-      //         // Receive next asap because the Ping or Close needs a response to it.
-      //         receive ();
-      //         
-      //         if (_inMessage || !HasMessage || _readyState != WebSocketState.Open)
-      //           return;
-      //
-      //         message ();
-      //       },
-      //       ex => {
-      //         _logger.Fatal (ex.ToString ());
-      //         fatal ("An exception has occurred while receiving.", ex);
-      //       }
-      //     );
 
-      receive ();
+          var e = new MessageEventArgs(frame1);
+          OnMessage.Emit (this, e);
+      }
     }
 
     // As client
