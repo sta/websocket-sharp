@@ -20,12 +20,12 @@ jobs:
      with:
        dotnet-version: '6.0.102'
    - name: build app - release
-     run: dotnet build -c ReleaseUbuntu
+     run: dotnet build -c Release
    - name: create and publish package
      env:
        MAJOR: 0
      run: |
        export VERSION="$MAJOR.$(date '+%Y.%-m').${{ github.run_number }}-${{ github.sha }}"
        echo "Version: $VERSION"
-       dotnet pack --configuration ReleaseUbuntu -p:Version=$VERSION --no-build --no-restore
+       dotnet pack --configuration Release -p:Version=$VERSION --no-build --no-restore
        dotnet nuget push websocket-sharp/bin/Release/websocket-sharp.$VERSION.nupkg -s https://nuget.pkg.github.com/jgratka-alpha/index.json -k ${{ github.token }}
