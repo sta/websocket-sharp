@@ -1503,8 +1503,10 @@ namespace WebSocketSharp
 
     private void error (string message, Exception exception)
     {
+      var e = new ErrorEventArgs (message, exception);
+
       try {
-        OnError.Emit (this, new ErrorEventArgs (message, exception));
+        OnError.Emit (this, e);
       }
       catch (Exception ex) {
         _logger.Error (ex.Message);
