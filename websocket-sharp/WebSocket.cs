@@ -1248,10 +1248,10 @@ namespace WebSocketSharp
     {
       var sent = false;
       if (send) {
-        var frame = WebSocketFrame.CreateCloseFrame (payloadData, _client);
+        var frame = WebSocketFrame.CreateCloseFrame (payloadData, _client && !received);
         sent = sendBytes (frame.ToArray ());
 
-        if (_client)
+        if (_client && !received)
           frame.Unmask ();
       }
 
