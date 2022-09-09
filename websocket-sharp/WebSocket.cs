@@ -2584,13 +2584,14 @@ namespace WebSocketSharp
       if (_readyState != WebSocketState.Open)
         return false;
 
-      var pongReceived = _pongReceived;
-      if (pongReceived == null)
+      var received = _pongReceived;
+
+      if (received == null)
         return false;
 
       lock (_forPing) {
         try {
-          pongReceived.Reset ();
+          received.Reset ();
 
           lock (_forState) {
             if (_readyState != WebSocketState.Open)
@@ -2600,7 +2601,7 @@ namespace WebSocketSharp
               return false;
           }
 
-          return pongReceived.WaitOne (timeout);
+          return received.WaitOne (timeout);
         }
         catch (ObjectDisposedException) {
           return false;
