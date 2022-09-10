@@ -1682,17 +1682,21 @@ namespace WebSocketSharp
       if (_readyState != WebSocketState.Open)
         return false;
 
-      var pongReceived = _pongReceived;
-      if (pongReceived == null)
+      var received = _pongReceived;
+
+      if (received == null)
         return false;
 
       lock (_forPing) {
         try {
-          pongReceived.Reset ();
-          if (!send (Fin.Final, Opcode.Ping, data, false))
+          received.Reset ();
+
+          var sent = send (Fin.Final, Opcode.Ping, data, false);
+
+          if (!sent)
             return false;
 
-          return pongReceived.WaitOne (_waitTime);
+          return received.WaitOne (_waitTime);
         }
         catch (ObjectDisposedException) {
           return false;
