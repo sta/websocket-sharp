@@ -2601,7 +2601,9 @@ namespace WebSocketSharp
             if (_readyState != WebSocketState.Open)
               return false;
 
-            if (!sendBytes (frameAsBytes))
+            var sent = sendBytes (frameAsBytes);
+
+            if (!sent)
               return false;
           }
 
