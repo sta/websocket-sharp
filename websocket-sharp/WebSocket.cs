@@ -1809,16 +1809,10 @@ namespace WebSocketSharp
       try {
         _pongReceived.Set ();
       }
-      catch (NullReferenceException ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
-
+      catch (NullReferenceException) {
         return false;
       }
-      catch (ObjectDisposedException ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
-
+      catch (ObjectDisposedException) {
         return false;
       }
 
