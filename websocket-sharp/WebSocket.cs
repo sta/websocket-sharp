@@ -1783,8 +1783,9 @@ namespace WebSocketSharp
         }
 
         var bytes = pong.ToArray ();
+        var sent = sendBytes (bytes);
 
-        if (!sendBytes (bytes))
+        if (!sent)
           return false;
       }
 
