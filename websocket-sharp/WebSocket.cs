@@ -2003,6 +2003,7 @@ namespace WebSocketSharp
         var src = stream;
         var compressed = false;
         var sent = false;
+
         try {
           if (_compression != CompressionMethod.None) {
             stream = stream.Compress (_compression);
@@ -2010,12 +2011,15 @@ namespace WebSocketSharp
           }
 
           sent = send (opcode, stream, compressed);
+
           if (!sent)
             error ("A send has been interrupted.", null);
         }
         catch (Exception ex) {
-          _logger.Error (ex.ToString ());
-          error ("An error has occurred during a send.", ex);
+          _logger.Error (ex.Message);
+          _logger.Debug (ex.ToString ());
+
+          error ("An exception has occurred during a send.", ex);
         }
         finally {
           if (compressed)
