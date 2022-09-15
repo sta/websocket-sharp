@@ -2087,12 +2087,15 @@ namespace WebSocketSharp
     {
       lock (_forState) {
         if (_readyState != WebSocketState.Open) {
-          _logger.Error ("The connection is closing.");
+          _logger.Trace ("The connection is closing.");
+
           return false;
         }
 
         var frame = new WebSocketFrame (fin, opcode, data, compressed, _client);
-        return sendBytes (frame.ToArray ());
+        var bytes = frame.ToArray ();
+
+        return sendBytes (bytes);
       }
     }
 
