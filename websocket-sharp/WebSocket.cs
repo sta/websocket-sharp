@@ -2099,22 +2099,28 @@ namespace WebSocketSharp
       }
     }
 
-    private void sendAsync (Opcode opcode, Stream stream, Action<bool> completed)
+    private void sendAsync (
+      Opcode opcode, Stream stream, Action<bool> completed
+    )
     {
       Func<Opcode, Stream, bool> sender = send;
+
       sender.BeginInvoke (
         opcode,
         stream,
         ar => {
           try {
             var sent = sender.EndInvoke (ar);
+
             if (completed != null)
               completed (sent);
           }
           catch (Exception ex) {
-            _logger.Error (ex.ToString ());
+            _logger.Error (ex.Message);
+            _logger.Debug (ex.ToString ());
+
             error (
-              "An error has occurred during the callback for an async send.",
+              "An exception has occurred during the callback for an async send.",
               ex
             );
           }
