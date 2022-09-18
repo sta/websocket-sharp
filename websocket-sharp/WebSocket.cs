@@ -841,7 +841,9 @@ namespace WebSocketSharp
         }
 
         try {
-          if (!acceptHandshake ())
+          var accepted = acceptHandshake ();
+
+          if (!accepted)
             return false;
         }
         catch (Exception ex) {
@@ -855,6 +857,7 @@ namespace WebSocketSharp
         }
 
         _readyState = WebSocketState.Open;
+
         return true;
       }
     }
