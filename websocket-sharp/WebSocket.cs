@@ -806,8 +806,9 @@ namespace WebSocketSharp
     private bool accept ()
     {
       if (_readyState == WebSocketState.Open) {
-        var msg = "The handshake request has already been accepted.";
-        _logger.Warn (msg);
+        var msg = "The connection has already been established.";
+
+        _logger.Trace (msg);
 
         return false;
       }
