@@ -823,10 +823,10 @@ namespace WebSocketSharp
         }
 
         if (_readyState == WebSocketState.Closing) {
-          var msg = "The close process has set in.";
+          var msg = "The connection is closing.";
+
           _logger.Error (msg);
 
-          msg = "An interruption has occurred while attempting to accept.";
           error (msg, null);
 
           return false;
