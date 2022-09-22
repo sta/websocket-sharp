@@ -834,9 +834,9 @@ namespace WebSocketSharp
 
         if (_readyState == WebSocketState.Closed) {
           var msg = "The connection has been closed.";
+
           _logger.Error (msg);
 
-          msg = "An interruption has occurred while attempting to accept.";
           error (msg, null);
 
           return false;
