@@ -197,6 +197,52 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
+    internal HttpListenerWebSocketContext AcceptWebSocket (
+      string protocol, Action<WebSocket> initializer
+    )
+    {
+      if (_websocketContext != null) {
+        var msg = "The method has already been done.";
+
+        throw new InvalidOperationException (msg);
+      }
+
+      if (protocol != null) {
+        if (protocol.Length == 0) {
+          var msg = "An empty string.";
+
+          throw new ArgumentException (msg, "protocol");
+        }
+
+        if (!protocol.IsToken ()) {
+          var msg = "It contains an invalid character.";
+
+          throw new ArgumentException (msg, "protocol");
+        }
+      }
+
+      var ctx = GetWebSocketContext (protocol);
+      var ws = ctx.WebSocket;
+
+      if (initializer != null) {
+        try {
+          initializer (ws);
+        }
+        catch (Exception ex) {
+          if (ws.ReadyState == WebSocketState.Connecting)
+            _websocketContext = null;
+
+          var msg = "It caused an exception.";
+
+          throw new ArgumentException (msg, "initializer", ex);
+        }
+      }
+
+      ws.Accept ();
+
+      return ctx;
+    }
+
     internal HttpListenerWebSocketContext GetWebSocketContext (string protocol)
     {
       _websocketContext = new HttpListenerWebSocketContext (this, protocol);
