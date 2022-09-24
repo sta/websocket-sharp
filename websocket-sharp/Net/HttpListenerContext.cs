@@ -221,8 +221,9 @@ namespace WebSocketSharp.Net
         }
       }
 
-      var ctx = GetWebSocketContext (protocol);
-      var ws = ctx.WebSocket;
+      var ret = GetWebSocketContext (protocol);
+
+      var ws = ret.WebSocket;
 
       if (initializer != null) {
         try {
@@ -240,7 +241,7 @@ namespace WebSocketSharp.Net
 
       ws.Accept ();
 
-      return ctx;
+      return ret;
     }
 
     internal HttpListenerWebSocketContext GetWebSocketContext (string protocol)
