@@ -805,14 +805,6 @@ namespace WebSocketSharp
     // As server
     private bool accept ()
     {
-      if (_readyState == WebSocketState.Open) {
-        var msg = "The connection has already been established.";
-
-        _logger.Trace (msg);
-
-        return false;
-      }
-
       lock (_forState) {
         if (_readyState == WebSocketState.Open) {
           var msg = "The connection has already been established.";
