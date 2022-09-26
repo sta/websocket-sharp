@@ -2483,6 +2483,17 @@ namespace WebSocketSharp
     #region Internal Methods
 
     // As server
+    internal void Accept ()
+    {
+      var accepted = accept ();
+
+      if (!accepted)
+        return;
+
+      open ();
+    }
+
+    // As server
     internal void Close (HttpResponse response)
     {
       _readyState = WebSocketState.Closing;
@@ -2681,51 +2692,6 @@ namespace WebSocketSharp
     #endregion
 
     #region Public Methods
-
-    /// <summary>
-    /// Accepts the handshake request.
-    /// </summary>
-    /// <remarks>
-    /// This method does nothing if the handshake request has already been
-    /// accepted.
-    /// </remarks>
-    /// <exception cref="InvalidOperationException">
-    ///   <para>
-    ///   This instance is a client.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The close process is in progress.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The connection has already been closed.
-    ///   </para>
-    /// </exception>
-    public void Accept ()
-    {
-      if (_client) {
-        var msg = "This instance is a client.";
-        throw new InvalidOperationException (msg);
-      }
-
-      if (_readyState == WebSocketState.Closing) {
-        var msg = "The close process is in progress.";
-        throw new InvalidOperationException (msg);
-      }
-
-      if (_readyState == WebSocketState.Closed) {
-        var msg = "The connection has already been closed.";
-        throw new InvalidOperationException (msg);
-      }
-
-      if (accept ())
-        open ();
-    }
 
     /// <summary>
     /// Accepts the handshake request asynchronously.
