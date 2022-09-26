@@ -2494,6 +2494,24 @@ namespace WebSocketSharp
     }
 
     // As server
+    internal void AcceptAsync ()
+    {
+      Func<bool> acceptor = accept;
+
+      acceptor.BeginInvoke (
+        ar => {
+          var accepted = acceptor.EndInvoke (ar);
+
+          if (!accepted)
+            return;
+
+          open ();
+        },
+        null
+      );
+    }
+
+    // As server
     internal void Close (HttpResponse response)
     {
       _readyState = WebSocketState.Closing;
@@ -2692,62 +2710,6 @@ namespace WebSocketSharp
     #endregion
 
     #region Public Methods
-
-    /// <summary>
-    /// Accepts the handshake request asynchronously.
-    /// </summary>
-    /// <remarks>
-    ///   <para>
-    ///   This method does not wait for the accept process to be complete.
-    ///   </para>
-    ///   <para>
-    ///   This method does nothing if the handshake request has already been
-    ///   accepted.
-    ///   </para>
-    /// </remarks>
-    /// <exception cref="InvalidOperationException">
-    ///   <para>
-    ///   This instance is a client.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The close process is in progress.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The connection has already been closed.
-    ///   </para>
-    /// </exception>
-    public void AcceptAsync ()
-    {
-      if (_client) {
-        var msg = "This instance is a client.";
-        throw new InvalidOperationException (msg);
-      }
-
-      if (_readyState == WebSocketState.Closing) {
-        var msg = "The close process is in progress.";
-        throw new InvalidOperationException (msg);
-      }
-
-      if (_readyState == WebSocketState.Closed) {
-        var msg = "The connection has already been closed.";
-        throw new InvalidOperationException (msg);
-      }
-
-      Func<bool> acceptor = accept;
-      acceptor.BeginInvoke (
-        ar => {
-          if (acceptor.EndInvoke (ar))
-            open ();
-        },
-        null
-      );
-    }
 
     /// <summary>
     /// Closes the connection.
