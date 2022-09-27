@@ -367,27 +367,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public HttpListenerWebSocketContext AcceptWebSocket (string protocol)
     {
-      if (_websocketContext != null) {
-        var msg = "The accepting is already in progress.";
-
-        throw new InvalidOperationException (msg);
-      }
-
-      if (protocol != null) {
-        if (protocol.Length == 0) {
-          var msg = "An empty string.";
-
-          throw new ArgumentException (msg, "protocol");
-        }
-
-        if (!protocol.IsToken ()) {
-          var msg = "It contains an invalid character.";
-
-          throw new ArgumentException (msg, "protocol");
-        }
-      }
-
-      return GetWebSocketContext (protocol);
+      return AcceptWebSocket (protocol, null);
     }
 
     #endregion
