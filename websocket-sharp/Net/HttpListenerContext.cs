@@ -363,7 +363,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// This method has already been called.
+    /// This method has already been done.
     /// </exception>
     public HttpListenerWebSocketContext AcceptWebSocket (string protocol)
     {
