@@ -301,8 +301,13 @@ namespace WebSocketSharp.Net
     /// the WebSocket handshake request.
     /// </returns>
     /// <param name="protocol">
-    /// A <see cref="string"/> that specifies the subprotocol supported on
-    /// the WebSocket connection.
+    ///   <para>
+    ///   A <see cref="string"/> that specifies the subprotocol supported
+    ///   on the WebSocket connection.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not necessary.
+    ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
