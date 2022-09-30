@@ -294,7 +294,7 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     /// <summary>
-    /// Accepts a WebSocket handshake request.
+    /// Accepts a WebSocket connection.
     /// </summary>
     /// <returns>
     /// A <see cref="HttpListenerWebSocketContext"/> that represents
