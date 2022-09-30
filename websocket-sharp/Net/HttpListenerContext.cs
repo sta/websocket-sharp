@@ -302,8 +302,8 @@ namespace WebSocketSharp.Net
     /// </returns>
     /// <param name="protocol">
     ///   <para>
-    ///   A <see cref="string"/> that specifies the subprotocol supported
-    ///   on the WebSocket connection.
+    ///   A <see cref="string"/> that specifies the name of the subprotocol
+    ///   supported on the WebSocket connection.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if not necessary.
