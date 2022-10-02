@@ -329,7 +329,8 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Accepts a WebSocket handshake request.
+    /// Accepts a WebSocket connection with initializing the WebSocket
+    /// interface.
     /// </summary>
     /// <returns>
     /// A <see cref="HttpListenerWebSocketContext"/> that represents
