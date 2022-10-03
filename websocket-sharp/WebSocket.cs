@@ -877,7 +877,8 @@ namespace WebSocketSharp
       if (!customCheckHandshakeRequest (_context, out msg)) {
         _logger.Error (msg);
 
-        var reason = "A handshake error has occurred while attempting to accept.";
+        var reason = "A handshake error has occurred.";
+
         refuseHandshake (CloseStatusCode.PolicyViolation, reason);
 
         return false;
