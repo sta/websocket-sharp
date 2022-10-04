@@ -859,13 +859,14 @@ namespace WebSocketSharp
     // As server
     private bool acceptHandshake ()
     {
-      var fmt = "A handshake request from {0}:\n{1}";
-      var msg = String.Format (fmt, _context.UserEndPoint, _context);
+      var fmt = "A handshake request from {0}.";
+      var msg = String.Format (fmt, _context.UserEndPoint);
 
-      _logger.Debug (msg);
+      _logger.Trace (msg);
 
       if (!checkHandshakeRequest (_context, out msg)) {
         _logger.Error (msg);
+        _logger.Debug (_context.ToString ());
 
         var reason = "A handshake error has occurred.";
 
@@ -876,6 +877,7 @@ namespace WebSocketSharp
 
       if (!customCheckHandshakeRequest (_context, out msg)) {
         _logger.Error (msg);
+        _logger.Debug (_context.ToString ());
 
         var reason = "A handshake error has occurred.";
 
