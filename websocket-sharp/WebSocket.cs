@@ -859,10 +859,7 @@ namespace WebSocketSharp
     // As server
     private bool acceptHandshake ()
     {
-      var fmt = "A handshake request from {0}.";
-      var msg = String.Format (fmt, _context.UserEndPoint);
-
-      _logger.Trace (msg);
+      string msg;
 
       if (!checkHandshakeRequest (_context, out msg)) {
         _logger.Error (msg);
