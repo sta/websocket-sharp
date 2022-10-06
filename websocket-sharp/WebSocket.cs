@@ -1923,8 +1923,8 @@ namespace WebSocketSharp
       _readyState = WebSocketState.Closing;
 
       var res = createHandshakeFailureResponse (HttpStatusCode.BadRequest);
-      sendHttpResponse (res);
 
+      sendHttpResponse (res);
       releaseServerResources ();
 
       _readyState = WebSocketState.Closed;
