@@ -2261,11 +2261,6 @@ namespace WebSocketSharp
     // As server
     private bool sendHttpResponse (HttpResponse response)
     {
-      var fmt = "An HTTP response to {0}:\n{1}";
-      var msg = String.Format (fmt, _context.UserEndPoint, response);
-
-      _logger.Debug (msg);
-
       var bytes = response.ToByteArray ();
 
       return sendBytes (bytes);
