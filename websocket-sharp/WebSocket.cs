@@ -1986,11 +1986,12 @@ namespace WebSocketSharp
     // As server
     private void releaseServerResources ()
     {
-      if (_closeContext == null)
-        return;
+      if (_closeContext != null) {
+        _closeContext ();
 
-      _closeContext ();
-      _closeContext = null;
+        _closeContext = null;
+      }
+
       _stream = null;
       _context = null;
     }
