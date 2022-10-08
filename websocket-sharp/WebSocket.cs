@@ -2509,17 +2509,6 @@ namespace WebSocketSharp
     }
 
     // As server
-    internal void Close (HttpResponse response)
-    {
-      _readyState = WebSocketState.Closing;
-
-      sendHttpResponse (response);
-      releaseServerResources ();
-
-      _readyState = WebSocketState.Closed;
-    }
-
-    // As server
     internal void Close (PayloadData payloadData, byte[] frameAsBytes)
     {
       lock (_forState) {
