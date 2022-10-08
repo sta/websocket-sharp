@@ -2520,12 +2520,6 @@ namespace WebSocketSharp
     }
 
     // As server
-    internal void Close (HttpStatusCode code)
-    {
-      Close (createHandshakeFailureResponse (code));
-    }
-
-    // As server
     internal void Close (PayloadData payloadData, byte[] frameAsBytes)
     {
       lock (_forState) {
