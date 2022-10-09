@@ -834,21 +834,22 @@ namespace WebSocketSharp
           return false;
         }
 
-        try {
-          var accepted = acceptHandshake ();
+        var accepted = false;
 
-          if (!accepted)
-            return false;
+        try {
+          accepted = acceptHandshake ();
         }
         catch (Exception ex) {
           _logger.Fatal (ex.Message);
           _logger.Debug (ex.ToString ());
 
           var msg = "An exception has occurred while attempting to accept.";
-          fatal (msg, ex);
 
-          return false;
+          fatal (msg, ex);
         }
+
+        if (!accepted)
+          return false;
 
         _readyState = WebSocketState.Open;
 
