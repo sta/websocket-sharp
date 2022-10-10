@@ -95,8 +95,8 @@ namespace WebSocketSharp
     private Func<WebSocketContext, string> _handshakeRequestChecker;
     private bool                           _ignoreExtensions;
     private bool                           _inContinuation;
-    private volatile bool                  _inMessage;
-    private volatile Logger                _logger;
+    internal volatile bool                  _inMessage;
+    internal volatile Logger                _logger;
     private static readonly int            _maxRetryCountForConnect;
     private Action<MessageEventArgs>       _message;
     private Queue<MessageEventArgs>        _messageEventQueue;
@@ -109,7 +109,7 @@ namespace WebSocketSharp
     private bool                           _protocolsRequested;
     private NetworkCredential              _proxyCredentials;
     private Uri                            _proxyUri;
-    private volatile WebSocketState        _readyState;
+    internal volatile WebSocketState        _readyState;
     private ManualResetEvent               _receivingExited;
     private int                            _retryCountForConnect;
     private bool                           _secure;
@@ -1513,7 +1513,7 @@ namespace WebSocketSharp
       }
     }
 
-    private void fatal (string message, Exception exception)
+    internal void fatal (string message, Exception exception)
     {
       var code = exception is WebSocketException
                  ? ((WebSocketException) exception).Code
@@ -1554,7 +1554,7 @@ namespace WebSocketSharp
       _readyState = WebSocketState.Connecting;
     }
 
-    private void message ()
+    internal void message ()
     {
       MessageEventArgs e = null;
 
@@ -1821,7 +1821,7 @@ namespace WebSocketSharp
       return true;
     }
 
-    private bool processReceivedFrame (WebSocketFrame frame)
+    internal bool processReceivedFrame (WebSocketFrame frame)
     {
       string msg;
 
@@ -2383,44 +2383,15 @@ namespace WebSocketSharp
       _pongReceived = new ManualResetEvent (false);
       _receivingExited = new ManualResetEvent (false);
 
-      Action receive = null;
-      receive =
-        () =>
-          WebSocketFrame.ReadFrameAsync (
-            _stream,
-            false,
-            frame => {
-              var cont = processReceivedFrame (frame)
-                         && _readyState != WebSocketState.Closed;
-
-              if (!cont) {
-                var exited = _receivingExited;
-
-                if (exited != null)
-                  exited.Set ();
-
-                return;
-              }
-
-              receive ();
-
-              if (_inMessage)
-                return;
-
-              message ();
-            },
-            ex => {
-              _logger.Fatal (ex.Message);
-              _logger.Debug (ex.ToString ());
-
-              fatal ("An exception has occurred while receiving.", ex);
-            }
-          );
-
-      receive ();
+        var st = new StreamThreader()
+        {
+            Stream = _stream,
+            socket = this
+        };
+        st.Run();
     }
 
-    // As client
+        // As client
     private bool validateSecWebSocketExtensionsServerHeader (string value)
     {
       if (value == null)
