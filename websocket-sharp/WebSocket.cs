@@ -2584,28 +2584,6 @@ namespace WebSocketSharp
     }
 
     // As server
-    internal void InternalAccept ()
-    {
-      try {
-        if (!acceptHandshake ())
-          return;
-      }
-      catch (Exception ex) {
-        _logger.Fatal (ex.Message);
-        _logger.Debug (ex.ToString ());
-
-        var msg = "An exception has occurred while attempting to accept.";
-        fatal (msg, ex);
-
-        return;
-      }
-
-      _readyState = WebSocketState.Open;
-
-      open ();
-    }
-
-    // As server
     internal bool Ping (byte[] frameAsBytes, TimeSpan timeout)
     {
       if (_readyState != WebSocketState.Open)
