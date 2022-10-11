@@ -2568,6 +2568,7 @@ namespace WebSocketSharp
     internal static string CreateBase64Key ()
     {
       var src = new byte[16];
+
       RandomNumber.GetBytes (src);
 
       return Convert.ToBase64String (src);
