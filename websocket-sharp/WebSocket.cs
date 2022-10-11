@@ -2576,10 +2576,11 @@ namespace WebSocketSharp
 
     internal static string CreateResponseKey (string base64Key)
     {
-      var buff = new StringBuilder (base64Key, 64);
-      buff.Append (_guid);
       SHA1 sha1 = new SHA1CryptoServiceProvider ();
-      var src = sha1.ComputeHash (buff.ToString ().GetUTF8EncodedBytes ());
+
+      var data = base64Key + _guid;
+      var bytes = data.GetUTF8EncodedBytes ();
+      var src = sha1.ComputeHash (bytes);
 
       return Convert.ToBase64String (src);
     }
