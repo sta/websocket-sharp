@@ -3377,25 +3377,27 @@ namespace WebSocketSharp
     public void ConnectAsync ()
     {
       if (!_client) {
-        var msg = "This instance is not a client.";
-        throw new InvalidOperationException (msg);
-      }
+        var msg = "The instance is not a client.";
 
-      if (_readyState == WebSocketState.Closing) {
-        var msg = "The close process is in progress.";
         throw new InvalidOperationException (msg);
       }
 
       if (_retryCountForConnect > _maxRetryCountForConnect) {
         var msg = "A series of reconnecting has failed.";
+
         throw new InvalidOperationException (msg);
       }
 
       Func<bool> connector = connect;
+
       connector.BeginInvoke (
         ar => {
-          if (connector.EndInvoke (ar))
-            open ();
+          var connected = connector.EndInvoke (ar);
+
+          if (!connected)
+            return;
+
+          open ();
         },
         null
       );
