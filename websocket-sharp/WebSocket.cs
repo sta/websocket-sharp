@@ -3309,17 +3309,12 @@ namespace WebSocketSharp
     /// Establishes a connection.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the connection has already been established.
+    /// This method does nothing if the connection has already been
+    /// established.
     /// </remarks>
     /// <exception cref="InvalidOperationException">
     ///   <para>
     ///   This instance is not a client.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The close process is in progress.
     ///   </para>
     ///   <para>
     ///   -or-
