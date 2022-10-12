@@ -3331,22 +3331,23 @@ namespace WebSocketSharp
     public void Connect ()
     {
       if (!_client) {
-        var msg = "This instance is not a client.";
-        throw new InvalidOperationException (msg);
-      }
+        var msg = "The instance is not a client.";
 
-      if (_readyState == WebSocketState.Closing) {
-        var msg = "The close process is in progress.";
         throw new InvalidOperationException (msg);
       }
 
       if (_retryCountForConnect > _maxRetryCountForConnect) {
         var msg = "A series of reconnecting has failed.";
+
         throw new InvalidOperationException (msg);
       }
 
-      if (connect ())
-        open ();
+      var connected = connect ();
+
+      if (!connected)
+        return;
+
+      open ();
     }
 
     /// <summary>
