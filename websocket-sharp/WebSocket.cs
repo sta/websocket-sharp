@@ -1309,8 +1309,10 @@ namespace WebSocketSharp
 
         _readyState = WebSocketState.Connecting;
 
+        var done = false;
+
         try {
-          doHandshake ();
+          done = doHandshake ();
         }
         catch (Exception ex) {
           _logger.Fatal (ex.Message);
@@ -1321,9 +1323,10 @@ namespace WebSocketSharp
           var msg = "An exception has occurred while attempting to connect.";
 
           fatal (msg, ex);
-
-          return false;
         }
+
+        if (!done)
+          return false;
 
         _retryCountForConnect = 1;
 
