@@ -2245,17 +2245,7 @@ namespace WebSocketSharp
       HttpRequest request, int millisecondsTimeout
     )
     {
-      var msg = "An HTTP request to the server:\n" + request.ToString ();
-
-      _logger.Debug (msg);
-
-      var res = request.GetResponse (_stream, millisecondsTimeout);
-
-      msg = "An HTTP response from the server:\n" + res.ToString ();
-
-      _logger.Debug (msg);
-
-      return res;
+      return request.GetResponse (_stream, millisecondsTimeout);
     }
 
     // As server
