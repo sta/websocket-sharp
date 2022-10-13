@@ -1276,26 +1276,22 @@ namespace WebSocketSharp
     // As client
     private bool connect ()
     {
-      if (_readyState == WebSocketState.Open) {
-        var msg = "The connection has already been established.";
-        _logger.Warn (msg);
-
-        return false;
-      }
-
       lock (_forState) {
         if (_readyState == WebSocketState.Open) {
           var msg = "The connection has already been established.";
-          _logger.Warn (msg);
+
+          _logger.Error (msg);
+
+          error (msg, null);
 
           return false;
         }
 
         if (_readyState == WebSocketState.Closing) {
-          var msg = "The close process has set in.";
+          var msg = "The connection is closing.";
+
           _logger.Error (msg);
 
-          msg = "An interruption has occurred while attempting to connect.";
           error (msg, null);
 
           return false;
@@ -1303,9 +1299,9 @@ namespace WebSocketSharp
 
         if (_retryCountForConnect > _maxRetryCountForConnect) {
           var msg = "An opportunity for reconnecting has been lost.";
+
           _logger.Error (msg);
 
-          msg = "An interruption has occurred while attempting to connect.";
           error (msg, null);
 
           return false;
@@ -1317,18 +1313,20 @@ namespace WebSocketSharp
           doHandshake ();
         }
         catch (Exception ex) {
-          _retryCountForConnect++;
-
           _logger.Fatal (ex.Message);
           _logger.Debug (ex.ToString ());
 
+          _retryCountForConnect++;
+
           var msg = "An exception has occurred while attempting to connect.";
+
           fatal (msg, ex);
 
           return false;
         }
 
         _retryCountForConnect = 1;
+
         _readyState = WebSocketState.Open;
 
         return true;
