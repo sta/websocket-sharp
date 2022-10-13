@@ -1469,7 +1469,7 @@ namespace WebSocketSharp
     }
 
     // As client
-    private void doHandshake ()
+    private bool doHandshake ()
     {
       setClientStream ();
 
@@ -1490,6 +1490,8 @@ namespace WebSocketSharp
       }
 
       processCookies (res.Cookies);
+
+      return true;
     }
 
     private void enqueueToMessageEventQueue (MessageEventArgs e)
