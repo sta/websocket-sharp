@@ -1480,8 +1480,18 @@ namespace WebSocketSharp
 
       string msg;
 
-      if (!checkHandshakeResponse (res, out msg))
-        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
+      if (!checkHandshakeResponse (res, out msg)) {
+        _logger.Error (msg);
+        _logger.Debug (res.ToString ());
+
+        _retryCountForConnect++;
+
+        var reason = "A handshake error has occurred.";
+
+        fatal (reason, CloseStatusCode.ProtocolError);
+
+        return false;
+      }
 
       if (_protocolsRequested)
         _protocol = res.Headers["Sec-WebSocket-Protocol"];
