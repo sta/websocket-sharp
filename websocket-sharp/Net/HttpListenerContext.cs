@@ -169,10 +169,6 @@ namespace WebSocketSharp.Net
       get {
         return _user;
       }
-
-      internal set {
-        _user = value;
-      }
     }
 
     #endregion
@@ -260,6 +256,31 @@ namespace WebSocketSharp.Net
       SendError ();
     }
 
+    internal bool SetUser (
+      AuthenticationSchemes scheme,
+      string realm,
+      Func<IIdentity, NetworkCredential> credentialsFinder
+    )
+    {
+      var user = HttpUtility.CreateUser (
+                   _request.Headers["Authorization"],
+                   scheme,
+                   realm,
+                   _request.HttpMethod,
+                   credentialsFinder
+                 );
+
+      if (user == null)
+        return false;
+
+      if (!user.Identity.IsAuthenticated)
+        return false;
+
+      _user = user;
+
+      return true;
+    }
+
     internal void Unregister ()
     {
       if (_listener == null)
@@ -273,15 +294,20 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     /// <summary>
-    /// Accepts a WebSocket handshake request.
+    /// Accepts a WebSocket connection.
     /// </summary>
     /// <returns>
     /// A <see cref="HttpListenerWebSocketContext"/> that represents
     /// the WebSocket handshake request.
     /// </returns>
     /// <param name="protocol">
-    /// A <see cref="string"/> that specifies the subprotocol supported on
-    /// the WebSocket connection.
+    ///   <para>
+    ///   A <see cref="string"/> that specifies the name of the subprotocol
+    ///   supported on the WebSocket connection.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not necessary.
+    ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
@@ -295,12 +321,65 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// This method has already been called.
+    /// This method has already been done.
     /// </exception>
     public HttpListenerWebSocketContext AcceptWebSocket (string protocol)
     {
+      return AcceptWebSocket (protocol, null);
+    }
+
+    /// <summary>
+    /// Accepts a WebSocket connection with initializing the WebSocket
+    /// interface.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="HttpListenerWebSocketContext"/> that represents
+    /// the WebSocket handshake request.
+    /// </returns>
+    /// <param name="protocol">
+    ///   <para>
+    ///   A <see cref="string"/> that specifies the name of the subprotocol
+    ///   supported on the WebSocket connection.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not necessary.
+    ///   </para>
+    /// </param>
+    /// <param name="initializer">
+    ///   <para>
+    ///   An <see cref="T:System.Action{WebSocket}"/> delegate.
+    ///   </para>
+    ///   <para>
+    ///   It specifies the delegate that invokes the method called when
+    ///   initializing a new WebSocket instance.
+    ///   </para>
+    /// </param>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="protocol"/> is empty.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="protocol"/> contains an invalid character.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="initializer"/> caused an exception.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// This method has already been done.
+    /// </exception>
+    public HttpListenerWebSocketContext AcceptWebSocket (
+      string protocol, Action<WebSocket> initializer
+    )
+    {
       if (_websocketContext != null) {
-        var msg = "The accepting is already in progress.";
+        var msg = "The method has already been done.";
 
         throw new InvalidOperationException (msg);
       }
@@ -319,7 +398,27 @@ namespace WebSocketSharp.Net
         }
       }
 
-      return GetWebSocketContext (protocol);
+      var ret = GetWebSocketContext (protocol);
+
+      var ws = ret.WebSocket;
+
+      if (initializer != null) {
+        try {
+          initializer (ws);
+        }
+        catch (Exception ex) {
+          if (ws.ReadyState == WebSocketState.Connecting)
+            _websocketContext = null;
+
+          var msg = "It caused an exception.";
+
+          throw new ArgumentException (msg, "initializer", ex);
+        }
+      }
+
+      ws.Accept ();
+
+      return ret;
     }
 
     #endregion

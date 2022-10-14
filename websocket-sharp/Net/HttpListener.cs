@@ -88,6 +88,7 @@ namespace WebSocketSharp.Net
     private string                                           _realm;
     private bool                                             _reuseAddress;
     private ServerSslConfiguration                           _sslConfig;
+    private object                                           _sync;
     private Func<IIdentity, NetworkCredential>               _userCredFinder;
     private Queue<HttpListenerAsyncResult>                   _waitQueue;
 
@@ -118,6 +119,7 @@ namespace WebSocketSharp.Net
       _log = new Logger ();
       _objectName = GetType ().ToString ();
       _prefixes = new HttpListenerPrefixCollection (this);
+      _sync = new object ();
       _waitQueue = new Queue<HttpListenerAsyncResult> ();
     }
 
@@ -491,10 +493,9 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private bool authenticateContext (HttpListenerContext context)
+    private bool authenticateClient (HttpListenerContext context)
     {
-      var req = context.Request;
-      var schm = selectAuthenticationScheme (req);
+      var schm = selectAuthenticationScheme (context.Request);
 
       if (schm == AuthenticationSchemes.Anonymous)
         return true;
@@ -507,23 +508,12 @@ namespace WebSocketSharp.Net
       }
 
       var realm = getRealm ();
-      var user = HttpUtility.CreateUser (
-                   req.Headers["Authorization"],
-                   schm,
-                   realm,
-                   req.HttpMethod,
-                   _userCredFinder
-                 );
 
-      var authenticated = user != null && user.Identity.IsAuthenticated;
-
-      if (!authenticated) {
+      if (!context.SetUser (schm, realm, _userCredFinder)) {
         context.SendAuthenticationChallenge (schm, realm);
 
         return false;
       }
-
-      context.User = user;
 
       return true;
     }
@@ -534,9 +524,7 @@ namespace WebSocketSharp.Net
     {
       lock (_contextRegistrySync) {
         if (!_listening) {
-          var msg = _disposed
-                    ? "The listener is closed."
-                    : "The listener is stopped.";
+          var msg = "The method is canceled.";
 
           throw new HttpListenerException (995, msg);
         }
@@ -583,9 +571,11 @@ namespace WebSocketSharp.Net
         return;
 
       var ctxs = new HttpListenerContext[cnt];
-      _contextRegistry.CopyTo (ctxs, 0);
 
-      _contextRegistry.Clear ();
+      lock (_contextRegistrySync) {
+        _contextRegistry.CopyTo (ctxs, 0);
+        _contextRegistry.Clear ();
+      }
 
       foreach (var ctx in ctxs)
         ctx.Connection.Close (true);
@@ -608,23 +598,30 @@ namespace WebSocketSharp.Net
 
     private void close (bool force)
     {
-      if (!_listening) {
+      lock (_sync) {
+        if (_disposed)
+          return;
+
+        lock (_contextRegistrySync) {
+          if (!_listening) {
+            _disposed = true;
+
+            return;
+          }
+
+          _listening = false;
+        }
+
+        cleanupContextQueue (force);
+        cleanupContextRegistry ();
+
+        var msg = "The listener is closed.";
+        cleanupWaitQueue (msg);
+
+        EndPointManager.RemoveListener (this);
+
         _disposed = true;
-
-        return;
       }
-
-      _listening = false;
-
-      cleanupContextQueue (force);
-      cleanupContextRegistry ();
-
-      var msg = "The listener is closed.";
-      cleanupWaitQueue (msg);
-
-      EndPointManager.RemoveListener (this);
-
-      _disposed = true;
     }
 
     private string getRealm ()
@@ -636,6 +633,9 @@ namespace WebSocketSharp.Net
 
     private bool registerContext (HttpListenerContext context)
     {
+      if (!_listening)
+        return false;
+
       lock (_contextRegistrySync) {
         if (!_listening)
           return false;
@@ -686,7 +686,7 @@ namespace WebSocketSharp.Net
 
     internal bool RegisterContext (HttpListenerContext context)
     {
-      if (!authenticateContext (context))
+      if (!authenticateClient (context))
         return false;
 
       if (!registerContext (context)) {
@@ -716,12 +716,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         return;
 
-      lock (_contextRegistrySync) {
-        if (_disposed)
-          return;
-
-        close (true);
-      }
+      close (true);
     }
 
     /// <summary>
@@ -794,12 +789,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         return;
 
-      lock (_contextRegistrySync) {
-        if (_disposed)
-          return;
-
-        close (false);
-      }
+      close (false);
     }
 
     /// <summary>
@@ -942,16 +932,18 @@ namespace WebSocketSharp.Net
       if (_disposed)
         throw new ObjectDisposedException (_objectName);
 
-      lock (_contextRegistrySync) {
+      lock (_sync) {
         if (_disposed)
           throw new ObjectDisposedException (_objectName);
 
-        if (_listening)
-          return;
+        lock (_contextRegistrySync) {
+          if (_listening)
+            return;
 
-        EndPointManager.AddListener (this);
+          EndPointManager.AddListener (this);
 
-        _listening = true;
+          _listening = true;
+        }
       }
     }
 
@@ -966,14 +958,16 @@ namespace WebSocketSharp.Net
       if (_disposed)
         throw new ObjectDisposedException (_objectName);
 
-      lock (_contextRegistrySync) {
+      lock (_sync) {
         if (_disposed)
           throw new ObjectDisposedException (_objectName);
 
-        if (!_listening)
-          return;
+        lock (_contextRegistrySync) {
+          if (!_listening)
+            return;
 
-        _listening = false;
+          _listening = false;
+        }
 
         cleanupContextQueue (false);
         cleanupContextRegistry ();
@@ -997,12 +991,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         return;
 
-      lock (_contextRegistrySync) {
-        if (_disposed)
-          return;
-
-        close (true);
-      }
+      close (true);
     }
 
     #endregion

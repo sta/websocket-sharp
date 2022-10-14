@@ -434,7 +434,7 @@ For more information, would you see **[Example3]**?
 
 #### Per-message Compression ####
 
-websocket-sharp supports the [Per-message Compression][compression] extension (but does not support it with the [context take over]).
+websocket-sharp supports the [Per-message Compression][rfc7692] extension (but does not support it with the [context take over]).
 
 As a WebSocket client, if you would like to enable this extension, you should set the `WebSocket.Compression` property to a compression method before calling the connect method.
 
@@ -667,7 +667,7 @@ websocket-sharp supports **RFC 6455**, and it is based on the following referenc
 
 - [The WebSocket Protocol][rfc6455]
 - [The WebSocket API][api]
-- [Compression Extensions for WebSocket][compression]
+- [Compression Extensions for WebSocket][rfc7692]
 
 Thanks for translating to japanese.
 
@@ -696,8 +696,7 @@ websocket-sharp is provided under [The MIT License].
 [WebSocket-Sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity
 [api]: http://www.w3.org/TR/websockets
 [api_ja]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
-[compression]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19
-[context take over]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19#section-8.1.1
+[context take over]: https://datatracker.ietf.org/doc/html/rfc7692#section-7.1.1
 [draft-hixie-thewebsocketprotocol-75]: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75
 [draft-ietf-hybi-thewebsocketprotocol-00]: http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00
 [draft75]: https://github.com/sta/websocket-sharp/tree/draft75
@@ -706,3 +705,4 @@ websocket-sharp is provided under [The MIT License].
 [rfc2617]: http://tools.ietf.org/html/rfc2617
 [rfc6455]: http://tools.ietf.org/html/rfc6455
 [rfc6455_ja]: http://www.hcn.zaq.ne.jp/___/WEB/RFC6455-ja.html
+[rfc7692]: https://datatracker.ietf.org/doc/html/rfc7692
