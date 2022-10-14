@@ -1493,9 +1493,7 @@ namespace WebSocketSharp
 
         _retryCountForConnect++;
 
-        var reason = "A handshake error has occurred.";
-
-        fatal (reason, CloseStatusCode.ProtocolError);
+        abort (1002, "A handshake error has occurred.");
 
         return false;
       }
