@@ -802,6 +802,13 @@ namespace WebSocketSharp
 
     #region Private Methods
 
+    private void abort (ushort code, string reason)
+    {
+      var data = new PayloadData (code, reason);
+
+      close (data, false, false);
+    }
+
     // As server
     private bool accept ()
     {
