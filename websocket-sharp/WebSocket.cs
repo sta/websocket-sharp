@@ -802,6 +802,15 @@ namespace WebSocketSharp
 
     #region Private Methods
 
+    private void abort (string reason, Exception exception)
+    {
+      var code = exception is WebSocketException
+                 ? ((WebSocketException) exception).Code
+                 : CloseStatusCode.Abnormal;
+
+      abort ((ushort) code, reason);
+    }
+
     private void abort (ushort code, string reason)
     {
       var data = new PayloadData (code, reason);
