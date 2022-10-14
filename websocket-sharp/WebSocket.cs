@@ -1336,9 +1336,7 @@ namespace WebSocketSharp
 
           _retryCountForConnect++;
 
-          var msg = "An exception has occurred while attempting to connect.";
-
-          fatal (msg, ex);
+          abort ("An exception has occurred while connecting.", ex);
         }
 
         if (!done)
