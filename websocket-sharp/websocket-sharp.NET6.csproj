@@ -8,4 +8,10 @@
     <AssemblyName>websocket-sharp</AssemblyName>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>websocket-sharp.net</PackageId>
+    <Version>1.0.3.0</Version>
+    <Authors>sta</Authors>
+    <Company>websocket-sharp</Company>
+  </PropertyGroup>
 </Project>
