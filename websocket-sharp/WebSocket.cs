@@ -859,9 +859,7 @@ namespace WebSocketSharp
           _logger.Fatal (ex.Message);
           _logger.Debug (ex.ToString ());
 
-          var msg = "An exception has occurred while attempting to accept.";
-
-          fatal (msg, ex);
+          abort ("An exception has occurred while accepting.", ex);
         }
 
         if (!accepted)
