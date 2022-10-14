@@ -2428,7 +2428,7 @@ namespace WebSocketSharp
               _logger.Fatal (ex.Message);
               _logger.Debug (ex.ToString ());
 
-              fatal ("An exception has occurred while receiving.", ex);
+              abort ("An exception has occurred while receiving.", ex);
             }
           );
 
