@@ -1536,15 +1536,6 @@ namespace WebSocketSharp
       }
     }
 
-    private void fatal (string message, Exception exception)
-    {
-      var code = exception is WebSocketException
-                 ? ((WebSocketException) exception).Code
-                 : CloseStatusCode.Abnormal;
-
-      fatal (message, (ushort) code);
-    }
-
     private void fatal (string message, ushort code)
     {
       var data = new PayloadData (code, message);
