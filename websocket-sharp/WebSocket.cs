@@ -1543,11 +1543,6 @@ namespace WebSocketSharp
       close (data, false, false);
     }
 
-    private void fatal (string message, CloseStatusCode code)
-    {
-      fatal (message, (ushort) code);
-    }
-
     private ClientSslConfiguration getSslConfiguration ()
     {
       if (_sslConfig == null)
