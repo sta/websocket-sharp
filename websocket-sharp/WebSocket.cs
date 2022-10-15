@@ -1536,13 +1536,6 @@ namespace WebSocketSharp
       }
     }
 
-    private void fatal (string message, ushort code)
-    {
-      var data = new PayloadData (code, message);
-
-      close (data, false, false);
-    }
-
     private ClientSslConfiguration getSslConfiguration ()
     {
       if (_sslConfig == null)
