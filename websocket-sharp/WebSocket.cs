@@ -1308,11 +1308,9 @@ namespace WebSocketSharp
         }
 
         if (_retryCountForConnect > _maxRetryCountForConnect) {
-          var msg = "An opportunity for reconnecting has been lost.";
+          _logger.Error ("An opportunity for reconnecting has been lost.");
 
-          _logger.Error (msg);
-
-          error (msg, null);
+          error ("An error has occurred while connecting.", null);
 
           return false;
         }
