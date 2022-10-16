@@ -1292,9 +1292,7 @@ namespace WebSocketSharp
     {
       lock (_forState) {
         if (_readyState == WebSocketState.Open) {
-          _logger.Error ("The connection has already been established.");
-
-          error ("An error has occurred while connecting.", null);
+          _logger.Trace ("The connection has already been established.");
 
           return false;
         }
