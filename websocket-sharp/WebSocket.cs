@@ -1298,7 +1298,7 @@ namespace WebSocketSharp
         }
 
         if (_readyState == WebSocketState.Closing) {
-          _logger.Error ("The connection is closing.");
+          _logger.Error ("The closing is in progress.");
 
           error ("An error has occurred while connecting.", null);
 
