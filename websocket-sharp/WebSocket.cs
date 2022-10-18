@@ -824,9 +824,7 @@ namespace WebSocketSharp
     {
       lock (_forState) {
         if (_readyState == WebSocketState.Open) {
-          var msg = "The connection has already been established.";
-
-          _logger.Trace (msg);
+          _logger.Trace ("The connection has already been established.");
 
           return false;
         }
