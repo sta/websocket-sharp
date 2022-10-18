@@ -275,6 +275,7 @@ namespace WebSocketSharp
       _client = true;
       _logger = new Logger ();
       _message = messagec;
+      _retryCountForConnect = -1;
       _secure = _uri.Scheme == "wss";
       _waitTime = TimeSpan.FromSeconds (5);
 
@@ -1305,13 +1306,15 @@ namespace WebSocketSharp
           return false;
         }
 
-        if (_retryCountForConnect > _maxRetryCountForConnect) {
+        if (_retryCountForConnect >= _maxRetryCountForConnect) {
           _logger.Error ("An opportunity for reconnecting has been lost.");
 
           error ("An error has occurred while connecting.", null);
 
           return false;
         }
+
+        _retryCountForConnect++;
 
         _readyState = WebSocketState.Connecting;
 
@@ -1324,15 +1327,13 @@ namespace WebSocketSharp
           _logger.Fatal (ex.Message);
           _logger.Debug (ex.ToString ());
 
-          _retryCountForConnect++;
-
           abort ("An exception has occurred while connecting.", ex);
         }
 
         if (!done)
           return false;
 
-        _retryCountForConnect = 1;
+        _retryCountForConnect = -1;
 
         _readyState = WebSocketState.Open;
 
@@ -1487,8 +1488,6 @@ namespace WebSocketSharp
       if (!checkHandshakeResponse (res, out msg)) {
         _logger.Error (msg);
         _logger.Debug (res.ToString ());
-
-        _retryCountForConnect++;
 
         abort (1002, "A handshake error has occurred.");
 
@@ -3315,7 +3314,7 @@ namespace WebSocketSharp
         throw new InvalidOperationException (msg);
       }
 
-      if (_retryCountForConnect > _maxRetryCountForConnect) {
+      if (_retryCountForConnect >= _maxRetryCountForConnect) {
         var msg = "A series of reconnecting has failed.";
 
         throw new InvalidOperationException (msg);
@@ -3360,7 +3359,7 @@ namespace WebSocketSharp
         throw new InvalidOperationException (msg);
       }
 
-      if (_retryCountForConnect > _maxRetryCountForConnect) {
+      if (_retryCountForConnect >= _maxRetryCountForConnect) {
         var msg = "A series of reconnecting has failed.";
 
         throw new InvalidOperationException (msg);
