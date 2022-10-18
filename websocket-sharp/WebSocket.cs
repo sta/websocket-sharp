@@ -830,11 +830,9 @@ namespace WebSocketSharp
         }
 
         if (_readyState == WebSocketState.Closing) {
-          var msg = "The connection is closing.";
+          _logger.Error ("The connection is closing.");
 
-          _logger.Error (msg);
-
-          error (msg, null);
+          error ("An error has occurred while accepting.", null);
 
           return false;
         }
