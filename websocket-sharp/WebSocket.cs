@@ -1924,29 +1924,6 @@ namespace WebSocketSharp
       }
     }
 
-    // As server
-    private void refuseHandshake (CloseStatusCode code, string reason)
-    {
-      _readyState = WebSocketState.Closing;
-
-      var res = createHandshakeFailureResponse (HttpStatusCode.BadRequest);
-
-      sendHttpResponse (res);
-      releaseServerResources ();
-
-      _readyState = WebSocketState.Closed;
-
-      var e = new CloseEventArgs ((ushort) code, reason, false);
-
-      try {
-        OnClose.Emit (this, e);
-      }
-      catch (Exception ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
-      }
-    }
-
     // As client
     private void releaseClientResources ()
     {
