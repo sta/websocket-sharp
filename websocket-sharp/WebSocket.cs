@@ -884,7 +884,7 @@ namespace WebSocketSharp
         _logger.Error (msg);
         _logger.Debug (_context.ToString ());
 
-        refuseHandshake (1008, "A handshake error has occurred.");
+        refuseHandshake (1002, "A handshake error has occurred.");
 
         return false;
       }
