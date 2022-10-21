@@ -905,7 +905,9 @@ namespace WebSocketSharp
 
       var res = createHandshakeResponse ();
 
-      return sendHttpResponse (res);
+      sendHttpResponse (res);
+
+      return true;
     }
 
     private bool canSet (out string message)
@@ -2221,11 +2223,9 @@ namespace WebSocketSharp
     }
 
     // As server
-    private bool sendHttpResponse (HttpResponse response)
+    private void sendHttpResponse (HttpResponse response)
     {
-      var bytes = response.ToByteArray ();
-
-      return sendBytes (bytes);
+      response.WriteTo (_stream);
     }
 
     // As client
