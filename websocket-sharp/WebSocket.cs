@@ -1916,7 +1916,7 @@ namespace WebSocketSharp
     // As server
     private void refuseHandshake (ushort code, string reason)
     {
-      var res = createHandshakeFailureResponse (HttpStatusCode.BadRequest);
+      var res = createHandshakeFailureResponse ();
 
       sendHttpResponse (res);
 
