@@ -1376,6 +1376,16 @@ namespace WebSocketSharp
     }
 
     // As server
+    private HttpResponse createHandshakeFailureResponse ()
+    {
+      var ret = HttpResponse.CreateCloseResponse (HttpStatusCode.BadRequest);
+
+      ret.Headers["Sec-WebSocket-Version"] = _version;
+
+      return ret;
+    }
+
+    // As server
     private HttpResponse createHandshakeFailureResponse (HttpStatusCode code)
     {
       var ret = HttpResponse.CreateCloseResponse (code);
