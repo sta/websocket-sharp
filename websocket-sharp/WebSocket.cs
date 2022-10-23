@@ -1918,11 +1918,13 @@ namespace WebSocketSharp
     {
       if (_stream != null) {
         _stream.Dispose ();
+
         _stream = null;
       }
 
       if (_tcpClient != null) {
         _tcpClient.Close ();
+
         _tcpClient = null;
       }
     }
