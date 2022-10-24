@@ -1933,17 +1933,20 @@ namespace WebSocketSharp
     {
       if (_fragmentsBuffer != null) {
         _fragmentsBuffer.Dispose ();
+
         _fragmentsBuffer = null;
         _inContinuation = false;
       }
 
       if (_pongReceived != null) {
         _pongReceived.Close ();
+
         _pongReceived = null;
       }
 
       if (_receivingExited != null) {
         _receivingExited.Close ();
+
         _receivingExited = null;
       }
     }
