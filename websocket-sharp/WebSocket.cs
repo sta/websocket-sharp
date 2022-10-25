@@ -365,16 +365,9 @@ namespace WebSocketSharp
           throw new InvalidOperationException (msg);
         }
 
-        if (!canSet (out msg)) {
-          _logger.Warn (msg);
-          return;
-        }
-
         lock (_forState) {
-          if (!canSet (out msg)) {
-            _logger.Warn (msg);
+          if (!canSet ())
             return;
-          }
 
           _compression = value;
         }
