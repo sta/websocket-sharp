@@ -3915,23 +3915,24 @@ namespace WebSocketSharp
     /// </exception>
     public void SetCredentials (string username, string password, bool preAuth)
     {
-      string msg = null;
-
       if (!_client) {
-        msg = "This instance is not a client.";
+        var msg = "The instance is not a client.";
+
         throw new InvalidOperationException (msg);
       }
 
       if (!username.IsNullOrEmpty ()) {
         if (username.Contains (':') || !username.IsText ()) {
-          msg = "It contains an invalid character.";
+          var msg = "It contains an invalid character.";
+
           throw new ArgumentException (msg, "username");
         }
       }
 
       if (!password.IsNullOrEmpty ()) {
         if (!password.IsText ()) {
-          msg = "It contains an invalid character.";
+          var msg = "It contains an invalid character.";
+
           throw new ArgumentException (msg, "password");
         }
       }
