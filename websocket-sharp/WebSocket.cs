@@ -737,17 +737,9 @@ namespace WebSocketSharp
         if (value <= TimeSpan.Zero)
           throw new ArgumentOutOfRangeException ("value", "Zero or less.");
 
-        string msg;
-        if (!canSet (out msg)) {
-          _logger.Warn (msg);
-          return;
-        }
-
         lock (_forState) {
-          if (!canSet (out msg)) {
-            _logger.Warn (msg);
+          if (!canSet ())
             return;
-          }
 
           _waitTime = value;
         }
