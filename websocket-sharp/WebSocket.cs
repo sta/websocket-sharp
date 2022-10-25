@@ -910,6 +910,12 @@ namespace WebSocketSharp
       return true;
     }
 
+    private bool canSet ()
+    {
+      return _readyState == WebSocketState.Connecting
+             || _readyState == WebSocketState.Closed;
+    }
+
     private bool canSet (out string message)
     {
       message = null;
