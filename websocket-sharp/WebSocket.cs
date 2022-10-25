@@ -3841,7 +3841,7 @@ namespace WebSocketSharp
     /// established or it is closing.
     /// </remarks>
     /// <param name="cookie">
-    /// A <see cref="Cookie"/> that represents the cookie to send.
+    /// A <see cref="Cookie"/> that specifies the cookie to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// This instance is not a client.
