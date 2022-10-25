@@ -589,22 +589,24 @@ namespace WebSocketSharp
       }
 
       set {
-        string msg = null;
-
         if (!_client) {
-          msg = "This instance is not a client.";
+          var msg = "The instance is not a client.";
+
           throw new InvalidOperationException (msg);
         }
 
         if (!value.IsNullOrEmpty ()) {
           Uri uri;
+
           if (!Uri.TryCreate (value, UriKind.Absolute, out uri)) {
-            msg = "Not an absolute URI string.";
+            var msg = "Not an absolute URI string.";
+
             throw new ArgumentException (msg, "value");
           }
 
           if (uri.Segments.Length > 1) {
-            msg = "It includes the path segments.";
+            var msg = "It includes the path segments.";
+
             throw new ArgumentException (msg, "value");
           }
         }
