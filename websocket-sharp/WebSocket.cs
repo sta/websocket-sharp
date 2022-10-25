@@ -358,10 +358,9 @@ namespace WebSocketSharp
       }
 
       set {
-        string msg = null;
-
         if (!_client) {
-          msg = "This instance is not a client.";
+          var msg = "The instance is not a client.";
+
           throw new InvalidOperationException (msg);
         }
 
