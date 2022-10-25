@@ -3851,10 +3851,9 @@ namespace WebSocketSharp
     /// </exception>
     public void SetCookie (Cookie cookie)
     {
-      string msg = null;
-
       if (!_client) {
-        msg = "This instance is not a client.";
+        var msg = "The instance is not a client.";
+
         throw new InvalidOperationException (msg);
       }
 
