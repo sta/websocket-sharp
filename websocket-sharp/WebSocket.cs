@@ -4071,16 +4071,9 @@ namespace WebSocketSharp
         }
       }
 
-      if (!canSet (out msg)) {
-        _logger.Warn (msg);
-        return;
-      }
-
       lock (_forState) {
-        if (!canSet (out msg)) {
-          _logger.Warn (msg);
+        if (!canSet ())
           return;
-        }
 
         if (url.IsNullOrEmpty ()) {
           _proxyUri = null;
