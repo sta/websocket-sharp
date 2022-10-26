@@ -275,6 +275,7 @@ namespace WebSocketSharp
       _client = true;
       _logger = new Logger ();
       _message = messagec;
+      _retryCountForConnect = -1;
       _secure = _uri.Scheme == "wss";
       _waitTime = TimeSpan.FromSeconds (5);
 
@@ -802,34 +803,44 @@ namespace WebSocketSharp
 
     #region Private Methods
 
+    private void abort (string reason, Exception exception)
+    {
+      var code = exception is WebSocketException
+                 ? ((WebSocketException) exception).Code
+                 : CloseStatusCode.Abnormal;
+
+      abort ((ushort) code, reason);
+    }
+
+    private void abort (ushort code, string reason)
+    {
+      var data = new PayloadData (code, reason);
+
+      close (data, false, false);
+    }
+
     // As server
     private bool accept ()
     {
       lock (_forState) {
         if (_readyState == WebSocketState.Open) {
-          var msg = "The connection has already been established.";
-
-          _logger.Trace (msg);
+          _logger.Trace ("The connection has already been established.");
 
           return false;
         }
 
         if (_readyState == WebSocketState.Closing) {
-          var msg = "The connection is closing.";
+          _logger.Error ("The connection is closing.");
 
-          _logger.Error (msg);
-
-          error (msg, null);
+          error ("An error has occurred while accepting.", null);
 
           return false;
         }
 
         if (_readyState == WebSocketState.Closed) {
-          var msg = "The connection has been closed.";
+          _logger.Error ("The connection has been closed.");
 
-          _logger.Error (msg);
-
-          error (msg, null);
+          error ("An error has occurred while accepting.", null);
 
           return false;
         }
@@ -843,9 +854,7 @@ namespace WebSocketSharp
           _logger.Fatal (ex.Message);
           _logger.Debug (ex.ToString ());
 
-          var msg = "An exception has occurred while attempting to accept.";
-
-          fatal (msg, ex);
+          abort (1011, "An exception has occurred while accepting.");
         }
 
         if (!accepted)
@@ -866,9 +875,7 @@ namespace WebSocketSharp
         _logger.Error (msg);
         _logger.Debug (_context.ToString ());
 
-        var reason = "A handshake error has occurred.";
-
-        refuseHandshake (CloseStatusCode.ProtocolError, reason);
+        refuseHandshake (1002, "A handshake error has occurred.");
 
         return false;
       }
@@ -877,9 +884,7 @@ namespace WebSocketSharp
         _logger.Error (msg);
         _logger.Debug (_context.ToString ());
 
-        var reason = "A handshake error has occurred.";
-
-        refuseHandshake (CloseStatusCode.PolicyViolation, reason);
+        refuseHandshake (1002, "A handshake error has occurred.");
 
         return false;
       }
@@ -900,7 +905,9 @@ namespace WebSocketSharp
 
       var res = createHandshakeResponse ();
 
-      return sendHttpResponse (res);
+      sendHttpResponse (res);
+
+      return true;
     }
 
     private bool canSet (out string message)
@@ -1285,59 +1292,50 @@ namespace WebSocketSharp
     // As client
     private bool connect ()
     {
-      if (_readyState == WebSocketState.Open) {
-        var msg = "The connection has already been established.";
-        _logger.Warn (msg);
-
-        return false;
-      }
-
       lock (_forState) {
         if (_readyState == WebSocketState.Open) {
-          var msg = "The connection has already been established.";
-          _logger.Warn (msg);
+          _logger.Trace ("The connection has already been established.");
 
           return false;
         }
 
         if (_readyState == WebSocketState.Closing) {
-          var msg = "The close process has set in.";
-          _logger.Error (msg);
+          _logger.Error ("The closing is in progress.");
 
-          msg = "An interruption has occurred while attempting to connect.";
-          error (msg, null);
+          error ("An error has occurred while connecting.", null);
 
           return false;
         }
 
-        if (_retryCountForConnect > _maxRetryCountForConnect) {
-          var msg = "An opportunity for reconnecting has been lost.";
-          _logger.Error (msg);
+        if (_retryCountForConnect >= _maxRetryCountForConnect) {
+          _logger.Error ("An opportunity for reconnecting has been lost.");
 
-          msg = "An interruption has occurred while attempting to connect.";
-          error (msg, null);
+          error ("An error has occurred while connecting.", null);
 
           return false;
         }
+
+        _retryCountForConnect++;
 
         _readyState = WebSocketState.Connecting;
 
+        var done = false;
+
         try {
-          doHandshake ();
+          done = doHandshake ();
         }
         catch (Exception ex) {
-          _retryCountForConnect++;
-
           _logger.Fatal (ex.Message);
           _logger.Debug (ex.ToString ());
 
-          var msg = "An exception has occurred while attempting to connect.";
-          fatal (msg, ex);
-
-          return false;
+          abort ("An exception has occurred while connecting.", ex);
         }
 
-        _retryCountForConnect = 1;
+        if (!done)
+          return false;
+
+        _retryCountForConnect = -1;
+
         _readyState = WebSocketState.Open;
 
         return true;
@@ -1387,9 +1385,9 @@ namespace WebSocketSharp
     }
 
     // As server
-    private HttpResponse createHandshakeFailureResponse (HttpStatusCode code)
+    private HttpResponse createHandshakeFailureResponse ()
     {
-      var ret = HttpResponse.CreateCloseResponse (code);
+      var ret = HttpResponse.CreateCloseResponse (HttpStatusCode.BadRequest);
 
       ret.Headers["Sec-WebSocket-Version"] = _version;
 
@@ -1480,7 +1478,7 @@ namespace WebSocketSharp
     }
 
     // As client
-    private void doHandshake ()
+    private bool doHandshake ()
     {
       setClientStream ();
 
@@ -1488,8 +1486,14 @@ namespace WebSocketSharp
 
       string msg;
 
-      if (!checkHandshakeResponse (res, out msg))
-        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
+      if (!checkHandshakeResponse (res, out msg)) {
+        _logger.Error (msg);
+        _logger.Debug (res.ToString ());
+
+        abort (1002, "A handshake error has occurred.");
+
+        return false;
+      }
 
       if (_protocolsRequested)
         _protocol = res.Headers["Sec-WebSocket-Protocol"];
@@ -1501,6 +1505,8 @@ namespace WebSocketSharp
       }
 
       processCookies (res.Cookies);
+
+      return true;
     }
 
     private void enqueueToMessageEventQueue (MessageEventArgs e)
@@ -1520,27 +1526,6 @@ namespace WebSocketSharp
         _logger.Error (ex.Message);
         _logger.Debug (ex.ToString ());
       }
-    }
-
-    private void fatal (string message, Exception exception)
-    {
-      var code = exception is WebSocketException
-                 ? ((WebSocketException) exception).Code
-                 : CloseStatusCode.Abnormal;
-
-      fatal (message, (ushort) code);
-    }
-
-    private void fatal (string message, ushort code)
-    {
-      var data = new PayloadData (code, message);
-
-      close (data, false, false);
-    }
-
-    private void fatal (string message, CloseStatusCode code)
-    {
-      fatal (message, (ushort) code);
     }
 
     private ClientSslConfiguration getSslConfiguration ()
@@ -1940,32 +1925,19 @@ namespace WebSocketSharp
       _logger.Fatal ("An unsupported frame was received.");
       _logger.Debug ("The frame is" + frame.PrintToString (false));
 
-      fatal ("There is no way to handle it.", 1003);
+      abort (1003, "There is no way to handle it.");
 
       return false;
     }
 
     // As server
-    private void refuseHandshake (CloseStatusCode code, string reason)
+    private void refuseHandshake (ushort code, string reason)
     {
-      _readyState = WebSocketState.Closing;
-
-      var res = createHandshakeFailureResponse (HttpStatusCode.BadRequest);
+      var res = createHandshakeFailureResponse ();
 
       sendHttpResponse (res);
-      releaseServerResources ();
 
-      _readyState = WebSocketState.Closed;
-
-      var e = new CloseEventArgs ((ushort) code, reason, false);
-
-      try {
-        OnClose.Emit (this, e);
-      }
-      catch (Exception ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
-      }
+      abort (code, reason);
     }
 
     // As client
@@ -1973,11 +1945,13 @@ namespace WebSocketSharp
     {
       if (_stream != null) {
         _stream.Dispose ();
+
         _stream = null;
       }
 
       if (_tcpClient != null) {
         _tcpClient.Close ();
+
         _tcpClient = null;
       }
     }
@@ -1986,17 +1960,20 @@ namespace WebSocketSharp
     {
       if (_fragmentsBuffer != null) {
         _fragmentsBuffer.Dispose ();
+
         _fragmentsBuffer = null;
         _inContinuation = false;
       }
 
       if (_pongReceived != null) {
         _pongReceived.Close ();
+
         _pongReceived = null;
       }
 
       if (_receivingExited != null) {
         _receivingExited.Close ();
+
         _receivingExited = null;
       }
     }
@@ -2299,25 +2276,13 @@ namespace WebSocketSharp
       HttpRequest request, int millisecondsTimeout
     )
     {
-      var msg = "An HTTP request to the server:\n" + request.ToString ();
-
-      _logger.Debug (msg);
-
-      var res = request.GetResponse (_stream, millisecondsTimeout);
-
-      msg = "An HTTP response from the server:\n" + res.ToString ();
-
-      _logger.Debug (msg);
-
-      return res;
+      return request.GetResponse (_stream, millisecondsTimeout);
     }
 
     // As server
-    private bool sendHttpResponse (HttpResponse response)
+    private void sendHttpResponse (HttpResponse response)
     {
-      var bytes = response.ToByteArray ();
-
-      return sendBytes (bytes);
+      response.WriteTo (_stream);
     }
 
     // As client
@@ -2465,7 +2430,7 @@ namespace WebSocketSharp
               _logger.Fatal (ex.Message);
               _logger.Debug (ex.ToString ());
 
-              fatal ("An exception has occurred while receiving.", ex);
+              abort ("An exception has occurred while receiving.", ex);
             }
           );
 
@@ -2620,6 +2585,7 @@ namespace WebSocketSharp
     internal static string CreateBase64Key ()
     {
       var src = new byte[16];
+
       RandomNumber.GetBytes (src);
 
       return Convert.ToBase64String (src);
@@ -2627,10 +2593,11 @@ namespace WebSocketSharp
 
     internal static string CreateResponseKey (string base64Key)
     {
-      var buff = new StringBuilder (base64Key, 64);
-      buff.Append (_guid);
       SHA1 sha1 = new SHA1CryptoServiceProvider ();
-      var src = sha1.ComputeHash (buff.ToString ().GetUTF8EncodedBytes ());
+
+      var data = base64Key + _guid;
+      var bytes = data.GetUTF8EncodedBytes ();
+      var src = sha1.ComputeHash (bytes);
 
       return Convert.ToBase64String (src);
     }
@@ -3359,17 +3326,12 @@ namespace WebSocketSharp
     /// Establishes a connection.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the connection has already been established.
+    /// This method does nothing if the connection has already been
+    /// established.
     /// </remarks>
     /// <exception cref="InvalidOperationException">
     ///   <para>
     ///   This instance is not a client.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The close process is in progress.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -3381,22 +3343,23 @@ namespace WebSocketSharp
     public void Connect ()
     {
       if (!_client) {
-        var msg = "This instance is not a client.";
+        var msg = "The instance is not a client.";
+
         throw new InvalidOperationException (msg);
       }
 
-      if (_readyState == WebSocketState.Closing) {
-        var msg = "The close process is in progress.";
-        throw new InvalidOperationException (msg);
-      }
-
-      if (_retryCountForConnect > _maxRetryCountForConnect) {
+      if (_retryCountForConnect >= _maxRetryCountForConnect) {
         var msg = "A series of reconnecting has failed.";
+
         throw new InvalidOperationException (msg);
       }
 
-      if (connect ())
-        open ();
+      var connected = connect ();
+
+      if (!connected)
+        return;
+
+      open ();
     }
 
     /// <summary>
@@ -3419,29 +3382,20 @@ namespace WebSocketSharp
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The close process is in progress.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
     ///   A series of reconnecting has failed.
     ///   </para>
     /// </exception>
     public void ConnectAsync ()
     {
       if (!_client) {
-        var msg = "This instance is not a client.";
+        var msg = "The instance is not a client.";
+
         throw new InvalidOperationException (msg);
       }
 
-      if (_readyState == WebSocketState.Closing) {
-        var msg = "The close process is in progress.";
-        throw new InvalidOperationException (msg);
-      }
-
-      if (_retryCountForConnect > _maxRetryCountForConnect) {
+      if (_retryCountForConnect >= _maxRetryCountForConnect) {
         var msg = "A series of reconnecting has failed.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -3451,8 +3405,12 @@ namespace WebSocketSharp
       {
         connector.BeginInvoke (
           ar => {
-            if (connector.EndInvoke (ar))
-              open ();
+            var connected = connector.EndInvoke (ar);
+
+            if (!connected)
+              return;
+
+            open ();
           },
           null
         );
