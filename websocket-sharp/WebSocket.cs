@@ -3878,8 +3878,8 @@ namespace WebSocketSharp
     /// </remarks>
     /// <param name="username">
     ///   <para>
-    ///   A <see cref="string"/> that represents the username associated with
-    ///   the credentials.
+    ///   A <see cref="string"/> that specifies the username associated
+    ///   with the credentials.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> or an empty string if initializes
@@ -3888,16 +3888,17 @@ namespace WebSocketSharp
     /// </param>
     /// <param name="password">
     ///   <para>
-    ///   A <see cref="string"/> that represents the password for the username
-    ///   associated with the credentials.
+    ///   A <see cref="string"/> that specifies the password for the
+    ///   username associated with the credentials.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> or an empty string if not necessary.
     ///   </para>
     /// </param>
     /// <param name="preAuth">
-    /// <c>true</c> if sends the credentials for the Basic authentication in
-    /// advance with the first handshake request; otherwise, <c>false</c>.
+    /// A <see cref="bool"/>: <c>true</c> if sends the credentials for
+    /// the Basic authentication in advance with the first handshake
+    /// request; otherwise, <c>false</c>.
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// This instance is not a client.
