@@ -3967,31 +3967,31 @@ namespace WebSocketSharp
     /// </remarks>
     /// <param name="url">
     ///   <para>
-    ///   A <see cref="string"/> that represents the URL of the proxy server
-    ///   through which to connect.
+    ///   A <see cref="string"/> that specifies the URL of the proxy
+    ///   server through which to connect.
     ///   </para>
     ///   <para>
     ///   The syntax is http://&lt;host&gt;[:&lt;port&gt;].
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> or an empty string if initializes the URL and
-    ///   the credentials.
+    ///   <see langword="null"/> or an empty string if initializes
+    ///   the URL and the credentials.
     ///   </para>
     /// </param>
     /// <param name="username">
     ///   <para>
-    ///   A <see cref="string"/> that represents the username associated with
-    ///   the credentials.
+    ///   A <see cref="string"/> that specifies the username associated
+    ///   with the credentials.
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> or an empty string if the credentials are not
-    ///   necessary.
+    ///   <see langword="null"/> or an empty string if the credentials
+    ///   are not necessary.
     ///   </para>
     /// </param>
     /// <param name="password">
     ///   <para>
-    ///   A <see cref="string"/> that represents the password for the username
-    ///   associated with the credentials.
+    ///   A <see cref="string"/> that specifies the password for the
+    ///   username associated with the credentials.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> or an empty string if not necessary.
