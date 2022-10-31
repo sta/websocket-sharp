@@ -730,6 +730,54 @@ namespace WebSocketSharp
       }
     }
 
+#if NET
+        internal static void ReadBytesAsync(this Stream stream, int length, Action<byte[]> completed, Action<Exception> error)
+        {
+            byte[] buff = new byte[length];
+            stream.ReadAsync(buff, 0, length).ContinueWith((x) =>
+            {
+                if (x.Exception?.InnerException != null)
+                {
+                    error(x.Exception.InnerException);
+                }
+                else
+                {
+                    completed(buff);
+                }
+            }, TaskContinuationOptions.NotOnCanceled);
+        }
+
+        internal static void ReadBytesAsync(this Stream stream, long length, int bufferLength, Action<byte[]> completed, Action<Exception> error)
+        {
+            DoReadAsync(stream, length, bufferLength, completed, error).ContinueWith(x => System.Diagnostics.Debug.WriteLine(x.Result));
+        }
+
+        private static async Task<long> DoReadAsync(Stream stream, long length, int bufferLength, Action<byte[]> complected, Action<Exception> error)
+        {
+            var dest = new MemoryStream();
+            var buff = new byte[bufferLength];
+            long nRead = 0;
+            try
+            {
+                while (nRead < length)
+                {                    
+                    var actualLength = await stream.ReadAsync(buff, 0, bufferLength);
+                    if (actualLength == 0)
+                        break;
+                    nRead += actualLength;
+                    dest.Write(buff, 0, actualLength);
+                }
+                complected(dest.ToArray());
+            }
+            catch (Exception ex)
+            {
+                error(ex);
+            }
+            return nRead;
+        }
+
+#else
+
     internal static void ReadBytesAsync (
       this Stream stream,
       int length,
@@ -880,8 +928,9 @@ namespace WebSocketSharp
           error (ex);
       }
     }
+#endif
 
-    internal static T[] Reverse<T> (this T[] array)
+        internal static T[] Reverse<T> (this T[] array)
     {
       var len = array.LongLength;
       var ret = new T[len];
