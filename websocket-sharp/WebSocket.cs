@@ -1240,17 +1240,17 @@ namespace WebSocketSharp
     {
       Action<PayloadData, bool, bool> closer = close;
 
-      if (isWindows())
-      {
-        closer.BeginInvoke (
-          payloadData, send, received, ar => closer.EndInvoke(ar), null
-        );
-      }
-      else
+      if (isNET())
       {
         var workTask = Task.Run(() => closer.Invoke(
           payloadData, send, received
         ));
+      }
+      else
+      {
+        closer.BeginInvoke (
+          payloadData, send, received, ar => closer.EndInvoke(ar), null
+        );
       }
     }
 
@@ -1634,10 +1634,20 @@ namespace WebSocketSharp
     }
 
 
-    private static bool isWindows()
+    private static bool isNET()
     {
-      return System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
+#if NET
+      return true;
+#else
+      return false;
+#endif
     }
+
+    public static bool isWindows()
+    {
+        return System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
+    }
+
     private void open ()
     {
       _inMessage = true;
@@ -1673,14 +1683,14 @@ namespace WebSocketSharp
       }
 
 
-    if (isWindows())
+    if (isNET())
     {
-      _message.BeginInvoke (e, ar => _message.EndInvoke (ar), null);
-
+      var workTask = Task.Run(() => _message.Invoke(e));
     }
     else
     {
-      var workTask = Task.Run(() => _message.Invoke(e));
+      _message.BeginInvoke (e, ar => _message.EndInvoke (ar), null);
+      
     }
 
 
@@ -2117,7 +2127,28 @@ namespace WebSocketSharp
     {
       Func<Opcode, Stream, bool> sender = send;
 
-      if (isWindows())
+      if (isNET())
+      {
+        System.Threading.Tasks.Task.Run( () => {
+          return sender.Invoke (
+            opcode,
+            stream
+          );
+        }).ContinueWith( (sent) => {
+            try {
+              if (completed != null)
+                completed (sent.Result);
+            }
+            catch (Exception ex) {
+              _logger.Error (ex.ToString ());
+              error (
+                "An error has occurred during the callback for an async send.",
+                ex
+              );
+            }
+        });
+      }
+      else
       {
         sender.BeginInvoke (
           opcode,
@@ -2141,27 +2172,6 @@ namespace WebSocketSharp
           },
           null
         );
-      }
-      else
-      {
-        System.Threading.Tasks.Task.Run( () => {
-          return sender.Invoke (
-            opcode,
-            stream
-          );
-        }).ContinueWith( (sent) => {
-            try {
-              if (completed != null)
-                completed (sent.Result);
-            }
-            catch (Exception ex) {
-              _logger.Error (ex.ToString ());
-              error (
-                "An error has occurred during the callback for an async send.",
-                ex
-              );
-            }
-        });
       }
      
     }
@@ -2493,9 +2503,9 @@ namespace WebSocketSharp
       return true;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     // As server
     internal void Accept ()
@@ -2685,9 +2695,9 @@ namespace WebSocketSharp
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     /// <summary>
     /// Closes the connection.
@@ -3401,7 +3411,18 @@ namespace WebSocketSharp
 
       Func<bool> connector = connect;
 
-      if (isWindows())
+      if (isNET())
+      {
+        System.Threading.Tasks.Task.Run(() => {
+          return connector.Invoke();
+        }).ContinueWith( (task) => {
+          if (task.Result)
+          {
+            open();
+          }
+        });
+      }
+      else
       {
         connector.BeginInvoke (
           ar => {
@@ -3414,17 +3435,6 @@ namespace WebSocketSharp
           },
           null
         );
-      }
-      else
-      {
-        System.Threading.Tasks.Task.Run(() => {
-          return connector.Invoke();
-        }).ContinueWith( (task) => {
-          if (task.Result)
-          {
-            open();
-          }
-        });
       }
 
     }
@@ -4205,9 +4215,9 @@ namespace WebSocketSharp
       }
     }
 
-    #endregion
+#endregion
 
-    #region Explicit Interface Implementations
+#region Explicit Interface Implementations
 
     /// <summary>
     /// Closes the connection and releases all associated resources.
@@ -4226,6 +4236,6 @@ namespace WebSocketSharp
       close (1001, String.Empty);
     }
 
-    #endregion
+#endregion
   }
 }

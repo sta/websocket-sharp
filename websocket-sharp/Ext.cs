@@ -733,18 +733,28 @@ namespace WebSocketSharp
 #if NET
         internal static void ReadBytesAsync(this Stream stream, int length, Action<byte[]> completed, Action<Exception> error)
         {
+            
             byte[] buff = new byte[length];
+
             stream.ReadAsync(buff, 0, length).ContinueWith((x) =>
             {
                 if (x.Exception?.InnerException != null)
                 {
-                    error(x.Exception.InnerException);
+                    if (x.Exception.InnerException is ObjectDisposedException || x.Exception.InnerException is NotSupportedException)
+                    {
+                        completed(new byte[0]);
+                    }
+                    else
+                    {
+                        error(x.Exception.InnerException);
+                    }
                 }
                 else
                 {
                     completed(buff);
                 }
             }, TaskContinuationOptions.NotOnCanceled);
+
         }
 
         internal static void ReadBytesAsync(this Stream stream, long length, int bufferLength, Action<byte[]> completed, Action<Exception> error)
@@ -771,7 +781,15 @@ namespace WebSocketSharp
             }
             catch (Exception ex)
             {
-                error(ex);
+                if (ex is ObjectDisposedException || ex is NotSupportedException)
+                {
+                    complected(new byte[0]);
+                }
+                else
+                {
+                    error(ex);
+                }
+                
             }
             return nRead;
         }
