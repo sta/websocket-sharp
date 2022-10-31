@@ -303,13 +303,6 @@ namespace WebSocketSharp
       }
     }
 
-    internal bool HasMessage {
-      get {
-        lock (_forMessageEventQueue)
-          return _messageEventQueue.Count > 0;
-      }
-    }
-
     // As server
     internal bool IgnoreExtensions {
       get {
