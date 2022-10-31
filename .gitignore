@@ -15,3 +15,5 @@ UpgradeLog*.*
 
 .DS_Store
 /websocket-sharp/.vs/websocket-sharp.NET6/FileContentIndex
+.vs/
+
