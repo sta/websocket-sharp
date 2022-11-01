@@ -1122,7 +1122,7 @@ namespace WebSocketSharp
     {
       lock (_forState) {
         if (_readyState == WebSocketState.Closing) {
-          _logger.Trace ("The closing is already in progress.");
+          _logger.Trace ("The close process is already in progress.");
 
           return;
         }
