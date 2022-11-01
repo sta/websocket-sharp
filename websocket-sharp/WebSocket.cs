@@ -1162,7 +1162,7 @@ namespace WebSocketSharp
     private void closeAsync (ushort code, string reason)
     {
       if (_readyState == WebSocketState.Closing) {
-        _logger.Trace ("The closing is already in progress.");
+        _logger.Trace ("The close process is already in progress.");
 
         return;
       }
