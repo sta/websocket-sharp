@@ -407,7 +407,7 @@ namespace WebSocketSharp.Net
           initializer (ws);
         }
         catch (Exception ex) {
-          if (ws.ReadyState == WebSocketState.Connecting)
+          if (ws.ReadyState == WebSocketState.New)
             _websocketContext = null;
 
           var msg = "It caused an exception.";

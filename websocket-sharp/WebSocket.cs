@@ -630,17 +630,17 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the current state of the connection.
+    /// Gets the current state of the interface.
     /// </summary>
     /// <value>
     ///   <para>
     ///   One of the <see cref="WebSocketState"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It indicates the current state of the connection.
+    ///   It indicates the current state of the interface.
     ///   </para>
     ///   <para>
-    ///   The default value is <see cref="WebSocketState.Connecting"/>.
+    ///   The default value is <see cref="WebSocketState.New"/>.
     ///   </para>
     /// </value>
     public WebSocketState ReadyState {
@@ -803,6 +803,8 @@ namespace WebSocketSharp
           return false;
         }
 
+        _readyState = WebSocketState.Connecting;
+
         var accepted = false;
 
         try {
@@ -870,7 +872,7 @@ namespace WebSocketSharp
 
     private bool canSet ()
     {
-      return _readyState == WebSocketState.Connecting
+      return _readyState == WebSocketState.New
              || _readyState == WebSocketState.Closed;
     }
 
@@ -1483,7 +1485,7 @@ namespace WebSocketSharp
       _forState = new object ();
       _messageEventQueue = new Queue<MessageEventArgs> ();
       _forMessageEventQueue = ((ICollection) _messageEventQueue).SyncRoot;
-      _readyState = WebSocketState.Connecting;
+      _readyState = WebSocketState.New;
     }
 
     private void message ()
