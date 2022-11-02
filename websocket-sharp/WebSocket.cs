@@ -261,6 +261,7 @@ namespace WebSocketSharp
         throw new ArgumentException ("An empty string.", "url");
 
       string msg;
+
       if (!url.TryCreateWebSocketUri (out _uri, out msg))
         throw new ArgumentException (msg, "url");
 
