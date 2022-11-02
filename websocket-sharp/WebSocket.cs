@@ -202,7 +202,7 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocket"/> class with
-    /// <paramref name="url"/> and optionally <paramref name="protocols"/>.
+    /// the specified URL and optionally subprotocols.
     /// </summary>
     /// <param name="url">
     ///   <para>
