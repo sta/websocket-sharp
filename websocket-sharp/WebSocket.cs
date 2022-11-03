@@ -130,15 +130,17 @@ namespace WebSocketSharp
     internal static readonly byte[] EmptyBytes;
 
     /// <summary>
-    /// Represents the length used to determine whether the data should be fragmented in sending.
+    /// Represents the length used to determine whether the data should
+    /// be fragmented in sending.
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   The data will be fragmented if that length is greater than the value of this field.
+    ///   The data will be fragmented if its length is greater than
+    ///   the value of this field.
     ///   </para>
     ///   <para>
-    ///   If you would like to change the value, you must set it to a value between <c>125</c> and
-    ///   <c>Int32.MaxValue - 14</c> inclusive.
+    ///   If you would like to change the value, you must set it to
+    ///   a value between 125 and <c>Int32.MaxValue - 14</c> inclusive.
     ///   </para>
     /// </remarks>
     internal static readonly int FragmentLength;
