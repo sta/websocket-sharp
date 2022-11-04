@@ -105,13 +105,19 @@ namespace WebSocketSharp.Server
     ///   <para>
     ///   An empty collection if not included.
     ///   </para>
-    ///   <para>
-    ///   <see langword="null"/> if the session has not started yet.
-    ///   </para>
     /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
+    /// </exception>
     protected NameValueCollection QueryString {
       get {
-        return _context != null ? _context.QueryString : null;
+        if (_context == null) {
+          var msg = "The session has not started yet.";
+
+          throw new InvalidOperationException (msg);
+        }
+
+        return _context.QueryString;
       }
     }
 
