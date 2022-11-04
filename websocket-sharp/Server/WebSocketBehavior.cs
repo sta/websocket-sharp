@@ -77,16 +77,20 @@ namespace WebSocketSharp.Server
     /// Gets the HTTP headers included in a WebSocket handshake request.
     /// </summary>
     /// <value>
-    ///   <para>
-    ///   A <see cref="NameValueCollection"/> that contains the headers.
-    ///   </para>
-    ///   <para>
-    ///   <see langword="null"/> if the session has not started yet.
-    ///   </para>
+    /// A <see cref="NameValueCollection"/> that contains the headers.
     /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
+    /// </exception>
     protected NameValueCollection Headers {
       get {
-        return _context != null ? _context.Headers : null;
+        if (_context == null) {
+          var msg = "The session has not started yet.";
+
+          throw new InvalidOperationException (msg);
+        }
+
+        return _context.Headers;
       }
     }
 
