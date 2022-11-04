@@ -112,6 +112,26 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Gets the current state of the WebSocket interface for a session.
+    /// </summary>
+    /// <value>
+    ///   <para>
+    ///   One of the <see cref="WebSocketState"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It indicates the current state of the interface.
+    ///   </para>
+    ///   <para>
+    ///   <see cref="WebSocketState.New"/> if the session has not started yet.
+    ///   </para>
+    /// </value>
+    protected WebSocketState ReadyState {
+      get {
+        return _websocket != null ? _websocket.ReadyState : WebSocketState.New;
+      }
+    }
+
+    /// <summary>
     /// Gets the management function for the sessions in the service.
     /// </summary>
     /// <value>
@@ -132,29 +152,6 @@ namespace WebSocketSharp.Server
     #endregion
 
     #region Public Properties
-
-    /// <summary>
-    /// Gets the current state of the WebSocket connection for a session.
-    /// </summary>
-    /// <value>
-    ///   <para>
-    ///   One of the <see cref="WebSocketState"/> enum values.
-    ///   </para>
-    ///   <para>
-    ///   It indicates the current state of the connection.
-    ///   </para>
-    ///   <para>
-    ///   <see cref="WebSocketState.Connecting"/> if the session has not
-    ///   started yet.
-    ///   </para>
-    /// </value>
-    public WebSocketState ConnectionState {
-      get {
-        return _websocket != null
-               ? _websocket.ReadyState
-               : WebSocketState.Connecting;
-      }
-    }
 
     /// <summary>
     /// Gets the information in a WebSocket handshake request to the service.

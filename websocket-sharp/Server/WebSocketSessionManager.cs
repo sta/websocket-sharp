@@ -1546,7 +1546,7 @@ namespace WebSocketSharp.Server
           if (!_sessions.TryGetValue (id, out session))
             continue;
 
-          var state = session.ConnectionState;
+          var state = session.Context.WebSocket.ReadyState;
 
           if (state == WebSocketState.Open) {
             session.Context.WebSocket.Close (CloseStatusCode.Abnormal);
