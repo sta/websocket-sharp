@@ -121,13 +121,19 @@ namespace WebSocketSharp.Server
     ///   <para>
     ///   It indicates the current state of the interface.
     ///   </para>
-    ///   <para>
-    ///   <see cref="WebSocketState.New"/> if the session has not started yet.
-    ///   </para>
     /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
+    /// </exception>
     protected WebSocketState ReadyState {
       get {
-        return _websocket != null ? _websocket.ReadyState : WebSocketState.New;
+        if (_websocket == null) {
+          var msg = "The session has not started yet.";
+
+          throw new InvalidOperationException (msg);
+        }
+
+        return _websocket.ReadyState;
       }
     }
 
