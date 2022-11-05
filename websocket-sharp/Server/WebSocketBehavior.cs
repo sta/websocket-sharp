@@ -151,16 +151,20 @@ namespace WebSocketSharp.Server
     /// Gets the management function for the sessions in the service.
     /// </summary>
     /// <value>
-    ///   <para>
-    ///   A <see cref="WebSocketSessionManager"/> that manages the sessions in
-    ///   the service.
-    ///   </para>
-    ///   <para>
-    ///   <see langword="null"/> if the session has not started yet.
-    ///   </para>
+    /// A <see cref="WebSocketSessionManager"/> that manages the sessions in
+    /// the service.
     /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
+    /// </exception>
     protected WebSocketSessionManager Sessions {
       get {
+        if (_sessions == null) {
+          var msg = "The session has not started yet.";
+
+          throw new InvalidOperationException (msg);
+        }
+
         return _sessions;
       }
     }
