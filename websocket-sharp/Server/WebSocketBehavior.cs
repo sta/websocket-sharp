@@ -1249,5 +1249,27 @@ namespace WebSocketSharp.Server
     }
 
     #endregion
+
+    #region Explicit Interface Implementations
+
+    /// <summary>
+    /// Gets the WebSocket interface for a session.
+    /// </summary>
+    /// <value>
+    ///   <para>
+    ///   A <see cref="WebSocketSharp.WebSocket"/> that represents
+    ///   the interface.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the session has not started yet.
+    ///   </para>
+    /// </value>
+    WebSocket IWebSocketSession.WebSocket {
+      get {
+        return _websocket;
+      }
+    }
+
+    #endregion
   }
 }

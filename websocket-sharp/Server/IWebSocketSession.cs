@@ -73,6 +73,14 @@ namespace WebSocketSharp.Server
     /// </value>
     DateTime StartTime { get; }
 
+    /// <summary>
+    /// Gets the WebSocket interface for the session.
+    /// </summary>
+    /// <value>
+    /// A <see cref="WebSocketSharp.WebSocket"/> that represents the interface.
+    /// </value>
+    WebSocket WebSocket { get; }
+
     #endregion
   }
 }
