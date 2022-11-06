@@ -174,24 +174,6 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets the information in a WebSocket handshake request to the service.
-    /// </summary>
-    /// <value>
-    ///   <para>
-    ///   A <see cref="WebSocketContext"/> instance that provides the access to
-    ///   the information in the handshake request.
-    ///   </para>
-    ///   <para>
-    ///   <see langword="null"/> if the session has not started yet.
-    ///   </para>
-    /// </value>
-    public WebSocketContext Context {
-      get {
-        return _context;
-      }
-    }
-
-    /// <summary>
     /// Gets or sets the delegate used to validate the HTTP cookies included in
     /// a WebSocket handshake request to the service.
     /// </summary>

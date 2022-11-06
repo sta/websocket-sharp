@@ -39,15 +39,6 @@ namespace WebSocketSharp.Server
     #region Properties
 
     /// <summary>
-    /// Gets the information in the WebSocket handshake request.
-    /// </summary>
-    /// <value>
-    /// A <see cref="WebSocketContext"/> instance that provides the access to
-    /// the information in the handshake request.
-    /// </value>
-    WebSocketContext Context { get; }
-
-    /// <summary>
     /// Gets the unique ID of the session.
     /// </summary>
     /// <value>
