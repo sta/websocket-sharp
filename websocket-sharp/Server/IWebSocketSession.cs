@@ -47,15 +47,6 @@ namespace WebSocketSharp.Server
     string ID { get; }
 
     /// <summary>
-    /// Gets the name of the WebSocket subprotocol for the session.
-    /// </summary>
-    /// <value>
-    /// A <see cref="string"/> that represents the name of the subprotocol
-    /// if present.
-    /// </value>
-    string Protocol { get; }
-
-    /// <summary>
     /// Gets the time that the session has started.
     /// </summary>
     /// <value>
