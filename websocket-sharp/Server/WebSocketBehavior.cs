@@ -359,7 +359,7 @@ namespace WebSocketSharp.Server
         }
 
         if (!value.IsToken ()) {
-          var msg = "It is not a token.";
+          var msg = "Not a token.";
 
           throw new ArgumentException (msg, "value");
         }
