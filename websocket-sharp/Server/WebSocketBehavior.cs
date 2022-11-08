@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.Security.Principal;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
 
@@ -166,6 +167,33 @@ namespace WebSocketSharp.Server
         }
 
         return _sessions;
+      }
+    }
+
+    /// <summary>
+    /// Gets the client information for a session.
+    /// </summary>
+    /// <value>
+    ///   <para>
+    ///   A <see cref="IPrincipal"/> instance that represents identity,
+    ///   authentication, and security roles for the client.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the client is not authenticated.
+    ///   </para>
+    /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
+    /// </exception>
+    protected IPrincipal User {
+      get {
+        if (_context == null) {
+          var msg = "The session has not started yet.";
+
+          throw new InvalidOperationException (msg);
+        }
+
+        return _context.User;
       }
     }
 
