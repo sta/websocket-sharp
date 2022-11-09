@@ -197,6 +197,28 @@ namespace WebSocketSharp.Server
       }
     }
 
+    /// <summary>
+    /// Gets the client endpoint for a session.
+    /// </summary>
+    /// <value>
+    /// A <see cref="System.Net.IPEndPoint"/> that represents the client
+    /// IP address and port number.
+    /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
+    /// </exception>
+    protected System.Net.IPEndPoint UserEndPoint {
+      get {
+        if (_context == null) {
+          var msg = "The session has not started yet.";
+
+          throw new InvalidOperationException (msg);
+        }
+
+        return _context.UserEndPoint;
+      }
+    }
+
     #endregion
 
     #region Public Properties
