@@ -75,10 +75,11 @@ namespace WebSocketSharp.Server
     #region Protected Properties
 
     /// <summary>
-    /// Gets the HTTP headers included in a WebSocket handshake request.
+    /// Gets the HTTP headers for a session.
     /// </summary>
     /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the headers.
+    /// A <see cref="NameValueCollection"/> that contains the headers
+    /// included in the WebSocket handshake request.
     /// </value>
     /// <exception cref="InvalidOperationException">
     /// The session has not started yet.
