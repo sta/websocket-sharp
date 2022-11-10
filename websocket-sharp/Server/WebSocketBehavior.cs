@@ -97,12 +97,12 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the query string included in a WebSocket handshake request.
+    /// Gets the query string for a session.
     /// </summary>
     /// <value>
     ///   <para>
     ///   A <see cref="NameValueCollection"/> that contains the query
-    ///   parameters.
+    ///   parameters included in the WebSocket handshake request.
     ///   </para>
     ///   <para>
     ///   An empty collection if not included.
