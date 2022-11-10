@@ -226,20 +226,20 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Gets or sets the delegate used to validate the HTTP cookies included in
-    /// a WebSocket handshake request to the service.
+    /// a WebSocket handshake request.
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <c>Func&lt;CookieCollection, CookieCollection, bool&gt;</c> delegate
-    ///   or <see langword="null"/> if not needed.
+    ///   A <see cref="T:System.Func{CookieCollection, CookieCollection, bool}"/>
+    ///   delegate.
     ///   </para>
     ///   <para>
-    ///   The delegate invokes the method called when the WebSocket instance
+    ///   The delegate invokes the method called when the WebSocket interface
     ///   for a session validates the handshake request.
     ///   </para>
     ///   <para>
     ///   1st <see cref="CookieCollection"/> parameter passed to the method
-    ///   contains the cookies to validate if present.
+    ///   contains the cookies to validate.
     ///   </para>
     ///   <para>
     ///   2nd <see cref="CookieCollection"/> parameter passed to the method
@@ -247,6 +247,9 @@ namespace WebSocketSharp.Server
     ///   </para>
     ///   <para>
     ///   The method must return <c>true</c> if the cookies are valid.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not necessary.
     ///   </para>
     ///   <para>
     ///   The default value is <see langword="null"/>.
