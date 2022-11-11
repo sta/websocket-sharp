@@ -225,8 +225,7 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets the delegate used to validate the HTTP cookies included in
-    /// a WebSocket handshake request.
+    /// Gets or sets the delegate used to validate the HTTP cookies.
     /// </summary>
     /// <value>
     ///   <para>
