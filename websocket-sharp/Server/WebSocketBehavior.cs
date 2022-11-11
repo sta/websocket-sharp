@@ -337,15 +337,14 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Gets or sets the delegate used to validate the Origin header included in
-    /// a WebSocket handshake request to the service.
+    /// a WebSocket handshake request.
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <c>Func&lt;string, bool&gt;</c> delegate or <see langword="null"/>
-    ///   if not needed.
+    ///   A <see cref="T:System.Func{string, bool}"/> delegate.
     ///   </para>
     ///   <para>
-    ///   The delegate invokes the method called when the WebSocket instance
+    ///   The delegate invokes the method called when the WebSocket interface
     ///   for a session validates the handshake request.
     ///   </para>
     ///   <para>
@@ -355,6 +354,9 @@ namespace WebSocketSharp.Server
     ///   </para>
     ///   <para>
     ///   The method must return <c>true</c> if the header value is valid.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not necessary.
     ///   </para>
     ///   <para>
     ///   The default value is <see langword="null"/>.
