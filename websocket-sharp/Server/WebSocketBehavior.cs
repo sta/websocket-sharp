@@ -370,14 +370,14 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the name of the WebSocket subprotocol for the service.
+    /// Gets or sets the name of the WebSocket subprotocol for a session.
     /// </summary>
     /// <value>
     ///   <para>
     ///   A <see cref="string"/> that represents the name of the subprotocol.
     ///   </para>
     ///   <para>
-    ///   The value specified for a set must be a token defined in
+    ///   The value specified for a set operation must be a token defined in
     ///   <see href="http://tools.ietf.org/html/rfc2616#section-2.2">
     ///   RFC 2616</see>.
     ///   </para>
