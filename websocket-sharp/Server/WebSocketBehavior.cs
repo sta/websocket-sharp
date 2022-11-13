@@ -446,8 +446,11 @@ namespace WebSocketSharp.Server
     private string checkHandshakeRequest (WebSocketContext context)
     {
       if (_originValidator != null) {
-        if (!_originValidator (context.Origin))
-          return "It includes no Origin header or an invalid one.";
+        if (!_originValidator (context.Origin)) {
+          var msg = "The Origin header is non-existent or invalid.";
+
+          return msg;
+        }
       }
 
       if (_cookiesValidator != null) {
