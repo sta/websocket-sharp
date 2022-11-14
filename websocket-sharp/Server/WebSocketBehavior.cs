@@ -457,8 +457,11 @@ namespace WebSocketSharp.Server
         var req = context.CookieCollection;
         var res = context.WebSocket.CookieCollection;
 
-        if (!_cookiesValidator (req, res))
-          return "It includes no cookie or an invalid one.";
+        if (!_cookiesValidator (req, res)) {
+          var msg = "The Cookie header is non-existent or invalid.";
+
+          return msg;
+        }
       }
 
       return null;
