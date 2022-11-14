@@ -562,8 +562,8 @@ namespace WebSocketSharp.Server
     /// code and reason.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the current state of the connection is
-    /// Closing or Closed.
+    /// This method does nothing if the current state of the WebSocket
+    /// interface is Closing or Closed.
     /// </remarks>
     /// <param name="code">
     ///   <para>
