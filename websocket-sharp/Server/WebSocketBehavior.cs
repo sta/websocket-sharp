@@ -865,7 +865,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Called when the WebSocket instance for a session gets an error.
+    /// Called when the WebSocket interface for a session gets an error.
     /// </summary>
     /// <param name="e">
     /// A <see cref="ErrorEventArgs"/> that represents the event data passed
