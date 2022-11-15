@@ -829,8 +829,8 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is
-    ///   <see cref="CloseStatusCode.NoStatus"/> and there is reason.
+    ///   <paramref name="code"/> is <see cref="CloseStatusCode.NoStatus"/>
+    ///   and <paramref name="reason"/> is specified.
     ///   </para>
     ///   <para>
     ///   -or-
