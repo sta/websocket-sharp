@@ -694,8 +694,8 @@ namespace WebSocketSharp.Server
     ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method does nothing if the current state of the connection is
-    ///   Closing or Closed.
+    ///   This method does nothing if the current state of the WebSocket
+    ///   interface is Closing or Closed.
     ///   </para>
     /// </remarks>
     /// <exception cref="InvalidOperationException">
