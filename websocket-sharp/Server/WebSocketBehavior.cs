@@ -876,7 +876,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Called when the WebSocket instance for a session receives a message.
+    /// Called when the WebSocket interface for a session receives a message.
     /// </summary>
     /// <param name="e">
     /// A <see cref="MessageEventArgs"/> that represents the event data passed
