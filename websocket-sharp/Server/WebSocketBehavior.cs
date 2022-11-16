@@ -1062,8 +1062,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the data from the specified stream instance to a client using
-    /// the WebSocket connection.
+    /// Sends the data from the specified stream instance to the client for
+    /// a session.
     /// </summary>
     /// <param name="stream">
     ///   <para>
@@ -1077,7 +1077,15 @@ namespace WebSocketSharp.Server
     /// An <see cref="int"/> that specifies the number of bytes to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// The current state of the connection is not Open.
+    ///   <para>
+    ///   The session has not started yet.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The current state of the WebSocket interface is not Open.
+    ///   </para>
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="stream"/> is <see langword="null"/>.
