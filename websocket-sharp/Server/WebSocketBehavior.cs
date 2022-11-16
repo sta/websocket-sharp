@@ -915,11 +915,10 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a ping with the specified message to a client using
-    /// the WebSocket connection.
+    /// Sends a ping with the specified message to the client for a session.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the send has done with no error and a pong has been
+    /// <c>true</c> if the send has successfully done and a pong has been
     /// received within a time; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="message">
