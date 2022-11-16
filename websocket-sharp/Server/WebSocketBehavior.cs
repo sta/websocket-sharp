@@ -1150,7 +1150,7 @@ namespace WebSocketSharp.Server
     protected void SendAsync (byte[] data, Action<bool> completed)
     {
       if (_websocket == null) {
-        var msg = "The current state of the connection is not Open.";
+        var msg = "The session has not started yet.";
 
         throw new InvalidOperationException (msg);
       }
