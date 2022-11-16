@@ -1102,7 +1102,7 @@ namespace WebSocketSharp.Server
     protected void Send (Stream stream, int length)
     {
       if (_websocket == null) {
-        var msg = "The current state of the connection is not Open.";
+        var msg = "The session has not started yet.";
 
         throw new InvalidOperationException (msg);
       }
