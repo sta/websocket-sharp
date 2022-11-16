@@ -964,7 +964,7 @@ namespace WebSocketSharp.Server
     protected void Send (byte[] data)
     {
       if (_websocket == null) {
-        var msg = "The current state of the connection is not Open.";
+        var msg = "The session has not started yet.";
 
         throw new InvalidOperationException (msg);
       }
