@@ -981,7 +981,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified file to a client using the WebSocket connection.
+    /// Sends the specified file to the client for a session.
     /// </summary>
     /// <param name="fileInfo">
     ///   <para>
@@ -992,7 +992,15 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// The current state of the connection is not Open.
+    ///   <para>
+    ///   The session has not started yet.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The current state of the WebSocket interface is not Open.
+    ///   </para>
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="fileInfo"/> is <see langword="null"/>.
