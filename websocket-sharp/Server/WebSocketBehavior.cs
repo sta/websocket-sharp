@@ -1028,13 +1028,21 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified data to a client using the WebSocket connection.
+    /// Sends the specified data to the client for a session.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> that specifies the text data to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// The current state of the connection is not Open.
+    ///   <para>
+    ///   The session has not started yet.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The current state of the WebSocket interface is not Open.
+    ///   </para>
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="data"/> is <see langword="null"/>.
