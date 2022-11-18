@@ -1285,8 +1285,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the data from the specified stream instance to a client
-    /// asynchronously using the WebSocket connection.
+    /// Sends the data from the specified stream instance to the client for
+    /// a session asynchronously.
     /// </summary>
     /// <remarks>
     /// This method does not wait for the send to be complete.
@@ -1304,19 +1304,29 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="completed">
     ///   <para>
-    ///   An <c>Action&lt;bool&gt;</c> delegate or <see langword="null"/>
-    ///   if not needed.
+    ///   An <see cref="T:System.Action{bool}"/> delegate.
     ///   </para>
     ///   <para>
     ///   The delegate invokes the method called when the send is complete.
     ///   </para>
     ///   <para>
-    ///   <c>true</c> is passed to the method if the send has done with
-    ///   no error; otherwise, <c>false</c>.
+    ///   The <see cref="bool"/> parameter passed to the method is <c>true</c>
+    ///   if the send has successfully done; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not necessary.
     ///   </para>
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// The current state of the connection is not Open.
+    ///   <para>
+    ///   The session has not started yet.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The current state of the WebSocket interface is not Open.
+    ///   </para>
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="stream"/> is <see langword="null"/>.
