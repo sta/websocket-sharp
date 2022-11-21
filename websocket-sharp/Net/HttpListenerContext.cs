@@ -384,6 +384,12 @@ namespace WebSocketSharp.Net
         throw new InvalidOperationException (msg);
       }
 
+      if (!_request.IsWebSocketRequest) {
+        var msg = "The request is not a WebSocket handshake request.";
+
+        throw new InvalidOperationException (msg);
+      }
+
       if (protocol != null) {
         if (protocol.Length == 0) {
           var msg = "An empty string.";
