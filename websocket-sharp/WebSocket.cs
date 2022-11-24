@@ -2771,37 +2771,45 @@ namespace WebSocketSharp
     {
       if (!code.IsCloseStatusCode ()) {
         var msg = "Less than 1000 or greater than 4999.";
+
         throw new ArgumentOutOfRangeException ("code", msg);
       }
 
       if (_client && code == 1011) {
         var msg = "1011 cannot be used.";
+
         throw new ArgumentException (msg, "code");
       }
 
       if (!_client && code == 1010) {
         var msg = "1010 cannot be used.";
+
         throw new ArgumentException (msg, "code");
       }
 
       if (reason.IsNullOrEmpty ()) {
         close (code, String.Empty);
+
         return;
       }
 
       if (code == 1005) {
         var msg = "1005 cannot be used.";
+
         throw new ArgumentException (msg, "code");
       }
 
       byte[] bytes;
+
       if (!reason.TryGetUTF8EncodedBytes (out bytes)) {
         var msg = "It could not be UTF-8-encoded.";
+
         throw new ArgumentException (msg, "reason");
       }
 
       if (bytes.Length > 123) {
         var msg = "Its size is greater than 123 bytes.";
+
         throw new ArgumentOutOfRangeException ("reason", msg);
       }
 
