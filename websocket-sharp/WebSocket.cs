@@ -2692,11 +2692,13 @@ namespace WebSocketSharp
     {
       if (_client && code == CloseStatusCode.ServerError) {
         var msg = "ServerError cannot be used.";
+
         throw new ArgumentException (msg, "code");
       }
 
       if (!_client && code == CloseStatusCode.MandatoryExtension) {
         var msg = "MandatoryExtension cannot be used.";
+
         throw new ArgumentException (msg, "code");
       }
 
