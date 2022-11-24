@@ -2593,7 +2593,7 @@ namespace WebSocketSharp
     /// Closes the connection.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the current state of the connection is
+    /// This method does nothing if the current state of the interface is
     /// Closing or Closed.
     /// </remarks>
     public void Close ()
