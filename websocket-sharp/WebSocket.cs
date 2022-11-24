@@ -2709,12 +2709,12 @@ namespace WebSocketSharp
     /// Closes the connection with the specified code and reason.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the current state of the connection is
+    /// This method does nothing if the current state of the interface is
     /// Closing or Closed.
     /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that represents the status code indicating
+    ///   A <see cref="ushort"/> that specifies the status code indicating
     ///   the reason for the close.
     ///   </para>
     ///   <para>
@@ -2725,7 +2725,7 @@ namespace WebSocketSharp
     /// </param>
     /// <param name="reason">
     ///   <para>
-    ///   A <see cref="string"/> that represents the reason for the close.
+    ///   A <see cref="string"/> that specifies the reason for the close.
     ///   </para>
     ///   <para>
     ///   The size must be 123 bytes or less in UTF-8.
@@ -2744,21 +2744,22 @@ namespace WebSocketSharp
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="code"/> is 1011 (server error).
-    ///   It cannot be used by clients.
+    ///   <paramref name="code"/> is 1011 (server error). It cannot be used
+    ///   by a client.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is 1010 (mandatory extension).
-    ///   It cannot be used by servers.
+    ///   <paramref name="code"/> is 1010 (mandatory extension). It cannot
+    ///   be used by a server.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is 1005 (no status) and there is reason.
+    ///   <paramref name="code"/> is 1005 (no status) and
+    ///   <paramref name="reason"/> is specified.
     ///   </para>
     ///   <para>
     ///   -or-
