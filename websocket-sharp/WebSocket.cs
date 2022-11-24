@@ -2875,32 +2875,39 @@ namespace WebSocketSharp
     {
       if (_client && code == CloseStatusCode.ServerError) {
         var msg = "ServerError cannot be used.";
+
         throw new ArgumentException (msg, "code");
       }
 
       if (!_client && code == CloseStatusCode.MandatoryExtension) {
         var msg = "MandatoryExtension cannot be used.";
+
         throw new ArgumentException (msg, "code");
       }
 
       if (reason.IsNullOrEmpty ()) {
         close ((ushort) code, String.Empty);
+
         return;
       }
 
       if (code == CloseStatusCode.NoStatus) {
         var msg = "NoStatus cannot be used.";
+
         throw new ArgumentException (msg, "code");
       }
 
       byte[] bytes;
+
       if (!reason.TryGetUTF8EncodedBytes (out bytes)) {
         var msg = "It could not be UTF-8-encoded.";
+
         throw new ArgumentException (msg, "reason");
       }
 
       if (bytes.Length > 123) {
         var msg = "Its size is greater than 123 bytes.";
+
         throw new ArgumentOutOfRangeException ("reason", msg);
       }
 
