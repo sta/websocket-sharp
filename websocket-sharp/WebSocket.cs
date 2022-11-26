@@ -2672,19 +2672,7 @@ namespace WebSocketSharp
     /// </exception>
     public void Close (CloseStatusCode code)
     {
-      if (_client && code == CloseStatusCode.ServerError) {
-        var msg = "ServerError cannot be used.";
-
-        throw new ArgumentException (msg, "code");
-      }
-
-      if (!_client && code == CloseStatusCode.MandatoryExtension) {
-        var msg = "MandatoryExtension cannot be used.";
-
-        throw new ArgumentException (msg, "code");
-      }
-
-      close ((ushort) code, String.Empty);
+      Close (code, String.Empty);
     }
 
     /// <summary>
