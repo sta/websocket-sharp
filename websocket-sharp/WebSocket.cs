@@ -2968,7 +2968,7 @@ namespace WebSocketSharp
     ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method does nothing if the current state of the connection is
+    ///   This method does nothing if the current state of the interface is
     ///   Closing or Closed.
     ///   </para>
     /// </remarks>
@@ -2977,22 +2977,20 @@ namespace WebSocketSharp
     ///   One of the <see cref="CloseStatusCode"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It represents the status code indicating the reason for the close.
+    ///   It specifies the status code indicating the reason for the close.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="code"/> is
-    ///   <see cref="CloseStatusCode.ServerError"/>.
-    ///   It cannot be used by clients.
+    ///   <paramref name="code"/> is <see cref="CloseStatusCode.ServerError"/>.
+    ///   It cannot be used by a client.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is
-    ///   <see cref="CloseStatusCode.MandatoryExtension"/>.
-    ///   It cannot be used by servers.
+    ///   <paramref name="code"/> is <see cref="CloseStatusCode.MandatoryExtension"/>.
+    ///   It cannot be used by a server.
     ///   </para>
     /// </exception>
     public void CloseAsync (CloseStatusCode code)
