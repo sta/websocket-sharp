@@ -2909,13 +2909,13 @@ namespace WebSocketSharp
     ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method does nothing if the current state of the connection is
+    ///   This method does nothing if the current state of the interface is
     ///   Closing or Closed.
     ///   </para>
     /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that represents the status code indicating
+    ///   A <see cref="ushort"/> that specifies the status code indicating
     ///   the reason for the close.
     ///   </para>
     ///   <para>
@@ -2929,15 +2929,15 @@ namespace WebSocketSharp
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="code"/> is 1011 (server error).
-    ///   It cannot be used by clients.
+    ///   <paramref name="code"/> is 1011 (server error). It cannot be used
+    ///   by a client.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is 1010 (mandatory extension).
-    ///   It cannot be used by servers.
+    ///   <paramref name="code"/> is 1010 (mandatory extension). It cannot
+    ///   be used by a server.
     ///   </para>
     /// </exception>
     public void CloseAsync (ushort code)
