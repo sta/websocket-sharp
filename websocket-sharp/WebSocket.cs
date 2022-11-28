@@ -2929,15 +2929,15 @@ namespace WebSocketSharp
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="code"/> is 1011 (server error). It cannot be used
-    ///   by a client.
+    ///   <paramref name="code"/> is 1011 (server error).
+    ///   It cannot be used by a client.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is 1010 (mandatory extension). It cannot
-    ///   be used by a server.
+    ///   <paramref name="code"/> is 1010 (mandatory extension).
+    ///   It cannot be used by a server.
     ///   </para>
     /// </exception>
     public void CloseAsync (ushort code)
