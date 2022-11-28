@@ -3016,13 +3016,13 @@ namespace WebSocketSharp
     ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method does nothing if the current state of the connection is
+    ///   This method does nothing if the current state of the interface is
     ///   Closing or Closed.
     ///   </para>
     /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that represents the status code indicating
+    ///   A <see cref="ushort"/> that specifies the status code indicating
     ///   the reason for the close.
     ///   </para>
     ///   <para>
@@ -3033,10 +3033,10 @@ namespace WebSocketSharp
     /// </param>
     /// <param name="reason">
     ///   <para>
-    ///   A <see cref="string"/> that represents the reason for the close.
+    ///   A <see cref="string"/> that specifies the reason for the close.
     ///   </para>
     ///   <para>
-    ///   The size must be 123 bytes or less in UTF-8.
+    ///   Its size must be 123 bytes or less in UTF-8.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -3053,20 +3053,21 @@ namespace WebSocketSharp
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="code"/> is 1011 (server error).
-    ///   It cannot be used by clients.
+    ///   It cannot be used by a client.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
     ///   <paramref name="code"/> is 1010 (mandatory extension).
-    ///   It cannot be used by servers.
+    ///   It cannot be used by a server.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is 1005 (no status) and there is reason.
+    ///   <paramref name="code"/> is 1005 (no status) and
+    ///   <paramref name="reason"/> is specified.
     ///   </para>
     ///   <para>
     ///   -or-
