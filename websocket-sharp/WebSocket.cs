@@ -2980,17 +2980,7 @@ namespace WebSocketSharp
     /// </exception>
     public void CloseAsync (CloseStatusCode code)
     {
-      if (_client && code == CloseStatusCode.ServerError) {
-        var msg = "ServerError cannot be used.";
-        throw new ArgumentException (msg, "code");
-      }
-
-      if (!_client && code == CloseStatusCode.MandatoryExtension) {
-        var msg = "MandatoryExtension cannot be used.";
-        throw new ArgumentException (msg, "code");
-      }
-
-      closeAsync ((ushort) code, String.Empty);
+      CloseAsync (code, String.Empty);
     }
 
     /// <summary>
