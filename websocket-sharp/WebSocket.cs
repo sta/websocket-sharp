@@ -2657,17 +2657,15 @@ namespace WebSocketSharp
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="code"/> is
-    ///   <see cref="CloseStatusCode.ServerError"/>. It cannot be used by
-    ///   a client.
+    ///   <paramref name="code"/> is <see cref="CloseStatusCode.ServerError"/>.
+    ///   It cannot be used by a client.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is
-    ///   <see cref="CloseStatusCode.MandatoryExtension"/>. It cannot be
-    ///   used by a server.
+    ///   <paramref name="code"/> is <see cref="CloseStatusCode.MandatoryExtension"/>.
+    ///   It cannot be used by a server.
     ///   </para>
     /// </exception>
     public void Close (CloseStatusCode code)
