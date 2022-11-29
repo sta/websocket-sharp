@@ -669,12 +669,14 @@ namespace WebSocketSharp
     public ClientSslConfiguration SslConfiguration {
       get {
         if (!_client) {
-          var msg = "This instance is not a client.";
+          var msg = "The interface is not for the client.";
+
           throw new InvalidOperationException (msg);
         }
 
         if (!_secure) {
-          var msg = "This instance does not use a secure connection.";
+          var msg = "The interface does not use a secure connection.";
+
           throw new InvalidOperationException (msg);
         }
 
