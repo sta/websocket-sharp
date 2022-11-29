@@ -924,7 +924,7 @@ namespace WebSocketSharp.Server
     ///   A <see cref="string"/> that specifies the message to send.
     ///   </para>
     ///   <para>
-    ///   The size must be 125 bytes or less in UTF-8.
+    ///   Its size must be 125 bytes or less in UTF-8.
     ///   </para>
     /// </param>
     /// <exception cref="InvalidOperationException">
