@@ -3289,10 +3289,10 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends a ping using the WebSocket connection.
+    /// Sends a ping to the remote endpoint.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the send has done with no error and a pong has been
+    /// <c>true</c> if the send has successfully done and a pong has been
     /// received within a time; otherwise, <c>false</c>.
     /// </returns>
     public bool Ping ()
