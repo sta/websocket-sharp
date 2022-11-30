@@ -3949,7 +3949,7 @@ namespace WebSocketSharp
     ///   </para>
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// This instance is not a client.
+    /// The interface is not for the client.
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
