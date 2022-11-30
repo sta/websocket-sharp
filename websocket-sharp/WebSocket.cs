@@ -3868,7 +3868,7 @@ namespace WebSocketSharp
     public void SetCredentials (string username, string password, bool preAuth)
     {
       if (!_client) {
-        var msg = "The instance is not a client.";
+        var msg = "The interface is not for the client.";
 
         throw new InvalidOperationException (msg);
       }
