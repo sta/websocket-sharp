@@ -3205,7 +3205,7 @@ namespace WebSocketSharp
     /// </remarks>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   This instance is not a client.
+    ///   The interface is not for the client.
     ///   </para>
     ///   <para>
     ///   -or-
