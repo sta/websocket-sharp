@@ -3795,7 +3795,7 @@ namespace WebSocketSharp
     /// A <see cref="Cookie"/> that specifies the cookie to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// This instance is not a client.
+    /// The interface is not for the client.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="cookie"/> is <see langword="null"/>.
