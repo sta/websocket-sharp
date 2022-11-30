@@ -437,7 +437,7 @@ namespace WebSocketSharp
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   <c>true</c> if this instance allows the URL redirection for
+    ///   <c>true</c> if the interface allows the URL redirection for
     ///   the handshake request; otherwise, <c>false</c>.
     ///   </para>
     ///   <para>
@@ -445,7 +445,8 @@ namespace WebSocketSharp
     ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The set operation is not available if this instance is not a client.
+    /// The set operation is not available if the interface is not for
+    /// the client.
     /// </exception>
     public bool EnableRedirection {
       get {
