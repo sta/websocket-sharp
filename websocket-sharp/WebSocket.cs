@@ -651,19 +651,22 @@ namespace WebSocketSharp
     /// Gets the configuration for secure connection.
     /// </summary>
     /// <remarks>
-    /// This configuration will be referenced when attempts to connect,
+    /// The configuration is used when the interface attempts to connect,
     /// so it must be configured before any connect method is called.
     /// </remarks>
     /// <value>
-    /// A <see cref="ClientSslConfiguration"/> that represents
-    /// the configuration used to establish a secure connection.
+    /// A <see cref="ClientSslConfiguration"/> used to establish a secure
+    /// connection.
     /// </value>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   This instance is not a client.
+    ///   The interface is not for the client.
     ///   </para>
     ///   <para>
-    ///   This instance does not use a secure connection.
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The interface does not use a secure connection.
     ///   </para>
     /// </exception>
     public ClientSslConfiguration SslConfiguration {
