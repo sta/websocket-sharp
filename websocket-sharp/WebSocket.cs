@@ -340,7 +340,8 @@ namespace WebSocketSharp
     ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The set operation is not available if this instance is not a client.
+    /// The set operation is not available if the interface is not for
+    /// the client.
     /// </exception>
     public CompressionMethod Compression {
       get {
