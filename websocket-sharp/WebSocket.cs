@@ -4062,7 +4062,7 @@ namespace WebSocketSharp
     ///   This method closes the connection with close status 1001 (going away).
     ///   </para>
     ///   <para>
-    ///   And this method does nothing if the current state of the connection is
+    ///   This method does nothing if the current state of the interface is
     ///   Closing or Closed.
     ///   </para>
     /// </remarks>
