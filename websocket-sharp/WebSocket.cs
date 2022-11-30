@@ -405,13 +405,13 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether a <see cref="OnMessage"/> event
-    /// is emitted when a ping is received.
+    /// Gets or sets a value indicating whether the interface emits
+    /// the message event when receives a ping.
     /// </summary>
     /// <value>
     ///   <para>
-    ///   <c>true</c> if this instance emits a <see cref="OnMessage"/> event
-    ///   when receives a ping; otherwise, <c>false</c>.
+    ///   <c>true</c> if the interface emits the message event when
+    ///   receives a ping; otherwise, <c>false</c>.
     ///   </para>
     ///   <para>
     ///   The default value is <c>false</c>.
