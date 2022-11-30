@@ -3217,7 +3217,7 @@ namespace WebSocketSharp
     public void Connect ()
     {
       if (!_client) {
-        var msg = "The instance is not a client.";
+        var msg = "The interface is not for the client.";
 
         throw new InvalidOperationException (msg);
       }
