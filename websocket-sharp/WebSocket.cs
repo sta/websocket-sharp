@@ -3983,7 +3983,7 @@ namespace WebSocketSharp
     public void SetProxy (string url, string username, string password)
     {
       if (!_client) {
-        var msg = "The instance is not a client.";
+        var msg = "The interface is not for the client.";
 
         throw new InvalidOperationException (msg);
       }
