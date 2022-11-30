@@ -537,7 +537,7 @@ namespace WebSocketSharp
     ///   Section 7 of RFC 6454</see>.
     ///   </para>
     ///   <para>
-    ///   This instance sends the Origin header if this property has any.
+    ///   The interface sends the Origin header if this property has any.
     ///   </para>
     ///   <para>
     ///   The set operation does nothing if the connection has already been
@@ -557,7 +557,8 @@ namespace WebSocketSharp
     ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The set operation is not available if this instance is not a client.
+    /// The set operation is not available if the interface is not for
+    /// the client.
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
