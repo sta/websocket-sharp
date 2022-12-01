@@ -714,8 +714,8 @@ namespace WebSocketSharp
     ///   A <see cref="TimeSpan"/> to wait for the response.
     ///   </para>
     ///   <para>
-    ///   The default value is the same as 5 seconds if this instance is
-    ///   a client.
+    ///   The default value is the same as 5 seconds if the interface is
+    ///   for the client.
     ///   </para>
     /// </value>
     /// <exception cref="ArgumentOutOfRangeException">
