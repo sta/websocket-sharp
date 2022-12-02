@@ -432,8 +432,8 @@ namespace WebSocketSharp
     /// the handshake request is allowed.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the connection has already been
-    /// established or it is closing.
+    /// The set operation works if the current state of the interface is
+    /// New or Closed.
     /// </remarks>
     /// <value>
     ///   <para>
