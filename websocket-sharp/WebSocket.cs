@@ -540,8 +540,8 @@ namespace WebSocketSharp
     ///   The interface sends the Origin header if this property has any.
     ///   </para>
     ///   <para>
-    ///   The set operation does nothing if the connection has already been
-    ///   established or it is closing.
+    ///   The set operation works if the current state of the interface is
+    ///   New or Closed.
     ///   </para>
     /// </remarks>
     /// <value>
