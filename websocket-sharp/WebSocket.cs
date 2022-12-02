@@ -706,8 +706,8 @@ namespace WebSocketSharp
     /// Gets or sets the time to wait for the response to the ping or close.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the connection has already been
-    /// established or it is closing.
+    /// The set operation works if the current state of the interface is
+    /// New or Closed.
     /// </remarks>
     /// <value>
     ///   <para>
