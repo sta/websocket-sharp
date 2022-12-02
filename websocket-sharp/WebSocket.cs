@@ -325,15 +325,15 @@ namespace WebSocketSharp
     /// Gets or sets the compression method used to compress a message.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the connection has already been
-    /// established or it is closing.
+    /// The set operation works if the current state of the interface is
+    /// New or Closed.
     /// </remarks>
     /// <value>
     ///   <para>
     ///   One of the <see cref="CompressionMethod"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It specifies the compression method used to compress a message.
+    ///   It represents the compression method used to compress a message.
     ///   </para>
     ///   <para>
     ///   The default value is <see cref="CompressionMethod.None"/>.
