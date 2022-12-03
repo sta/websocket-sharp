@@ -758,7 +758,7 @@ namespace WebSocketSharp
     public event EventHandler<ErrorEventArgs> OnError;
 
     /// <summary>
-    /// Occurs when the <see cref="WebSocket"/> receives a message.
+    /// Occurs when the interface receives a message.
     /// </summary>
     public event EventHandler<MessageEventArgs> OnMessage;
 
