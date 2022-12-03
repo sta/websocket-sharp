@@ -753,7 +753,7 @@ namespace WebSocketSharp
     public event EventHandler<CloseEventArgs> OnClose;
 
     /// <summary>
-    /// Occurs when the <see cref="WebSocket"/> gets an error.
+    /// Occurs when the interface gets an error.
     /// </summary>
     public event EventHandler<ErrorEventArgs> OnError;
 
