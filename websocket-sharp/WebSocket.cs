@@ -658,8 +658,8 @@ namespace WebSocketSharp
     /// so it must be configured before any connect method is called.
     /// </remarks>
     /// <value>
-    /// A <see cref="ClientSslConfiguration"/> used to establish a secure
-    /// connection.
+    /// A <see cref="ClientSslConfiguration"/> that represents the
+    /// configuration used to establish a secure connection.
     /// </value>
     /// <exception cref="InvalidOperationException">
     ///   <para>
