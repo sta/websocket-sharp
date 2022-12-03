@@ -739,6 +739,12 @@ namespace WebSocketSharp
       }
     }
 
+	public bool IsConnected {
+		get {
+			return _readyState == WebSocketState.Open || _readyState == WebSocketState.Closing;
+		}
+	}
+
     #endregion
 
     #region Public Events
