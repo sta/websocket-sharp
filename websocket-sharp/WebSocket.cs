@@ -333,7 +333,7 @@ namespace WebSocketSharp
     ///   One of the <see cref="CompressionMethod"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It represents the compression method used to compress a message.
+    ///   It indicates the compression method used to compress a message.
     ///   </para>
     ///   <para>
     ///   The default value is <see cref="CompressionMethod.None"/>.
