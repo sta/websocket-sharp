@@ -405,8 +405,8 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the interface emits
-    /// the message event when receives a ping.
+    /// Gets or sets a value indicating whether the message event is
+    /// emitted when the interface receives a ping.
     /// </summary>
     /// <value>
     ///   <para>
