@@ -763,7 +763,7 @@ namespace WebSocketSharp
     public event EventHandler<MessageEventArgs> OnMessage;
 
     /// <summary>
-    /// Occurs when the WebSocket connection has been established.
+    /// Occurs when the connection has been established.
     /// </summary>
     public event EventHandler OnOpen;
 
