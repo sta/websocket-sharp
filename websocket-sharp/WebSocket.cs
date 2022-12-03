@@ -711,7 +711,8 @@ namespace WebSocketSharp
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="TimeSpan"/> to wait for the response.
+    ///   A <see cref="TimeSpan"/> that represents the time to wait for
+    ///   the response.
     ///   </para>
     ///   <para>
     ///   The default value is the same as 5 seconds if the interface is
