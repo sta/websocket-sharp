@@ -748,7 +748,7 @@ namespace WebSocketSharp
     #region Public Events
 
     /// <summary>
-    /// Occurs when the WebSocket connection has been closed.
+    /// Occurs when the connection has been closed.
     /// </summary>
     public event EventHandler<CloseEventArgs> OnClose;
 
