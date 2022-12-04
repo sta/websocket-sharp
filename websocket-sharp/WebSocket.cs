@@ -3831,8 +3831,8 @@ namespace WebSocketSharp
     /// Sets the credentials for the HTTP authentication (Basic/Digest).
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the connection has already been
-    /// established or it is closing.
+    /// This method works if the current state of the interface is
+    /// New or Closed.
     /// </remarks>
     /// <param name="username">
     ///   <para>
