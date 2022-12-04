@@ -3795,8 +3795,8 @@ namespace WebSocketSharp
     /// Sets an HTTP cookie to send with the handshake request.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the connection has already been
-    /// established or it is closing.
+    /// This method works if the current state of the interface is
+    /// New or Closed.
     /// </remarks>
     /// <param name="cookie">
     /// A <see cref="Cookie"/> that specifies the cookie to send.
