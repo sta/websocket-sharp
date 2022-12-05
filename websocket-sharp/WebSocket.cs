@@ -694,7 +694,13 @@ namespace WebSocketSharp
     /// Gets the URL to which to connect.
     /// </summary>
     /// <value>
-    /// A <see cref="Uri"/> that represents the URL to which to connect.
+    ///   <para>
+    ///   A <see cref="Uri"/> that represents the URL to which to connect.
+    ///   </para>
+    ///   <para>
+    ///   Also it represents the URL requested by the client if the interface
+    ///   is for the server.
+    ///   </para>
     /// </value>
     public Uri Url {
       get {
