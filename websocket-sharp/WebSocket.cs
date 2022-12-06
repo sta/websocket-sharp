@@ -3383,7 +3383,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends the specified file using the WebSocket connection.
+    /// Sends the specified file to the remote endpoint.
     /// </summary>
     /// <param name="fileInfo">
     ///   <para>
@@ -3394,7 +3394,7 @@ namespace WebSocketSharp
     ///   </para>
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// The current state of the connection is not Open.
+    /// The current state of the interface is not Open.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="fileInfo"/> is <see langword="null"/>.
