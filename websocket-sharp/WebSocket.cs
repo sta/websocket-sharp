@@ -3645,7 +3645,8 @@ namespace WebSocketSharp
     public void SendAsync (FileInfo fileInfo, Action<bool> completed)
     {
       if (_readyState != WebSocketState.Open) {
-        var msg = "The current state of the connection is not Open.";
+        var msg = "The current state of the interface is not Open.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -3654,12 +3655,15 @@ namespace WebSocketSharp
 
       if (!fileInfo.Exists) {
         var msg = "The file does not exist.";
+
         throw new ArgumentException (msg, "fileInfo");
       }
 
       FileStream stream;
+
       if (!fileInfo.TryOpenRead (out stream)) {
         var msg = "The file could not be opened.";
+
         throw new ArgumentException (msg, "fileInfo");
       }
 
