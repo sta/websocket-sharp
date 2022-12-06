@@ -3706,7 +3706,8 @@ namespace WebSocketSharp
     public void SendAsync (string data, Action<bool> completed)
     {
       if (_readyState != WebSocketState.Open) {
-        var msg = "The current state of the connection is not Open.";
+        var msg = "The current state of the interface is not Open.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -3714,8 +3715,10 @@ namespace WebSocketSharp
         throw new ArgumentNullException ("data");
 
       byte[] bytes;
+
       if (!data.TryGetUTF8EncodedBytes (out bytes)) {
         var msg = "It could not be UTF-8-encoded.";
+
         throw new ArgumentException (msg, "data");
       }
 
