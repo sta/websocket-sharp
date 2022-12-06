@@ -3476,7 +3476,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends the data from the specified stream using the WebSocket connection.
+    /// Sends the data from the specified stream instance to the remote endpoint.
     /// </summary>
     /// <param name="stream">
     ///   <para>
@@ -3490,7 +3490,7 @@ namespace WebSocketSharp
     /// An <see cref="int"/> that specifies the number of bytes to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// The current state of the connection is not Open.
+    /// The current state of the interface is not Open.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="stream"/> is <see langword="null"/>.
