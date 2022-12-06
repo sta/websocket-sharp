@@ -3439,13 +3439,13 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends the specified data using the WebSocket connection.
+    /// Sends the specified data to the remote endpoint.
     /// </summary>
     /// <param name="data">
-    /// A <see cref="string"/> that represents the text data to send.
+    /// A <see cref="string"/> that specifies the text data to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// The current state of the connection is not Open.
+    /// The current state of the interface is not Open.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="data"/> is <see langword="null"/>.
