@@ -3555,29 +3555,31 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends the specified data asynchronously using the WebSocket connection.
+    /// Sends the specified data to the remote endpoint asynchronously.
     /// </summary>
     /// <remarks>
     /// This method does not wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that represents the binary data to send.
+    /// An array of <see cref="byte"/> that specifies the binary data to send.
     /// </param>
     /// <param name="completed">
     ///   <para>
-    ///   An <c>Action&lt;bool&gt;</c> delegate or <see langword="null"/>
-    ///   if not needed.
+    ///   An <see cref="T:System.Action{bool}"/> delegate.
     ///   </para>
     ///   <para>
     ///   The delegate invokes the method called when the send is complete.
     ///   </para>
     ///   <para>
-    ///   <c>true</c> is passed to the method if the send has done with
-    ///   no error; otherwise, <c>false</c>.
+    ///   The <see cref="bool"/> parameter passed to the method is <c>true</c>
+    ///   if the send has successfully done; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not necessary.
     ///   </para>
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// The current state of the connection is not Open.
+    /// The current state of the interface is not Open.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="data"/> is <see langword="null"/>.
