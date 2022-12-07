@@ -2012,6 +2012,8 @@ namespace WebSocketSharp
       if (!sent)
         return false;
 
+      // Continue
+
       var n = rem == 0 ? quo - 2 : quo - 1;
 
       for (long i = 0; i < n; i++) {
