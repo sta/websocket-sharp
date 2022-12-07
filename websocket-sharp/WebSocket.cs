@@ -2037,7 +2037,7 @@ namespace WebSocketSharp
     {
       lock (_forState) {
         if (_readyState != WebSocketState.Open) {
-          _logger.Trace ("The connection is closing.");
+          _logger.Error ("The current state of the interface is not Open.");
 
           return false;
         }
