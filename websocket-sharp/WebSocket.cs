@@ -1955,7 +1955,7 @@ namespace WebSocketSharp
           sent = send (opcode, stream, compressed);
 
           if (!sent)
-            error ("A send has been interrupted.", null);
+            error ("A send has failed.", null);
         }
         catch (Exception ex) {
           _logger.Error (ex.Message);
