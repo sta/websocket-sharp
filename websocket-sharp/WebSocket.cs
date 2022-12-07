@@ -3784,7 +3784,8 @@ namespace WebSocketSharp
     public void SendAsync (Stream stream, int length, Action<bool> completed)
     {
       if (_readyState != WebSocketState.Open) {
-        var msg = "The current state of the connection is not Open.";
+        var msg = "The current state of the interface is not Open.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -3793,29 +3794,30 @@ namespace WebSocketSharp
 
       if (!stream.CanRead) {
         var msg = "It cannot be read.";
+
         throw new ArgumentException (msg, "stream");
       }
 
       if (length < 1) {
         var msg = "Less than 1.";
+
         throw new ArgumentException (msg, "length");
       }
 
       var bytes = stream.ReadBytes (length);
-
       var len = bytes.Length;
+
       if (len == 0) {
         var msg = "No data could be read from it.";
+
         throw new ArgumentException (msg, "stream");
       }
 
       if (len < length) {
-        _logger.Warn (
-          String.Format (
-            "Only {0} byte(s) of data could be read from the stream.",
-            len
-          )
-        );
+        var fmt = "Only {0} byte(s) of data could be read from the stream.";
+        var msg = String.Format (fmt, len);
+
+        _logger.Warn (msg);
       }
 
       sendAsync (Opcode.Binary, new MemoryStream (bytes), completed);
