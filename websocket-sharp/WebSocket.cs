@@ -2558,11 +2558,13 @@ namespace WebSocketSharp
       lock (_forSend) {
         lock (_forState) {
           if (_readyState != WebSocketState.Open) {
-            _logger.Error ("The connection is closing.");
+            _logger.Error ("The current state of the interface is not Open.");
+
             return;
           }
 
           byte[] found;
+
           if (!cache.TryGetValue (_compression, out found)) {
             found = new WebSocketFrame (
                       Fin.Final,
