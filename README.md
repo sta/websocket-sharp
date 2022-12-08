@@ -60,7 +60,7 @@ It works with **Unity Free**, but there are some limitations:
 
 .NET API 2.0 compatibility level for iOS/Android may require to fix lack of some features for later than .NET Framework 2.0, such as the `System.Func<...>` delegates (so i have added them in the asset package).
 
-And it is priced at **US$15**. I believe your $15 makes this project more better, **Thank you!**
+And it is priced at **US$15**. I believe your $15 makes this project better, **Thank you!**
 
 ## Usage ##
 
@@ -414,7 +414,7 @@ wssv.Stop ();
 
 ### HTTP Server with the WebSocket ###
 
-I have modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`, and some other classes from **[Mono]** to create an HTTP server that allows to accept the WebSocket handshake requests.
+I have modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`, and some other classes from **[Mono]** to create an HTTP server that allows accepting the WebSocket handshake requests.
 
 So websocket-sharp provides the `WebSocketSharp.Server.HttpServer` class.
 
@@ -657,7 +657,7 @@ Examples using websocket-sharp.
 
 ### Example3 ###
 
-[Example3] starts an HTTP server that allows to accept the WebSocket handshake requests.
+[Example3] starts an HTTP server that allows accepting the WebSocket handshake requests.
 
 Would you access to [http://localhost:4649](http://localhost:4649) to do **WebSocket Echo Test** with your web browser while Example3 is running?
 
