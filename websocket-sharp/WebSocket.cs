@@ -96,7 +96,7 @@ namespace WebSocketSharp
     private bool                           _ignoreExtensions;
     private bool                           _inContinuation;
     private volatile bool                  _inMessage;
-    private volatile Logger                _logger;
+    private volatile Logger                _log;
     private static readonly int            _maxRetryCountForConnect;
     private Action<MessageEventArgs>       _message;
     private Queue<MessageEventArgs>        _messageEventQueue;
@@ -173,7 +173,7 @@ namespace WebSocketSharp
       _protocol = protocol;
 
       _closeContext = context.Close;
-      _logger = context.Log;
+      _log = context.Log;
       _message = messages;
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
@@ -189,7 +189,7 @@ namespace WebSocketSharp
       _protocol = protocol;
 
       _closeContext = context.Close;
-      _logger = context.Log;
+      _log = context.Log;
       _message = messages;
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
@@ -276,7 +276,7 @@ namespace WebSocketSharp
 
       _base64Key = CreateBase64Key ();
       _client = true;
-      _logger = new Logger ();
+      _log = new Logger ();
       _message = messagec;
       _retryCountForConnect = -1;
       _secure = _uri.Scheme == "wss";
@@ -518,11 +518,11 @@ namespace WebSocketSharp
     /// </value>
     public Logger Log {
       get {
-        return _logger;
+        return _log;
       }
 
       internal set {
-        _logger = value;
+        _log = value;
       }
     }
 
@@ -798,13 +798,13 @@ namespace WebSocketSharp
     {
       lock (_forState) {
         if (_readyState == WebSocketState.Open) {
-          _logger.Trace ("The connection has already been established.");
+          _log.Trace ("The connection has already been established.");
 
           return false;
         }
 
         if (_readyState == WebSocketState.Closing) {
-          _logger.Error ("The close process is in progress.");
+          _log.Error ("The close process is in progress.");
 
           error ("An error has occurred while accepting.", null);
 
@@ -812,7 +812,7 @@ namespace WebSocketSharp
         }
 
         if (_readyState == WebSocketState.Closed) {
-          _logger.Error ("The connection has been closed.");
+          _log.Error ("The connection has been closed.");
 
           error ("An error has occurred while accepting.", null);
 
@@ -827,8 +827,8 @@ namespace WebSocketSharp
           accepted = acceptHandshake ();
         }
         catch (Exception ex) {
-          _logger.Fatal (ex.Message);
-          _logger.Debug (ex.ToString ());
+          _log.Fatal (ex.Message);
+          _log.Debug (ex.ToString ());
 
           abort (1011, "An exception has occurred while accepting.");
         }
@@ -848,8 +848,8 @@ namespace WebSocketSharp
       string msg;
 
       if (!checkHandshakeRequest (_context, out msg)) {
-        _logger.Error (msg);
-        _logger.Debug (_context.ToString ());
+        _log.Error (msg);
+        _log.Debug (_context.ToString ());
 
         refuseHandshake (1002, "A handshake error has occurred.");
 
@@ -857,8 +857,8 @@ namespace WebSocketSharp
       }
 
       if (!customCheckHandshakeRequest (_context, out msg)) {
-        _logger.Error (msg);
-        _logger.Debug (_context.ToString ());
+        _log.Error (msg);
+        _log.Debug (_context.ToString ());
 
         refuseHandshake (1002, "A handshake error has occurred.");
 
@@ -1111,13 +1111,13 @@ namespace WebSocketSharp
     private void close (ushort code, string reason)
     {
       if (_readyState == WebSocketState.Closing) {
-        _logger.Trace ("The close process is already in progress.");
+        _log.Trace ("The close process is already in progress.");
 
         return;
       }
 
       if (_readyState == WebSocketState.Closed) {
-        _logger.Trace ("The connection has already been closed.");
+        _log.Trace ("The connection has already been closed.");
 
         return;
       }
@@ -1138,13 +1138,13 @@ namespace WebSocketSharp
     {
       lock (_forState) {
         if (_readyState == WebSocketState.Closing) {
-          _logger.Trace ("The close process is already in progress.");
+          _log.Trace ("The close process is already in progress.");
 
           return;
         }
 
         if (_readyState == WebSocketState.Closed) {
-          _logger.Trace ("The connection has already been closed.");
+          _log.Trace ("The connection has already been closed.");
 
           return;
         }
@@ -1154,13 +1154,13 @@ namespace WebSocketSharp
         _readyState = WebSocketState.Closing;
       }
 
-      _logger.Trace ("Begin closing the connection.");
+      _log.Trace ("Begin closing the connection.");
 
       var res = closeHandshake (payloadData, send, received);
 
       releaseResources ();
 
-      _logger.Trace ("End closing the connection.");
+      _log.Trace ("End closing the connection.");
 
       _readyState = WebSocketState.Closed;
 
@@ -1170,21 +1170,21 @@ namespace WebSocketSharp
         OnClose.Emit (this, e);
       }
       catch (Exception ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
+        _log.Error (ex.Message);
+        _log.Debug (ex.ToString ());
       }
     }
 
     private void closeAsync (ushort code, string reason)
     {
       if (_readyState == WebSocketState.Closing) {
-        _logger.Trace ("The close process is already in progress.");
+        _log.Trace ("The close process is already in progress.");
 
         return;
       }
 
       if (_readyState == WebSocketState.Closed) {
-        _logger.Trace ("The connection has already been closed.");
+        _log.Trace ("The connection has already been closed.");
 
         return;
       }
@@ -1240,7 +1240,7 @@ namespace WebSocketSharp
                   received
                 );
 
-      _logger.Debug (msg);
+      _log.Debug (msg);
 
       return ret;
     }
@@ -1250,13 +1250,13 @@ namespace WebSocketSharp
     {
       lock (_forState) {
         if (_readyState == WebSocketState.Open) {
-          _logger.Trace ("The connection has already been established.");
+          _log.Trace ("The connection has already been established.");
 
           return false;
         }
 
         if (_readyState == WebSocketState.Closing) {
-          _logger.Error ("The close process is in progress.");
+          _log.Error ("The close process is in progress.");
 
           error ("An error has occurred while connecting.", null);
 
@@ -1264,7 +1264,7 @@ namespace WebSocketSharp
         }
 
         if (_retryCountForConnect >= _maxRetryCountForConnect) {
-          _logger.Error ("An opportunity for reconnecting has been lost.");
+          _log.Error ("An opportunity for reconnecting has been lost.");
 
           error ("An error has occurred while connecting.", null);
 
@@ -1281,8 +1281,8 @@ namespace WebSocketSharp
           done = doHandshake ();
         }
         catch (Exception ex) {
-          _logger.Fatal (ex.Message);
-          _logger.Debug (ex.ToString ());
+          _log.Fatal (ex.Message);
+          _log.Debug (ex.ToString ());
 
           abort ("An exception has occurred while connecting.", ex);
         }
@@ -1443,8 +1443,8 @@ namespace WebSocketSharp
       string msg;
 
       if (!checkHandshakeResponse (res, out msg)) {
-        _logger.Error (msg);
-        _logger.Debug (res.ToString ());
+        _log.Error (msg);
+        _log.Debug (res.ToString ());
 
         abort (1002, "A handshake error has occurred.");
 
@@ -1479,8 +1479,8 @@ namespace WebSocketSharp
         OnError.Emit (this, e);
       }
       catch (Exception ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
+        _log.Error (ex.Message);
+        _log.Debug (ex.ToString ());
       }
     }
 
@@ -1533,8 +1533,8 @@ namespace WebSocketSharp
           OnMessage.Emit (this, e);
         }
         catch (Exception ex) {
-          _logger.Error (ex.Message);
-          _logger.Debug (ex.ToString ());
+          _log.Error (ex.Message);
+          _log.Debug (ex.ToString ());
 
           error ("An exception has occurred during an OnMessage event.", ex);
         }
@@ -1564,8 +1564,8 @@ namespace WebSocketSharp
         OnMessage.Emit (this, e);
       }
       catch (Exception ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
+        _log.Error (ex.Message);
+        _log.Debug (ex.ToString ());
 
         error ("An exception has occurred during an OnMessage event.", ex);
       }
@@ -1599,8 +1599,8 @@ namespace WebSocketSharp
         OnOpen.Emit (this, EventArgs.Empty);
       }
       catch (Exception ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
+        _log.Error (ex.Message);
+        _log.Debug (ex.ToString ());
 
         error ("An exception has occurred during the OnOpen event.", ex);
       }
@@ -1720,13 +1720,13 @@ namespace WebSocketSharp
 
     private bool processPingFrame (WebSocketFrame frame)
     {
-      _logger.Trace ("A ping was received.");
+      _log.Trace ("A ping was received.");
 
       var pong = WebSocketFrame.CreatePongFrame (frame.PayloadData, _client);
 
       lock (_forState) {
         if (_readyState != WebSocketState.Open) {
-          _logger.Trace ("A pong to this ping cannot be sent.");
+          _log.Trace ("A pong to this ping cannot be sent.");
 
           return true;
         }
@@ -1738,7 +1738,7 @@ namespace WebSocketSharp
           return false;
       }
 
-      _logger.Trace ("A pong to this ping has been sent.");
+      _log.Trace ("A pong to this ping has been sent.");
 
       if (_emitOnPing) {
         if (_client)
@@ -1754,7 +1754,7 @@ namespace WebSocketSharp
 
     private bool processPongFrame (WebSocketFrame frame)
     {
-      _logger.Trace ("A pong was received.");
+      _log.Trace ("A pong was received.");
 
       try {
         _pongReceived.Set ();
@@ -1766,7 +1766,7 @@ namespace WebSocketSharp
         return false;
       }
 
-      _logger.Trace ("It has been signaled.");
+      _log.Trace ("It has been signaled.");
 
       return true;
     }
@@ -1860,8 +1860,8 @@ namespace WebSocketSharp
 
     private bool processUnsupportedFrame (WebSocketFrame frame)
     {
-      _logger.Fatal ("An unsupported frame was received.");
-      _logger.Debug ("The frame is" + frame.PrintToString (false));
+      _log.Fatal ("An unsupported frame was received.");
+      _log.Debug ("The frame is" + frame.PrintToString (false));
 
       abort (1003, "There is no way to handle it.");
 
@@ -1958,8 +1958,8 @@ namespace WebSocketSharp
             error ("A send has failed.", null);
         }
         catch (Exception ex) {
-          _logger.Error (ex.Message);
-          _logger.Debug (ex.ToString ());
+          _log.Error (ex.Message);
+          _log.Debug (ex.ToString ());
 
           error ("An exception has occurred during a send.", ex);
         }
@@ -2039,7 +2039,7 @@ namespace WebSocketSharp
     {
       lock (_forState) {
         if (_readyState != WebSocketState.Open) {
-          _logger.Error ("The current state of the interface is not Open.");
+          _log.Error ("The current state of the interface is not Open.");
 
           return false;
         }
@@ -2068,8 +2068,8 @@ namespace WebSocketSharp
               completed (sent);
           }
           catch (Exception ex) {
-            _logger.Error (ex.Message);
-            _logger.Debug (ex.ToString ());
+            _log.Error (ex.Message);
+            _log.Debug (ex.ToString ());
 
             error (
               "An exception has occurred during the callback for an async send.",
@@ -2087,8 +2087,8 @@ namespace WebSocketSharp
         _stream.Write (bytes, 0, bytes.Length);
       }
       catch (Exception ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
+        _log.Error (ex.Message);
+        _log.Debug (ex.ToString ());
 
         return false;
       }
@@ -2104,7 +2104,7 @@ namespace WebSocketSharp
 
       if (res.IsUnauthorized) {
         if (_credentials == null) {
-          _logger.Error ("No credential is specified.");
+          _log.Error ("No credential is specified.");
 
           return res;
         }
@@ -2112,7 +2112,7 @@ namespace WebSocketSharp
         var val = res.Headers["WWW-Authenticate"];
 
         if (val.IsNullOrEmpty ()) {
-          _logger.Error ("No authentication challenge is specified.");
+          _log.Error ("No authentication challenge is specified.");
 
           return res;
         }
@@ -2120,7 +2120,7 @@ namespace WebSocketSharp
         var achal = AuthenticationChallenge.Parse (val);
 
         if (achal == null) {
-          _logger.Error ("An invalid authentication challenge is specified.");
+          _log.Error ("An invalid authentication challenge is specified.");
 
           return res;
         }
@@ -2131,7 +2131,7 @@ namespace WebSocketSharp
                      && _authChallenge.Scheme == AuthenticationSchemes.Basic;
 
         if (failed) {
-          _logger.Error ("The authentication has failed.");
+          _log.Error ("The authentication has failed.");
 
           return res;
         }
@@ -2159,7 +2159,7 @@ namespace WebSocketSharp
         var val = res.Headers["Location"];
 
         if (val.IsNullOrEmpty ()) {
-          _logger.Error ("No url to redirect is located.");
+          _log.Error ("No url to redirect is located.");
 
           return res;
         }
@@ -2168,7 +2168,7 @@ namespace WebSocketSharp
         string msg;
 
         if (!val.TryCreateWebSocketUri (out uri, out msg)) {
-          _logger.Error ("An invalid url to redirect is located.");
+          _log.Error ("An invalid url to redirect is located.");
 
           return res;
         }
@@ -2342,8 +2342,8 @@ namespace WebSocketSharp
               message ();
             },
             ex => {
-              _logger.Fatal (ex.Message);
-              _logger.Debug (ex.ToString ());
+              _log.Fatal (ex.Message);
+              _log.Debug (ex.ToString ());
 
               abort ("An exception has occurred while receiving.", ex);
             }
@@ -2377,7 +2377,7 @@ namespace WebSocketSharp
             var fmt = "The server did not send back '{0}'.";
             var msg = String.Format (fmt, param1);
 
-            _logger.Error (msg);
+            _log.Error (msg);
 
             return false;
           }
@@ -2446,13 +2446,13 @@ namespace WebSocketSharp
     {
       lock (_forState) {
         if (_readyState == WebSocketState.Closing) {
-          _logger.Trace ("The close process is already in progress.");
+          _log.Trace ("The close process is already in progress.");
 
           return;
         }
 
         if (_readyState == WebSocketState.Closed) {
-          _logger.Trace ("The connection has already been closed.");
+          _log.Trace ("The connection has already been closed.");
 
           return;
         }
@@ -2460,7 +2460,7 @@ namespace WebSocketSharp
         _readyState = WebSocketState.Closing;
       }
 
-      _logger.Trace ("Begin closing the connection.");
+      _log.Trace ("Begin closing the connection.");
 
       var sent = frameAsBytes != null && sendBytes (frameAsBytes);
       var received = sent && _receivingExited != null
@@ -2476,12 +2476,12 @@ namespace WebSocketSharp
                   received
                 );
 
-      _logger.Debug (msg);
+      _log.Debug (msg);
 
       releaseServerResources ();
       releaseCommonResources ();
 
-      _logger.Trace ("End closing the connection.");
+      _log.Trace ("End closing the connection.");
 
       _readyState = WebSocketState.Closed;
 
@@ -2491,8 +2491,8 @@ namespace WebSocketSharp
         OnClose.Emit (this, e);
       }
       catch (Exception ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
+        _log.Error (ex.Message);
+        _log.Debug (ex.ToString ());
       }
     }
 
@@ -2558,7 +2558,7 @@ namespace WebSocketSharp
       lock (_forSend) {
         lock (_forState) {
           if (_readyState != WebSocketState.Open) {
-            _logger.Error ("The current state of the interface is not Open.");
+            _log.Error ("The current state of the interface is not Open.");
 
             return;
           }
@@ -3554,7 +3554,7 @@ namespace WebSocketSharp
         var fmt = "Only {0} byte(s) of data could be read from the stream.";
         var msg = String.Format (fmt, len);
 
-        _logger.Warn (msg);
+        _log.Warn (msg);
       }
 
       send (Opcode.Binary, new MemoryStream (bytes));
@@ -3825,7 +3825,7 @@ namespace WebSocketSharp
         var fmt = "Only {0} byte(s) of data could be read from the stream.";
         var msg = String.Format (fmt, len);
 
-        _logger.Warn (msg);
+        _log.Warn (msg);
       }
 
       sendAsync (Opcode.Binary, new MemoryStream (bytes), completed);
