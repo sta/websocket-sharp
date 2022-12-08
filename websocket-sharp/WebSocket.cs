@@ -2590,8 +2590,10 @@ namespace WebSocketSharp
     {
       lock (_forSend) {
         Stream found;
+
         if (!cache.TryGetValue (_compression, out found)) {
           found = stream.Compress (_compression);
+
           cache.Add (_compression, found);
         }
         else {
