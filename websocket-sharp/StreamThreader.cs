@@ -22,7 +22,18 @@ namespace WebSocketSharp
             buff = new byte[buffersize];
             state = MainLoop().Await();
 
-            Stream.BeginRead(buff, 0, buffersize, StreamReader, null);
+            try
+            {
+                Stream.BeginRead(buff, 0, buffersize, StreamReader, null);
+            }
+            catch (ObjectDisposedException)
+            {
+            }
+            catch (Exception ex)
+            {
+                socket._logger.Fatal(ex.ToString());
+                socket.fatal("An exception has occurred while receiving.", ex);
+            }
 
         }
 
@@ -49,6 +60,9 @@ namespace WebSocketSharp
                 }
 
                 Stream.BeginRead(buff, 0, buffersize, StreamReader, null);
+            }
+            catch (ObjectDisposedException)
+            {
             }
             catch (Exception ex)
             {
