@@ -1097,33 +1097,40 @@ namespace WebSocketSharp
       message = null;
 
       var masked = frame.IsMasked;
+
       if (_client && masked) {
         message = "A frame from the server is masked.";
+
         return false;
       }
 
       if (!_client && !masked) {
         message = "A frame from a client is not masked.";
+
         return false;
       }
 
       if (_inContinuation && frame.IsData) {
-        message = "A data frame has been received while receiving continuation frames.";
+        message = "A data frame was received while receiving continuation frames.";
+
         return false;
       }
 
       if (frame.IsCompressed && _compression == CompressionMethod.None) {
-        message = "A compressed frame has been received without any agreement for it.";
+        message = "A compressed frame was received without any agreement for it.";
+
         return false;
       }
 
       if (frame.Rsv2 == Rsv.On) {
         message = "The RSV2 of a frame is non-zero without any negotiation for it.";
+
         return false;
       }
 
       if (frame.Rsv3 == Rsv.On) {
         message = "The RSV3 of a frame is non-zero without any negotiation for it.";
+
         return false;
       }
 
@@ -1133,48 +1140,53 @@ namespace WebSocketSharp
     private void close (ushort code, string reason)
     {
       if (_readyState == WebSocketState.Closing) {
-        _logger.Info ("The closing is already in progress.");
+        _logger.Trace ("The closing is already in progress.");
+
         return;
       }
 
       if (_readyState == WebSocketState.Closed) {
-        _logger.Info ("The connection has already been closed.");
+        _logger.Trace ("The connection has already been closed.");
+
         return;
       }
 
-      if (code == 1005) { // == no status
-        close (PayloadData.Empty, true, true, false);
+      if (code == 1005) {
+        close (PayloadData.Empty, true, false);
+
         return;
       }
 
+      var data = new PayloadData (code, reason);
       var send = !code.IsReserved ();
-      close (new PayloadData (code, reason), send, send, false);
+
+      close (data, send, false);
     }
 
-    private void close (
-      PayloadData payloadData, bool send, bool receive, bool received
-    )
+    private void close (PayloadData payloadData, bool send, bool received)
     {
       lock (_forState) {
         if (_readyState == WebSocketState.Closing) {
-          _logger.Info ("The closing is already in progress.");
+          _logger.Trace ("The closing is already in progress.");
+
           return;
         }
 
         if (_readyState == WebSocketState.Closed) {
-          _logger.Info ("The connection has already been closed.");
+          _logger.Trace ("The connection has already been closed.");
+
           return;
         }
 
         send = send && _readyState == WebSocketState.Open;
-        receive = send && receive;
 
         _readyState = WebSocketState.Closing;
       }
 
       _logger.Trace ("Begin closing the connection.");
 
-      var res = closeHandshake (payloadData, send, receive, received);
+      var res = closeHandshake (payloadData, send, received);
+
       releaseResources ();
 
       _logger.Trace ("End closing the connection.");
@@ -1195,77 +1207,69 @@ namespace WebSocketSharp
     private void closeAsync (ushort code, string reason)
     {
       if (_readyState == WebSocketState.Closing) {
-        _logger.Info ("The closing is already in progress.");
+        _logger.Trace ("The closing is already in progress.");
+
         return;
       }
 
       if (_readyState == WebSocketState.Closed) {
-        _logger.Info ("The connection has already been closed.");
+        _logger.Trace ("The connection has already been closed.");
+
         return;
       }
 
-      if (code == 1005) { // == no status
-        closeAsync (PayloadData.Empty, true, true, false);
+      if (code == 1005) {
+        closeAsync (PayloadData.Empty, true, false);
+
         return;
       }
 
+      var data = new PayloadData (code, reason);
       var send = !code.IsReserved ();
-      closeAsync (new PayloadData (code, reason), send, send, false);
+
+      closeAsync (data, send, false);
     }
 
-    private void closeAsync (
-      PayloadData payloadData, bool send, bool receive, bool received
-    )
+    private void closeAsync (PayloadData payloadData, bool send, bool received)
     {
-      Action<PayloadData, bool, bool, bool> closer = close;
+      Action<PayloadData, bool, bool> closer = close;
+
       closer.BeginInvoke (
-        payloadData, send, receive, received, ar => closer.EndInvoke (ar), null
+        payloadData, send, received, ar => closer.EndInvoke (ar), null
       );
-    }
-
-    private bool closeHandshake (byte[] frameAsBytes, bool receive, bool received)
-    {
-      var sent = frameAsBytes != null && sendBytes (frameAsBytes);
-
-      var wait = !received && sent && receive && _receivingExited != null;
-      if (wait)
-        received = _receivingExited.WaitOne (_waitTime);
-
-      var ret = sent && received;
-
-      _logger.Debug (
-        String.Format (
-          "Was clean?: {0}\n  sent: {1}\n  received: {2}", ret, sent, received
-        )
-      );
-
-      return ret;
     }
 
     private bool closeHandshake (
-      PayloadData payloadData, bool send, bool receive, bool received
+      PayloadData payloadData, bool send, bool received
     )
     {
       var sent = false;
+
       if (send) {
         var frame = WebSocketFrame.CreateCloseFrame (payloadData, _client);
-        sent = sendBytes (frame.ToArray ());
+        var bytes = frame.ToArray ();
+
+        sent = sendBytes (bytes);
 
         if (_client)
           frame.Unmask ();
       }
 
-      var wait = !received && sent && receive && _receivingExited != null;
+      var wait = !received && sent && _receivingExited != null;
+
       if (wait)
         received = _receivingExited.WaitOne (_waitTime);
 
       var ret = sent && received;
 
-      _logger.Debug (
-        String.Format (
-          "Was clean?: {0}\n  sent: {1}\n  received: {2}", ret, sent, received
-        )
-      );
+      var msg = String.Format (
+                  "The closing was clean? {0} (sent: {1} received: {2})",
+                  ret,
+                  sent,
+                  received
+                );
+
+      _logger.Debug (msg);
 
       return ret;
     }
@@ -1499,8 +1503,10 @@ namespace WebSocketSharp
 
     private void error (string message, Exception exception)
     {
+      var e = new ErrorEventArgs (message, exception);
+
       try {
-        OnError.Emit (this, new ErrorEventArgs (message, exception));
+        OnError.Emit (this, e);
       }
       catch (Exception ex) {
         _logger.Error (ex.Message);
@@ -1519,8 +1525,9 @@ namespace WebSocketSharp
 
     private void fatal (string message, ushort code)
     {
-      var payload = new PayloadData (code, message);
-      close (payload, !code.IsReserved (), false, false);
+      var data = new PayloadData (code, message);
+
+      close (data, false, false);
     }
 
     private void fatal (string message, CloseStatusCode code)
@@ -1551,12 +1558,20 @@ namespace WebSocketSharp
     internal void message ()
     {
       MessageEventArgs e = null;
+
       lock (_forMessageEventQueue) {
-        if (_inMessage || _messageEventQueue.Count == 0 || _readyState != WebSocketState.Open)
+        if (_inMessage)
           return;
 
-        _inMessage = true;
+        if (_messageEventQueue.Count == 0)
+          return;
+
+        if (_readyState != WebSocketState.Open)
+          return;
+
         e = _messageEventQueue.Dequeue ();
+
+        _inMessage = true;
       }
 
       _message (e);
@@ -1569,13 +1584,22 @@ namespace WebSocketSharp
           OnMessage.Emit (this, e);
         }
         catch (Exception ex) {
-          _logger.Error (ex.ToString ());
-          error ("An error has occurred during an OnMessage event.", ex);
+          _logger.Error (ex.Message);
+          _logger.Debug (ex.ToString ());
+
+          error ("An exception has occurred during an OnMessage event.", ex);
         }
 
         lock (_forMessageEventQueue) {
-          if (_messageEventQueue.Count == 0 || _readyState != WebSocketState.Open) {
+          if (_messageEventQueue.Count == 0) {
             _inMessage = false;
+
+            break;
+          }
+
+          if (_readyState != WebSocketState.Open) {
+            _inMessage = false;
+
             break;
           }
 
@@ -1591,13 +1615,22 @@ namespace WebSocketSharp
         OnMessage.Emit (this, e);
       }
       catch (Exception ex) {
-        _logger.Error (ex.ToString ());
-        error ("An error has occurred during an OnMessage event.", ex);
+        _logger.Error (ex.Message);
+        _logger.Debug (ex.ToString ());
+
+        error ("An exception has occurred during an OnMessage event.", ex);
       }
 
       lock (_forMessageEventQueue) {
-        if (_messageEventQueue.Count == 0 || _readyState != WebSocketState.Open) {
+        if (_messageEventQueue.Count == 0) {
           _inMessage = false;
+
+          return;
+        }
+
+        if (_readyState != WebSocketState.Open) {
+          _inMessage = false;
+
           return;
         }
 
@@ -1610,19 +1643,31 @@ namespace WebSocketSharp
     private void open ()
     {
       _inMessage = true;
+
       startReceiving ();
+
       try {
         OnOpen.Emit (this, EventArgs.Empty);
       }
       catch (Exception ex) {
-        _logger.Error (ex.ToString ());
-        error ("An error has occurred during the OnOpen event.", ex);
+        _logger.Error (ex.Message);
+        _logger.Debug (ex.ToString ());
+
+        error ("An exception has occurred during the OnOpen event.", ex);
       }
 
       MessageEventArgs e = null;
+
       lock (_forMessageEventQueue) {
-        if (_messageEventQueue.Count == 0 || _readyState != WebSocketState.Open) {
+        if (_messageEventQueue.Count == 0) {
           _inMessage = false;
+
+          return;
+        }
+
+        if (_readyState != WebSocketState.Open) {
+          _inMessage = false;
+
           return;
         }
 
@@ -1637,17 +1682,21 @@ namespace WebSocketSharp
       if (_readyState != WebSocketState.Open)
         return false;
 
-      var pongReceived = _pongReceived;
-      if (pongReceived == null)
+      var received = _pongReceived;
+
+      if (received == null)
         return false;
 
       lock (_forPing) {
         try {
-          pongReceived.Reset ();
-          if (!send (Fin.Final, Opcode.Ping, data, false))
+          received.Reset ();
+
+          var sent = send (Fin.Final, Opcode.Ping, data, false);
+
+          if (!sent)
             return false;
 
-          return pongReceived.WaitOne (_waitTime);
+          return received.WaitOne (_waitTime);
         }
         catch (ObjectDisposedException) {
           return false;
@@ -1657,8 +1706,10 @@ namespace WebSocketSharp
 
     private bool processCloseFrame (WebSocketFrame frame)
     {
-      var payload = frame.PayloadData;
-      close (payload, !payload.HasReservedCode, false, true);
+      var data = frame.PayloadData;
+      var send = !data.HasReservedCode;
+
+      close (data, send, true);
 
       return false;
     }
@@ -1674,11 +1725,14 @@ namespace WebSocketSharp
 
     private bool processDataFrame (WebSocketFrame frame)
     {
-      enqueueToMessageEventQueue (
-        frame.IsCompressed
-        ? new MessageEventArgs (
-            frame.Opcode, frame.PayloadData.ApplicationData.Decompress (_compression))
-        : new MessageEventArgs (frame));
+      var e = frame.IsCompressed
+              ? new MessageEventArgs (
+                  frame.Opcode,
+                  frame.PayloadData.ApplicationData.Decompress (_compression)
+                )
+              : new MessageEventArgs (frame);
+
+      enqueueToMessageEventQueue (e);
 
       return true;
     }
@@ -1686,7 +1740,6 @@ namespace WebSocketSharp
     private bool processFragmentFrame (WebSocketFrame frame)
     {
       if (!_inContinuation) {
-        // Must process first fragment.
         if (frame.IsContinuation)
           return true;
 
@@ -1697,13 +1750,16 @@ namespace WebSocketSharp
       }
 
       _fragmentsBuffer.WriteBytes (frame.PayloadData.ApplicationData, 1024);
+
       if (frame.IsFinal) {
         using (_fragmentsBuffer) {
           var data = _fragmentsCompressed
                      ? _fragmentsBuffer.DecompressToArray (_compression)
                      : _fragmentsBuffer.ToArray ();
 
-          enqueueToMessageEventQueue (new MessageEventArgs (_fragmentsOpcode, data));
+          var e = new MessageEventArgs (_fragmentsOpcode, data);
+
+          enqueueToMessageEventQueue (e);
         }
 
         _fragmentsBuffer = null;
@@ -1721,11 +1777,15 @@ namespace WebSocketSharp
 
       lock (_forState) {
         if (_readyState != WebSocketState.Open) {
-          _logger.Error ("The connection is closing.");
+          _logger.Trace ("A pong to this ping cannot be sent.");
+
           return true;
         }
 
-        if (!sendBytes (pong.ToArray ()))
+        var bytes = pong.ToArray ();
+        var sent = sendBytes (bytes);
+
+        if (!sent)
           return false;
       }
 
@@ -1735,7 +1795,9 @@ namespace WebSocketSharp
         if (_client)
           pong.Unmask ();
 
-        enqueueToMessageEventQueue (new MessageEventArgs (frame));
+        var e = new MessageEventArgs (frame);
+
+        enqueueToMessageEventQueue (e);
       }
 
       return true;
@@ -1748,16 +1810,10 @@ namespace WebSocketSharp
       try {
         _pongReceived.Set ();
       }
-      catch (NullReferenceException ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
-
+      catch (NullReferenceException) {
         return false;
       }
-      catch (ObjectDisposedException ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
-
+      catch (ObjectDisposedException) {
         return false;
       }
 
@@ -1769,10 +1825,12 @@ namespace WebSocketSharp
     internal bool processReceivedFrame (WebSocketFrame frame)
     {
       string msg;
+
       if (!checkReceivedFrame (frame, out msg))
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
 
       frame.Unmask ();
+
       return frame.IsFragment
              ? processFragmentFrame (frame)
              : frame.IsData
@@ -1853,8 +1911,10 @@ namespace WebSocketSharp
 
     private bool processUnsupportedFrame (WebSocketFrame frame)
     {
-      _logger.Fatal ("An unsupported frame:" + frame.PrintToString (false));
-      fatal ("There is no way to handle it.", CloseStatusCode.PolicyViolation);
+      _logger.Fatal ("An unsupported frame was received.");
+      _logger.Debug ("The frame is" + frame.PrintToString (false));
+
+      fatal ("There is no way to handle it.", 1003);
 
       return false;
     }
@@ -2397,12 +2457,14 @@ namespace WebSocketSharp
     {
       lock (_forState) {
         if (_readyState == WebSocketState.Closing) {
-          _logger.Info ("The closing is already in progress.");
+          _logger.Trace ("The closing is already in progress.");
+
           return;
         }
 
         if (_readyState == WebSocketState.Closed) {
-          _logger.Info ("The connection has already been closed.");
+          _logger.Trace ("The connection has already been closed.");
+
           return;
         }
 
@@ -2418,11 +2480,14 @@ namespace WebSocketSharp
 
       var res = sent && received;
 
-      _logger.Debug (
-        String.Format (
-          "Was clean?: {0}\n  sent: {1}\n  received: {2}", res, sent, received
-        )
-      );
+      var msg = String.Format (
+                  "The closing was clean? {0} (sent: {1} received: {2})",
+                  res,
+                  sent,
+                  received
+                );
+
+      _logger.Debug (msg);
 
       releaseServerResources ();
       releaseCommonResources ();
@@ -2489,23 +2554,26 @@ namespace WebSocketSharp
       if (_readyState != WebSocketState.Open)
         return false;
 
-      var pongReceived = _pongReceived;
-      if (pongReceived == null)
+      var received = _pongReceived;
+
+      if (received == null)
         return false;
 
       lock (_forPing) {
         try {
-          pongReceived.Reset ();
+          received.Reset ();
 
           lock (_forState) {
             if (_readyState != WebSocketState.Open)
               return false;
 
-            if (!sendBytes (frameAsBytes))
+            var sent = sendBytes (frameAsBytes);
+
+            if (!sent)
               return false;
           }
 
-          return pongReceived.WaitOne (timeout);
+          return received.WaitOne (timeout);
         }
         catch (ObjectDisposedException) {
           return false;

@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2013-2015 sta.blockhead
+ * Copyright (c) 2013-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -58,6 +58,10 @@ namespace WebSocketSharp
     /// <summary>
     /// Specifies the top logging level.
     /// </summary>
-    Fatal
+    Fatal,
+    /// <summary>
+    /// Specifies not to output logs.
+    /// </summary>
+    None
   }
 }
