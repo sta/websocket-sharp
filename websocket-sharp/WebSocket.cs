@@ -380,7 +380,7 @@ namespace WebSocketSharp
     public IEnumerable<Cookie> Cookies {
       get {
         lock (_cookies.SyncRoot) {
-          foreach (Cookie cookie in _cookies)
+          foreach (var cookie in _cookies)
             yield return cookie;
         }
       }
