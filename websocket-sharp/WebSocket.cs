@@ -1943,6 +1943,19 @@ namespace WebSocketSharp
       _context = null;
     }
 
+    private bool send (byte[] frameAsBytes)
+    {
+      lock (_forState) {
+        if (_readyState != WebSocketState.Open) {
+          _log.Error ("The current state of the interface is not Open.");
+
+          return false;
+        }
+
+        return sendBytes (frameAsBytes);
+      }
+    }
+
     private bool send (Opcode opcode, Stream stream)
     {
       lock (_forSend) {
