@@ -2573,30 +2573,22 @@ namespace WebSocketSharp
     )
     {
       lock (_forSend) {
-        lock (_forState) {
-          if (_readyState != WebSocketState.Open) {
-            _log.Error ("The current state of the interface is not Open.");
+        byte[] found;
 
-            return;
-          }
+        if (!cache.TryGetValue (_compression, out found)) {
+          found = new WebSocketFrame (
+                    Fin.Final,
+                    opcode,
+                    data.Compress (_compression),
+                    _compression != CompressionMethod.None,
+                    false
+                  )
+                  .ToArray ();
 
-          byte[] found;
-
-          if (!cache.TryGetValue (_compression, out found)) {
-            found = new WebSocketFrame (
-                      Fin.Final,
-                      opcode,
-                      data.Compress (_compression),
-                      _compression != CompressionMethod.None,
-                      false
-                    )
-                    .ToArray ();
-
-            cache.Add (_compression, found);
-          }
-
-          sendBytes (found);
+          cache.Add (_compression, found);
         }
+
+        send (found);
       }
     }
 
