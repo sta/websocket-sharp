@@ -473,9 +473,13 @@ namespace WebSocketSharp
     /// Gets the extensions selected by the server.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that will be a list of the extensions
-    /// negotiated between the client and server, or an empty string
-    /// if not specified or selected.
+    ///   <para>
+    ///   A <see cref="string"/> that represents a list of the extensions
+    ///   negotiated between the client and server.
+    ///   </para>
+    ///   <para>
+    ///   An empty string if not specified or selected.
+    ///   </para>
     /// </value>
     public string Extensions {
       get {
