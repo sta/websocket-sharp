@@ -2549,15 +2549,10 @@ namespace WebSocketSharp
         try {
           received.Reset ();
 
-          lock (_forState) {
-            if (_readyState != WebSocketState.Open)
-              return false;
+          var sent = send (frameAsBytes);
 
-            var sent = sendBytes (frameAsBytes);
-
-            if (!sent)
-              return false;
-          }
+          if (!sent)
+            return false;
 
           return received.WaitOne (timeout);
         }
