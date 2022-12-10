@@ -2535,7 +2535,7 @@ namespace WebSocketSharp
     }
 
     // As server
-    internal bool Ping (byte[] frameAsBytes, TimeSpan timeout)
+    internal bool Ping (byte[] frameAsBytes)
     {
       if (_readyState != WebSocketState.Open)
         return false;
@@ -2554,7 +2554,7 @@ namespace WebSocketSharp
           if (!sent)
             return false;
 
-          return received.WaitOne (timeout);
+          return received.WaitOne (_waitTime);
         }
         catch (ObjectDisposedException) {
           return false;

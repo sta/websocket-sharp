@@ -395,7 +395,7 @@ namespace WebSocketSharp.Server
           break;
         }
 
-        var res = session.WebSocket.Ping (frameAsBytes, _waitTime);
+        var res = session.WebSocket.Ping (frameAsBytes);
 
         ret.Add (session.ID, res);
       }
