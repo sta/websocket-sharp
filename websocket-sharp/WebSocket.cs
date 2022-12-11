@@ -2054,18 +2054,10 @@ namespace WebSocketSharp
 
     private bool send (Fin fin, Opcode opcode, byte[] data, bool compressed)
     {
-      lock (_forState) {
-        if (_readyState != WebSocketState.Open) {
-          _log.Error ("The current state of the interface is not Open.");
+      var frame = new WebSocketFrame (fin, opcode, data, compressed, _client);
+      var bytes = frame.ToArray ();
 
-          return false;
-        }
-
-        var frame = new WebSocketFrame (fin, opcode, data, compressed, _client);
-        var bytes = frame.ToArray ();
-
-        return sendBytes (bytes);
-      }
+      return send (bytes);
     }
 
     private void sendAsync (
