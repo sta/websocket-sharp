@@ -2061,14 +2061,14 @@ namespace WebSocketSharp
     }
 
     private void sendAsync (
-      Opcode opcode, Stream stream, Action<bool> completed
+      Opcode opcode, Stream sourceStream, Action<bool> completed
     )
     {
       Func<Opcode, Stream, bool> sender = send;
 
       sender.BeginInvoke (
         opcode,
-        stream,
+        sourceStream,
         ar => {
           try {
             var sent = sender.EndInvoke (ar);
