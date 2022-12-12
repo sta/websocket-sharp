@@ -1991,9 +1991,9 @@ namespace WebSocketSharp
       }
     }
 
-    private bool send (Opcode opcode, Stream stream, bool compressed)
+    private bool send (Opcode opcode, Stream dataStream, bool compressed)
     {
-      var len = stream.Length;
+      var len = dataStream.Length;
 
       if (len == 0)
         return send (Fin.Final, opcode, EmptyBytes, false);
@@ -2006,14 +2006,14 @@ namespace WebSocketSharp
       if (quo == 0) {
         buff = new byte[rem];
 
-        return stream.Read (buff, 0, rem) == rem
+        return dataStream.Read (buff, 0, rem) == rem
                && send (Fin.Final, opcode, buff, compressed);
       }
 
       if (quo == 1 && rem == 0) {
         buff = new byte[FragmentLength];
 
-        return stream.Read (buff, 0, FragmentLength) == FragmentLength
+        return dataStream.Read (buff, 0, FragmentLength) == FragmentLength
                && send (Fin.Final, opcode, buff, compressed);
       }
 
@@ -2023,7 +2023,7 @@ namespace WebSocketSharp
 
       buff = new byte[FragmentLength];
 
-      var sent = stream.Read (buff, 0, FragmentLength) == FragmentLength
+      var sent = dataStream.Read (buff, 0, FragmentLength) == FragmentLength
                  && send (Fin.More, opcode, buff, compressed);
 
       if (!sent)
@@ -2034,7 +2034,7 @@ namespace WebSocketSharp
       var n = rem == 0 ? quo - 2 : quo - 1;
 
       for (long i = 0; i < n; i++) {
-        sent = stream.Read (buff, 0, FragmentLength) == FragmentLength
+        sent = dataStream.Read (buff, 0, FragmentLength) == FragmentLength
                && send (Fin.More, Opcode.Cont, buff, false);
 
         if (!sent)
@@ -2048,7 +2048,7 @@ namespace WebSocketSharp
       else
         buff = new byte[rem];
 
-      return stream.Read (buff, 0, rem) == rem
+      return dataStream.Read (buff, 0, rem) == rem
              && send (Fin.Final, Opcode.Cont, buff, false);
     }
 
