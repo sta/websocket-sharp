@@ -2055,9 +2055,9 @@ namespace WebSocketSharp
     private bool send (Fin fin, Opcode opcode, byte[] data, bool compressed)
     {
       var frame = new WebSocketFrame (fin, opcode, data, compressed, _client);
-      var bytes = frame.ToArray ();
+      var rawFrame = frame.ToArray ();
 
-      return send (bytes);
+      return send (rawFrame);
     }
 
     private void sendAsync (
