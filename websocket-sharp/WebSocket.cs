@@ -1943,7 +1943,7 @@ namespace WebSocketSharp
       _context = null;
     }
 
-    private bool send (byte[] frameAsBytes)
+    private bool send (byte[] rawFrame)
     {
       lock (_forState) {
         if (_readyState != WebSocketState.Open) {
@@ -1952,7 +1952,7 @@ namespace WebSocketSharp
           return false;
         }
 
-        return sendBytes (frameAsBytes);
+        return sendBytes (rawFrame);
       }
     }
 
@@ -2451,7 +2451,7 @@ namespace WebSocketSharp
     }
 
     // As server
-    internal void Close (PayloadData payloadData, byte[] frameAsBytes)
+    internal void Close (PayloadData payloadData, byte[] rawFrame)
     {
       lock (_forState) {
         if (_readyState == WebSocketState.Closing) {
@@ -2471,7 +2471,7 @@ namespace WebSocketSharp
 
       _log.Trace ("Begin closing the connection.");
 
-      var sent = frameAsBytes != null && sendBytes (frameAsBytes);
+      var sent = rawFrame != null && sendBytes (rawFrame);
       var received = sent && _receivingExited != null
                      ? _receivingExited.WaitOne (_waitTime)
                      : false;
@@ -2527,7 +2527,7 @@ namespace WebSocketSharp
     }
 
     // As server
-    internal bool Ping (byte[] frameAsBytes)
+    internal bool Ping (byte[] rawFrame)
     {
       if (_readyState != WebSocketState.Open)
         return false;
@@ -2541,7 +2541,7 @@ namespace WebSocketSharp
         try {
           received.Reset ();
 
-          var sent = send (frameAsBytes);
+          var sent = send (rawFrame);
 
           if (!sent)
             return false;
