@@ -1956,20 +1956,20 @@ namespace WebSocketSharp
       }
     }
 
-    private bool send (Opcode opcode, Stream stream)
+    private bool send (Opcode opcode, Stream sourceStream)
     {
       lock (_forSend) {
-        var src = stream;
+        var dataStream = sourceStream;
         var compressed = false;
         var sent = false;
 
         try {
           if (_compression != CompressionMethod.None) {
-            stream = stream.Compress (_compression);
+            dataStream = sourceStream.Compress (_compression);
             compressed = true;
           }
 
-          sent = send (opcode, stream, compressed);
+          sent = send (opcode, dataStream, compressed);
 
           if (!sent)
             error ("A send has failed.", null);
@@ -1982,9 +1982,9 @@ namespace WebSocketSharp
         }
         finally {
           if (compressed)
-            stream.Dispose ();
+            dataStream.Dispose ();
 
-          src.Dispose ();
+          sourceStream.Dispose ();
         }
 
         return sent;
