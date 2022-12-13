@@ -2581,14 +2581,16 @@ namespace WebSocketSharp
 
     // As server
     internal void Send (
-      Opcode opcode, Stream stream, Dictionary<CompressionMethod, Stream> cache
+      Opcode opcode,
+      Stream sourceStream,
+      Dictionary<CompressionMethod, Stream> cache
     )
     {
       lock (_forSend) {
         Stream found;
 
         if (!cache.TryGetValue (_compression, out found)) {
-          found = stream.Compress (_compression);
+          found = sourceStream.Compress (_compression);
 
           cache.Add (_compression, found);
         }
