@@ -154,6 +154,7 @@ namespace WebSocketSharp
     public byte[] RawData {
       get {
         setData ();
+
         return _rawData;
       }
     }
