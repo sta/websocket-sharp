@@ -1268,7 +1268,7 @@ namespace WebSocketSharp
         if (_readyState == WebSocketState.Closing) {
           _log.Error ("The close process is in progress.");
 
-          error ("An error has occurred while connecting.", null);
+          error ("An error has occurred before connecting.", null);
 
           return false;
         }
@@ -1276,7 +1276,7 @@ namespace WebSocketSharp
         if (_retryCountForConnect >= _maxRetryCountForConnect) {
           _log.Error ("An opportunity for reconnecting has been lost.");
 
-          error ("An error has occurred while connecting.", null);
+          error ("An error has occurred before connecting.", null);
 
           return false;
         }
