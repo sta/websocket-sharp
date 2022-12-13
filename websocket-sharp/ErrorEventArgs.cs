@@ -42,14 +42,15 @@ namespace WebSocketSharp
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   That event occurs when the <see cref="WebSocket"/> gets an error.
+  ///   The error event occurs when the <see cref="WebSocket"/> interface
+  ///   gets an error.
   ///   </para>
   ///   <para>
   ///   If you would like to get the error message, you should access
   ///   the <see cref="ErrorEventArgs.Message"/> property.
   ///   </para>
   ///   <para>
-  ///   And if the error is due to an exception, you can get it by accessing
+  ///   If the error is due to an exception, you can get it by accessing
   ///   the <see cref="ErrorEventArgs.Exception"/> property.
   ///   </para>
   /// </remarks>
