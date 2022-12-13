@@ -35,8 +35,8 @@ namespace WebSocketSharp
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   That event occurs when the <see cref="WebSocket"/> receives
-  ///   a message or a ping if the <see cref="WebSocket.EmitOnPing"/>
+  ///   The message event occurs when the <see cref="WebSocket"/> interface
+  ///   receives a message or a ping if the <see cref="WebSocket.EmitOnPing"/>
   ///   property is set to <c>true</c>.
   ///   </para>
   ///   <para>
