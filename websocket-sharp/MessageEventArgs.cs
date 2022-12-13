@@ -168,10 +168,12 @@ namespace WebSocketSharp
 
       if (_opcode == Opcode.Binary) {
         _dataSet = true;
+
         return;
       }
 
       string data;
+
       if (_rawData.TryGetUTF8DecodedString (out data))
         _data = data;
 
