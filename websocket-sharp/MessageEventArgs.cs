@@ -104,6 +104,7 @@ namespace WebSocketSharp
     public string Data {
       get {
         setData ();
+
         return _data;
       }
     }
