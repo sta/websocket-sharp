@@ -1252,6 +1252,12 @@ namespace WebSocketSharp
     // As client
     private bool connect ()
     {
+      if (_readyState == WebSocketState.Connecting) {
+        _log.Trace ("The connect process is in progress.");
+
+        return false;
+      }
+
       lock (_forState) {
         if (_readyState == WebSocketState.Open) {
           _log.Trace ("The connection has already been established.");
