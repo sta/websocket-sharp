@@ -3223,8 +3223,8 @@ namespace WebSocketSharp
     /// Establishes a connection.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the connection has already been
-    /// established.
+    /// This method does nothing if the current state of the interface is
+    /// Connecting or Open.
     /// </remarks>
     /// <exception cref="InvalidOperationException">
     ///   <para>
