@@ -59,12 +59,6 @@ namespace WebSocketSharp
       _clean = clean;
     }
 
-    internal CloseEventArgs (ushort code, string reason, bool clean)
-    {
-      _payloadData = new PayloadData (code, reason);
-      _clean = clean;
-    }
-
     #endregion
 
     #region Public Properties
