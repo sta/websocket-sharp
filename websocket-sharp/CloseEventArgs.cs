@@ -81,8 +81,13 @@ namespace WebSocketSharp
     /// Gets the reason for the connection close.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the reason for
-    /// the connection close if present.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the reason for
+    ///   the connection close.
+    ///   </para>
+    ///   <para>
+    ///   An empty string if not present.
+    ///   </para>
     /// </value>
     public string Reason {
       get {
