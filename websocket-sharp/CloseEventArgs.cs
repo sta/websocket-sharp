@@ -68,8 +68,13 @@ namespace WebSocketSharp
     /// Gets the status code for the connection close.
     /// </summary>
     /// <value>
-    /// A <see cref="ushort"/> that represents the status code for
-    /// the connection close if present.
+    ///   <para>
+    ///   A <see cref="ushort"/> that represents the status code for
+    ///   the connection close.
+    ///   </para>
+    ///   <para>
+    ///   1005 (no status) if not present.
+    ///   </para>
     /// </value>
     public ushort Code {
       get {
