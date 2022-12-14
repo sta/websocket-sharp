@@ -45,6 +45,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
+using System.Net.NetworkInformation;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography;
@@ -325,23 +326,22 @@ namespace WebSocketSharp
     /// Gets or sets the compression method used to compress a message.
     /// </summary>
     /// <remarks>
-    /// The set operation works if the current state of the interface is
-    /// New or Closed.
+    /// The set operation does nothing if the connection has already been
+    /// established or it is closing.
     /// </remarks>
     /// <value>
     ///   <para>
     ///   One of the <see cref="CompressionMethod"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It indicates the compression method used to compress a message.
+    ///   It specifies the compression method used to compress a message.
     ///   </para>
     ///   <para>
     ///   The default value is <see cref="CompressionMethod.None"/>.
     ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The set operation is not available if the interface is not for
-    /// the client.
+    /// The set operation is not available if this instance is not a client.
     /// </exception>
     public CompressionMethod Compression {
       get {
@@ -350,7 +350,7 @@ namespace WebSocketSharp
 
       set {
         if (!_client) {
-          var msg = "The interface is not for the client.";
+          var msg = "The instance is not a client.";
 
           throw new InvalidOperationException (msg);
         }
@@ -405,13 +405,13 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the message event is
-    /// emitted when the interface receives a ping.
+    /// Gets or sets a value indicating whether a <see cref="OnMessage"/> event
+    /// is emitted when a ping is received.
     /// </summary>
     /// <value>
     ///   <para>
-    ///   <c>true</c> if the interface emits the message event when
-    ///   receives a ping; otherwise, <c>false</c>.
+    ///   <c>true</c> if this instance emits a <see cref="OnMessage"/> event
+    ///   when receives a ping; otherwise, <c>false</c>.
     ///   </para>
     ///   <para>
     ///   The default value is <c>false</c>.
@@ -432,12 +432,12 @@ namespace WebSocketSharp
     /// the handshake request is allowed.
     /// </summary>
     /// <remarks>
-    /// The set operation works if the current state of the interface is
-    /// New or Closed.
+    /// The set operation does nothing if the connection has already been
+    /// established or it is closing.
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   <c>true</c> if the interface allows the URL redirection for
+    ///   <c>true</c> if this instance allows the URL redirection for
     ///   the handshake request; otherwise, <c>false</c>.
     ///   </para>
     ///   <para>
@@ -445,8 +445,7 @@ namespace WebSocketSharp
     ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The set operation is not available if the interface is not for
-    /// the client.
+    /// The set operation is not available if this instance is not a client.
     /// </exception>
     public bool EnableRedirection {
       get {
@@ -455,7 +454,7 @@ namespace WebSocketSharp
 
       set {
         if (!_client) {
-          var msg = "The interface is not for the client.";
+          var msg = "The instance is not a client.";
 
           throw new InvalidOperationException (msg);
         }
@@ -470,12 +469,12 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the extensions selected by the server.
+    /// Gets the extensions selected by server.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that will be a list of the extensions
-    /// negotiated between the client and server, or an empty string
-    /// if not specified or selected.
+    /// negotiated between client and server, or an empty string if
+    /// not specified or selected.
     /// </value>
     public string Extensions {
       get {
@@ -484,22 +483,27 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets a value indicating whether the communication is possible.
+    /// Gets a value indicating whether the connection is alive.
     /// </summary>
+    /// <remarks>
+    /// The get operation returns the value by using a ping/pong
+    /// if the current state of the connection is Open.
+    /// </remarks>
     /// <value>
-    /// <c>true</c> if the communication is possible; otherwise, <c>false</c>.
+    /// <c>true</c> if the connection is alive; otherwise, <c>false</c>.
     /// </value>
     public bool IsAlive {
       get {
-        return ping (EmptyBytes);
+        return Ping ("-");
       }
     }
 
     /// <summary>
-    /// Gets a value indicating whether the connection is secure.
+    /// Gets a value indicating whether a secure connection is used.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the connection is secure; otherwise, <c>false</c>.
+    /// <c>true</c> if this instance uses a secure connection; otherwise,
+    /// <c>false</c>.
     /// </value>
     public bool IsSecure {
       get {
@@ -537,11 +541,11 @@ namespace WebSocketSharp
     ///   Section 7 of RFC 6454</see>.
     ///   </para>
     ///   <para>
-    ///   The interface sends the Origin header if this property has any.
+    ///   This instance sends the Origin header if this property has any.
     ///   </para>
     ///   <para>
-    ///   The set operation works if the current state of the interface is
-    ///   New or Closed.
+    ///   The set operation does nothing if the connection has already been
+    ///   established or it is closing.
     ///   </para>
     /// </remarks>
     /// <value>
@@ -557,8 +561,7 @@ namespace WebSocketSharp
     ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The set operation is not available if the interface is not for
-    /// the client.
+    /// The set operation is not available if this instance is not a client.
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
@@ -578,7 +581,7 @@ namespace WebSocketSharp
 
       set {
         if (!_client) {
-          var msg = "The interface is not for the client.";
+          var msg = "The instance is not a client.";
 
           throw new InvalidOperationException (msg);
         }
@@ -654,35 +657,30 @@ namespace WebSocketSharp
     /// Gets the configuration for secure connection.
     /// </summary>
     /// <remarks>
-    /// The configuration is used when the interface attempts to connect,
+    /// This configuration will be referenced when attempts to connect,
     /// so it must be configured before any connect method is called.
     /// </remarks>
     /// <value>
-    /// A <see cref="ClientSslConfiguration"/> that represents the
-    /// configuration used to establish a secure connection.
+    /// A <see cref="ClientSslConfiguration"/> that represents
+    /// the configuration used to establish a secure connection.
     /// </value>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   The interface is not for the client.
+    ///   This instance is not a client.
     ///   </para>
     ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The interface does not use a secure connection.
+    ///   This instance does not use a secure connection.
     ///   </para>
     /// </exception>
     public ClientSslConfiguration SslConfiguration {
       get {
         if (!_client) {
-          var msg = "The interface is not for the client.";
-
+          var msg = "This instance is not a client.";
           throw new InvalidOperationException (msg);
         }
 
         if (!_secure) {
-          var msg = "The interface does not use a secure connection.";
-
+          var msg = "This instance does not use a secure connection.";
           throw new InvalidOperationException (msg);
         }
 
@@ -694,13 +692,7 @@ namespace WebSocketSharp
     /// Gets the URL to which to connect.
     /// </summary>
     /// <value>
-    ///   <para>
-    ///   A <see cref="Uri"/> that represents the URL to which to connect.
-    ///   </para>
-    ///   <para>
-    ///   Also it represents the URL requested by the client if the interface
-    ///   is for the server.
-    ///   </para>
+    /// A <see cref="Uri"/> that represents the URL to which to connect.
     /// </value>
     public Uri Url {
       get {
@@ -712,17 +704,16 @@ namespace WebSocketSharp
     /// Gets or sets the time to wait for the response to the ping or close.
     /// </summary>
     /// <remarks>
-    /// The set operation works if the current state of the interface is
-    /// New or Closed.
+    /// The set operation does nothing if the connection has already been
+    /// established or it is closing.
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="TimeSpan"/> that represents the time to wait for
-    ///   the response.
+    ///   A <see cref="TimeSpan"/> to wait for the response.
     ///   </para>
     ///   <para>
-    ///   The default value is the same as 5 seconds if the interface is
-    ///   for the client.
+    ///   The default value is the same as 5 seconds if this instance is
+    ///   a client.
     ///   </para>
     /// </value>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -734,11 +725,8 @@ namespace WebSocketSharp
       }
 
       set {
-        if (value <= TimeSpan.Zero) {
-          var msg = "Zero or less.";
-
-          throw new ArgumentOutOfRangeException ("value", msg);
-        }
+        if (value <= TimeSpan.Zero)
+          throw new ArgumentOutOfRangeException ("value", "Zero or less.");
 
         lock (_forState) {
           if (!canSet ())
@@ -754,25 +742,27 @@ namespace WebSocketSharp
     #region Public Events
 
     /// <summary>
-    /// Occurs when the connection has been closed.
+    /// Occurs when the WebSocket connection has been closed.
     /// </summary>
     public event EventHandler<CloseEventArgs> OnClose;
 
     /// <summary>
-    /// Occurs when the interface gets an error.
+    /// Occurs when the <see cref="WebSocket"/> gets an error.
     /// </summary>
     public event EventHandler<ErrorEventArgs> OnError;
 
     /// <summary>
-    /// Occurs when the interface receives a message.
+    /// Occurs when the <see cref="WebSocket"/> receives a message.
     /// </summary>
     public event EventHandler<MessageEventArgs> OnMessage;
 
-    /// <summary>
-    /// Occurs when the connection has been established.
-    /// </summary>
-    public event EventHandler OnOpen;
+    public event EventHandler<PongEventArgs> OnPong;
 
+        /// <summary>
+        /// Occurs when the WebSocket connection has been established.
+        /// </summary>
+    public event EventHandler OnOpen;
+        public event EventHandler OnReconnect;
     #endregion
 
     #region Private Methods
@@ -1262,9 +1252,13 @@ namespace WebSocketSharp
 
           return false;
         }
-
+                if (_retryCountForConnect > 1)
+                {
+                    OnReconnect.Emit(this, EventArgs.Empty);
+                    error("An error has occurred while connecting.", null);
+                }
         if (_retryCountForConnect >= _maxRetryCountForConnect) {
-          _logger.Error ("An opportunity for reconnecting has been lost.");
+          _logger.Error ("An opportunity for reconnecting has been lost.-->retrycount reached threshold limit");
 
           error ("An error has occurred while connecting.", null);
 
@@ -1755,18 +1749,32 @@ namespace WebSocketSharp
     private bool processPongFrame (WebSocketFrame frame)
     {
       _logger.Trace ("A pong was received.");
+            
+            var e = new PongEventArgs(frame);
+            
+            //enqueueToMessageEventQueue(e);
+            try {
+                    OnPong.Emit(this, e);
+                    _pongReceived.Set ();
+            }
+            
+            catch (NullReferenceException) {
+                return false;
+            }
 
-      try {
-        _pongReceived.Set ();
-      }
-      catch (NullReferenceException) {
-        return false;
-      }
-      catch (ObjectDisposedException) {
-        return false;
-      }
+            catch (ObjectDisposedException) {
+                 return false;
+            }
 
-      _logger.Trace ("It has been signaled.");
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message);
+                _logger.Debug(ex.ToString());
+
+                error("An exception has occurred during an OnPong event.", ex);
+            }
+
+            _logger.Trace ("It has been signaled.");
 
       return true;
     }
@@ -2341,6 +2349,7 @@ namespace WebSocketSharp
             },
             ex => {
               _logger.Fatal (ex.Message);
+
               _logger.Debug (ex.ToString ());
 
               abort ("An exception has occurred while receiving.", ex);
@@ -2606,7 +2615,7 @@ namespace WebSocketSharp
     /// Closes the connection.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the current state of the interface is
+    /// This method does nothing if the current state of the connection is
     /// Closing or Closed.
     /// </remarks>
     public void Close ()
@@ -2618,12 +2627,12 @@ namespace WebSocketSharp
     /// Closes the connection with the specified code.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the current state of the interface is
+    /// This method does nothing if the current state of the connection is
     /// Closing or Closed.
     /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that specifies the status code indicating
+    ///   A <see cref="ushort"/> that represents the status code indicating
     ///   the reason for the close.
     ///   </para>
     ///   <para>
@@ -2638,26 +2647,41 @@ namespace WebSocketSharp
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="code"/> is 1011 (server error).
-    ///   It cannot be used by a client.
+    ///   It cannot be used by clients.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
     ///   <paramref name="code"/> is 1010 (mandatory extension).
-    ///   It cannot be used by a server.
+    ///   It cannot be used by servers.
     ///   </para>
     /// </exception>
     public void Close (ushort code)
     {
-      Close (code, String.Empty);
+      if (!code.IsCloseStatusCode ()) {
+        var msg = "Less than 1000 or greater than 4999.";
+        throw new ArgumentOutOfRangeException ("code", msg);
+      }
+
+      if (_client && code == 1011) {
+        var msg = "1011 cannot be used.";
+        throw new ArgumentException (msg, "code");
+      }
+
+      if (!_client && code == 1010) {
+        var msg = "1010 cannot be used.";
+        throw new ArgumentException (msg, "code");
+      }
+
+      close (code, String.Empty);
     }
 
     /// <summary>
     /// Closes the connection with the specified code.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the current state of the interface is
+    /// This method does nothing if the current state of the connection is
     /// Closing or Closed.
     /// </remarks>
     /// <param name="code">
@@ -2665,37 +2689,49 @@ namespace WebSocketSharp
     ///   One of the <see cref="CloseStatusCode"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It specifies the status code indicating the reason for the close.
+    ///   It represents the status code indicating the reason for the close.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="code"/> is <see cref="CloseStatusCode.ServerError"/>.
-    ///   It cannot be used by a client.
+    ///   <paramref name="code"/> is
+    ///   <see cref="CloseStatusCode.ServerError"/>.
+    ///   It cannot be used by clients.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is <see cref="CloseStatusCode.MandatoryExtension"/>.
-    ///   It cannot be used by a server.
+    ///   <paramref name="code"/> is
+    ///   <see cref="CloseStatusCode.MandatoryExtension"/>.
+    ///   It cannot be used by servers.
     ///   </para>
     /// </exception>
     public void Close (CloseStatusCode code)
     {
-      Close (code, String.Empty);
+      if (_client && code == CloseStatusCode.ServerError) {
+        var msg = "ServerError cannot be used.";
+        throw new ArgumentException (msg, "code");
+      }
+
+      if (!_client && code == CloseStatusCode.MandatoryExtension) {
+        var msg = "MandatoryExtension cannot be used.";
+        throw new ArgumentException (msg, "code");
+      }
+
+      close ((ushort) code, String.Empty);
     }
 
     /// <summary>
     /// Closes the connection with the specified code and reason.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the current state of the interface is
+    /// This method does nothing if the current state of the connection is
     /// Closing or Closed.
     /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that specifies the status code indicating
+    ///   A <see cref="ushort"/> that represents the status code indicating
     ///   the reason for the close.
     ///   </para>
     ///   <para>
@@ -2706,10 +2742,10 @@ namespace WebSocketSharp
     /// </param>
     /// <param name="reason">
     ///   <para>
-    ///   A <see cref="string"/> that specifies the reason for the close.
+    ///   A <see cref="string"/> that represents the reason for the close.
     ///   </para>
     ///   <para>
-    ///   Its size must be 123 bytes or less in UTF-8.
+    ///   The size must be 123 bytes or less in UTF-8.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -2726,21 +2762,20 @@ namespace WebSocketSharp
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="code"/> is 1011 (server error).
-    ///   It cannot be used by a client.
+    ///   It cannot be used by clients.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
     ///   <paramref name="code"/> is 1010 (mandatory extension).
-    ///   It cannot be used by a server.
+    ///   It cannot be used by servers.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is 1005 (no status) and
-    ///   <paramref name="reason"/> is specified.
+    ///   <paramref name="code"/> is 1005 (no status) and there is reason.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -2753,45 +2788,37 @@ namespace WebSocketSharp
     {
       if (!code.IsCloseStatusCode ()) {
         var msg = "Less than 1000 or greater than 4999.";
-
         throw new ArgumentOutOfRangeException ("code", msg);
       }
 
       if (_client && code == 1011) {
         var msg = "1011 cannot be used.";
-
         throw new ArgumentException (msg, "code");
       }
 
       if (!_client && code == 1010) {
         var msg = "1010 cannot be used.";
-
         throw new ArgumentException (msg, "code");
       }
 
       if (reason.IsNullOrEmpty ()) {
         close (code, String.Empty);
-
         return;
       }
 
       if (code == 1005) {
         var msg = "1005 cannot be used.";
-
         throw new ArgumentException (msg, "code");
       }
 
       byte[] bytes;
-
       if (!reason.TryGetUTF8EncodedBytes (out bytes)) {
         var msg = "It could not be UTF-8-encoded.";
-
         throw new ArgumentException (msg, "reason");
       }
 
       if (bytes.Length > 123) {
         var msg = "Its size is greater than 123 bytes.";
-
         throw new ArgumentOutOfRangeException ("reason", msg);
       }
 
@@ -2802,7 +2829,7 @@ namespace WebSocketSharp
     /// Closes the connection with the specified code and reason.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the current state of the interface is
+    /// This method does nothing if the current state of the connection is
     /// Closing or Closed.
     /// </remarks>
     /// <param name="code">
@@ -2810,35 +2837,37 @@ namespace WebSocketSharp
     ///   One of the <see cref="CloseStatusCode"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It specifies the status code indicating the reason for the close.
+    ///   It represents the status code indicating the reason for the close.
     ///   </para>
     /// </param>
     /// <param name="reason">
     ///   <para>
-    ///   A <see cref="string"/> that specifies the reason for the close.
+    ///   A <see cref="string"/> that represents the reason for the close.
     ///   </para>
     ///   <para>
-    ///   Its size must be 123 bytes or less in UTF-8.
+    ///   The size must be 123 bytes or less in UTF-8.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="code"/> is <see cref="CloseStatusCode.ServerError"/>.
-    ///   It cannot be used by a client.
+    ///   <paramref name="code"/> is
+    ///   <see cref="CloseStatusCode.ServerError"/>.
+    ///   It cannot be used by clients.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is <see cref="CloseStatusCode.MandatoryExtension"/>.
-    ///   It cannot be used by a server.
+    ///   <paramref name="code"/> is
+    ///   <see cref="CloseStatusCode.MandatoryExtension"/>.
+    ///   It cannot be used by servers.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is <see cref="CloseStatusCode.NoStatus"/> and
-    ///   <paramref name="reason"/> is specified.
+    ///   <paramref name="code"/> is
+    ///   <see cref="CloseStatusCode.NoStatus"/> and there is reason.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -2854,39 +2883,32 @@ namespace WebSocketSharp
     {
       if (_client && code == CloseStatusCode.ServerError) {
         var msg = "ServerError cannot be used.";
-
         throw new ArgumentException (msg, "code");
       }
 
       if (!_client && code == CloseStatusCode.MandatoryExtension) {
         var msg = "MandatoryExtension cannot be used.";
-
         throw new ArgumentException (msg, "code");
       }
 
       if (reason.IsNullOrEmpty ()) {
         close ((ushort) code, String.Empty);
-
         return;
       }
 
       if (code == CloseStatusCode.NoStatus) {
         var msg = "NoStatus cannot be used.";
-
         throw new ArgumentException (msg, "code");
       }
 
       byte[] bytes;
-
       if (!reason.TryGetUTF8EncodedBytes (out bytes)) {
         var msg = "It could not be UTF-8-encoded.";
-
         throw new ArgumentException (msg, "reason");
       }
 
       if (bytes.Length > 123) {
         var msg = "Its size is greater than 123 bytes.";
-
         throw new ArgumentOutOfRangeException ("reason", msg);
       }
 
@@ -2901,7 +2923,7 @@ namespace WebSocketSharp
     ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method does nothing if the current state of the interface is
+    ///   This method does nothing if the current state of the connection is
     ///   Closing or Closed.
     ///   </para>
     /// </remarks>
@@ -2918,13 +2940,13 @@ namespace WebSocketSharp
     ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method does nothing if the current state of the interface is
+    ///   This method does nothing if the current state of the connection is
     ///   Closing or Closed.
     ///   </para>
     /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that specifies the status code indicating
+    ///   A <see cref="ushort"/> that represents the status code indicating
     ///   the reason for the close.
     ///   </para>
     ///   <para>
@@ -2939,19 +2961,34 @@ namespace WebSocketSharp
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="code"/> is 1011 (server error).
-    ///   It cannot be used by a client.
+    ///   It cannot be used by clients.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
     ///   <paramref name="code"/> is 1010 (mandatory extension).
-    ///   It cannot be used by a server.
+    ///   It cannot be used by servers.
     ///   </para>
     /// </exception>
     public void CloseAsync (ushort code)
     {
-      CloseAsync (code, String.Empty);
+      if (!code.IsCloseStatusCode ()) {
+        var msg = "Less than 1000 or greater than 4999.";
+        throw new ArgumentOutOfRangeException ("code", msg);
+      }
+
+      if (_client && code == 1011) {
+        var msg = "1011 cannot be used.";
+        throw new ArgumentException (msg, "code");
+      }
+
+      if (!_client && code == 1010) {
+        var msg = "1010 cannot be used.";
+        throw new ArgumentException (msg, "code");
+      }
+
+      closeAsync (code, String.Empty);
     }
 
     /// <summary>
@@ -2962,7 +2999,7 @@ namespace WebSocketSharp
     ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method does nothing if the current state of the interface is
+    ///   This method does nothing if the current state of the connection is
     ///   Closing or Closed.
     ///   </para>
     /// </remarks>
@@ -2971,25 +3008,37 @@ namespace WebSocketSharp
     ///   One of the <see cref="CloseStatusCode"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It specifies the status code indicating the reason for the close.
+    ///   It represents the status code indicating the reason for the close.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="code"/> is <see cref="CloseStatusCode.ServerError"/>.
-    ///   It cannot be used by a client.
+    ///   <paramref name="code"/> is
+    ///   <see cref="CloseStatusCode.ServerError"/>.
+    ///   It cannot be used by clients.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is <see cref="CloseStatusCode.MandatoryExtension"/>.
-    ///   It cannot be used by a server.
+    ///   <paramref name="code"/> is
+    ///   <see cref="CloseStatusCode.MandatoryExtension"/>.
+    ///   It cannot be used by servers.
     ///   </para>
     /// </exception>
     public void CloseAsync (CloseStatusCode code)
     {
-      CloseAsync (code, String.Empty);
+      if (_client && code == CloseStatusCode.ServerError) {
+        var msg = "ServerError cannot be used.";
+        throw new ArgumentException (msg, "code");
+      }
+
+      if (!_client && code == CloseStatusCode.MandatoryExtension) {
+        var msg = "MandatoryExtension cannot be used.";
+        throw new ArgumentException (msg, "code");
+      }
+
+      closeAsync ((ushort) code, String.Empty);
     }
 
     /// <summary>
@@ -3000,13 +3049,13 @@ namespace WebSocketSharp
     ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method does nothing if the current state of the interface is
+    ///   This method does nothing if the current state of the connection is
     ///   Closing or Closed.
     ///   </para>
     /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that specifies the status code indicating
+    ///   A <see cref="ushort"/> that represents the status code indicating
     ///   the reason for the close.
     ///   </para>
     ///   <para>
@@ -3017,10 +3066,10 @@ namespace WebSocketSharp
     /// </param>
     /// <param name="reason">
     ///   <para>
-    ///   A <see cref="string"/> that specifies the reason for the close.
+    ///   A <see cref="string"/> that represents the reason for the close.
     ///   </para>
     ///   <para>
-    ///   Its size must be 123 bytes or less in UTF-8.
+    ///   The size must be 123 bytes or less in UTF-8.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -3037,21 +3086,20 @@ namespace WebSocketSharp
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="code"/> is 1011 (server error).
-    ///   It cannot be used by a client.
+    ///   It cannot be used by clients.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
     ///   <paramref name="code"/> is 1010 (mandatory extension).
-    ///   It cannot be used by a server.
+    ///   It cannot be used by servers.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is 1005 (no status) and
-    ///   <paramref name="reason"/> is specified.
+    ///   <paramref name="code"/> is 1005 (no status) and there is reason.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -3064,45 +3112,37 @@ namespace WebSocketSharp
     {
       if (!code.IsCloseStatusCode ()) {
         var msg = "Less than 1000 or greater than 4999.";
-
         throw new ArgumentOutOfRangeException ("code", msg);
       }
 
       if (_client && code == 1011) {
         var msg = "1011 cannot be used.";
-
         throw new ArgumentException (msg, "code");
       }
 
       if (!_client && code == 1010) {
         var msg = "1010 cannot be used.";
-
         throw new ArgumentException (msg, "code");
       }
 
       if (reason.IsNullOrEmpty ()) {
         closeAsync (code, String.Empty);
-
         return;
       }
 
       if (code == 1005) {
         var msg = "1005 cannot be used.";
-
         throw new ArgumentException (msg, "code");
       }
 
       byte[] bytes;
-
       if (!reason.TryGetUTF8EncodedBytes (out bytes)) {
         var msg = "It could not be UTF-8-encoded.";
-
         throw new ArgumentException (msg, "reason");
       }
 
       if (bytes.Length > 123) {
         var msg = "Its size is greater than 123 bytes.";
-
         throw new ArgumentOutOfRangeException ("reason", msg);
       }
 
@@ -3117,7 +3157,7 @@ namespace WebSocketSharp
     ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method does nothing if the current state of the interface is
+    ///   This method does nothing if the current state of the connection is
     ///   Closing or Closed.
     ///   </para>
     /// </remarks>
@@ -3126,35 +3166,37 @@ namespace WebSocketSharp
     ///   One of the <see cref="CloseStatusCode"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It specifies the status code indicating the reason for the close.
+    ///   It represents the status code indicating the reason for the close.
     ///   </para>
     /// </param>
     /// <param name="reason">
     ///   <para>
-    ///   A <see cref="string"/> that specifies the reason for the close.
+    ///   A <see cref="string"/> that represents the reason for the close.
     ///   </para>
     ///   <para>
-    ///   Its size must be 123 bytes or less in UTF-8.
+    ///   The size must be 123 bytes or less in UTF-8.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="code"/> is <see cref="CloseStatusCode.ServerError"/>.
-    ///   It cannot be used by a client.
+    ///   <paramref name="code"/> is
+    ///   <see cref="CloseStatusCode.ServerError"/>.
+    ///   It cannot be used by clients.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is <see cref="CloseStatusCode.MandatoryExtension"/>.
-    ///   It cannot be used by a server.
+    ///   <paramref name="code"/> is
+    ///   <see cref="CloseStatusCode.MandatoryExtension"/>.
+    ///   It cannot be used by servers.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is <see cref="CloseStatusCode.NoStatus"/> and
-    ///   <paramref name="reason"/> is specified.
+    ///   <paramref name="code"/> is
+    ///   <see cref="CloseStatusCode.NoStatus"/> and there is reason.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -3170,39 +3212,32 @@ namespace WebSocketSharp
     {
       if (_client && code == CloseStatusCode.ServerError) {
         var msg = "ServerError cannot be used.";
-
         throw new ArgumentException (msg, "code");
       }
 
       if (!_client && code == CloseStatusCode.MandatoryExtension) {
         var msg = "MandatoryExtension cannot be used.";
-
         throw new ArgumentException (msg, "code");
       }
 
       if (reason.IsNullOrEmpty ()) {
         closeAsync ((ushort) code, String.Empty);
-
         return;
       }
 
       if (code == CloseStatusCode.NoStatus) {
         var msg = "NoStatus cannot be used.";
-
         throw new ArgumentException (msg, "code");
       }
 
       byte[] bytes;
-
       if (!reason.TryGetUTF8EncodedBytes (out bytes)) {
         var msg = "It could not be UTF-8-encoded.";
-
         throw new ArgumentException (msg, "reason");
       }
 
       if (bytes.Length > 123) {
         var msg = "Its size is greater than 123 bytes.";
-
         throw new ArgumentOutOfRangeException ("reason", msg);
       }
 
@@ -3218,7 +3253,7 @@ namespace WebSocketSharp
     /// </remarks>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   The interface is not for the client.
+    ///   This instance is not a client.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -3230,7 +3265,7 @@ namespace WebSocketSharp
     public void Connect ()
     {
       if (!_client) {
-        var msg = "The interface is not for the client.";
+        var msg = "The instance is not a client.";
 
         throw new InvalidOperationException (msg);
       }
@@ -3263,7 +3298,7 @@ namespace WebSocketSharp
     /// </remarks>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   The interface is not for the client.
+    ///   This instance is not a client.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -3275,7 +3310,7 @@ namespace WebSocketSharp
     public void ConnectAsync ()
     {
       if (!_client) {
-        var msg = "The interface is not for the client.";
+        var msg = "The instance is not a client.";
 
         throw new InvalidOperationException (msg);
       }
@@ -3302,10 +3337,10 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends a ping to the remote endpoint.
+    /// Sends a ping using the WebSocket connection.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the send has successfully done and a pong has been
+    /// <c>true</c> if the send has done with no error and a pong has been
     /// received within a time; otherwise, <c>false</c>.
     /// </returns>
     public bool Ping ()
@@ -3314,18 +3349,19 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends a ping with the specified message to the remote endpoint.
+    /// Sends a ping with <paramref name="message"/> using the WebSocket
+    /// connection.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the send has successfully done and a pong has been
+    /// <c>true</c> if the send has done with no error and a pong has been
     /// received within a time; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="message">
     ///   <para>
-    ///   A <see cref="string"/> that specifies the message to send.
+    ///   A <see cref="string"/> that represents the message to send.
     ///   </para>
     ///   <para>
-    ///   Its size must be 125 bytes or less in UTF-8.
+    ///   The size must be 125 bytes or less in UTF-8.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
@@ -3340,16 +3376,13 @@ namespace WebSocketSharp
         return ping (EmptyBytes);
 
       byte[] bytes;
-
       if (!message.TryGetUTF8EncodedBytes (out bytes)) {
         var msg = "It could not be UTF-8-encoded.";
-
         throw new ArgumentException (msg, "message");
       }
 
       if (bytes.Length > 125) {
         var msg = "Its size is greater than 125 bytes.";
-
         throw new ArgumentOutOfRangeException ("message", msg);
       }
 
@@ -3570,7 +3603,7 @@ namespace WebSocketSharp
     /// The current state of the connection is not Open.
     /// </exception>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="data"/> is <see langword="null"/>.
+    /// <paramref name="data"/> is <see langword="null"/>. 
     /// </exception>
     public void SendAsync (byte[] data, Action<bool> completed)
     {
@@ -3801,14 +3834,14 @@ namespace WebSocketSharp
     /// Sets an HTTP cookie to send with the handshake request.
     /// </summary>
     /// <remarks>
-    /// This method works if the current state of the interface is
-    /// New or Closed.
+    /// This method does nothing if the connection has already been
+    /// established or it is closing.
     /// </remarks>
     /// <param name="cookie">
     /// A <see cref="Cookie"/> that specifies the cookie to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// The interface is not for the client.
+    /// This instance is not a client.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="cookie"/> is <see langword="null"/>.
@@ -3816,7 +3849,7 @@ namespace WebSocketSharp
     public void SetCookie (Cookie cookie)
     {
       if (!_client) {
-        var msg = "The interface is not for the client.";
+        var msg = "The instance is not a client.";
 
         throw new InvalidOperationException (msg);
       }
@@ -3837,8 +3870,8 @@ namespace WebSocketSharp
     /// Sets the credentials for the HTTP authentication (Basic/Digest).
     /// </summary>
     /// <remarks>
-    /// This method works if the current state of the interface is
-    /// New or Closed.
+    /// This method does nothing if the connection has already been
+    /// established or it is closing.
     /// </remarks>
     /// <param name="username">
     ///   <para>
@@ -3865,7 +3898,7 @@ namespace WebSocketSharp
     /// request; otherwise, <c>false</c>.
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// The interface is not for the client.
+    /// This instance is not a client.
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
@@ -3881,7 +3914,7 @@ namespace WebSocketSharp
     public void SetCredentials (string username, string password, bool preAuth)
     {
       if (!_client) {
-        var msg = "The interface is not for the client.";
+        var msg = "The instance is not a client.";
 
         throw new InvalidOperationException (msg);
       }
@@ -3926,8 +3959,8 @@ namespace WebSocketSharp
     /// the credentials for the HTTP proxy authentication (Basic/Digest).
     /// </summary>
     /// <remarks>
-    /// This method works if the current state of the interface is
-    /// New or Closed.
+    /// This method does nothing if the connection has already been
+    /// established or it is closing.
     /// </remarks>
     /// <param name="url">
     ///   <para>
@@ -3962,7 +3995,7 @@ namespace WebSocketSharp
     ///   </para>
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// The interface is not for the client.
+    /// This instance is not a client.
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
@@ -3996,7 +4029,7 @@ namespace WebSocketSharp
     public void SetProxy (string url, string username, string password)
     {
       if (!_client) {
-        var msg = "The interface is not for the client.";
+        var msg = "The instance is not a client.";
 
         throw new InvalidOperationException (msg);
       }
@@ -4010,7 +4043,7 @@ namespace WebSocketSharp
           throw new ArgumentException (msg, "url");
         }
 
-        if (uri.Scheme != "http") {
+        if (uri.Scheme != ("http") && uri.Scheme != ("https") ){
           var msg = "The scheme part is not http.";
 
           throw new ArgumentException (msg, "url");
@@ -4075,7 +4108,7 @@ namespace WebSocketSharp
     ///   This method closes the connection with close status 1001 (going away).
     ///   </para>
     ///   <para>
-    ///   This method does nothing if the current state of the interface is
+    ///   And this method does nothing if the current state of the connection is
     ///   Closing or Closed.
     ///   </para>
     /// </remarks>
