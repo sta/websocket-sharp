@@ -129,10 +129,11 @@ namespace WebSocketSharp
         if (_length <= 2)
           return String.Empty;
 
-        var raw = _data.SubArray (2, _length - 2);
+        var bytes = _data.SubArray (2, _length - 2);
 
         string reason;
-        return raw.TryGetUTF8DecodedString (out reason)
+
+        return bytes.TryGetUTF8DecodedString (out reason)
                ? reason
                : String.Empty;
       }
