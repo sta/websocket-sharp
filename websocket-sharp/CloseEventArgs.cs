@@ -35,11 +35,12 @@ namespace WebSocketSharp
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   That event occurs when the WebSocket connection has been closed.
+  ///   The close event occurs when the WebSocket connection has been closed.
   ///   </para>
   ///   <para>
-  ///   If you would like to get the reason for the connection close, you should
-  ///   access the <see cref="Code"/> or <see cref="Reason"/> property.
+  ///   If you would like to get the reason for the connection close,
+  ///   you should access the <see cref="Code"/> or <see cref="Reason"/>
+  ///   property.
   ///   </para>
   /// </remarks>
   public class CloseEventArgs : EventArgs
