@@ -54,7 +54,7 @@ namespace WebSocketSharp
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   A <see cref="WebSocketException"/> will occur when the length of
+    ///   A <see cref="WebSocketException"/> is thrown when the length of
     ///   incoming payload data is greater than the value of this field.
     ///   </para>
     ///   <para>
