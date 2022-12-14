@@ -38,7 +38,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Runtime.CompilerServices;
 
+//[assembly: InternalsVisibleTo("example")]
 namespace WebSocketSharp
 {
   internal class WebSocketFrame : IEnumerable<byte>
@@ -455,7 +457,6 @@ Extended Payload Length: {7}
     {
       if (header.Length != 2) {
         var msg = "The header part of a frame could not be read.";
-
         throw new WebSocketException (msg);
       }
 
