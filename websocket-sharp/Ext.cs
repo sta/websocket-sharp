@@ -473,28 +473,7 @@ namespace WebSocketSharp
 
     internal static string GetMessage (this CloseStatusCode code)
     {
-      switch (code) {
-        case CloseStatusCode.ProtocolError:
-          return "A protocol error has occurred.";
-        case CloseStatusCode.UnsupportedData:
-          return "Unsupported data has been received.";
-        case CloseStatusCode.Abnormal:
-          return "An abnormal error has occurred.";
-        case CloseStatusCode.InvalidData:
-          return "Invalid data has been received.";
-        case CloseStatusCode.PolicyViolation:
-          return "A policy violation has occurred.";
-        case CloseStatusCode.TooBig:
-          return "A too big message has been received.";
-        case CloseStatusCode.MandatoryExtension:
-          return "The client did not receive expected extension(s).";
-        case CloseStatusCode.ServerError:
-          return "The server got an internal error.";
-        case CloseStatusCode.TlsHandshakeFailure:
-          return "An error has occurred during a TLS handshake.";
-        default:
-          return String.Empty;
-      }
+      return ((ushort) code).GetErrorMessage ();
     }
 
     internal static string GetName (this string nameAndValue, char separator)
