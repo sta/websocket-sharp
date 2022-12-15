@@ -471,7 +471,7 @@ namespace WebSocketSharp
       }
     }
 
-    internal static string GetMessage (this CloseStatusCode code)
+    internal static string GetErrorMessage (this CloseStatusCode code)
     {
       return ((ushort) code).GetErrorMessage ();
     }
