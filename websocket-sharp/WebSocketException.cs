@@ -38,7 +38,19 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private CloseStatusCode _code;
+    private ushort _code;
+
+    #endregion
+
+    #region Private Constructors
+
+    private WebSocketException (
+      ushort code, string message, Exception innerException
+    )
+      : base (message ?? code.GetErrorMessage (), innerException)
+    {
+      _code = code;
+    }
 
     #endregion
 
@@ -82,9 +94,8 @@ namespace WebSocketSharp
     internal WebSocketException (
       CloseStatusCode code, string message, Exception innerException
     )
-      : base (message ?? code.GetMessage (), innerException)
+      : this ((ushort) code, message, innerException)
     {
-      _code = code;
     }
 
     #endregion
@@ -95,10 +106,15 @@ namespace WebSocketSharp
     /// Gets the status code indicating the cause of the exception.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CloseStatusCode"/> enum values that represents
-    /// the status code indicating the cause of the exception.
+    ///   <para>
+    ///   A <see cref="ushort"/> that represents the status code indicating
+    ///   the cause of the exception.
+    ///   </para>
+    ///   <para>
+    ///   It is one of the status codes for the WebSocket connection close.
+    ///   </para>
     /// </value>
-    public CloseStatusCode Code {
+    public ushort Code {
       get {
         return _code;
       }

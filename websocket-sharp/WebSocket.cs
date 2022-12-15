@@ -785,9 +785,9 @@ namespace WebSocketSharp
     {
       var code = exception is WebSocketException
                  ? ((WebSocketException) exception).Code
-                 : CloseStatusCode.Abnormal;
+                 : (ushort) 1006;
 
-      abort ((ushort) code, reason);
+      abort (code, reason);
     }
 
     private void abort (ushort code, string reason)
