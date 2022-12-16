@@ -422,7 +422,7 @@ namespace WebSocketSharp
                         || frame.IsMasked
                         || frame.IsCompressed
                         ? frame._payloadData.ToString ()
-                        : utf8Decode (frame._payloadData.ApplicationData);
+                        : frame._payloadData.ApplicationData.GetUTF8DecodedString ();
 
       var fmt = @"
                     FIN: {0}
