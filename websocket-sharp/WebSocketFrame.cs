@@ -869,10 +869,10 @@ Extended Payload Length: {7}
         header = (header << 1) + (int) _mask;
         header = (header << 7) + (int) _payloadLength;
 
-        var headerAsUshort = (ushort) header;
-        var headerAsBytes = headerAsUshort.ToByteArray (ByteOrder.Big);
+        var uint16Header = (ushort) header;
+        var rawHeader = uint16Header.ToByteArray (ByteOrder.Big);
 
-        buff.Write (headerAsBytes, 0, 2);
+        buff.Write (rawHeader, 0, 2);
 
         if (_payloadLength > 125) {
           var cnt = _payloadLength == 126 ? 2 : 8;
