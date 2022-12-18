@@ -2525,11 +2525,11 @@ namespace WebSocketSharp
     {
       SHA1 sha1 = new SHA1CryptoServiceProvider ();
 
-      var data = base64Key + _guid;
-      var bytes = data.GetUTF8EncodedBytes ();
-      var src = sha1.ComputeHash (bytes);
+      var src = base64Key + _guid;
+      var bytes = src.GetUTF8EncodedBytes ();
+      var hash = sha1.ComputeHash (bytes);
 
-      return Convert.ToBase64String (src);
+      return Convert.ToBase64String (hash);
     }
 
     // As server
