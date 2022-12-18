@@ -495,7 +495,12 @@ namespace WebSocketSharp
 
     internal static byte[] GetUTF8EncodedBytes (this string s)
     {
-      return Encoding.UTF8.GetBytes (s);
+      try {
+        return Encoding.UTF8.GetBytes (s);
+      }
+      catch {
+        return null;
+      }
     }
 
     internal static string GetValue (this string nameAndValue, char separator)
