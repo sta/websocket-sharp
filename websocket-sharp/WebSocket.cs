@@ -2514,11 +2514,11 @@ namespace WebSocketSharp
     // As client
     internal static string CreateBase64Key ()
     {
-      var src = new byte[16];
+      var key = new byte[16];
 
-      RandomNumber.GetBytes (src);
+      RandomNumber.GetBytes (key);
 
-      return Convert.ToBase64String (src);
+      return Convert.ToBase64String (key);
     }
 
     internal static string CreateResponseKey (string base64Key)
