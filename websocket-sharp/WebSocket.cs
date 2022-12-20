@@ -2527,9 +2527,9 @@ namespace WebSocketSharp
 
       var src = base64Key + _guid;
       var bytes = src.GetUTF8EncodedBytes ();
-      var hash = sha1.ComputeHash (bytes);
+      var key = sha1.ComputeHash (bytes);
 
-      return Convert.ToBase64String (hash);
+      return Convert.ToBase64String (key);
     }
 
     // As server
