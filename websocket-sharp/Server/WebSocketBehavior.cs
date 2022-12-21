@@ -97,6 +97,28 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Gets a value indicating whether the communication is possible for
+    /// a session.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the communication is possible; otherwise, <c>false</c>.
+    /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
+    /// </exception>
+    protected bool IsAlive {
+      get {
+        if (_websocket == null) {
+          var msg = "The session has not started yet.";
+
+          throw new InvalidOperationException (msg);
+        }
+
+        return _websocket.IsAlive;
+      }
+    }
+
+    /// <summary>
     /// Gets the query string for a session.
     /// </summary>
     /// <value>
