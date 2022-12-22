@@ -738,6 +738,48 @@ Extended Payload Length: {7}
       stream.ReadBytesAsync (len, 1024, comp, error);
     }
 
+    private string toString ()
+    {
+      var extPayloadLen = _payloadLength > 125
+                          ? ExactPayloadLength.ToString ()
+                          : String.Empty;
+
+      var maskingKey = _maskingKey.Length > 0
+                       ? BitConverter.ToString (_maskingKey)
+                       : String.Empty;
+
+      var payloadData = _payloadLength > 125
+                        ? "***"
+                        : _payloadLength > 0
+                          ? _payloadData.ToString ()
+                          : String.Empty;
+
+      var fmt = @"                    FIN: {0}
+                   RSV1: {1}
+                   RSV2: {2}
+                   RSV3: {3}
+                 Opcode: {4}
+                   MASK: {5}
+         Payload Length: {6}
+Extended Payload Length: {7}
+            Masking Key: {8}
+           Payload Data: {9}";
+
+      return String.Format (
+               fmt,
+               _fin,
+               _rsv1,
+               _rsv2,
+               _rsv3,
+               _opcode,
+               _mask,
+               _payloadLength,
+               extPayloadLen,
+               maskingKey,
+               payloadData
+             );
+    }
+
     #endregion
 
     #region Internal Methods
