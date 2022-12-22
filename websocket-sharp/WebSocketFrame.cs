@@ -958,6 +958,11 @@ Extended Payload Length: {7}
       );
     }
 
+    internal string ToString (bool dump)
+    {
+      return dump ? toDumpString () : toString ();
+    }
+
     internal void Unmask ()
     {
       if (_mask == Mask.Off)
