@@ -738,6 +738,97 @@ Extended Payload Length: {7}
       stream.ReadBytesAsync (len, 1024, comp, error);
     }
 
+    private string toDumpString ()
+    {
+      var len = Length;
+      var cnt = (long) (len / 4);
+      var rem = (int) (len % 4);
+
+      int cntDigit;
+      string cntFmt;
+
+      if (cnt < 10000) {
+        cntDigit = 4;
+        cntFmt = "{0,4}";
+      }
+      else if (cnt < 0x010000) {
+        cntDigit = 4;
+        cntFmt = "{0,4:X}";
+      }
+      else if (cnt < 0x0100000000) {
+        cntDigit = 8;
+        cntFmt = "{0,8:X}";
+      }
+      else {
+        cntDigit = 16;
+        cntFmt = "{0,16:X}";
+      }
+
+      var baseFmt = "{{0,{0}}}";
+      var spFmt = String.Format (baseFmt, cntDigit);
+
+      baseFmt = @"{0} 01234567 89ABCDEF 01234567 89ABCDEF
+{0}+--------+--------+--------+--------+
+";
+      var headerFmt = String.Format (baseFmt, spFmt);
+
+      baseFmt = "{0}|{{1,8}} {{2,8}} {{3,8}} {{4,8}}|\n";
+      var lineFmt = String.Format (baseFmt, cntFmt);
+
+      baseFmt = "{0}+--------+--------+--------+--------+";
+      var footerFmt = String.Format (baseFmt, spFmt);
+
+      var buff = new StringBuilder (64);
+
+      Func<Action<string, string, string, string>> lineWriter =
+        () => {
+          long lineCnt = 0;
+
+          return (arg1, arg2, arg3, arg4) => {
+                   buff.AppendFormat (
+                     lineFmt, ++lineCnt, arg1, arg2, arg3, arg4
+                   );
+                 };
+        };
+
+      var writeLine = lineWriter ();
+      var bytes = ToArray ();
+
+      buff.AppendFormat (headerFmt, String.Empty);
+
+      for (long i = 0; i <= cnt; i++) {
+        var j = i * 4;
+
+        if (i < cnt) {
+          writeLine (
+            Convert.ToString (bytes[j], 2).PadLeft (8, '0'),
+            Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0'),
+            Convert.ToString (bytes[j + 2], 2).PadLeft (8, '0'),
+            Convert.ToString (bytes[j + 3], 2).PadLeft (8, '0')
+          );
+
+          continue;
+        }
+
+        if (rem > 0) {
+          writeLine (
+            Convert.ToString (bytes[j], 2).PadLeft (8, '0'),
+            rem >= 2
+            ? Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0')
+            : String.Empty,
+            rem == 3
+            ? Convert.ToString (bytes[j + 2], 2).PadLeft (8, '0')
+            : String.Empty,
+            String.Empty
+          );
+        }
+      }
+
+      buff.AppendFormat (footerFmt, String.Empty);
+
+      return buff.ToString ();
+    }
+
     private string toString ()
     {
       var extPayloadLen = _payloadLength > 125
