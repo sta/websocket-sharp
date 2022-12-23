@@ -1785,8 +1785,14 @@ namespace WebSocketSharp
     {
       string msg;
 
-      if (!checkReceivedFrame (frame, out msg))
-        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
+      if (!checkReceivedFrame (frame, out msg)) {
+        _log.Error (msg);
+        _log.Debug (frame.ToString (false));
+
+        abort (1002, "An error has occurred while receiving.");
+
+        return false;
+      }
 
       frame.Unmask ();
 
