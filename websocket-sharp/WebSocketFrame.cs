@@ -744,30 +744,27 @@ Extended Payload Length: {7}
       var cnt = (long) (len / 4);
       var rem = (int) (len % 4);
 
-      int cntDigit;
+      string spFmt;
       string cntFmt;
 
       if (cnt < 10000) {
-        cntDigit = 4;
+        spFmt = "{0,4}";
         cntFmt = "{0,4}";
       }
       else if (cnt < 0x010000) {
-        cntDigit = 4;
+        spFmt = "{0,4}";
         cntFmt = "{0,4:X}";
       }
       else if (cnt < 0x0100000000) {
-        cntDigit = 8;
+        spFmt = "{0,8}";
         cntFmt = "{0,8:X}";
       }
       else {
-        cntDigit = 16;
+        spFmt = "{0,16}";
         cntFmt = "{0,16:X}";
       }
 
-      var baseFmt = "{{0,{0}}}";
-      var spFmt = String.Format (baseFmt, cntDigit);
-
-      baseFmt = @"{0} 01234567 89ABCDEF 01234567 89ABCDEF
+      var baseFmt = @"{0} 01234567 89ABCDEF 01234567 89ABCDEF
 {0}+--------+--------+--------+--------+
 ";
       var headerFmt = String.Format (baseFmt, spFmt);
