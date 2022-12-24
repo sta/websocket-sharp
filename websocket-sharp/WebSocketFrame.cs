@@ -988,11 +988,6 @@ Extended Payload Length: {7}
       Console.WriteLine (val);
     }
 
-    public string PrintToString (bool dumped)
-    {
-      return dumped ? dump (this) : print (this);
-    }
-
     public byte[] ToArray ()
     {
       using (var buff = new MemoryStream ()) {
