@@ -399,58 +399,6 @@ namespace WebSocketSharp
       return buff.ToString ();
     }
 
-    private static string print (WebSocketFrame frame)
-    {
-      // Payload Length
-      var payloadLen = frame._payloadLength;
-
-      // Extended Payload Length
-      var extPayloadLen = payloadLen > 125
-                          ? frame.ExactPayloadLength.ToString ()
-                          : String.Empty;
-
-      // Masking Key
-      var maskingKey = BitConverter.ToString (frame._maskingKey);
-
-      // Payload Data
-      var payload = payloadLen == 0
-                    ? String.Empty
-                    : payloadLen > 125
-                      ? "---"
-                      : !frame.IsText
-                        || frame.IsFragment
-                        || frame.IsMasked
-                        || frame.IsCompressed
-                        ? frame._payloadData.ToString ()
-                        : frame._payloadData.ApplicationData.GetUTF8DecodedString ();
-
-      var fmt = @"
-                    FIN: {0}
-                   RSV1: {1}
-                   RSV2: {2}
-                   RSV3: {3}
-                 Opcode: {4}
-                   MASK: {5}
-         Payload Length: {6}
-Extended Payload Length: {7}
-            Masking Key: {8}
-           Payload Data: {9}";
-
-      return String.Format (
-               fmt,
-               frame._fin,
-               frame._rsv1,
-               frame._rsv2,
-               frame._rsv3,
-               frame._opcode,
-               frame._mask,
-               payloadLen,
-               extPayloadLen,
-               maskingKey,
-               payload
-             );
-    }
-
     private static WebSocketFrame processHeader (byte[] header)
     {
       if (header.Length != 2) {
