@@ -340,12 +340,6 @@ namespace WebSocketSharp
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
       }
 
-      if (!opcode.IsData () && rsv1 == Rsv.On) {
-        var msg = "A non data frame is compressed.";
-
-        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
-      }
-
       if (opcode.IsControl ()) {
         if (fin == Fin.More) {
           var msg = "A control frame is fragmented.";
