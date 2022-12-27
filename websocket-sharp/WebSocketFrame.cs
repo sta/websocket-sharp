@@ -335,9 +335,9 @@ namespace WebSocketSharp
       var payloadLen = (byte) (header[1] & 0x7f);
 
       if (!opcode.IsSupported ()) {
-        var msg = "A frame has an unsupported opcode.";
+        var msg = "The opcode of a frame is not supported.";
 
-        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
+        throw new WebSocketException (CloseStatusCode.UnsupportedData, msg);
       }
 
       var frame = new WebSocketFrame ();
