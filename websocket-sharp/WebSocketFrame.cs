@@ -340,20 +340,6 @@ namespace WebSocketSharp
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
       }
 
-      if (opcode.IsControl ()) {
-        if (fin == Fin.More) {
-          var msg = "A control frame is fragmented.";
-
-          throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
-        }
-
-        if (payloadLen > 125) {
-          var msg = "A control frame has too long payload length.";
-
-          throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
-        }
-      }
-
       var frame = new WebSocketFrame ();
       frame._fin = fin;
       frame._rsv1 = rsv1;

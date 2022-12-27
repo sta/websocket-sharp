@@ -1094,6 +1094,20 @@ namespace WebSocketSharp
         }
       }
 
+      if (frame.IsControl) {
+        if (frame.Fin == Fin.More) {
+          message = "A control frame is fragmented.";
+
+          return false;
+        }
+
+        if (frame.PayloadLength > 125) {
+          message = "The payload length of a control frame is too long.";
+
+          return false;
+        }
+      }
+
       if (frame.IsCompressed) {
         if (!frame.IsData) {
           message = "A non data frame is compressed.";
