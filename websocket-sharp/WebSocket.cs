@@ -1102,7 +1102,7 @@ namespace WebSocketSharp
         }
 
         if (frame.PayloadLength > 125) {
-          message = "The payload length of a control frame is too long.";
+          message = "The payload length of a control frame is greater than 125.";
 
           return false;
         }
