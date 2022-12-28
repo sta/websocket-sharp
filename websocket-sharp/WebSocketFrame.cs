@@ -535,7 +535,7 @@ namespace WebSocketSharp
       var exactLen = frame.ExactPayloadLength;
 
       if (exactLen > PayloadData.MaxLength) {
-        var msg = "A frame has too long payload length.";
+        var msg = "The payload data of a frame is too big.";
 
         throw new WebSocketException (CloseStatusCode.TooBig, msg);
       }
