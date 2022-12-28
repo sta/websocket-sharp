@@ -1109,14 +1109,14 @@ namespace WebSocketSharp
       }
 
       if (frame.IsCompressed) {
-        if (!frame.IsData) {
-          message = "A non data frame is compressed.";
+        if (_compression == CompressionMethod.None) {
+          message = "A compressed frame was received without any agreement for it.";
 
           return false;
         }
 
-        if (_compression == CompressionMethod.None) {
-          message = "A compressed frame was received without any agreement for it.";
+        if (!frame.IsData) {
+          message = "A non data frame is compressed.";
 
           return false;
         }
