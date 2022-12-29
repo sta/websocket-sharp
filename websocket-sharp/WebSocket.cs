@@ -1110,7 +1110,7 @@ namespace WebSocketSharp
 
       if (frame.IsCompressed) {
         if (_compression == CompressionMethod.None) {
-          message = "A compressed frame was received without any agreement for it.";
+          message = "A frame is compressed without any agreement for it.";
 
           return false;
         }
