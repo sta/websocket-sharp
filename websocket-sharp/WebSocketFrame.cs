@@ -86,7 +86,7 @@ namespace WebSocketSharp
       _fin = fin;
       _opcode = opcode;
 
-      _rsv1 = opcode.IsData () && compressed ? Rsv.On : Rsv.Off;
+      _rsv1 = compressed ? Rsv.On : Rsv.Off;
       _rsv2 = Rsv.Off;
       _rsv3 = Rsv.Off;
 
