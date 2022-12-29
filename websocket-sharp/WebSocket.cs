@@ -1086,6 +1086,20 @@ namespace WebSocketSharp
         }
       }
 
+      if (frame.IsCompressed) {
+        if (_compression == CompressionMethod.None) {
+          message = "A frame is compressed without any agreement for it.";
+
+          return false;
+        }
+
+        if (!frame.IsData) {
+          message = "A non data frame is compressed.";
+
+          return false;
+        }
+      }
+
       if (frame.IsData) {
         if (_inContinuation) {
           message = "A data frame was received while receiving continuation frames.";
@@ -1103,20 +1117,6 @@ namespace WebSocketSharp
 
         if (frame.PayloadLength > 125) {
           message = "The payload length of a control frame is greater than 125.";
-
-          return false;
-        }
-      }
-
-      if (frame.IsCompressed) {
-        if (_compression == CompressionMethod.None) {
-          message = "A frame is compressed without any agreement for it.";
-
-          return false;
-        }
-
-        if (!frame.IsData) {
-          message = "A non data frame is compressed.";
 
           return false;
         }
