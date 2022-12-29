@@ -68,11 +68,6 @@ namespace WebSocketSharp
 
     #region Internal Constructors
 
-    internal WebSocketFrame (Opcode opcode, PayloadData payloadData, bool mask)
-      : this (Fin.Final, opcode, payloadData, false, mask)
-    {
-    }
-
     internal WebSocketFrame (
       Fin fin, Opcode opcode, byte[] data, bool compressed, bool mask
     )
