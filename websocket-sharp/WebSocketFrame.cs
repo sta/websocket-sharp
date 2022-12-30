@@ -527,15 +527,15 @@ namespace WebSocketSharp
       Action<Exception> error
     )
     {
-      var exactLen = frame.ExactPayloadLength;
+      var exactPayloadLen = frame.ExactPayloadLength;
 
-      if (exactLen > PayloadData.MaxLength) {
+      if (exactPayloadLen > PayloadData.MaxLength) {
         var msg = "The payload data of a frame is too big.";
 
         throw new WebSocketException (CloseStatusCode.TooBig, msg);
       }
 
-      if (exactLen == 0) {
+      if (exactPayloadLen == 0) {
         frame._payloadData = PayloadData.Empty;
 
         completed (frame);
@@ -543,7 +543,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var len = (long) exactLen;
+      var len = (long) exactPayloadLen;
 
       Action<byte[]> comp =
         bytes => {
@@ -558,13 +558,13 @@ namespace WebSocketSharp
           completed (frame);
         };
 
-      if (frame._payloadLength < 127) {
-        stream.ReadBytesAsync ((int) exactLen, comp, error);
+      if (frame._payloadLength > 126) {
+        stream.ReadBytesAsync (len, 1024, comp, error);
 
         return;
       }
 
-      stream.ReadBytesAsync (len, 1024, comp, error);
+      stream.ReadBytesAsync ((int) len, comp, error);
     }
 
     private string toDumpString ()
