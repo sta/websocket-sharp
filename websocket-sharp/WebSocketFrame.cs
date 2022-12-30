@@ -490,23 +490,23 @@ namespace WebSocketSharp
       Stream stream, WebSocketFrame frame
     )
     {
-      var exactLen = frame.ExactPayloadLength;
+      var exactPayloadLen = frame.ExactPayloadLength;
 
-      if (exactLen > PayloadData.MaxLength) {
+      if (exactPayloadLen > PayloadData.MaxLength) {
         var msg = "The payload data of a frame is too big.";
 
         throw new WebSocketException (CloseStatusCode.TooBig, msg);
       }
 
-      if (exactLen == 0) {
+      if (exactPayloadLen == 0) {
         frame._payloadData = PayloadData.Empty;
 
         return frame;
       }
 
-      var len = (long) exactLen;
+      var len = (long) exactPayloadLen;
       var bytes = frame._payloadLength < 127
-                  ? stream.ReadBytes ((int) exactLen)
+                  ? stream.ReadBytes ((int) len)
                   : stream.ReadBytes (len, 1024);
 
       if (bytes.LongLength != len) {
