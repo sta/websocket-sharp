@@ -505,9 +505,9 @@ namespace WebSocketSharp
       }
 
       var len = (long) exactPayloadLen;
-      var bytes = frame._payloadLength < 127
-                  ? stream.ReadBytes ((int) len)
-                  : stream.ReadBytes (len, 1024);
+      var bytes = frame._payloadLength > 126
+                  ? stream.ReadBytes (len, 1024)
+                  : stream.ReadBytes ((int) len);
 
       if (bytes.LongLength != len) {
         var msg = "The payload data of a frame could not be read.";
