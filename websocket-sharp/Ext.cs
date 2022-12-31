@@ -532,11 +532,6 @@ namespace WebSocketSharp
       return value.StartsWith (val, compType);
     }
 
-    internal static bool IsControl (this Opcode opcode)
-    {
-      return opcode >= Opcode.Close;
-    }
-
     internal static bool IsData (this byte opcode)
     {
       return opcode == 0x1 || opcode == 0x2;
