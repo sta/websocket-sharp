@@ -532,11 +532,6 @@ namespace WebSocketSharp
       return value.StartsWith (val, compType);
     }
 
-    internal static bool IsControl (this byte opcode)
-    {
-      return opcode > 0x7 && opcode < 0x10;
-    }
-
     internal static bool IsControl (this Opcode opcode)
     {
       return opcode >= Opcode.Close;
