@@ -532,11 +532,6 @@ namespace WebSocketSharp
       return value.StartsWith (val, compType);
     }
 
-    internal static bool IsData (this Opcode opcode)
-    {
-      return opcode == Opcode.Text || opcode == Opcode.Binary;
-    }
-
     internal static bool IsEqualTo (
       this int value, char c, Action<int> beforeComparing
     )
