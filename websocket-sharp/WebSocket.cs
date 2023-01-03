@@ -1158,7 +1158,7 @@ namespace WebSocketSharp
       }
 
       var data = new PayloadData (code, reason);
-      var send = !code.IsReserved ();
+      var send = !code.IsReservedStatusCode ();
 
       close (data, send, false);
     }
@@ -1225,7 +1225,7 @@ namespace WebSocketSharp
       }
 
       var data = new PayloadData (code, reason);
-      var send = !code.IsReserved ();
+      var send = !code.IsReservedStatusCode ();
 
       closeAsync (data, send, false);
     }

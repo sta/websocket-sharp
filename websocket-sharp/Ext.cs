@@ -558,7 +558,7 @@ namespace WebSocketSharp
       return value > 0 && value < 65536;
     }
 
-    internal static bool IsReserved (this ushort code)
+    internal static bool IsReservedStatusCode (this ushort code)
     {
       return code == 1004
              || code == 1005
@@ -568,7 +568,7 @@ namespace WebSocketSharp
 
     internal static bool IsReserved (this CloseStatusCode code)
     {
-      return ((ushort) code).IsReserved ();
+      return ((ushort) code).IsReservedStatusCode ();
     }
 
     internal static bool IsSupported (this byte opcode)

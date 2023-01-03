@@ -494,7 +494,7 @@ namespace WebSocketSharp.Server
       }
 
       var payloadData = new PayloadData (code, reason);
-      var send = !code.IsReserved ();
+      var send = !code.IsReservedStatusCode ();
 
       stop (payloadData, send);
     }
