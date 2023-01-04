@@ -526,10 +526,10 @@ namespace WebSocketSharp
       this string value, CompressionMethod method
     )
     {
-      var val = method.ToExtensionString ();
+      var extStr = method.ToExtensionString ();
       var compType = StringComparison.Ordinal;
 
-      return value.StartsWith (val, compType);
+      return value.StartsWith (extStr, compType);
     }
 
     internal static bool IsEqualTo (
