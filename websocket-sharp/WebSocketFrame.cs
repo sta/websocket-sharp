@@ -626,27 +626,27 @@ namespace WebSocketSharp
         var j = i * 4;
 
         if (i < cnt) {
-          writeLine (
-            Convert.ToString (bytes[j], 2).PadLeft (8, '0'),
-            Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0'),
-            Convert.ToString (bytes[j + 2], 2).PadLeft (8, '0'),
-            Convert.ToString (bytes[j + 3], 2).PadLeft (8, '0')
-          );
+          var arg1 = Convert.ToString (bytes[j], 2).PadLeft (8, '0');
+          var arg2 = Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0');
+          var arg3 = Convert.ToString (bytes[j + 2], 2).PadLeft (8, '0');
+          var arg4 = Convert.ToString (bytes[j + 3], 2).PadLeft (8, '0');
+
+          writeLine (arg1, arg2, arg3, arg4);
 
           continue;
         }
 
         if (rem > 0) {
-          writeLine (
-            Convert.ToString (bytes[j], 2).PadLeft (8, '0'),
-            rem >= 2
-            ? Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0')
-            : String.Empty,
-            rem == 3
-            ? Convert.ToString (bytes[j + 2], 2).PadLeft (8, '0')
-            : String.Empty,
-            String.Empty
-          );
+          var arg1 = Convert.ToString (bytes[j], 2).PadLeft (8, '0');
+          var arg2 = rem >= 2
+                     ? Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0')
+                     : String.Empty;
+
+          var arg3 = rem == 3
+                     ? Convert.ToString (bytes[j + 2], 2).PadLeft (8, '0')
+                     : String.Empty;
+
+          writeLine (arg1, arg2, arg3, String.Empty);
         }
       }
 
