@@ -45,6 +45,7 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
+    private static readonly int _defaultMaskingKeyLength;
     private byte[]      _extPayloadLength;
     private Fin         _fin;
     private Mask        _mask;
@@ -55,6 +56,15 @@ namespace WebSocketSharp
     private Rsv         _rsv1;
     private Rsv         _rsv2;
     private Rsv         _rsv3;
+
+    #endregion
+
+    #region Static Constructor
+
+    static WebSocketFrame ()
+    {
+      _defaultMaskingKeyLength = 4;
+    }
 
     #endregion
 
