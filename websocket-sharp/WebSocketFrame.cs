@@ -476,12 +476,10 @@ namespace WebSocketSharp
         return;
       }
 
-      var len = 4;
-
       stream.ReadBytesAsync (
-        len,
+        _defaultMaskingKeyLength,
         bytes => {
-          if (bytes.Length != len) {
+          if (bytes.Length != _defaultMaskingKeyLength) {
             var msg = "The masking key of a frame could not be read.";
 
             throw new WebSocketException (msg);
