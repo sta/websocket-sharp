@@ -845,10 +845,10 @@ Extended Payload Length: {7}
         if (_payloadLength > 0) {
           var bytes = _payloadData.ToArray ();
 
-          if (_payloadLength < 127)
-            buff.Write (bytes, 0, bytes.Length);
-          else
+          if (_payloadLength > 126)
             buff.WriteBytes (bytes, 1024);
+          else
+            buff.Write (bytes, 0, bytes.Length);
         }
 
         buff.Close ();
