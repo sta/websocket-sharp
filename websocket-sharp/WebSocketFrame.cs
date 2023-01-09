@@ -840,7 +840,7 @@ Extended Payload Length: {7}
         }
 
         if (_mask == Mask.On)
-          buff.Write (_maskingKey, 0, 4);
+          buff.Write (_maskingKey, 0, _defaultMaskingKeyLength);
 
         if (_payloadLength > 0) {
           var bytes = _payloadData.ToArray ();
