@@ -833,11 +833,8 @@ Extended Payload Length: {7}
 
         buff.Write (rawHeader, 0, 2);
 
-        if (_payloadLength > 125) {
-          var cnt = _payloadLength == 126 ? 2 : 8;
-
-          buff.Write (_extPayloadLength, 0, cnt);
-        }
+        if (_payloadLength >= 126)
+          buff.Write (_extPayloadLength, 0, _extPayloadLength.Length);
 
         if (_mask == Mask.On)
           buff.Write (_maskingKey, 0, _defaultMaskingKeyLength);
