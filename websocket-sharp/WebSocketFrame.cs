@@ -303,7 +303,7 @@ namespace WebSocketSharp
 
     private static byte[] createMaskingKey ()
     {
-      var key = new byte[4];
+      var key = new byte[_defaultMaskingKeyLength];
 
       WebSocket.RandomNumber.GetBytes (key);
 
