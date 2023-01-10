@@ -45,6 +45,7 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
+    private static readonly int _defaultHeaderLength;
     private static readonly int _defaultMaskingKeyLength;
     private byte[]              _extPayloadLength;
     private Fin                 _fin;
@@ -63,6 +64,7 @@ namespace WebSocketSharp
 
     static WebSocketFrame ()
     {
+      _defaultHeaderLength = 2;
       _defaultMaskingKeyLength = 4;
     }
 
