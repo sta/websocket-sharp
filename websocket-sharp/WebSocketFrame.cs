@@ -420,7 +420,7 @@ namespace WebSocketSharp
 
     private static WebSocketFrame readHeader (Stream stream)
     {
-      var bytes = stream.ReadBytes (2);
+      var bytes = stream.ReadBytes (_defaultHeaderLength);
 
       return processHeader (bytes);
     }
