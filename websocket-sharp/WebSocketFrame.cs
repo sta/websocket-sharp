@@ -314,7 +314,7 @@ namespace WebSocketSharp
 
     private static WebSocketFrame processHeader (byte[] header)
     {
-      if (header.Length != 2) {
+      if (header.Length != _defaultHeaderLength) {
         var msg = "The header part of a frame could not be read.";
 
         throw new WebSocketException (msg);
