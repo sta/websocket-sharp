@@ -430,7 +430,7 @@ namespace WebSocketSharp
     )
     {
       stream.ReadBytesAsync (
-        2,
+        _defaultHeaderLength,
         bytes => {
           var frame = processHeader (bytes);
 
