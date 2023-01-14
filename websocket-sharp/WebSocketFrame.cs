@@ -669,7 +669,7 @@ namespace WebSocketSharp
 
     private string toString ()
     {
-      var extPayloadLen = _payloadLength > 125
+      var extPayloadLen = _payloadLength >= 126
                           ? ExactPayloadLength.ToString ()
                           : String.Empty;
 
@@ -677,7 +677,7 @@ namespace WebSocketSharp
                        ? BitConverter.ToString (_maskingKey)
                        : String.Empty;
 
-      var payloadData = _payloadLength > 125
+      var payloadData = _payloadLength >= 126
                         ? "***"
                         : _payloadLength > 0
                           ? _payloadData.ToString ()
