@@ -673,7 +673,7 @@ namespace WebSocketSharp
                           ? ExactPayloadLength.ToString ()
                           : String.Empty;
 
-      var maskingKey = _maskingKey.Length > 0
+      var maskingKey = _mask == Mask.On
                        ? BitConverter.ToString (_maskingKey)
                        : String.Empty;
 
