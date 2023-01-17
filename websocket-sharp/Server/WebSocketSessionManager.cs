@@ -48,10 +48,10 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private static readonly byte[]                _rawEmptyPingFrame;
     private object                                _forSweep;
     private volatile bool                         _keepClean;
     private Logger                                _log;
+    private static readonly byte[]                _rawEmptyPingFrame;
     private Dictionary<string, IWebSocketSession> _sessions;
     private volatile ServerState                  _state;
     private volatile bool                         _sweeping;
