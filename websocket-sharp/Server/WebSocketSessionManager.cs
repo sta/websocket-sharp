@@ -48,7 +48,7 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private static readonly byte[]                _emptyPingFrameAsBytes;
+    private static readonly byte[]                _rawEmptyPingFrame;
     private object                                _forSweep;
     private volatile bool                         _keepClean;
     private Logger                                _log;
@@ -65,9 +65,7 @@ namespace WebSocketSharp.Server
 
     static WebSocketSessionManager ()
     {
-      _emptyPingFrameAsBytes = WebSocketFrame
-                               .CreatePingFrame (false)
-                               .ToArray ();
+      _rawEmptyPingFrame = WebSocketFrame.CreatePingFrame (false).ToArray ();
     }
 
     #endregion
@@ -116,7 +114,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> ActiveIDs {
       get {
-        foreach (var res in broadping (_emptyPingFrameAsBytes)) {
+        foreach (var res in broadping (_rawEmptyPingFrame)) {
           if (res.Value)
             yield return res.Key;
         }
@@ -176,7 +174,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> InactiveIDs {
       get {
-        foreach (var res in broadping (_emptyPingFrameAsBytes)) {
+        foreach (var res in broadping (_rawEmptyPingFrame)) {
           if (!res.Value)
             yield return res.Key;
         }
