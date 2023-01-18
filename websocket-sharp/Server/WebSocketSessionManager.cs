@@ -382,7 +382,7 @@ namespace WebSocketSharp.Server
       );
     }
 
-    private Dictionary<string, bool> broadping (byte[] frameAsBytes)
+    private Dictionary<string, bool> broadping (byte[] rawFrame)
     {
       var ret = new Dictionary<string, bool> ();
 
@@ -393,7 +393,7 @@ namespace WebSocketSharp.Server
           break;
         }
 
-        var res = session.WebSocket.Ping (frameAsBytes);
+        var res = session.WebSocket.Ping (rawFrame);
 
         ret.Add (session.ID, res);
       }
