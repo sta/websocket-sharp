@@ -1516,14 +1516,14 @@ namespace WebSocketSharp.Server
     public void Sweep ()
     {
       if (_sweeping) {
-        _log.Info ("The sweeping is already in progress.");
+        _log.Trace ("The sweep process is already in progress.");
 
         return;
       }
 
       lock (_forSweep) {
         if (_sweeping) {
-          _log.Info ("The sweeping is already in progress.");
+          _log.Trace ("The sweep process is already in progress.");
 
           return;
         }
