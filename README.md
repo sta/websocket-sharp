@@ -2,6 +2,10 @@
 
 ## Welcome to websocket-sharp! ##
 
+Created by [@sta](https://github.com/sta) and this fork in maintained by [@darknessxk](https://github.com/darknessxk)
+
+This Project is a NET Core version
+
 websocket-sharp supports:
 
 - [RFC 6455](#supported-websocket-specifications)
@@ -11,19 +15,19 @@ websocket-sharp supports:
 - [HTTP Authentication](#http-authentication)
 - [Query string, Origin header, and Cookies](#query-string-origin-header-and-cookies)
 - [Connecting through the HTTP proxy server](#connecting-through-the-http-proxy-server)
-- .NET Framework **3.5** or later (includes compatible environment such as [Mono])
+- .NET Core **3.1** or later
 
 ## Branches ##
 
 - [master] for production releases.
-- [hybi-00] for older [draft-ietf-hybi-thewebsocketprotocol-00]. No longer maintained.
-- [draft75] for even more old [draft-hixie-thewebsocketprotocol-75]. No longer maintained.
+- [devel] for edge features.
+- [release/x.x.x.x] for releases
 
 ## Build ##
 
 websocket-sharp is built as a single assembly, **websocket-sharp.dll**.
 
-websocket-sharp is developed with [MonoDevelop]. So a simple way to build is to open **websocket-sharp.sln** and run build for **websocket-sharp project** with any of the build configurations (e.g. `Debug`) in MonoDevelop.
+websocket-sharp is developed originally with [MonoDevelop] and now ported to NET Core. So a simple way to build is to open **websocket-sharp.sln** and run build for **websocket-sharp project** with any of the build configurations (e.g. `Debug`).
 
 ## Install ##
 
@@ -31,25 +35,12 @@ websocket-sharp is developed with [MonoDevelop]. So a simple way to build is to 
 
 You should add your websocket-sharp.dll (e.g. `/path/to/websocket-sharp/bin/Debug/websocket-sharp.dll`) to the library references of your project.
 
-If you would like to use that dll in your [Unity] project, you should add it to any folder of your project (e.g. `Assets/Plugins`) in the **Unity Editor**.
-
 ### NuGet Gallery ###
 
-websocket-sharp is available on the [NuGet Gallery], as still a **prerelease** version.
+TBD
 
-- [NuGet Gallery: websocket-sharp]
 
-You can add websocket-sharp to your project with the NuGet Package Manager, by using the following command in the Package Manager Console.
-
-    PM> Install-Package WebSocketSharp -Pre
-
-### Unity Asset Store ###
-
-websocket-sharp is available on the Unity Asset Store (Sorry, Not available now).
-
-- [WebSocket-Sharp for Unity]
-
-It works with **Unity Free**, but there are some limitations:
+### Other infos
 
 - [Security Sandbox of the Webplayer] (The server is not available in Web Player)
 - [WebGL Networking] (Not available in WebGL)
