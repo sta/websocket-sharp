@@ -1566,7 +1566,7 @@ namespace WebSocketSharp.Server
     /// Tries to get the session instance with the specified ID.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the session is successfully found; otherwise,
+    /// <c>true</c> if the session instance is successfully found; otherwise,
     /// <c>false</c>.
     /// </returns>
     /// <param name="id">
