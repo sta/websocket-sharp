@@ -1023,7 +1023,7 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <returns>
     /// <c>true</c> if the send has successfully done and a pong has been
-    /// received from the client within a time; otherwise, <c>false</c>.
+    /// received within a time; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="id">
     /// A <see cref="string"/> that specifies the ID of the session.
