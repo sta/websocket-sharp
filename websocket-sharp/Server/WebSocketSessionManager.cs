@@ -1055,15 +1055,15 @@ namespace WebSocketSharp.Server
     /// the specified session.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the send has done with no error and a pong has been
-    /// received from the client within a time; otherwise, <c>false</c>.
+    /// <c>true</c> if the send has successfully done and a pong has been
+    /// received within a time; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="message">
     ///   <para>
     ///   A <see cref="string"/> that specifies the message to send.
     ///   </para>
     ///   <para>
-    ///   The size must be 125 bytes or less in UTF-8.
+    ///   Its size must be 125 bytes or less in UTF-8.
     ///   </para>
     /// </param>
     /// <param name="id">
