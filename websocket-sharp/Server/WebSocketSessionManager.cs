@@ -1264,7 +1264,7 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The current state of the WebSocket connection is not Open.
+    ///   The current state of the WebSocket interface is not Open.
     ///   </para>
     /// </exception>
     public void SendTo (Stream stream, int length, string id)
