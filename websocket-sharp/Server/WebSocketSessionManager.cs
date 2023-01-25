@@ -1281,7 +1281,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified data asynchronously to the client using
+    /// Sends the specified data to the client asynchronously using
     /// the specified session.
     /// </summary>
     /// <remarks>
@@ -1295,15 +1295,17 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="completed">
     ///   <para>
-    ///   An <c>Action&lt;bool&gt;</c> delegate or <see langword="null"/>
-    ///   if not needed.
+    ///   An <see cref="T:System.Action{bool}"/> delegate.
     ///   </para>
     ///   <para>
     ///   The delegate invokes the method called when the send is complete.
     ///   </para>
     ///   <para>
-    ///   <c>true</c> is passed to the method if the send has done with
-    ///   no error; otherwise, <c>false</c>.
+    ///   The <see cref="bool"/> parameter passed to the method is <c>true</c>
+    ///   if the send has successfully done; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not necessary.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentNullException">
@@ -1328,7 +1330,7 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The current state of the WebSocket connection is not Open.
+    ///   The current state of the WebSocket interface is not Open.
     ///   </para>
     /// </exception>
     public void SendToAsync (byte[] data, string id, Action<bool> completed)
