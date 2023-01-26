@@ -1281,8 +1281,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified data to the client asynchronously using
-    /// the specified session.
+    /// Sends the specified data to the client using the specified session
+    /// asynchronously.
     /// </summary>
     /// <remarks>
     /// This method does not wait for the send to be complete.
