@@ -626,7 +626,7 @@ namespace WebSocketSharp.Server
       }
 
       if (length < 1) {
-        var msg = "It is less than 1.";
+        var msg = "Less than 1.";
 
         throw new ArgumentException (msg, "length");
       }
