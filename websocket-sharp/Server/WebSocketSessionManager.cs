@@ -698,8 +698,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified data asynchronously to every client in
-    /// the WebSocket service.
+    /// Sends the specified data to every client in the WebSocket service
+    /// asynchronously.
     /// </summary>
     /// <remarks>
     /// This method does not wait for the send to be complete.
@@ -709,11 +709,13 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="completed">
     ///   <para>
-    ///   An <see cref="Action"/> delegate or <see langword="null"/>
-    ///   if not needed.
+    ///   An <see cref="Action"/> delegate.
     ///   </para>
     ///   <para>
     ///   The delegate invokes the method called when the send is complete.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not necessary.
     ///   </para>
     /// </param>
     /// <exception cref="InvalidOperationException">
