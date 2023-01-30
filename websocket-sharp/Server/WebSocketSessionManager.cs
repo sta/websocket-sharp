@@ -419,18 +419,18 @@ namespace WebSocketSharp.Server
 
     private void stop (PayloadData payloadData, bool send)
     {
-      var bytes = send
-                  ? WebSocketFrame
-                    .CreateCloseFrame (payloadData, false)
-                    .ToArray ()
-                  : null;
+      var rawFrame = send
+                     ? WebSocketFrame
+                       .CreateCloseFrame (payloadData, false)
+                       .ToArray ()
+                     : null;
 
       lock (_sync) {
         _state = ServerState.ShuttingDown;
         _sweepTimer.Enabled = false;
 
         foreach (var session in _sessions.Values.ToList ())
-          session.WebSocket.Close (payloadData, bytes);
+          session.WebSocket.Close (payloadData, rawFrame);
 
         _state = ServerState.Stop;
       }
