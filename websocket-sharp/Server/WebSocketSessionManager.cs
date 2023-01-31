@@ -338,7 +338,7 @@ namespace WebSocketSharp.Server
       }
     }
 
-    private void broadcast (Opcode opcode, Stream stream, Action completed)
+    private void broadcast (Opcode opcode, Stream sourceStream, Action completed)
     {
       var cache = new Dictionary <CompressionMethod, Stream> ();
 
@@ -350,7 +350,7 @@ namespace WebSocketSharp.Server
             break;
           }
 
-          session.WebSocket.Send (opcode, stream, cache);
+          session.WebSocket.Send (opcode, sourceStream, cache);
         }
 
         if (completed != null)
