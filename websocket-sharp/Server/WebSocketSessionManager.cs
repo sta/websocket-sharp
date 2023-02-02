@@ -377,7 +377,9 @@ namespace WebSocketSharp.Server
       );
     }
 
-    private void broadcastAsync (Opcode opcode, Stream sourceStream, Action completed)
+    private void broadcastAsync (
+      Opcode opcode, Stream sourceStream, Action completed
+    )
     {
       ThreadPool.QueueUserWorkItem (
         state => broadcast (opcode, sourceStream, completed)
