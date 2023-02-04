@@ -281,7 +281,8 @@ namespace WebSocketSharp.Server
     /// it is shutting down.
     /// </remarks>
     /// <value>
-    /// A <see cref="TimeSpan"/> to wait for the response.
+    /// A <see cref="TimeSpan"/> that represents the time to wait for
+    /// the response.
     /// </value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The value specified for a set operation is zero or less.
