@@ -277,8 +277,8 @@ namespace WebSocketSharp.Server
     /// or Close.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the service has already started or
-    /// it is shutting down.
+    /// The set operation works if the current state of the service is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     /// A <see cref="TimeSpan"/> that represents the time to wait for
