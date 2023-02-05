@@ -224,8 +224,8 @@ namespace WebSocketSharp.Server
     /// the WebSocket service are cleaned up periodically.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the service has already started or
-    /// it is shutting down.
+    /// The set operation works if the current state of the service is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     /// <c>true</c> if the inactive sessions are cleaned up every 60 seconds;
