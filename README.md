@@ -11,7 +11,7 @@ websocket-sharp supports:
 - [HTTP Authentication](#http-authentication)
 - [Query string, Origin header, and Cookies](#query-string-origin-header-and-cookies)
 - [Connecting through the HTTP proxy server](#connecting-through-the-http-proxy-server)
-- .NET Framework **3.5** or later (includes compatible environment such as [Mono])
+- .NET Framework **3.5** or later versions of .NET Framework (includes compatible environment such as [Mono])
 
 ## Branches ##
 
