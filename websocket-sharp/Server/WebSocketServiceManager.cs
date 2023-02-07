@@ -590,7 +590,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentException ("An empty string.", "path");
 
       if (path[0] != '/') {
-        var msg = "It is not an absolute path.";
+        var msg = "Not an absolute path.";
 
         throw new ArgumentException (msg, "path");
       }
