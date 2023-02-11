@@ -342,8 +342,8 @@ namespace WebSocketSharp.Server
     ///   An <see cref="T:System.Action{TBehavior}"/> delegate.
     ///   </para>
     ///   <para>
-    ///   The delegate invokes the method called when initializing
-    ///   a new session instance for the service.
+    ///   The delegate invokes the method called when the service
+    ///   initializes a new session instance.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if not necessary.
