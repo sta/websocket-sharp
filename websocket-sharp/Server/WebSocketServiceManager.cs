@@ -326,7 +326,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Adds a WebSocket service with the specified behavior, path,
-    /// and delegate.
+    /// and initializer.
     /// </summary>
     /// <param name="path">
     ///   <para>
