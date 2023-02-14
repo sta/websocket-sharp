@@ -440,8 +440,8 @@ namespace WebSocketSharp.Server
     /// Removes all WebSocket services managed by the manager.
     /// </summary>
     /// <remarks>
-    /// A service is stopped with close status 1001 (going away)
-    /// if it has already started.
+    /// Each service is stopped with close status 1001 (going away)
+    /// if the current state of the service is Start.
     /// </remarks>
     public void Clear ()
     {
