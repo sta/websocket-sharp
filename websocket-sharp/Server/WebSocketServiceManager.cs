@@ -29,10 +29,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading;
-using WebSocketSharp.Net;
 
 namespace WebSocketSharp.Server
 {
