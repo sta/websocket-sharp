@@ -40,8 +40,8 @@ namespace WebSocketSharp.Server
   /// Provides the management function for the WebSocket services.
   /// </summary>
   /// <remarks>
-  /// This class manages the WebSocket services provided by
-  /// the <see cref="WebSocketServer"/> or <see cref="HttpServer"/> class.
+  /// This class manages the WebSocket services provided by the
+  /// <see cref="WebSocketServer"/> or <see cref="HttpServer"/> class.
   /// </remarks>
   public class WebSocketServiceManager
   {
