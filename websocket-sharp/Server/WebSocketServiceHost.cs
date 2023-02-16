@@ -166,15 +166,16 @@ namespace WebSocketSharp.Server
     public abstract Type BehaviorType { get; }
 
     /// <summary>
-    /// Gets or sets the time to wait for the response to the WebSocket Ping
-    /// or Close.
+    /// Gets or sets the time to wait for the response to the WebSocket
+    /// Ping or Close.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the service has already started or
-    /// it is shutting down.
+    /// The set operation works if the current state of the service is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
-    /// A <see cref="TimeSpan"/> to wait for the response.
+    /// A <see cref="TimeSpan"/> that represents the time to wait for
+    /// the response.
     /// </value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The value specified for a set operation is zero or less.
