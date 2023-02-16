@@ -109,12 +109,12 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets a value indicating whether the service cleans up the
-    /// inactive sessions periodically.
+    /// Gets or sets a value indicating whether the service cleans up
+    /// the inactive sessions periodically.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the service has already started or
-    /// it is shutting down.
+    /// The set operation works if the current state of the service is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     /// <c>true</c> if the service cleans up the inactive sessions every
