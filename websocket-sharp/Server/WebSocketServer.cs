@@ -1022,7 +1022,7 @@ namespace WebSocketSharp.Server
     ///   It must inherit the <see cref="WebSocketBehavior"/> class.
     ///   </para>
     ///   <para>
-    ///   And also, it must have a public parameterless constructor.
+    ///   Also it must have a public parameterless constructor.
     ///   </para>
     /// </typeparam>
     /// <exception cref="ArgumentNullException">
