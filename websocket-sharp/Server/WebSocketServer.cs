@@ -1204,8 +1204,7 @@ namespace WebSocketSharp.Server
     /// Stops receiving incoming handshake requests.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the server is not started,
-    /// it is shutting down, or it has already stopped.
+    /// This method works if the current state of the server is Start.
     /// </remarks>
     public void Stop ()
     {
