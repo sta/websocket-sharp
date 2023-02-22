@@ -425,12 +425,12 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the server cleans up the
-    /// inactive sessions periodically.
+    /// Gets or sets a value indicating whether the server cleans up
+    /// the inactive sessions periodically.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the server has already started or
-    /// it is shutting down.
+    /// The set operation works if the current state of the server is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     ///   <para>
