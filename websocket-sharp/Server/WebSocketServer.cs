@@ -584,14 +584,8 @@ namespace WebSocketSharp.Server
     /// Gets or sets the delegate used to find the credentials for an identity.
     /// </summary>
     /// <remarks>
-    ///   <para>
-    ///   No credentials are found if the method invoked by the delegate
-    ///   returns <see langword="null"/> or the value is <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   The set operation works if the current state of the server is
-    ///   Ready or Stop.
-    ///   </para>
+    /// The set operation works if the current state of the server is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     ///   <para>
@@ -601,6 +595,10 @@ namespace WebSocketSharp.Server
     ///   <para>
     ///   The delegate invokes the method called when the server finds
     ///   the credentials used to authenticate a client.
+    ///   </para>
+    ///   <para>
+    ///   The method must return <see langword="null"/> if the credentials
+    ///   are not found.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if not necessary.
