@@ -956,7 +956,9 @@ namespace WebSocketSharp.Server
       }
 
       try {
-        stopReceiving (5000);
+        var timeout = 5000;
+
+        stopReceiving (timeout);
       }
       catch (Exception ex) {
         _log.Fatal (ex.Message);
