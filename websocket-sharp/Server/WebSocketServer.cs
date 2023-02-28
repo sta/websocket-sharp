@@ -483,19 +483,16 @@ namespace WebSocketSharp.Server
     /// Gets or sets the name of the realm associated with the server.
     /// </summary>
     /// <remarks>
-    ///   <para>
-    ///   "SECRET AREA" is used as the name of the realm if the value is
-    ///   <see langword="null"/> or an empty string.
-    ///   </para>
-    ///   <para>
-    ///   The set operation does nothing if the server has already started
-    ///   or it is shutting down.
-    ///   </para>
+    /// The set operation works if the current state of the server is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents the name of the realm or
-    ///   <see langword="null"/>.
+    ///   A <see cref="string"/> that represents the name of the realm.
+    ///   </para>
+    ///   <para>
+    ///   "SECRET AREA" is used as the name of the realm if the value is
+    ///   <see langword="null"/> or an empty string.
     ///   </para>
     ///   <para>
     ///   The default value is <see langword="null"/>.
