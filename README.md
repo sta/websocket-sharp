@@ -59,7 +59,7 @@ namespace Example
     {
       using (var ws = new WebSocket ("ws://dragonsnest.far/Laputa")) {
         ws.OnMessage += (sender, e) =>
-            Console.WriteLine ("Laputa says: " + e.Data);
+                          Console.WriteLine ("Laputa says: " + e.Data);
 
         ws.Connect ();
         ws.Send ("BALUS");
