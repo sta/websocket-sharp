@@ -108,8 +108,8 @@ This event occurs when the WebSocket connection has been established.
 
 ```csharp
 ws.OnOpen += (sender, e) => {
-    ...
-  };
+               ...
+             };
 ```
 
 `System.EventArgs.Empty` is passed as `e`, so you do not need to use it.
