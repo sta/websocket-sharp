@@ -116,12 +116,12 @@ ws.OnOpen += (sender, e) => {
 
 ##### WebSocket.OnMessage Event #####
 
-This event occurs when the `WebSocket` receives a message.
+This event occurs when the `WebSocket` instance receives a message.
 
 ```csharp
 ws.OnMessage += (sender, e) => {
-    ...
-  };
+                  ...
+                };
 ```
 
 A `WebSocketSharp.MessageEventArgs` instance is passed as `e`.
@@ -153,13 +153,13 @@ And if you would like to notify that a **ping** has been received, via this even
 ```csharp
 ws.EmitOnPing = true;
 ws.OnMessage += (sender, e) => {
-    if (e.IsPing) {
-      // Do something to notify that a ping has been received.
-      ...
+                  if (e.IsPing) {
+                    // Do something to notify that a ping has been received.
+                    ...
 
-      return;
-    }
-  };
+                    return;
+                  }
+                };
 ```
 
 ##### WebSocket.OnError Event #####
