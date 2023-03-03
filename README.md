@@ -164,12 +164,12 @@ ws.OnMessage += (sender, e) => {
 
 ##### WebSocket.OnError Event #####
 
-This event occurs when the `WebSocket` gets an error.
+This event occurs when the `WebSocket` instance gets an error.
 
 ```csharp
 ws.OnError += (sender, e) => {
-    ...
-  };
+                ...
+              };
 ```
 
 A `WebSocketSharp.ErrorEventArgs` instance is passed as `e`.
