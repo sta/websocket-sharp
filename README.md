@@ -186,8 +186,8 @@ This event occurs when the WebSocket connection has been closed.
 
 ```csharp
 ws.OnClose += (sender, e) => {
-    ...
-  };
+                ...
+              };
 ```
 
 A `WebSocketSharp.CloseEventArgs` instance is passed as `e`.
