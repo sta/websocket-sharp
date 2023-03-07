@@ -1175,7 +1175,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Adds a WebSocket service with the specified behavior, path,
-    /// and delegate.
+    /// and initializer.
     /// </summary>
     /// <param name="path">
     ///   <para>
@@ -1188,12 +1188,14 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="initializer">
     ///   <para>
-    ///   An <c>Action&lt;TBehavior&gt;</c> delegate or
-    ///   <see langword="null"/> if not needed.
+    ///   An <see cref="T:System.Action{TBehavior}"/> delegate.
     ///   </para>
     ///   <para>
-    ///   The delegate invokes the method called when initializing
-    ///   a new session instance for the service.
+    ///   The delegate invokes the method called when the service
+    ///   initializes a new session instance.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not necessary.
     ///   </para>
     /// </param>
     /// <typeparam name="TBehavior">
@@ -1204,7 +1206,7 @@ namespace WebSocketSharp.Server
     ///   It must inherit the <see cref="WebSocketBehavior"/> class.
     ///   </para>
     ///   <para>
-    ///   And also, it must have a public parameterless constructor.
+    ///   Also it must have a public parameterless constructor.
     ///   </para>
     /// </typeparam>
     /// <exception cref="ArgumentNullException">
