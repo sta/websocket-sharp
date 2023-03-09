@@ -288,13 +288,13 @@ namespace WebSocketSharp.Server
         throw new ArgumentNullException ("address");
 
       if (!address.IsLocal ()) {
-        var msg = "It is not a local IP address.";
+        var msg = "Not a local IP address.";
 
         throw new ArgumentException (msg, "address");
       }
 
       if (!port.IsPortNumber ()) {
-        var msg = "It is less than 1 or greater than 65535.";
+        var msg = "Less than 1 or greater than 65535.";
 
         throw new ArgumentOutOfRangeException ("port", msg);
       }
