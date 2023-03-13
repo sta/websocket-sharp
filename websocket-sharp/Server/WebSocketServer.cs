@@ -434,8 +434,8 @@ namespace WebSocketSharp.Server
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   <c>true</c> if the server cleans up the inactive sessions every
-    ///   60 seconds; otherwise, <c>false</c>.
+    ///   <c>true</c> if the server cleans up the inactive sessions
+    ///   every 60 seconds; otherwise, <c>false</c>.
     ///   </para>
     ///   <para>
     ///   The default value is <c>true</c>.
