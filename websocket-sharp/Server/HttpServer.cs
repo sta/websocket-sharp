@@ -359,11 +359,11 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   '/' or '\' is trimmed from the end of the value if any.
+    ///   '/' or '\' is trimmed from the end of the value if present.
     ///   </para>
     ///   <para>
-    ///   The set operation does nothing if the server has already
-    ///   started or it is shutting down.
+    ///   The set operation works if the current state of the server is
+    ///   Ready or Stop.
     ///   </para>
     /// </remarks>
     /// <value>
