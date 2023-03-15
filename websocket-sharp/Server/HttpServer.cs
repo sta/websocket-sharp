@@ -358,18 +358,16 @@ namespace WebSocketSharp.Server
     /// Gets or sets the path to the document folder of the server.
     /// </summary>
     /// <remarks>
-    ///   <para>
-    ///   '/' or '\' is trimmed from the end of the value if present.
-    ///   </para>
-    ///   <para>
-    ///   The set operation works if the current state of the server is
-    ///   Ready or Stop.
-    ///   </para>
+    /// The set operation works if the current state of the server is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     ///   <para>
     ///   A <see cref="string"/> that represents a path to the folder
     ///   from which to find the requested file.
+    ///   </para>
+    ///   <para>
+    ///   '/' or '\' is trimmed from the end of the value if present.
     ///   </para>
     ///   <para>
     ///   The default value is "./Public".
