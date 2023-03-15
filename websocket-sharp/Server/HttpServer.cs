@@ -323,8 +323,8 @@ namespace WebSocketSharp.Server
     /// Gets or sets the scheme used to authenticate the clients.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the server has already started or
-    /// it is shutting down.
+    /// The set operation works if the current state of the server is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     ///   <para>
