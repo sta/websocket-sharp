@@ -934,11 +934,8 @@ namespace WebSocketSharp.Server
           );
         }
         catch (HttpListenerException ex) {
-          if (_state == ServerState.ShuttingDown) {
-            _log.Info ("The underlying listener is stopped.");
-
+          if (_state == ServerState.ShuttingDown)
             return;
-          }
 
           _log.Fatal (ex.Message);
           _log.Debug (ex.ToString ());
@@ -946,11 +943,8 @@ namespace WebSocketSharp.Server
           break;
         }
         catch (InvalidOperationException ex) {
-          if (_state == ServerState.ShuttingDown) {
-            _log.Info ("The underlying listener is stopped.");
-
+          if (_state == ServerState.ShuttingDown)
             return;
-          }
 
           _log.Fatal (ex.Message);
           _log.Debug (ex.ToString ());
