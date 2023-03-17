@@ -57,7 +57,7 @@ namespace WebSocketSharp.Server
   ///   The server supports HTTP/1.1 version request and response.
   ///   </para>
   ///   <para>
-  ///   And the server allows to accept WebSocket handshake requests.
+  ///   Also the server allows to accept WebSocket handshake requests.
   ///   </para>
   ///   <para>
   ///   This class can provide multiple WebSocket services.
