@@ -10,7 +10,7 @@
 
   <PropertyGroup>
     <PackageId>websocket-sharp.net</PackageId>
-    <Version>1.0.3.2</Version>
+    <Version>1.0.3.3</Version>
     <Authors>sta</Authors>
     <Company>websocket-sharp</Company>
   </PropertyGroup>
