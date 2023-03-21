@@ -12,3 +12,8 @@ obj
 *.user
 *.userprefs
 UpgradeLog*.*
+
+.DS_Store
+/websocket-sharp/.vs/websocket-sharp.NET6/FileContentIndex
+/.vs
+

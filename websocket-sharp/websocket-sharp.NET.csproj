@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyName>websocket-sharp</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>websocket-sharp.net</PackageId>
+    <Version>1.0.3.3</Version>
+    <Authors>sta</Authors>
+    <Company>websocket-sharp</Company>
+  </PropertyGroup>
+</Project>
