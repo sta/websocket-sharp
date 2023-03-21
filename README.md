@@ -11,7 +11,7 @@ websocket-sharp supports:
 - [HTTP Authentication](#http-authentication)
 - [Query string, Origin header, and Cookies](#query-string-origin-header-and-cookies)
 - [Connecting through the HTTP proxy server](#connecting-through-the-http-proxy-server)
-- .NET Framework **3.5** or later (includes compatible environment such as [Mono])
+- .NET Framework **3.5** or later versions of .NET Framework (includes compatible environment such as [Mono])
 
 ## Branches ##
 
@@ -43,25 +43,6 @@ You can add websocket-sharp to your project with the NuGet Package Manager, by u
 
     PM> Install-Package WebSocketSharp -Pre
 
-### Unity Asset Store ###
-
-websocket-sharp is available on the Unity Asset Store (Sorry, Not available now).
-
-- [WebSocket-Sharp for Unity]
-
-It works with **Unity Free**, but there are some limitations:
-
-- [Security Sandbox of the Webplayer] (The server is not available in Web Player)
-- [WebGL Networking] (Not available in WebGL)
-- Incompatible platform (Not available for such UWP)
-- Lack of dll for the System.IO.Compression (The compression extension is not available on Windows)
-- .NET Socket Support for iOS/Android (iOS/Android Pro is required if your Unity is earlier than Unity 5)
-- .NET API 2.0 compatibility level for iOS/Android
-
-.NET API 2.0 compatibility level for iOS/Android may require to fix lack of some features for later than .NET Framework 2.0, such as the `System.Func<...>` delegates (so i have added them in the asset package).
-
-And it is priced at **US$15**. I believe your $15 makes this project more better, **Thank you!**
-
 ## Usage ##
 
 ### WebSocket Client ###
@@ -78,7 +59,7 @@ namespace Example
     {
       using (var ws = new WebSocket ("ws://dragonsnest.far/Laputa")) {
         ws.OnMessage += (sender, e) =>
-            Console.WriteLine ("Laputa says: " + e.Data);
+                          Console.WriteLine ("Laputa says: " + e.Data);
 
         ws.Connect ();
         ws.Send ("BALUS");
@@ -127,20 +108,20 @@ This event occurs when the WebSocket connection has been established.
 
 ```csharp
 ws.OnOpen += (sender, e) => {
-    ...
-  };
+               ...
+             };
 ```
 
 `System.EventArgs.Empty` is passed as `e`, so you do not need to use it.
 
 ##### WebSocket.OnMessage Event #####
 
-This event occurs when the `WebSocket` receives a message.
+This event occurs when the `WebSocket` instance receives a message.
 
 ```csharp
 ws.OnMessage += (sender, e) => {
-    ...
-  };
+                  ...
+                };
 ```
 
 A `WebSocketSharp.MessageEventArgs` instance is passed as `e`.
@@ -172,23 +153,23 @@ And if you would like to notify that a **ping** has been received, via this even
 ```csharp
 ws.EmitOnPing = true;
 ws.OnMessage += (sender, e) => {
-    if (e.IsPing) {
-      // Do something to notify that a ping has been received.
-      ...
+                  if (e.IsPing) {
+                    // Do something to notify that a ping has been received.
+                    ...
 
-      return;
-    }
-  };
+                    return;
+                  }
+                };
 ```
 
 ##### WebSocket.OnError Event #####
 
-This event occurs when the `WebSocket` gets an error.
+This event occurs when the `WebSocket` instance gets an error.
 
 ```csharp
 ws.OnError += (sender, e) => {
-    ...
-  };
+                ...
+              };
 ```
 
 A `WebSocketSharp.ErrorEventArgs` instance is passed as `e`.
@@ -205,8 +186,8 @@ This event occurs when the WebSocket connection has been closed.
 
 ```csharp
 ws.OnClose += (sender, e) => {
-    ...
-  };
+                ...
+              };
 ```
 
 A `WebSocketSharp.CloseEventArgs` instance is passed as `e`.
@@ -237,7 +218,7 @@ ws.Send (data);
 
 The `WebSocket.Send` method is overloaded.
 
-You can use the `WebSocket.Send (string)`, `WebSocket.Send (byte[])`, or `WebSocket.Send (System.IO.FileInfo)` method to send the data.
+You can use the `WebSocket.Send (string)`, `WebSocket.Send (byte[])`, `WebSocket.Send (System.IO.FileInfo)`, or `WebSocket.Send (System.IO.Stream, int)` method to send the data.
 
 If you would like to send the data asynchronously, you should use the `WebSocket.SendAsync` method.
 
@@ -688,12 +669,9 @@ websocket-sharp is provided under [The MIT License].
 [NuGet Gallery: websocket-sharp]: http://www.nuget.org/packages/WebSocketSharp
 [Origin]: http://tools.ietf.org/html/rfc6454#section-7
 [Query]: http://tools.ietf.org/html/rfc3986#section-3.4
-[Security Sandbox of the Webplayer]: http://docs.unity3d.com/Manual/SecuritySandbox.html
 [Squid]: http://www.squid-cache.org
 [The MIT License]: https://raw.github.com/sta/websocket-sharp/master/LICENSE.txt
 [Unity]: http://unity3d.com
-[WebGL Networking]: http://docs.unity3d.com/Manual/webgl-networking.html
-[WebSocket-Sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity
 [api]: http://www.w3.org/TR/websockets
 [api_ja]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
 [context take over]: https://datatracker.ietf.org/doc/html/rfc7692#section-7.1.1

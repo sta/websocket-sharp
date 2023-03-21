@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2016 sta.blockhead
+ * Copyright (c) 2012-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,14 +42,15 @@ namespace WebSocketSharp
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   That event occurs when the <see cref="WebSocket"/> gets an error.
+  ///   The error event occurs when the <see cref="WebSocket"/> interface
+  ///   gets an error.
   ///   </para>
   ///   <para>
   ///   If you would like to get the error message, you should access
   ///   the <see cref="ErrorEventArgs.Message"/> property.
   ///   </para>
   ///   <para>
-  ///   And if the error is due to an exception, you can get it by accessing
+  ///   If the error is due to an exception, you can get it by accessing
   ///   the <see cref="ErrorEventArgs.Exception"/> property.
   ///   </para>
   /// </remarks>
@@ -83,8 +84,13 @@ namespace WebSocketSharp
     /// Gets the exception that caused the error.
     /// </summary>
     /// <value>
-    /// An <see cref="System.Exception"/> instance that represents the cause of
-    /// the error if it is due to an exception; otherwise, <see langword="null"/>.
+    ///   <para>
+    ///   An <see cref="System.Exception"/> instance that represents
+    ///   the cause of the error.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not present.
+    ///   </para>
     /// </value>
     public Exception Exception {
       get {

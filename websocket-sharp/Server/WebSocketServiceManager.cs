@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2021 sta.blockhead
+ * Copyright (c) 2012-2023 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,10 +29,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading;
-using WebSocketSharp.Net;
 
 namespace WebSocketSharp.Server
 {
@@ -40,8 +36,8 @@ namespace WebSocketSharp.Server
   /// Provides the management function for the WebSocket services.
   /// </summary>
   /// <remarks>
-  /// This class manages the WebSocket services provided by
-  /// the <see cref="WebSocketServer"/> or <see cref="HttpServer"/> class.
+  /// This class manages the WebSocket services provided by the
+  /// <see cref="WebSocketServer"/> or <see cref="HttpServer"/> class.
   /// </remarks>
   public class WebSocketServiceManager
   {
@@ -158,7 +154,7 @@ namespace WebSocketSharp.Server
           throw new ArgumentException ("An empty string.", "path");
 
         if (path[0] != '/') {
-          var msg = "It is not an absolute path.";
+          var msg = "Not an absolute path.";
 
           throw new ArgumentException (msg, "path");
         }
@@ -182,8 +178,8 @@ namespace WebSocketSharp.Server
     /// the WebSocket services are cleaned up periodically.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the server has already started or
-    /// it is shutting down.
+    /// The set operation works if the current state of the server is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     ///   <para>
@@ -232,16 +228,17 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the time to wait for the response to the WebSocket Ping
-    /// or Close.
+    /// Gets or sets the time to wait for the response to the WebSocket
+    /// Ping or Close.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the server has already started or
-    /// it is shutting down.
+    /// The set operation works if the current state of the server is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="TimeSpan"/> to wait for the response.
+    ///   A <see cref="TimeSpan"/> that represents the time to wait for
+    ///   the response.
     ///   </para>
     ///   <para>
     ///   The default value is the same as 1 second.
@@ -257,7 +254,7 @@ namespace WebSocketSharp.Server
 
       set {
         if (value <= TimeSpan.Zero) {
-          var msg = "It is zero or less.";
+          var msg = "Zero or less.";
 
           throw new ArgumentOutOfRangeException ("value", msg);
         }
@@ -325,7 +322,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Adds a WebSocket service with the specified behavior, path,
-    /// and delegate.
+    /// and initializer.
     /// </summary>
     /// <param name="path">
     ///   <para>
@@ -338,12 +335,14 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="initializer">
     ///   <para>
-    ///   An <c>Action&lt;TBehavior&gt;</c> delegate or
-    ///   <see langword="null"/> if not needed.
+    ///   An <see cref="T:System.Action{TBehavior}"/> delegate.
     ///   </para>
     ///   <para>
-    ///   The delegate invokes the method called when initializing
-    ///   a new session instance for the service.
+    ///   The delegate invokes the method called when the service
+    ///   initializes a new session instance.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not necessary.
     ///   </para>
     /// </param>
     /// <typeparam name="TBehavior">
@@ -354,7 +353,7 @@ namespace WebSocketSharp.Server
     ///   It must inherit the <see cref="WebSocketBehavior"/> class.
     ///   </para>
     ///   <para>
-    ///   And also, it must have a public parameterless constructor.
+    ///   Also it must have a public parameterless constructor.
     ///   </para>
     /// </typeparam>
     /// <exception cref="ArgumentNullException">
@@ -396,7 +395,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentException ("An empty string.", "path");
 
       if (path[0] != '/') {
-        var msg = "It is not an absolute path.";
+        var msg = "Not an absolute path.";
 
         throw new ArgumentException (msg, "path");
       }
@@ -437,8 +436,8 @@ namespace WebSocketSharp.Server
     /// Removes all WebSocket services managed by the manager.
     /// </summary>
     /// <remarks>
-    /// A service is stopped with close status 1001 (going away)
-    /// if it has already started.
+    /// Each service is stopped with close status 1001 (going away)
+    /// if the current state of the service is Start.
     /// </remarks>
     public void Clear ()
     {
@@ -461,7 +460,7 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     /// The service is stopped with close status 1001 (going away)
-    /// if it has already started.
+    /// if the current state of the service is Start.
     /// </remarks>
     /// <returns>
     /// <c>true</c> if the service is successfully found and removed;
@@ -506,7 +505,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentException ("An empty string.", "path");
 
       if (path[0] != '/') {
-        var msg = "It is not an absolute path.";
+        var msg = "Not an absolute path.";
 
         throw new ArgumentException (msg, "path");
       }
@@ -590,7 +589,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentException ("An empty string.", "path");
 
       if (path[0] != '/') {
-        var msg = "It is not an absolute path.";
+        var msg = "Not an absolute path.";
 
         throw new ArgumentException (msg, "path");
       }

@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2022 sta.blockhead
+ * Copyright (c) 2012-2023 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -221,7 +221,7 @@ namespace WebSocketSharp.Server
     public WebSocketServer (int port, bool secure)
     {
       if (!port.IsPortNumber ()) {
-        var msg = "It is less than 1 or greater than 65535.";
+        var msg = "Less than 1 or greater than 65535.";
 
         throw new ArgumentOutOfRangeException ("port", msg);
       }
@@ -301,13 +301,13 @@ namespace WebSocketSharp.Server
         throw new ArgumentNullException ("address");
 
       if (!address.IsLocal ()) {
-        var msg = "It is not a local IP address.";
+        var msg = "Not a local IP address.";
 
         throw new ArgumentException (msg, "address");
       }
 
       if (!port.IsPortNumber ()) {
-        var msg = "It is less than 1 or greater than 65535.";
+        var msg = "Less than 1 or greater than 65535.";
 
         throw new ArgumentOutOfRangeException ("port", msg);
       }
@@ -337,8 +337,8 @@ namespace WebSocketSharp.Server
     /// handshake request without checking the request URI.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the server has already started or
-    /// it is shutting down.
+    /// The set operation works if the current state of the server is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     ///   <para>
@@ -368,8 +368,8 @@ namespace WebSocketSharp.Server
     /// Gets or sets the scheme used to authenticate the clients.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the server has already started or
-    /// it is shutting down.
+    /// The set operation works if the current state of the server is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     ///   <para>
@@ -412,7 +412,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets a value indicating whether secure connections are provided.
+    /// Gets a value indicating whether the server provides secure connections.
     /// </summary>
     /// <value>
     /// <c>true</c> if the server provides secure connections; otherwise,
@@ -425,12 +425,12 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the server cleans up the
-    /// inactive sessions periodically.
+    /// Gets or sets a value indicating whether the server cleans up
+    /// the inactive sessions periodically.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the server has already started or
-    /// it is shutting down.
+    /// The set operation works if the current state of the server is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     ///   <para>
@@ -483,19 +483,16 @@ namespace WebSocketSharp.Server
     /// Gets or sets the name of the realm associated with the server.
     /// </summary>
     /// <remarks>
-    ///   <para>
-    ///   "SECRET AREA" is used as the name of the realm if the value is
-    ///   <see langword="null"/> or an empty string.
-    ///   </para>
-    ///   <para>
-    ///   The set operation does nothing if the server has already started
-    ///   or it is shutting down.
-    ///   </para>
+    /// The set operation works if the current state of the server is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents the name of the realm or
-    ///   <see langword="null"/>.
+    ///   A <see cref="string"/> that represents the name of the realm.
+    ///   </para>
+    ///   <para>
+    ///   "SECRET AREA" is used as the name of the realm if the value is
+    ///   <see langword="null"/> or an empty string.
     ///   </para>
     ///   <para>
     ///   The default value is <see langword="null"/>.
@@ -526,8 +523,8 @@ namespace WebSocketSharp.Server
     ///   resolve to wait for socket in TIME_WAIT state.
     ///   </para>
     ///   <para>
-    ///   The set operation does nothing if the server has already started
-    ///   or it is shutting down.
+    ///   The set operation works if the current state of the server is
+    ///   Ready or Stop.
     ///   </para>
     /// </remarks>
     /// <value>
@@ -581,29 +578,27 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the delegate used to find the credentials for
-    /// an identity.
+    /// Gets or sets the delegate used to find the credentials for an identity.
     /// </summary>
     /// <remarks>
-    ///   <para>
-    ///   No credentials are found if the method invoked by
-    ///   the delegate returns <see langword="null"/> or
-    ///   the value is <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   The set operation does nothing if the server has
-    ///   already started or it is shutting down.
-    ///   </para>
+    /// The set operation works if the current state of the server is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <c>Func&lt;<see cref="IIdentity"/>,
-    ///   <see cref="NetworkCredential"/>&gt;</c> delegate or
-    ///   <see langword="null"/> if not needed.
+    ///   A <see cref="T:System.Func{IIdentity, NetworkCredential}"/>
+    ///   delegate.
     ///   </para>
     ///   <para>
-    ///   The delegate invokes the method called for finding
+    ///   The delegate invokes the method called when the server finds
     ///   the credentials used to authenticate a client.
+    ///   </para>
+    ///   <para>
+    ///   The method must return <see langword="null"/> if the credentials
+    ///   are not found.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not necessary.
     ///   </para>
     ///   <para>
     ///   The default value is <see langword="null"/>.
@@ -629,12 +624,13 @@ namespace WebSocketSharp.Server
     /// Ping or Close.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the server has already started or
-    /// it is shutting down.
+    /// The set operation works if the current state of the server is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="TimeSpan"/> to wait for the response.
+    ///   A <see cref="TimeSpan"/> that represents the time to wait for
+    ///   the response.
     ///   </para>
     ///   <para>
     ///   The default value is the same as 1 second.
@@ -847,11 +843,8 @@ namespace WebSocketSharp.Server
           );
         }
         catch (SocketException ex) {
-          if (_state == ServerState.ShuttingDown) {
-            _log.Info ("The underlying listener is stopped.");
-
+          if (_state == ServerState.ShuttingDown)
             return;
-          }
 
           _log.Fatal (ex.Message);
           _log.Debug (ex.ToString ());
@@ -859,11 +852,8 @@ namespace WebSocketSharp.Server
           break;
         }
         catch (InvalidOperationException ex) {
-          if (_state == ServerState.ShuttingDown) {
-            _log.Info ("The underlying listener is stopped.");
-
+          if (_state == ServerState.ShuttingDown)
             return;
-          }
 
           _log.Fatal (ex.Message);
           _log.Debug (ex.ToString ());
@@ -957,7 +947,9 @@ namespace WebSocketSharp.Server
       }
 
       try {
-        stopReceiving (5000);
+        var timeout = 5000;
+
+        stopReceiving (timeout);
       }
       catch (Exception ex) {
         _log.Fatal (ex.Message);
@@ -1022,7 +1014,7 @@ namespace WebSocketSharp.Server
     ///   It must inherit the <see cref="WebSocketBehavior"/> class.
     ///   </para>
     ///   <para>
-    ///   And also, it must have a public parameterless constructor.
+    ///   Also it must have a public parameterless constructor.
     ///   </para>
     /// </typeparam>
     /// <exception cref="ArgumentNullException">
@@ -1060,7 +1052,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Adds a WebSocket service with the specified behavior, path,
-    /// and delegate.
+    /// and initializer.
     /// </summary>
     /// <param name="path">
     ///   <para>
@@ -1073,12 +1065,14 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="initializer">
     ///   <para>
-    ///   An <c>Action&lt;TBehavior&gt;</c> delegate or
-    ///   <see langword="null"/> if not needed.
+    ///   An <see cref="T:System.Action{TBehavior}"/> delegate.
     ///   </para>
     ///   <para>
-    ///   The delegate invokes the method called when initializing
-    ///   a new session instance for the service.
+    ///   The delegate invokes the method called when the service
+    ///   initializes a new session instance.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not necessary.
     ///   </para>
     /// </param>
     /// <typeparam name="TBehavior">
@@ -1089,7 +1083,7 @@ namespace WebSocketSharp.Server
     ///   It must inherit the <see cref="WebSocketBehavior"/> class.
     ///   </para>
     ///   <para>
-    ///   And also, it must have a public parameterless constructor.
+    ///   Also it must have a public parameterless constructor.
     ///   </para>
     /// </typeparam>
     /// <exception cref="ArgumentNullException">
@@ -1132,7 +1126,7 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     /// The service is stopped with close status 1001 (going away)
-    /// if it has already started.
+    /// if the current state of the service is Start.
     /// </remarks>
     /// <returns>
     /// <c>true</c> if the service is successfully found and removed;
@@ -1177,8 +1171,7 @@ namespace WebSocketSharp.Server
     /// Starts receiving incoming handshake requests.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the server has already started or
-    /// it is shutting down.
+    /// This method works if the current state of the server is Ready or Stop.
     /// </remarks>
     /// <exception cref="InvalidOperationException">
     ///   <para>
@@ -1203,8 +1196,7 @@ namespace WebSocketSharp.Server
     /// Stops receiving incoming handshake requests.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the server is not started,
-    /// it is shutting down, or it has already stopped.
+    /// This method works if the current state of the server is Start.
     /// </remarks>
     public void Stop ()
     {

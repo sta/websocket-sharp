@@ -175,7 +175,14 @@ namespace WebSocketSharp.Net
           _waitHandle.Set ();
 
         if (_callback != null)
-          _callback.BeginInvoke (this, ar => _callback.EndInvoke (ar), null);
+        {
+#if NET
+           var workTask = Task.Run(() => _callback.Invoke(this));
+#else
+          _callback.BeginInvoke(this, ar => _callback.EndInvoke(ar), null);
+#endif
+         }
+          
       }
     }
 
@@ -192,10 +199,17 @@ namespace WebSocketSharp.Net
           _waitHandle.Set ();
 
         if (_callback != null)
-          _callback.BeginInvoke (this, ar => _callback.EndInvoke (ar), null);
+        {
+#if NET
+          var workTask = Task.Run(() => _callback.Invoke(this));
+#else
+          _callback.BeginInvoke(this, ar => _callback.EndInvoke(ar), null);
+#endif
+        }
+        
       }
     }
 
-    #endregion
+#endregion
   }
 }

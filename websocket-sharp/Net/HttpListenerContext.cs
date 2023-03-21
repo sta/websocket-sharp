@@ -153,16 +153,15 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the client information (identity, authentication, and security
-    /// roles).
+    /// Gets the client information.
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="IPrincipal"/> instance or <see langword="null"/>
-    ///   if not authenticated.
+    ///   A <see cref="IPrincipal"/> instance that represents identity,
+    ///   authentication, and security roles for the client.
     ///   </para>
     ///   <para>
-    ///   The instance describes the client.
+    ///   <see langword="null"/> if the client is not authenticated.
     ///   </para>
     /// </value>
     public IPrincipal User {
@@ -309,6 +308,17 @@ namespace WebSocketSharp.Net
     ///   <see langword="null"/> if not necessary.
     ///   </para>
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    ///   <para>
+    ///   This method has already been done.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The client request is not a WebSocket handshake request.
+    ///   </para>
+    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="protocol"/> is empty.
@@ -319,9 +329,6 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   <paramref name="protocol"/> contains an invalid character.
     ///   </para>
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// This method has already been done.
     /// </exception>
     public HttpListenerWebSocketContext AcceptWebSocket (string protocol)
     {
@@ -354,6 +361,17 @@ namespace WebSocketSharp.Net
     ///   initializing a new WebSocket instance.
     ///   </para>
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    ///   <para>
+    ///   This method has already been done.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The client request is not a WebSocket handshake request.
+    ///   </para>
+    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="protocol"/> is empty.
@@ -371,15 +389,18 @@ namespace WebSocketSharp.Net
     ///   <paramref name="initializer"/> caused an exception.
     ///   </para>
     /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// This method has already been done.
-    /// </exception>
     public HttpListenerWebSocketContext AcceptWebSocket (
       string protocol, Action<WebSocket> initializer
     )
     {
       if (_websocketContext != null) {
         var msg = "The method has already been done.";
+
+        throw new InvalidOperationException (msg);
+      }
+
+      if (!_request.IsWebSocketRequest) {
+        var msg = "The request is not a WebSocket handshake request.";
 
         throw new InvalidOperationException (msg);
       }
@@ -407,7 +428,7 @@ namespace WebSocketSharp.Net
           initializer (ws);
         }
         catch (Exception ex) {
-          if (ws.ReadyState == WebSocketState.Connecting)
+          if (ws.ReadyState == WebSocketState.New)
             _websocketContext = null;
 
           var msg = "It caused an exception.";

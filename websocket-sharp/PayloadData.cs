@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2019 sta.blockhead
+ * Copyright (c) 2012-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -54,7 +54,7 @@ namespace WebSocketSharp
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   A <see cref="WebSocketException"/> will occur when the length of
+    ///   A <see cref="WebSocketException"/> is thrown when the length of
     ///   incoming payload data is greater than the value of this field.
     ///   </para>
     ///   <para>
@@ -120,7 +120,7 @@ namespace WebSocketSharp
 
     internal bool HasReservedCode {
       get {
-        return _length >= 2 && Code.IsReserved ();
+        return _length >= 2 && Code.IsReservedStatusCode ();
       }
     }
 
@@ -129,10 +129,11 @@ namespace WebSocketSharp
         if (_length <= 2)
           return String.Empty;
 
-        var raw = _data.SubArray (2, _length - 2);
+        var bytes = _data.SubArray (2, _length - 2);
 
         string reason;
-        return raw.TryGetUTF8DecodedString (out reason)
+
+        return bytes.TryGetUTF8DecodedString (out reason)
                ? reason
                : String.Empty;
       }

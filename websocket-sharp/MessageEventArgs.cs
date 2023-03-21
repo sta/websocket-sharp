@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2016 sta.blockhead
+ * Copyright (c) 2012-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,8 +35,8 @@ namespace WebSocketSharp
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   That event occurs when the <see cref="WebSocket"/> receives
-  ///   a message or a ping if the <see cref="WebSocket.EmitOnPing"/>
+  ///   The message event occurs when the <see cref="WebSocket"/> interface
+  ///   receives a message or a ping if the <see cref="WebSocket.EmitOnPing"/>
   ///   property is set to <c>true</c>.
   ///   </para>
   ///   <para>
@@ -97,13 +97,19 @@ namespace WebSocketSharp
     /// Gets the message data as a <see cref="string"/>.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the message data if its type is
-    /// text or ping and if decoding it to a string has successfully done;
-    /// otherwise, <see langword="null"/>.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the message data
+    ///   if the message type is text or ping.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the message type is binary or
+    ///   the message data could not be UTF-8-decoded.
+    ///   </para>
     /// </value>
     public string Data {
       get {
         setData ();
+
         return _data;
       }
     }
@@ -153,6 +159,7 @@ namespace WebSocketSharp
     public byte[] RawData {
       get {
         setData ();
+
         return _rawData;
       }
     }
@@ -168,10 +175,12 @@ namespace WebSocketSharp
 
       if (_opcode == Opcode.Binary) {
         _dataSet = true;
+
         return;
       }
 
       string data;
+
       if (_rawData.TryGetUTF8DecodedString (out data))
         _data = data;
 

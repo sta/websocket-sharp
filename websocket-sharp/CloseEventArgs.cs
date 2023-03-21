@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2019 sta.blockhead
+ * Copyright (c) 2012-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,11 +35,12 @@ namespace WebSocketSharp
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   That event occurs when the WebSocket connection has been closed.
+  ///   The close event occurs when the WebSocket connection has been closed.
   ///   </para>
   ///   <para>
-  ///   If you would like to get the reason for the connection close, you should
-  ///   access the <see cref="Code"/> or <see cref="Reason"/> property.
+  ///   If you would like to get the reason for the connection close,
+  ///   you should access the <see cref="Code"/> or <see cref="Reason"/>
+  ///   property.
   ///   </para>
   /// </remarks>
   public class CloseEventArgs : EventArgs
@@ -59,12 +60,6 @@ namespace WebSocketSharp
       _clean = clean;
     }
 
-    internal CloseEventArgs (ushort code, string reason, bool clean)
-    {
-      _payloadData = new PayloadData (code, reason);
-      _clean = clean;
-    }
-
     #endregion
 
     #region Public Properties
@@ -73,8 +68,13 @@ namespace WebSocketSharp
     /// Gets the status code for the connection close.
     /// </summary>
     /// <value>
-    /// A <see cref="ushort"/> that represents the status code for
-    /// the connection close if present.
+    ///   <para>
+    ///   A <see cref="ushort"/> that represents the status code for
+    ///   the connection close.
+    ///   </para>
+    ///   <para>
+    ///   1005 (no status) if not present.
+    ///   </para>
     /// </value>
     public ushort Code {
       get {
@@ -86,8 +86,13 @@ namespace WebSocketSharp
     /// Gets the reason for the connection close.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the reason for
-    /// the connection close if present.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the reason for
+    ///   the connection close.
+    ///   </para>
+    ///   <para>
+    ///   An empty string if not present.
+    ///   </para>
     /// </value>
     public string Reason {
       get {

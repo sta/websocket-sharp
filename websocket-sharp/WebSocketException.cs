@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2016 sta.blockhead
+ * Copyright (c) 2012-2022 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,19 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private CloseStatusCode _code;
+    private ushort _code;
+
+    #endregion
+
+    #region Private Constructors
+
+    private WebSocketException (
+      ushort code, string message, Exception innerException
+    )
+      : base (message ?? code.GetErrorMessage (), innerException)
+    {
+      _code = code;
+    }
 
     #endregion
 
@@ -82,9 +94,8 @@ namespace WebSocketSharp
     internal WebSocketException (
       CloseStatusCode code, string message, Exception innerException
     )
-      : base (message ?? code.GetMessage (), innerException)
+      : this ((ushort) code, message, innerException)
     {
-      _code = code;
     }
 
     #endregion
@@ -95,10 +106,15 @@ namespace WebSocketSharp
     /// Gets the status code indicating the cause of the exception.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CloseStatusCode"/> enum values that represents
-    /// the status code indicating the cause of the exception.
+    ///   <para>
+    ///   A <see cref="ushort"/> that represents the status code indicating
+    ///   the cause of the exception.
+    ///   </para>
+    ///   <para>
+    ///   It is one of the status codes for the WebSocket connection close.
+    ///   </para>
     /// </value>
-    public CloseStatusCode Code {
+    public ushort Code {
       get {
         return _code;
       }

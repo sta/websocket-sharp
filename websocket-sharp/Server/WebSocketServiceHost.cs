@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2021 sta.blockhead
+ * Copyright (c) 2012-2023 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -109,12 +109,12 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets a value indicating whether the service cleans up the
-    /// inactive sessions periodically.
+    /// Gets or sets a value indicating whether the service cleans up
+    /// the inactive sessions periodically.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the service has already started or
-    /// it is shutting down.
+    /// The set operation works if the current state of the service is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
     /// <c>true</c> if the service cleans up the inactive sessions every
@@ -166,15 +166,16 @@ namespace WebSocketSharp.Server
     public abstract Type BehaviorType { get; }
 
     /// <summary>
-    /// Gets or sets the time to wait for the response to the WebSocket Ping
-    /// or Close.
+    /// Gets or sets the time to wait for the response to the WebSocket
+    /// Ping or Close.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the service has already started or
-    /// it is shutting down.
+    /// The set operation works if the current state of the service is
+    /// Ready or Stop.
     /// </remarks>
     /// <value>
-    /// A <see cref="TimeSpan"/> to wait for the response.
+    /// A <see cref="TimeSpan"/> that represents the time to wait for
+    /// the response.
     /// </value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The value specified for a set operation is zero or less.
