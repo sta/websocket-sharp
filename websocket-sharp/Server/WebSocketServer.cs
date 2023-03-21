@@ -753,7 +753,9 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      if (!checkHostNameForRequest (uri.DnsSafeHost)) {
+      var name = uri.DnsSafeHost;
+
+      if (!checkHostNameForRequest (name)) {
         context.Close (HttpStatusCode.NotFound);
 
         return;
