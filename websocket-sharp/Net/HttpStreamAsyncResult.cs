@@ -177,7 +177,7 @@ namespace WebSocketSharp.Net
         if (_callback != null)
         {
 #if NET
-           var workTask = Task.Run(() => _callback.Invoke(this));
+          var workTask = Task.Run(() => _callback.Invoke(this));
 #else
           _callback.BeginInvoke(this, ar => _callback.EndInvoke(ar), null);
 #endif

@@ -1363,6 +1363,7 @@ namespace WebSocketSharp
           payloadData, send, received, ar => closer.EndInvoke(ar), null
         );
       }
+
     }
 
     private bool closeHandshake(
@@ -1779,13 +1780,12 @@ namespace WebSocketSharp
       ThreadPool.QueueUserWorkItem(state => messages(e));
     }
 
-
     private static bool isNET()
     {
 #if NET
       return true;
 #else
-            return false;
+      return false;
 #endif
     }
 
@@ -1833,7 +1833,6 @@ namespace WebSocketSharp
         e = _messageEventQueue.Dequeue();
       }
 
-
       if (isNET())
       {
         var workTask = Task.Run(() => _message.Invoke(e));
@@ -1841,12 +1840,7 @@ namespace WebSocketSharp
       else
       {
         _message.BeginInvoke(e, ar => _message.EndInvoke(ar), null);
-
       }
-
-
-
-
     }
 
     private bool ping(byte[] data)
@@ -2318,7 +2312,9 @@ namespace WebSocketSharp
       return send(rawFrame);
     }
 
-    private void sendAsync(Opcode opcode, Stream sourceStream, Action<bool> completed)
+    private void sendAsync(
+      Opcode opcode, Stream sourceStream, Action<bool> completed
+    )
     {
       Func<Opcode, Stream, bool> sender = send;
 
@@ -2346,38 +2342,36 @@ namespace WebSocketSharp
             );
           }
         });
-      }
-      else
-      {
-        sender.BeginInvoke(
-            opcode,
-            sourceStream,
-            ar =>
-            {
-              try
-              {
-                var sent = sender.EndInvoke(ar);
 
-                if (completed != null)
-                  completed(sent);
-              }
-              catch (Exception ex)
-              {
-                _log.Error(ex.Message);
-                _log.Debug(ex.ToString());
+        return;
 
-                error(
-                                      "An exception has occurred during the callback for an async send.",
-                                      ex
-                                    );
-              }
-            },
-            null
-        );
       }
 
+      sender.BeginInvoke(
+        opcode,
+        sourceStream,
+        ar => {
+          try
+          {
+            var sent = sender.EndInvoke(ar);
+
+            if (completed != null)
+              completed(sent);
+          }
+          catch (Exception ex)
+          {
+            _log.Error(ex.Message);
+            _log.Debug(ex.ToString());
+
+            error(
+              "An exception has occurred during the callback for an async send.",
+              ex
+            );
+          }
+        },
+        null
+      );
     }
-
 
     private bool sendBytes(byte[] bytes)
     {
@@ -2643,8 +2637,7 @@ namespace WebSocketSharp
           WebSocketFrame.ReadFrameAsync(
             _stream,
             false,
-            frame =>
-            {
+            frame => {
               var cont = processReceivedFrame(frame)
                          && _readyState != WebSocketState.Closed;
 
@@ -2665,8 +2658,7 @@ namespace WebSocketSharp
 
               message();
             },
-            ex =>
-            {
+            ex => {
               _log.Fatal(ex.Message);
               _log.Debug(ex.ToString());
 
@@ -2712,8 +2704,7 @@ namespace WebSocketSharp
 
           var name = _compression.ToExtensionString();
           var invalid = ext.SplitHeaderValue(';').Contains(
-                          t =>
-                          {
+                          t => {
                             t = t.Trim();
 
                             var valid = t == name
@@ -2753,14 +2744,14 @@ namespace WebSocketSharp
       open();
     }
 
+    // TODO: Task.Run for .NET 6
     // As server
     internal void AcceptAsync()
     {
       Func<bool> acceptor = accept;
 
       acceptor.BeginInvoke(
-        ar =>
-        {
+        ar => {
           var accepted = acceptor.EndInvoke(ar);
 
           if (!accepted)
@@ -3659,33 +3650,29 @@ namespace WebSocketSharp
 
       if (isNET())
       {
-        System.Threading.Tasks.Task.Run(() =>
-        {
-          return connector.Invoke();
-        }).ContinueWith((task) =>
+        System.Threading.Tasks.Task.Run(() => connector.Invoke()).ContinueWith((task) =>
         {
           if (task.Result)
           {
             open();
           }
         });
-      }
-      else
-      {
-        connector.BeginInvoke(
-          ar =>
-          {
-            var connected = connector.EndInvoke(ar);
 
-            if (!connected)
-              return;
-
-            open();
-          },
-          null
-        );
+        return;
       }
 
+
+      connector.BeginInvoke(
+        ar => {
+          var connected = connector.EndInvoke(ar);
+
+          if (!connected)
+            return;
+
+          open();
+        },
+        null
+      );
     }
 
     /// <summary>
