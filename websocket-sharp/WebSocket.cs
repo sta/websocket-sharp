@@ -941,10 +941,12 @@ namespace WebSocketSharp
 
       var subps = headers["Sec-WebSocket-Protocol"];
 
-      if (subps != null && subps.Length == 0) {
-        message = "The Sec-WebSocket-Protocol header is invalid.";
+      if (subps != null) {
+        if (subps.Length == 0) {
+          message = "The Sec-WebSocket-Protocol header is invalid.";
 
-        return false;
+          return false;
+        }
       }
 
       if (!_ignoreExtensions) {
