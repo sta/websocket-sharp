@@ -909,12 +909,6 @@ namespace WebSocketSharp
         return false;
       }
 
-      if (context.RequestUri == null) {
-        message = "The Request-URI is invalid.";
-
-        return false;
-      }
-
       var headers = context.Headers;
 
       var key = headers["Sec-WebSocket-Key"];
