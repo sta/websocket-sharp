@@ -952,10 +952,12 @@ namespace WebSocketSharp
       if (!_ignoreExtensions) {
         var exts = headers["Sec-WebSocket-Extensions"];
 
-        if (exts != null && exts.Length == 0) {
-          message = "The Sec-WebSocket-Extensions header is invalid.";
+        if (exts != null) {
+          if (exts.Length == 0) {
+            message = "The Sec-WebSocket-Extensions header is invalid.";
 
-          return false;
+            return false;
+          }
         }
       }
 
