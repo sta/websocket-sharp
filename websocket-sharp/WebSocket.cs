@@ -1891,10 +1891,8 @@ namespace WebSocketSharp
       IEnumerable<string> values
     )
     {
-      if (values.Contains (val => val == _protocol))
-        return;
-
-      _protocol = null;
+      if (!values.Contains (val => val == _protocol))
+        _protocol = null;
     }
 
     private bool processUnsupportedFrame (WebSocketFrame frame)
