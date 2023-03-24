@@ -1889,15 +1889,6 @@ namespace WebSocketSharp
       _extensions = value;
     }
 
-    // As server
-    private void processSecWebSocketProtocolClientHeader (
-      IEnumerable<string> values
-    )
-    {
-      if (!values.Contains (val => val == _protocol))
-        _protocol = null;
-    }
-
     private bool processUnsupportedFrame (WebSocketFrame frame)
     {
       _log.Fatal ("An unsupported frame was received.");
