@@ -872,9 +872,12 @@ namespace WebSocketSharp
       _base64Key = _context.Headers["Sec-WebSocket-Key"];
 
       if (_protocol != null) {
-        var vals = _context.SecWebSocketProtocols;
+        var matched = _context
+                      .SecWebSocketProtocols
+                      .Contains (p => p == _protocol);
 
-        processSecWebSocketProtocolClientHeader (vals);
+        if (!matched)
+          _protocol = null;
       }
 
       if (!_ignoreExtensions) {
