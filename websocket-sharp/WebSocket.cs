@@ -1900,9 +1900,7 @@ namespace WebSocketSharp
     // As server
     private void refuseHandshake (ushort code, string reason)
     {
-      var res = createHandshakeFailureResponse ();
-
-      sendHttpResponse (res);
+      createHandshakeFailureResponse ().WriteTo (_stream);
 
       abort (code, reason);
     }
