@@ -886,9 +886,7 @@ namespace WebSocketSharp
         processSecWebSocketExtensionsClientHeader (val);
       }
 
-      var res = createHandshakeResponse ();
-
-      sendHttpResponse (res);
+      createHandshakeResponse ().WriteTo (_stream);
 
       return true;
     }
