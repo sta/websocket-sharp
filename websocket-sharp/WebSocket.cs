@@ -2226,12 +2226,6 @@ namespace WebSocketSharp
       return request.GetResponse (_stream, millisecondsTimeout);
     }
 
-    // As server
-    private void sendHttpResponse (HttpResponse response)
-    {
-      response.WriteTo (_stream);
-    }
-
     // As client
     private void sendProxyConnectRequest ()
     {
