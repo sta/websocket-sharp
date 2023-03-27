@@ -522,13 +522,13 @@ As a WebSocket client, if you would like to send the query string in the handsha
 var ws = new WebSocket ("ws://example.com/?name=nobita");
 ```
 
-If you would like to send the Origin header in the handshake request, you should set the `WebSocket.Origin` property to an allowable value as the [Origin] header before calling the connect method.
+And if you would like to send the Origin header in the handshake request, you should set the `WebSocket.Origin` property to an allowable value as the [Origin] header before calling the connect method.
 
 ```csharp
 ws.Origin = "http://example.com";
 ```
 
-And if you would like to send the cookies in the handshake request, you should set any cookie by using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method before calling the connect method.
+And also if you would like to send the cookies in the handshake request, you should set any cookie by using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method before calling the connect method.
 
 ```csharp
 ws.SetCookie (new Cookie ("name", "nobita"));
@@ -551,18 +551,16 @@ public class Chat : WebSocketBehavior
 }
 ```
 
-If you would like to get the value of the Origin header included in a handshake request, you should access the `WebSocketBehavior.Context.Origin` property.
-
-If you would like to get the cookies included in a handshake request, you should access the `WebSocketBehavior.Context.CookieCollection` property.
-
 And if you would like to validate the Origin header, cookies, or both, you should set each validation for it with your `WebSocketBehavior`, for example, by using the `WebSocketServer.AddWebSocketService<TBehavior> (string, Action<TBehavior>)` method with initializing, such as the following.
 
 ```csharp
 wssv.AddWebSocketService<Chat> (
   "/Chat",
   s => {
-    s.OriginValidator = val => {
+    s.OriginValidator =
+      val => {
         // Check the value of the Origin header, and return true if valid.
+
         Uri origin;
 
         return !val.IsNullOrEmpty ()
@@ -570,11 +568,14 @@ wssv.AddWebSocketService<Chat> (
                && origin.Host == "example.com";
       };
 
-    s.CookiesValidator = (req, res) => {
-        // Check the cookies in 'req', and set the cookies to send to
-        // the client with 'res' if necessary.
+    s.CookiesValidator =
+      (req, res) => {
+        // Check the cookies in "req", and set the cookies to send to
+        // the client with "res" if necessary.
+
         foreach (var cookie in req) {
           cookie.Expired = true;
+
           res.Add (cookie);
         }
 
