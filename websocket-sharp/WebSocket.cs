@@ -1008,10 +1008,12 @@ namespace WebSocketSharp
 
       var ver = headers["Sec-WebSocket-Version"];
 
-      if (ver != null && ver != _version) {
-        message = "The Sec-WebSocket-Version header is invalid.";
+      if (ver != null) {
+        if (ver != _version) {
+          message = "The Sec-WebSocket-Version header is invalid.";
 
-        return false;
+          return false;
+        }
       }
 
       var subp = headers["Sec-WebSocket-Protocol"];
