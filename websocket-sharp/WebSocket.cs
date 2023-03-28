@@ -1026,8 +1026,8 @@ namespace WebSocketSharp
         }
       }
       else {
-        var valid = subp.Length > 0
-                    && _protocolsRequested
+        var valid = _protocolsRequested
+                    && subp.Length > 0
                     && _protocols.Contains (p => p == subp);
 
         if (!valid) {
