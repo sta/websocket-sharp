@@ -1039,10 +1039,12 @@ namespace WebSocketSharp
 
       var exts = headers["Sec-WebSocket-Extensions"];
 
-      if (!validateSecWebSocketExtensionsServerHeader (exts)) {
-        message = "The Sec-WebSocket-Extensions header is invalid.";
+      if (exts != null) {
+        if (!validateSecWebSocketExtensionsServerHeader (exts)) {
+          message = "The Sec-WebSocket-Extensions header is invalid.";
 
-        return false;
+          return false;
+        }
       }
 
       return true;
