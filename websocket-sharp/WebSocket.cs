@@ -1882,18 +1882,6 @@ namespace WebSocketSharp
       _extensions = buff.ToString ();
     }
 
-    // As client
-    private void processSecWebSocketExtensionsServerHeader (string value)
-    {
-      if (value == null) {
-        _compression = CompressionMethod.None;
-
-        return;
-      }
-
-      _extensions = value;
-    }
-
     private bool processUnsupportedFrame (WebSocketFrame frame)
     {
       _log.Fatal ("An unsupported frame was received.");
