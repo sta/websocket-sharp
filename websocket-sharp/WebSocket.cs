@@ -1493,9 +1493,12 @@ namespace WebSocketSharp
         _protocol = res.Headers["Sec-WebSocket-Protocol"];
 
       if (_extensionsRequested) {
-        var val = res.Headers["Sec-WebSocket-Extensions"];
+        var exts = res.Headers["Sec-WebSocket-Extensions"];
 
-        processSecWebSocketExtensionsServerHeader (val);
+        if (exts == null)
+          _compression = CompressionMethod.None;
+        else
+          _extensions = exts;
       }
 
       processCookies (res.Cookies);
