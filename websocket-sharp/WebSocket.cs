@@ -2401,7 +2401,7 @@ namespace WebSocketSharp
           var param2 = "client_no_context_takeover";
 
           if (!ext.Contains (param1)) {
-            var fmt = "The server did not send back '{0}'.";
+            var fmt = "The server did not send back \"{0}\".";
             var msg = String.Format (fmt, param1);
 
             _log.Error (msg);
