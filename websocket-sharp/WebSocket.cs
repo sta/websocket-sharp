@@ -1501,7 +1501,10 @@ namespace WebSocketSharp
           _extensions = exts;
       }
 
-      processCookies (res.Cookies);
+      var cookies = res.Cookies;
+
+      if (cookies.Count > 0)
+        _cookies.SetOrRemove (cookies);
 
       return true;
     }
