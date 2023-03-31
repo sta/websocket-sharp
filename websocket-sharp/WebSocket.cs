@@ -1707,15 +1707,6 @@ namespace WebSocketSharp
       return false;
     }
 
-    // As client
-    private void processCookies (CookieCollection cookies)
-    {
-      if (cookies.Count == 0)
-        return;
-
-      _cookies.SetOrRemove (cookies);
-    }
-
     private bool processDataFrame (WebSocketFrame frame)
     {
       var e = frame.IsCompressed
