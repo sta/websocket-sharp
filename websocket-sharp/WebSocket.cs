@@ -1054,16 +1054,17 @@ namespace WebSocketSharp
     {
       message = null;
 
-      Func<string, bool> cond = protocol => protocol.IsNullOrEmpty ()
-                                            || !protocol.IsToken ();
+      Func<string, bool> cond = p => p.IsNullOrEmpty () || !p.IsToken ();
 
       if (protocols.Contains (cond)) {
         message = "It contains a value that is not a token.";
+
         return false;
       }
 
       if (protocols.ContainsTwice ()) {
         message = "It contains a value twice.";
+
         return false;
       }
 
