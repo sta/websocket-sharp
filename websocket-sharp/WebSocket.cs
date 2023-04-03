@@ -2173,7 +2173,8 @@ namespace WebSocketSharp
           setClientStream ();
         }
 
-        res = sendHttpRequest (req, 15000);
+        timeout = 15000;
+        res = req.GetResponse (_stream, timeout);
       }
 
       if (res.IsRedirect) {
