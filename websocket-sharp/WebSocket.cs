@@ -2122,7 +2122,9 @@ namespace WebSocketSharp
     private HttpResponse sendHandshakeRequest ()
     {
       var req = createHandshakeRequest ();
-      var res = sendHttpRequest (req, 90000);
+
+      var timeout = 90000;
+      var res = req.GetResponse (_stream, timeout);
 
       if (res.IsUnauthorized) {
         if (_credentials == null) {
