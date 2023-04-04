@@ -2127,11 +2127,8 @@ namespace WebSocketSharp
       var res = req.GetResponse (_stream, timeout);
 
       if (res.IsUnauthorized) {
-        if (_credentials == null) {
-          _log.Error ("No credential is specified.");
-
+        if (_credentials == null)
           return res;
-        }
 
         var val = res.Headers["WWW-Authenticate"];
 
