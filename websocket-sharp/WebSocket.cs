@@ -2220,7 +2220,9 @@ namespace WebSocketSharp
     private void sendProxyConnectRequest ()
     {
       var req = HttpRequest.CreateConnectRequest (_uri);
-      var res = sendHttpRequest (req, 90000);
+
+      var timeout = 90000;
+      var res = req.GetResponse (_stream, timeout);
 
       if (res.IsProxyAuthenticationRequired) {
         if (_proxyCredentials == null) {
