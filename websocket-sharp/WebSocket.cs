@@ -2258,7 +2258,8 @@ namespace WebSocketSharp
           _stream = _tcpClient.GetStream ();
         }
 
-        res = sendHttpRequest (req, 15000);
+        timeout = 15000;
+        res = req.GetResponse (_stream, timeout);
 
         if (res.IsProxyAuthenticationRequired) {
           var msg = "The proxy authentication has failed.";
