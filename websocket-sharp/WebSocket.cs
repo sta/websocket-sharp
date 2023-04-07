@@ -2209,14 +2209,6 @@ namespace WebSocketSharp
     }
 
     // As client
-    private HttpResponse sendHttpRequest (
-      HttpRequest request, int millisecondsTimeout
-    )
-    {
-      return request.GetResponse (_stream, millisecondsTimeout);
-    }
-
-    // As client
     private void sendProxyConnectRequest ()
     {
       var req = HttpRequest.CreateConnectRequest (_uri);
