@@ -1071,6 +1071,28 @@ namespace WebSocketSharp
       return true;
     }
 
+    // As client
+    private bool checkProxyConnectResponse (
+      HttpResponse response, out string message
+    )
+    {
+      message = null;
+
+      if (response.IsProxyAuthenticationRequired) {
+        message = "The proxy authentication is required.";
+
+        return false;
+      }
+
+      if (!response.IsSuccess) {
+        message = "The proxy has failed a connection to the requested URL.";
+
+        return false;
+      }
+
+      return true;
+    }
+
     private bool checkReceivedFrame (WebSocketFrame frame, out string message)
     {
       message = null;
