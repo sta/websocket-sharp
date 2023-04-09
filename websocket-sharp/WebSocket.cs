@@ -2290,6 +2290,52 @@ namespace WebSocketSharp
     }
 
     // As client
+    private HttpResponse sendProxyConnectRequest2 ()
+    {
+      var req = HttpRequest.CreateConnectRequest (_uri);
+
+      var timeout = 90000;
+      var res = req.GetResponse (_stream, timeout);
+
+      if (res.IsProxyAuthenticationRequired) {
+        if (_proxyCredentials == null)
+          return res;
+
+        var val = res.Headers["Proxy-Authenticate"];
+
+        if (val.IsNullOrEmpty ()) {
+          _log.Error ("No proxy authentication challenge is specified.");
+
+          return res;
+        }
+
+        var achal = AuthenticationChallenge.Parse (val);
+
+        if (achal == null) {
+          _log.Error ("An invalid proxy authentication challenge is specified.");
+
+          return res;
+        }
+
+        var ares = new AuthenticationResponse (achal, _proxyCredentials, 0);
+
+        req.Headers["Proxy-Authorization"] = ares.ToString ();
+
+        if (res.CloseConnection) {
+          releaseClientResources ();
+
+          _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+          _stream = _tcpClient.GetStream ();
+        }
+
+        timeout = 15000;
+        res = req.GetResponse (_stream, timeout);
+      }
+
+      return res;
+    }
+
+    // As client
     private void setClientStream ()
     {
       if (_proxyUri != null) {
