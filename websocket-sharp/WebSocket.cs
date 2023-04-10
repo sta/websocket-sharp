@@ -2342,7 +2342,12 @@ namespace WebSocketSharp
         _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
         _stream = _tcpClient.GetStream ();
 
-        sendProxyConnectRequest ();
+        var res = sendProxyConnectRequest2 ();
+
+        string msg;
+
+        if (!checkProxyConnectResponse (res, out msg))
+          throw new WebSocketException (msg);
       }
       else {
         _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
