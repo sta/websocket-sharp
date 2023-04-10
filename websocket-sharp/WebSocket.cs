@@ -2231,65 +2231,6 @@ namespace WebSocketSharp
     }
 
     // As client
-    private void sendProxyConnectRequest ()
-    {
-      var req = HttpRequest.CreateConnectRequest (_uri);
-
-      var timeout = 90000;
-      var res = req.GetResponse (_stream, timeout);
-
-      if (res.IsProxyAuthenticationRequired) {
-        if (_proxyCredentials == null) {
-          var msg = "No credential for the proxy is specified.";
-
-          throw new WebSocketException (msg);
-        }
-
-        var val = res.Headers["Proxy-Authenticate"];
-
-        if (val.IsNullOrEmpty ()) {
-          var msg = "No proxy authentication challenge is specified.";
-
-          throw new WebSocketException (msg);
-        }
-
-        var achal = AuthenticationChallenge.Parse (val);
-
-        if (achal == null) {
-          var msg = "An invalid proxy authentication challenge is specified.";
-
-          throw new WebSocketException (msg);
-        }
-
-        var ares = new AuthenticationResponse (achal, _proxyCredentials, 0);
-
-        req.Headers["Proxy-Authorization"] = ares.ToString ();
-
-        if (res.CloseConnection) {
-          releaseClientResources ();
-
-          _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-          _stream = _tcpClient.GetStream ();
-        }
-
-        timeout = 15000;
-        res = req.GetResponse (_stream, timeout);
-
-        if (res.IsProxyAuthenticationRequired) {
-          var msg = "The proxy authentication has failed.";
-
-          throw new WebSocketException (msg);
-        }
-      }
-
-      if (!res.IsSuccess) {
-        var msg = "The proxy has failed a connection to the requested URL.";
-
-        throw new WebSocketException (msg);
-      }
-    }
-
-    // As client
     private HttpResponse sendProxyConnectRequest2 ()
     {
       var req = HttpRequest.CreateConnectRequest (_uri);
