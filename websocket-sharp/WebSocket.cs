@@ -2231,7 +2231,7 @@ namespace WebSocketSharp
     }
 
     // As client
-    private HttpResponse sendProxyConnectRequest2 ()
+    private HttpResponse sendProxyConnectRequest ()
     {
       var req = HttpRequest.CreateConnectRequest (_uri);
 
@@ -2283,7 +2283,7 @@ namespace WebSocketSharp
         _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
         _stream = _tcpClient.GetStream ();
 
-        var res = sendProxyConnectRequest2 ();
+        var res = sendProxyConnectRequest ();
 
         string msg;
 
