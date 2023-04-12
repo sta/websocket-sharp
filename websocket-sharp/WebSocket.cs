@@ -2245,7 +2245,7 @@ namespace WebSocketSharp
         var val = res.Headers["Proxy-Authenticate"];
 
         if (val.IsNullOrEmpty ()) {
-          _log.Error ("No proxy authentication challenge is specified.");
+          _log.Debug ("No proxy authentication challenge is specified.");
 
           return res;
         }
@@ -2253,7 +2253,7 @@ namespace WebSocketSharp
         var achal = AuthenticationChallenge.Parse (val);
 
         if (achal == null) {
-          _log.Error ("An invalid proxy authentication challenge is specified.");
+          _log.Debug ("An invalid proxy authentication challenge is specified.");
 
           return res;
         }
