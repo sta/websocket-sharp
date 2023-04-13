@@ -2170,13 +2170,9 @@ namespace WebSocketSharp
 
         _authChallenge = achal;
 
-        var failed = _preAuth
-                     && _authChallenge.Scheme == AuthenticationSchemes.Basic;
-
-        if (failed) {
-          _log.Debug ("The authentication has failed.");
-
-          return res;
+        if (_preAuth) {
+          if (_authChallenge.Scheme == AuthenticationSchemes.Basic)
+            return res;
         }
 
         var ares = new AuthenticationResponse (
