@@ -2155,7 +2155,7 @@ namespace WebSocketSharp
         var val = res.Headers["WWW-Authenticate"];
 
         if (val.IsNullOrEmpty ()) {
-          _log.Error ("No authentication challenge is specified.");
+          _log.Debug ("No authentication challenge is specified.");
 
           return res;
         }
@@ -2163,7 +2163,7 @@ namespace WebSocketSharp
         var achal = AuthenticationChallenge.Parse (val);
 
         if (achal == null) {
-          _log.Error ("An invalid authentication challenge is specified.");
+          _log.Debug ("An invalid authentication challenge is specified.");
 
           return res;
         }
@@ -2174,7 +2174,7 @@ namespace WebSocketSharp
                      && _authChallenge.Scheme == AuthenticationSchemes.Basic;
 
         if (failed) {
-          _log.Error ("The authentication has failed.");
+          _log.Debug ("The authentication has failed.");
 
           return res;
         }
