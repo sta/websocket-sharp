@@ -2199,7 +2199,7 @@ namespace WebSocketSharp
         var val = res.Headers["Location"];
 
         if (val.IsNullOrEmpty ()) {
-          _log.Error ("No URL to redirect is located.");
+          _log.Debug ("No URL to redirect is located.");
 
           return res;
         }
@@ -2208,7 +2208,7 @@ namespace WebSocketSharp
         string msg;
 
         if (!val.TryCreateWebSocketUri (out uri, out msg)) {
-          _log.Error ("An invalid URL to redirect is located.");
+          _log.Debug ("An invalid URL to redirect is located.");
 
           return res;
         }
