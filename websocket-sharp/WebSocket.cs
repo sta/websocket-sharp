@@ -2170,11 +2170,6 @@ namespace WebSocketSharp
 
         _authChallenge = achal;
 
-        if (_preAuth) {
-          if (_authChallenge.Scheme == AuthenticationSchemes.Basic)
-            return res;
-        }
-
         var ares = new AuthenticationResponse (
                      _authChallenge, _credentials, _nonceCount
                    );
