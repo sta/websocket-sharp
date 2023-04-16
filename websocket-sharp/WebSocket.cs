@@ -2149,9 +2149,6 @@ namespace WebSocketSharp
       var res = req.GetResponse (_stream, timeout);
 
       if (res.IsUnauthorized) {
-        if (_credentials == null)
-          return res;
-
         var val = res.Headers["WWW-Authenticate"];
 
         if (val.IsNullOrEmpty ()) {
@@ -2169,6 +2166,9 @@ namespace WebSocketSharp
         }
 
         _authChallenge = achal;
+
+        if (_credentials == null)
+          return res;
 
         var ares = new AuthenticationResponse (
                      _authChallenge, _credentials, _nonceCount
