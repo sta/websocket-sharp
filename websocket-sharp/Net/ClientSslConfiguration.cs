@@ -253,7 +253,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the target host server name.
+    /// Gets or sets the target host name.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the name of the server that
