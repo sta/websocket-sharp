@@ -198,10 +198,10 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="X509Certificate2"/> or <see langword="null"/>.
+    ///   A <see cref="X509Certificate2"/> that represents an X.509 certificate.
     ///   </para>
     ///   <para>
-    ///   The certificate represents an X.509 certificate.
+    ///   <see langword="null"/> if not present.
     ///   </para>
     ///   <para>
     ///   The default value is <see langword="null"/>.
