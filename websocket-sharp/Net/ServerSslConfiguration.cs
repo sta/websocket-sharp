@@ -170,14 +170,14 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the protocols used for authentication.
+    /// Gets or sets the enabled versions of the SSL/TLS protocols.
     /// </summary>
     /// <value>
     ///   <para>
     ///   Any of the <see cref="SslProtocols"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It represents the protocols used for authentication.
+    ///   It represents the enabled versions of the SSL/TLS protocols.
     ///   </para>
     ///   <para>
     ///   The default value is <see cref="SslProtocols.None"/>.
