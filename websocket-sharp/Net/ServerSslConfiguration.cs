@@ -148,8 +148,11 @@ namespace WebSocketSharp.Net
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="RemoteCertificateValidationCallback"/> delegate that
-    ///   invokes the method called for validating the certificate.
+    ///   A <see cref="RemoteCertificateValidationCallback"/> delegate.
+    ///   </para>
+    ///   <para>
+    ///   The delegate invokes the method called when the server validates
+    ///   the certificate.
     ///   </para>
     ///   <para>
     ///   The default value is a delegate that invokes a method that only
