@@ -69,7 +69,7 @@ namespace WebSocketSharp.Net
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ServerSslConfiguration"/>
-    /// class that stores the parameters copied from the specified configuration.
+    /// class copying from the specified configuration.
     /// </summary>
     /// <param name="configuration">
     /// A <see cref="ServerSslConfiguration"/> from which to copy.
