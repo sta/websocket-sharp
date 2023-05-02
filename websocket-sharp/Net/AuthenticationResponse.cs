@@ -2,8 +2,8 @@
 /*
  * AuthenticationResponse.cs
  *
- * ParseBasicCredentials is derived from System.Net.HttpListenerContext.cs of Mono
- * (http://www.mono-project.com).
+ * ParseBasicCredentials is derived from HttpListenerContext.cs (System.Net) of
+ * Mono (http://www.mono-project.com).
  *
  * The MIT License
  *
