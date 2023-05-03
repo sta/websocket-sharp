@@ -72,13 +72,15 @@ namespace WebSocketSharp.Net
       AuthenticationSchemes scheme,
       NameValueCollection parameters,
       NetworkCredential credentials,
-      uint nonceCount)
+      uint nonceCount
+    )
       : base (scheme, parameters)
     {
       Parameters["username"] = credentials.Username;
       Parameters["password"] = credentials.Password;
       Parameters["uri"] = credentials.Domain;
       _nonceCount = nonceCount;
+
       if (scheme == AuthenticationSchemes.Digest)
         initAsDigest ();
     }
