@@ -63,7 +63,10 @@ namespace WebSocketSharp.Net
     }
 
     internal AuthenticationResponse (
-      AuthenticationChallenge challenge, NetworkCredential credentials, uint nonceCount)
+      AuthenticationChallenge challenge,
+      NetworkCredential credentials,
+      uint nonceCount
+    )
       : this (challenge.Scheme, challenge.Parameters, credentials, nonceCount)
     {
     }
