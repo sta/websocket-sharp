@@ -48,7 +48,9 @@ namespace WebSocketSharp.Net
 
     #region Private Constructors
 
-    private AuthenticationResponse (AuthenticationSchemes scheme, NameValueCollection parameters)
+    private AuthenticationResponse (
+      AuthenticationSchemes scheme, NameValueCollection parameters
+    )
       : base (scheme, parameters)
     {
     }
