@@ -189,8 +189,13 @@ namespace WebSocketSharp.Net
     private void initAsDigest ()
     {
       var qops = Parameters["qop"];
+
       if (qops != null) {
-        if (qops.Split (',').Contains (qop => qop.Trim ().ToLower () == "auth")) {
+        var auth = qops.Split (',').Contains (
+                     qop => qop.Trim ().ToLower () == "auth"
+                   );
+
+        if (auth) {
           Parameters["qop"] = "auth";
           Parameters["cnonce"] = CreateNonceValue ();
           Parameters["nc"] = String.Format ("{0:x8}", ++_nonceCount);
