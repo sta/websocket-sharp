@@ -151,7 +151,9 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private static string createA1 (string username, string password, string realm)
+    private static string createA1 (
+      string username, string password, string realm
+    )
     {
       return String.Format ("{0}:{1}:{2}", username, realm, password);
     }
