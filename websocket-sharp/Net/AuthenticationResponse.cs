@@ -175,15 +175,17 @@ namespace WebSocketSharp.Net
 
     private static string hash (string value)
     {
-      var src = Encoding.UTF8.GetBytes (value);
       var md5 = MD5.Create ();
-      var hashed = md5.ComputeHash (src);
 
-      var res = new StringBuilder (64);
-      foreach (var b in hashed)
-        res.Append (b.ToString ("x2"));
+      var bytes = Encoding.UTF8.GetBytes (value);
+      var res = md5.ComputeHash (bytes);
 
-      return res.ToString ();
+      var buff = new StringBuilder (64);
+
+      foreach (var b in res)
+        buff.Append (b.ToString ("x2"));
+
+      return buff.ToString ();
     }
 
     private void initAsDigest ()
