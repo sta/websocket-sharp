@@ -159,10 +159,16 @@ namespace WebSocketSharp.Net
     }
 
     private static string createA1 (
-      string username, string password, string realm, string nonce, string cnonce)
+      string username,
+      string password,
+      string realm,
+      string nonce,
+      string cnonce
+    )
     {
-      return String.Format (
-        "{0}:{1}:{2}", hash (createA1 (username, password, realm)), nonce, cnonce);
+      var a1 = createA1 (username, password, realm);
+
+      return String.Format ("{0}:{1}:{2}", hash (a1), nonce, cnonce);
     }
 
     private static string createA2 (string method, string uri)
