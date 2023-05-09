@@ -256,22 +256,33 @@ namespace WebSocketSharp.Net
     {
       try {
         var cred = value.Split (new[] { ' ' }, 2);
+
         if (cred.Length != 2)
           return null;
 
         var schm = cred[0].ToLower ();
-        return schm == "basic"
-               ? new AuthenticationResponse (
-                   AuthenticationSchemes.Basic, ParseBasicCredentials (cred[1]))
-               : schm == "digest"
-                 ? new AuthenticationResponse (
-                     AuthenticationSchemes.Digest, ParseParameters (cred[1]))
-                 : null;
+
+        if (schm == "basic") {
+          var parameters = ParseBasicCredentials (cred[1]);
+
+          return new AuthenticationResponse (
+                   AuthenticationSchemes.Basic, parameters
+                 );
+        }
+        else if (schm == "digest") {
+          var parameters = ParseParameters (cred[1]);
+
+          return new AuthenticationResponse (
+                   AuthenticationSchemes.Digest, parameters
+                 );
+        }
+        else {
+          return null;
+        }
       }
       catch {
+        return null;
       }
-
-      return null;
     }
 
     internal static NameValueCollection ParseBasicCredentials (string value)
