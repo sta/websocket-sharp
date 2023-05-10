@@ -317,8 +317,12 @@ namespace WebSocketSharp.Net
 
     internal override string ToBasicString ()
     {
-      var userPass = String.Format ("{0}:{1}", Parameters["username"], Parameters["password"]);
-      var cred = Convert.ToBase64String (Encoding.UTF8.GetBytes (userPass));
+      var user = Parameters["username"];
+      var pass = Parameters["password"];
+      var userPass = String.Format ("{0}:{1}", user, pass);
+
+      var bytes = Encoding.UTF8.GetBytes (userPass);
+      var cred = Convert.ToBase64String (bytes);
 
       return "Basic " + cred;
     }
