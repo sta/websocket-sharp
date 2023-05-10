@@ -287,24 +287,32 @@ namespace WebSocketSharp.Net
 
     internal static NameValueCollection ParseBasicCredentials (string value)
     {
+      var ret = new NameValueCollection ();
+
       // Decode the basic-credentials (a Base64 encoded string).
-      var userPass = Encoding.Default.GetString (Convert.FromBase64String (value));
+
+      var bytes = Convert.FromBase64String (value);
+      var userPass = Encoding.Default.GetString (bytes);
 
       // The format is [<domain>\]<username>:<password>.
+
       var i = userPass.IndexOf (':');
       var user = userPass.Substring (0, i);
-      var pass = i < userPass.Length - 1 ? userPass.Substring (i + 1) : String.Empty;
+      var pass = i < userPass.Length - 1
+                 ? userPass.Substring (i + 1)
+                 : String.Empty;
 
-      // Check if 'domain' exists.
+      // Check if <domain> exists.
+
       i = user.IndexOf ('\\');
+
       if (i > -1)
         user = user.Substring (i + 1);
 
-      var res = new NameValueCollection ();
-      res["username"] = user;
-      res["password"] = pass;
+      ret["username"] = user;
+      ret["password"] = pass;
 
-      return res;
+      return ret;
     }
 
     internal override string ToBasicString ()
