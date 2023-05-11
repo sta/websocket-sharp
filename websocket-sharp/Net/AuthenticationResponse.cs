@@ -329,29 +329,45 @@ namespace WebSocketSharp.Net
 
     internal override string ToDigestString ()
     {
-      var output = new StringBuilder (256);
-      output.AppendFormat (
+      var buff = new StringBuilder (256);
+
+      var user = Parameters["username"];
+      var realm = Parameters["realm"];
+      var nonce = Parameters["nonce"];
+      var uri = Parameters["uri"];
+      var res = Parameters["response"];
+
+      buff.AppendFormat (
         "Digest username=\"{0}\", realm=\"{1}\", nonce=\"{2}\", uri=\"{3}\", response=\"{4}\"",
-        Parameters["username"],
-        Parameters["realm"],
-        Parameters["nonce"],
-        Parameters["uri"],
-        Parameters["response"]);
+        user,
+        realm,
+        nonce,
+        uri,
+        res
+      );
 
       var opaque = Parameters["opaque"];
+
       if (opaque != null)
-        output.AppendFormat (", opaque=\"{0}\"", opaque);
+        buff.AppendFormat (", opaque=\"{0}\"", opaque);
 
       var algo = Parameters["algorithm"];
+
       if (algo != null)
-        output.AppendFormat (", algorithm={0}", algo);
+        buff.AppendFormat (", algorithm={0}", algo);
 
       var qop = Parameters["qop"];
-      if (qop != null)
-        output.AppendFormat (
-          ", qop={0}, cnonce=\"{1}\", nc={2}", qop, Parameters["cnonce"], Parameters["nc"]);
 
-      return output.ToString ();
+      if (qop != null) {
+        var cnonce = Parameters["cnonce"];
+        var nc = Parameters["nc"];
+
+        buff.AppendFormat (
+          ", qop={0}, cnonce=\"{1}\", nc={2}", qop, cnonce, nc
+        );
+      }
+
+      return buff.ToString ();
     }
 
     #endregion
