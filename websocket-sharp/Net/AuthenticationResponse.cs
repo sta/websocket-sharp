@@ -377,11 +377,19 @@ namespace WebSocketSharp.Net
     public IIdentity ToIdentity ()
     {
       var schm = Scheme;
-      return schm == AuthenticationSchemes.Basic
-             ? new HttpBasicIdentity (Parameters["username"], Parameters["password"]) as IIdentity
-             : schm == AuthenticationSchemes.Digest
-               ? new HttpDigestIdentity (Parameters)
-               : null;
+
+      if (schm == AuthenticationSchemes.Basic) {
+        var user = Parameters["username"];
+        var pass = Parameters["password"];
+
+        return new HttpBasicIdentity (user, pass);
+      }
+      else if (schm == AuthenticationSchemes.Digest) {
+        return new HttpDigestIdentity (Parameters);
+      }
+      else {
+        return null;
+      }
     }
 
     #endregion
