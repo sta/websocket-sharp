@@ -249,7 +249,9 @@ namespace WebSocketSharp.Net
                  ? String.Format ("{0}:{1}:{2}:{3}:{4}", nonce, nc, cnonce, qop, hash (a2))
                  : String.Format ("{0}:{1}", nonce, hash (a2));
 
-      return hash (String.Format ("{0}:{1}", secret, data));
+      var keyed = String.Format ("{0}:{1}", secret, data);
+
+      return hash (keyed);
     }
 
     internal static AuthenticationResponse Parse (string value)
