@@ -45,10 +45,13 @@ namespace WebSocketSharp.Net
 
     #region Internal Constructors
 
-    internal AuthenticationChallenge (AuthenticationSchemes scheme, string realm)
+    internal AuthenticationChallenge (
+      AuthenticationSchemes scheme, string realm
+    )
       : base (scheme, new NameValueCollection ())
     {
       Parameters["realm"] = realm;
+
       if (scheme == AuthenticationSchemes.Digest) {
         Parameters["nonce"] = CreateNonceValue ();
         Parameters["algorithm"] = "MD5";
