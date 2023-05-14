@@ -36,7 +36,9 @@ namespace WebSocketSharp.Net
   {
     #region Private Constructors
 
-    private AuthenticationChallenge (AuthenticationSchemes scheme, NameValueCollection parameters)
+    private AuthenticationChallenge (
+      AuthenticationSchemes scheme, NameValueCollection parameters
+    )
       : base (scheme, parameters)
     {
     }
