@@ -94,17 +94,29 @@ namespace WebSocketSharp.Net
     internal static AuthenticationChallenge Parse (string value)
     {
       var chal = value.Split (new[] { ' ' }, 2);
+
       if (chal.Length != 2)
         return null;
 
       var schm = chal[0].ToLower ();
-      return schm == "basic"
-             ? new AuthenticationChallenge (
-                 AuthenticationSchemes.Basic, ParseParameters (chal[1]))
-             : schm == "digest"
-               ? new AuthenticationChallenge (
-                   AuthenticationSchemes.Digest, ParseParameters (chal[1]))
-               : null;
+
+      if (schm == "basic") {
+        var parameters = ParseParameters (chal[1]);
+
+        return new AuthenticationChallenge (
+                 AuthenticationSchemes.Basic, parameters
+               );
+      }
+      else if (schm == "digest") {
+        var parameters = ParseParameters (chal[1]);
+
+        return new AuthenticationChallenge (
+                 AuthenticationSchemes.Digest, parameters
+               );
+      }
+      else {
+        return null;
+      }
     }
 
     internal override string ToBasicString ()
