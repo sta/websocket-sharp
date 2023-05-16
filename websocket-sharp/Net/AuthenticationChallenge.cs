@@ -126,36 +126,45 @@ namespace WebSocketSharp.Net
 
     internal override string ToDigestString ()
     {
-      var output = new StringBuilder (128);
+      var buff = new StringBuilder (128);
 
       var domain = Parameters["domain"];
-      if (domain != null)
-        output.AppendFormat (
+      var realm = Parameters["realm"];
+      var nonce = Parameters["nonce"];
+
+      if (domain != null) {
+        buff.AppendFormat (
           "Digest realm=\"{0}\", domain=\"{1}\", nonce=\"{2}\"",
-          Parameters["realm"],
+          realm,
           domain,
-          Parameters["nonce"]);
-      else
-        output.AppendFormat (
-          "Digest realm=\"{0}\", nonce=\"{1}\"", Parameters["realm"], Parameters["nonce"]);
+          nonce
+        );
+      }
+      else {
+        buff.AppendFormat ("Digest realm=\"{0}\", nonce=\"{1}\"", realm, nonce);
+      }
 
       var opaque = Parameters["opaque"];
+
       if (opaque != null)
-        output.AppendFormat (", opaque=\"{0}\"", opaque);
+        buff.AppendFormat (", opaque=\"{0}\"", opaque);
 
       var stale = Parameters["stale"];
+
       if (stale != null)
-        output.AppendFormat (", stale={0}", stale);
+        buff.AppendFormat (", stale={0}", stale);
 
       var algo = Parameters["algorithm"];
+
       if (algo != null)
-        output.AppendFormat (", algorithm={0}", algo);
+        buff.AppendFormat (", algorithm={0}", algo);
 
       var qop = Parameters["qop"];
-      if (qop != null)
-        output.AppendFormat (", qop=\"{0}\"", qop);
 
-      return output.ToString ();
+      if (qop != null)
+        buff.AppendFormat (", qop=\"{0}\"", qop);
+
+      return buff.ToString ();
     }
 
     #endregion
