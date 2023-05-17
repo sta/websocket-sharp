@@ -117,7 +117,7 @@ namespace WebSocketSharp
 			{
 				logger.Error("The close process has set in.");
 
-				Error("An interruption has occurred while attempting to accept.", null);
+				CallOnError("An interruption has occurred while attempting to accept.", null);
 
 				return false;
 			}
@@ -126,7 +126,7 @@ namespace WebSocketSharp
 			{
 				logger.Error("The connection has been closed.");
 
-				Error("An interruption has occurred while attempting to accept.", null);
+				CallOnError("An interruption has occurred while attempting to accept.", null);
 
 				return false;
 			}

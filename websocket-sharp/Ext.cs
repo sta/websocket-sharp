@@ -48,10 +48,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+//using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 using WebSocketSharp.Net;
 
 namespace WebSocketSharp
@@ -723,56 +725,65 @@ namespace WebSocketSharp
       }
     }
 
-    internal static void ReadBytesAsync (
-      this Stream stream, int length, Action<byte[]> completed, Action<Exception> error
-    )
+    internal static void ReadBytesAsync (this Stream stream, int length, Action<byte[]> completed, Action<Exception> error, bool isHeader = false)
     {
-      var buff = new byte[length];
-      var offset = 0;
-      var retry = 0;
+  
+            Task.Factory.StartNew(() =>
+            {
+                var buff = new byte[length];
+                var offset = 0;
+                int retries = 0;
 
-      AsyncCallback callback = null;
-      callback =
-        ar => {
-          try {
-            var nread = stream.EndRead (ar);
-            if (nread == 0 && retry < _retry) {
-              retry++;
-              stream.BeginRead (buff, offset, length, callback, null);
+                while (length > 0)
+                {
+                    try
+                    {
+                        //Debug.WriteLine($"ReadBytesAsync - {DateTime.Now} - {length}");
 
-              return;
-            }
+                        if (offset == 0 && isHeader)
+                            stream.ReadTimeout = Int32.MaxValue;
+                        else
+                            stream.ReadTimeout = 5000; // todo: should be value from WebSocket class
 
-            if (nread == 0 || nread == length) {
-              if (completed != null)
-                completed (buff.SubArray (0, offset + nread));
+                        var read = stream.Read(buff, offset, length);
 
-              return;
-            }
+                        if (read <= 0)
+                        {
+                            if (retries >= _retry)
+                            {
+                                completed?.Invoke(buff.SubArray(0, offset));
+                                return;
+                            }
 
-            retry = 0;
+                            retries++;
+                        }
 
-            offset += nread;
-            length -= nread;
+                        length -= read;
+                        offset += read;
+                    }
+                    catch (Exception e)
+                    {
+                        //// it was BeginRead before, which has no timeout!
+                        //// dirty hack, on timeout, continue reading
+                        //if (offset == 0 
+                        //&& e is IOException 
+                        //&& e.InnerException is SocketException 
+                        //&& e.InnerException.Message == "A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.")
+                        //{
+                        //    continue;
+                        //}
 
-            stream.BeginRead (buff, offset, length, callback, null);
-          }
-          catch (Exception ex) {
-            if (error != null)
-              error (ex);
-          }
-        };
+                        //Debug.WriteLine($"ReadBytesAsync Exception - {DateTime.Now} - {length} - {e} - {e.InnerException}");
+                        error?.Invoke(e);
+                        return;
+                    }
+                }
 
-      try {
-        stream.BeginRead (buff, offset, length, callback, null);
-      }
-      catch (Exception ex) {
-        if (error != null)
-          error (ex);
-      }
-    }
+                completed?.Invoke(buff);
+            });
+        }
 
-    internal static void ReadBytesAsync (
+        internal static void ReadBytesAsync (
       this Stream stream,
       long length,
       int bufferLength,
@@ -780,65 +791,57 @@ namespace WebSocketSharp
       Action<Exception> error
     )
     {
-      var dest = new MemoryStream ();
-      var buff = new byte[bufferLength];
-      var retry = 0;
+            Task.Factory.StartNew(() =>
+            {
+                var buff = new byte[length];
+                var offset = 0;
+                int retries = 0;
 
-      Action<long> read = null;
-      read =
-        len => {
-          if (len < bufferLength)
-            bufferLength = (int) len;
+                while (length > 0)
+                {
+                    try
+                    {
+                        int bytesToRead = bufferLength < length ? (int)bufferLength : (int)length;
 
-          stream.BeginRead (
-            buff,
-            0,
-            bufferLength,
-            ar => {
-              try {
-                var nread = stream.EndRead (ar);
-                if (nread > 0)
-                  dest.Write (buff, 0, nread);
+                        //Debug.WriteLine($"ReadBytesAsync2 - {DateTime.Now} - {bytesToRead}");
 
-                if (nread == 0 && retry < _retry) {
-                  retry++;
-                  read (len);
+                        var read = stream.Read(buff, offset, bytesToRead);
 
-                  return;
+                        if (read <= 0)
+                        {
+                            if (retries >= _retry)
+                            {
+                                completed?.Invoke(buff.SubArray(0, offset));
+                                return;
+                            }
+
+                            retries++;
+                        }
+
+                        length -= read;
+                        offset += read;
+                    }
+                    catch (Exception e)
+                    {
+                        //// it was BeginRead before, which has no timeout!
+                        //// dirty hack, on timeout, continue reading
+                        //if (offset == 0
+                        //&& e is IOException
+                        //&& e.InnerException is SocketException
+                        //&& e.InnerException.Message == "A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.")
+                        //{
+                        //    continue;
+                        //}
+
+
+                        error?.Invoke(e);
+                        return;
+                    }
                 }
 
-                if (nread == 0 || nread == len) {
-                  if (completed != null) {
-                    dest.Close ();
-                    completed (dest.ToArray ());
-                  }
-
-                  dest.Dispose ();
-                  return;
-                }
-
-                retry = 0;
-                read (len - nread);
-              }
-              catch (Exception ex) {
-                dest.Dispose ();
-                if (error != null)
-                  error (ex);
-              }
-            },
-            null
-          );
-        };
-
-      try {
-        read (length);
-      }
-      catch (Exception ex) {
-        dest.Dispose ();
-        if (error != null)
-          error (ex);
-      }
-    }
+                completed?.Invoke(buff);
+            });
+        }
 
     internal static T[] Reverse<T> (this T[] array)
     {

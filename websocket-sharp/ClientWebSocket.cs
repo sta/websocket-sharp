@@ -486,35 +486,37 @@ namespace WebSocketSharp
 				return Interlocked.CompareExchange(ref insideHandshakeBlock, 1, 0) > 0;
 			}
 
-			lock (forState)
 			{
-				if (readyState == WebSocketState.Open)
+				var errorAction = 0;
+
+				lock (forState)
 				{
-					logger.Warn("The connection has already been established.");
+					if (readyState == WebSocketState.Open)
+						errorAction = 1;
+					else if (readyState == WebSocketState.Closing)
+						errorAction = 2;
+					else if (retryCountForConnect > maxRetryCountForConnect)
+						errorAction = 3;
 
-					return false;
-				}
+					readyState = WebSocketState.Connecting;
+				} // lock
 
-				if (readyState == WebSocketState.Closing)
+				// do this outside lock
+				switch (errorAction)
 				{
-					logger.Error("The close process has set in.");
-
-					Error("An interruption has occurred while attempting to connect.", null);
-
-					return false;
+					case 1:
+						logger.Warn("The connection has already been established.");
+						return false;
+					case 2:
+						logger.Error("The close process has set in.");
+						CallOnError("An interruption has occurred while attempting to connect.", null);
+						return false;
+					case 3:
+						logger.Error("An opportunity for reconnecting has been lost.");
+						CallOnError("An interruption has occurred while attempting to connect.", null);
+						return false;
 				}
-
-				if (retryCountForConnect > maxRetryCountForConnect)
-				{
-					logger.Error("An opportunity for reconnecting has been lost.");
-
-					Error("An interruption has occurred while attempting to connect.", null);
-
-					return false;
-				}
-
-				readyState = WebSocketState.Connecting;
-			} // lock
+			}
 
 			if (TryEnterHandshakeBlock())
 			{

@@ -707,7 +707,7 @@ namespace WebSocketSharp
 		}
 
 
-		protected void Error(string message, Exception exception)
+		protected void CallOnError(string message, Exception exception)
 		{
 			try
 			{
@@ -779,7 +779,7 @@ namespace WebSocketSharp
 			catch (Exception ex)
 			{
 				logger.Error(ex.ToString());
-				Error("An error has occurred during the OnOpen event.", ex);
+				CallOnError("An error has occurred during the OnOpen event.", ex);
 			}
 
 			MessageEventArgs e;
@@ -983,49 +983,65 @@ namespace WebSocketSharp
 
 		private bool SendCompressFragmented(Opcode opcode, Stream stream)
 		{
-			lock (forSend)
+			string onErrorMessage = null;
+			Exception onErrorException = null;
+
+			try
 			{
-				var src = stream;
-				var compressed = false;
-				var sent = false;
-				try
+				lock (forSend)
 				{
-					var compressionMethod = compression;
+					var src = stream;
+					var compressed = false;
+					var sent = false;
+					try
+					{
+						var compressionMethod = compression;
 
-					if (compressionMethod != CompressionMethod.None)
-					{
-						stream = stream.Compress(compressionMethod);
-						compressed = true;
-					}
-
-					sent = SendFragmentedInternal(opcode, stream, compressed);
-					if (!sent)
-					{
-						Error($"Send failed. {opcode}", null);
-					}
-				}
-				catch (Exception ex)
-				{
-					logger.Error(ex.ToString());
-					Error("An error has occurred during a send.", ex);
-				}
-				finally
-				{
-					if (compressed)
-					{
-						try
+						if (compressionMethod != CompressionMethod.None)
 						{
-							stream.Dispose();
+							stream = stream.Compress(compressionMethod);
+							compressed = true;
 						}
-						catch
+
+						sent = SendFragmentedInternal(opcode, stream, compressed);
+						if (!sent)
 						{
+							onErrorMessage = $"Send failed. {opcode}";
 						}
 					}
+					catch (Exception ex)
+					{
+						onErrorMessage = "An error has occurred during a send.";
+						onErrorException = ex;
+					}
+					finally
+					{
+						if (compressed)
+						{
+							try
+							{
+								stream.Dispose();
+							}
+							catch
+							{
+							}
+						}
 
-					src.Dispose();
-				}
+						src.Dispose();
+					}
 
-				return sent;
+					return sent;
+				} // lock
+			}
+			finally
+			{
+				// call outside lock
+				if (onErrorException != null)
+					logger.Error(onErrorException.ToString());
+
+				if (!string.IsNullOrEmpty(onErrorMessage))
+					CallOnError(onErrorMessage, onErrorException);
+
 			}
 		}
 
@@ -1148,7 +1164,7 @@ namespace WebSocketSharp
 				else
 				{
 					logger.Error(t.Exception?.ToString());
-					Error("An error has occurred during the callback for an async send.", t.Exception == null ? null : t.Exception);
+					CallOnError("An error has occurred during the callback for an async send.", t.Exception == null ? null : t.Exception);
 				}
 			});
 #else
@@ -1165,7 +1181,7 @@ namespace WebSocketSharp
 			catch (Exception ex)
 			{
 				logger.Error(ex.ToString());
-				Error("An error has occurred during the callback for an async send.", ex);
+				CallOnError("An error has occurred during the callback for an async send.", ex);
 			}
 		},
 		null
@@ -1284,7 +1300,7 @@ namespace WebSocketSharp
 			catch (Exception ex)
 			{
 				logger.Error(ex.ToString());
-				Error("An error has occurred during an OnMessage event.", ex);
+				CallOnError("An error has occurred during an OnMessage event.", ex);
 			}
 		}
 
@@ -1298,7 +1314,7 @@ namespace WebSocketSharp
 			catch (Exception ex)
 			{
 				logger.Error(ex.ToString());
-				Error("An error has occurred during the OnClose event.", ex);
+				CallOnError("An error has occurred during the OnClose event.", ex);
 			}
 		}
 
