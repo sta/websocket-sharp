@@ -48,7 +48,9 @@ namespace WebSocketSharp.Net
 
     #region Protected Constructors
 
-    protected AuthenticationBase (AuthenticationSchemes scheme, NameValueCollection parameters)
+    protected AuthenticationBase (
+      AuthenticationSchemes scheme, NameValueCollection parameters
+    )
     {
       _scheme = scheme;
       Parameters = parameters;
