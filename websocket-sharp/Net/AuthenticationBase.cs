@@ -102,15 +102,17 @@ namespace WebSocketSharp.Net
 
     internal static string CreateNonceValue ()
     {
-      var src = new byte[16];
       var rand = new Random ();
-      rand.NextBytes (src);
+      var bytes = new byte[16];
 
-      var res = new StringBuilder (32);
-      foreach (var b in src)
-        res.Append (b.ToString ("x2"));
+      rand.NextBytes (bytes);
 
-      return res.ToString ();
+      var buff = new StringBuilder (32);
+
+      foreach (var b in bytes)
+        buff.Append (b.ToString ("x2"));
+
+      return buff.ToString ();
     }
 
     internal static NameValueCollection ParseParameters (string value)
