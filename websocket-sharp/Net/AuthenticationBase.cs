@@ -145,11 +145,15 @@ namespace WebSocketSharp.Net
 
     public override string ToString ()
     {
-      return _scheme == AuthenticationSchemes.Basic
-             ? ToBasicString ()
-             : _scheme == AuthenticationSchemes.Digest
-               ? ToDigestString ()
-               : String.Empty;
+      if (_scheme == AuthenticationSchemes.Basic) {
+        return ToBasicString ();
+      }
+      else if (_scheme == AuthenticationSchemes.Digest) {
+        return ToDigestString ();
+      }
+      else {
+        return String.Empty;
+      }
     }
 
     #endregion
