@@ -388,12 +388,11 @@ namespace WebSocketSharp.Net
 
         return new HttpBasicIdentity (user, pass);
       }
-      else if (schm == AuthenticationSchemes.Digest) {
+
+      if (schm == AuthenticationSchemes.Digest)
         return new HttpDigestIdentity (Parameters);
-      }
-      else {
-        return null;
-      }
+
+      return null;
     }
 
     #endregion
