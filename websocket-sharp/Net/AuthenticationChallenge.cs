@@ -91,6 +91,21 @@ namespace WebSocketSharp.Net
       return new AuthenticationChallenge (AuthenticationSchemes.Digest, realm);
     }
 
+    internal static string CreateNonceValue ()
+    {
+      var rand = new Random ();
+      var bytes = new byte[16];
+
+      rand.NextBytes (bytes);
+
+      var buff = new StringBuilder (32);
+
+      foreach (var b in bytes)
+        buff.Append (b.ToString ("x2"));
+
+      return buff.ToString ();
+    }
+
     internal static AuthenticationChallenge Parse (string value)
     {
       var chal = value.Split (new[] { ' ' }, 2);

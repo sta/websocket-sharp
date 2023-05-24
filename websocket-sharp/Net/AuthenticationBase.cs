@@ -100,21 +100,6 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    internal static string CreateNonceValue ()
-    {
-      var rand = new Random ();
-      var bytes = new byte[16];
-
-      rand.NextBytes (bytes);
-
-      var buff = new StringBuilder (32);
-
-      foreach (var b in bytes)
-        buff.Append (b.ToString ("x2"));
-
-      return buff.ToString ();
-    }
-
     internal static NameValueCollection ParseParameters (string value)
     {
       var ret = new NameValueCollection ();

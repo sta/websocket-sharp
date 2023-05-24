@@ -207,7 +207,7 @@ namespace WebSocketSharp.Net
 
         if (auth) {
           Parameters["qop"] = "auth";
-          Parameters["cnonce"] = CreateNonceValue ();
+          Parameters["cnonce"] = AuthenticationChallenge.CreateNonceValue ();
           Parameters["nc"] = String.Format ("{0:x8}", ++_nonceCount);
         }
         else {
