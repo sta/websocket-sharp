@@ -274,7 +274,7 @@ namespace WebSocketSharp.Net
                  );
         }
         else if (schm == "digest") {
-          var parameters = ParseParameters (cred[1]);
+          var parameters = AuthenticationChallenge.ParseParameters (cred[1]);
 
           return new AuthenticationResponse (
                    AuthenticationSchemes.Digest, parameters

@@ -97,29 +97,5 @@ namespace WebSocketSharp.Net
     }
 
     #endregion
-
-    #region Internal Methods
-
-    internal static NameValueCollection ParseParameters (string value)
-    {
-      var ret = new NameValueCollection ();
-
-      foreach (var param in value.SplitHeaderValue (',')) {
-        var i = param.IndexOf ('=');
-
-        var name = i > 0 ? param.Substring (0, i).Trim () : null;
-        var val = i < 0
-                  ? param.Trim ().Trim ('"')
-                  : i < param.Length - 1
-                    ? param.Substring (i + 1).Trim ().Trim ('"')
-                    : String.Empty;
-
-        ret.Add (name, val);
-      }
-
-      return ret;
-    }
-
-    #endregion
   }
 }
