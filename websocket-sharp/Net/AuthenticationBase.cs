@@ -48,7 +48,9 @@ namespace WebSocketSharp.Net
 
     #region Protected Constructors
 
-    protected AuthenticationBase (AuthenticationSchemes scheme, NameValueCollection parameters)
+    protected AuthenticationBase (
+      AuthenticationSchemes scheme, NameValueCollection parameters
+    )
     {
       _scheme = scheme;
       Parameters = parameters;
@@ -100,22 +102,26 @@ namespace WebSocketSharp.Net
 
     internal static string CreateNonceValue ()
     {
-      var src = new byte[16];
       var rand = new Random ();
-      rand.NextBytes (src);
+      var bytes = new byte[16];
 
-      var res = new StringBuilder (32);
-      foreach (var b in src)
-        res.Append (b.ToString ("x2"));
+      rand.NextBytes (bytes);
 
-      return res.ToString ();
+      var buff = new StringBuilder (32);
+
+      foreach (var b in bytes)
+        buff.Append (b.ToString ("x2"));
+
+      return buff.ToString ();
     }
 
     internal static NameValueCollection ParseParameters (string value)
     {
-      var res = new NameValueCollection ();
+      var ret = new NameValueCollection ();
+
       foreach (var param in value.SplitHeaderValue (',')) {
         var i = param.IndexOf ('=');
+
         var name = i > 0 ? param.Substring (0, i).Trim () : null;
         var val = i < 0
                   ? param.Trim ().Trim ('"')
@@ -123,10 +129,10 @@ namespace WebSocketSharp.Net
                     ? param.Substring (i + 1).Trim ().Trim ('"')
                     : String.Empty;
 
-        res.Add (name, val);
+        ret.Add (name, val);
       }
 
-      return res;
+      return ret;
     }
 
     internal abstract string ToBasicString ();
@@ -139,11 +145,13 @@ namespace WebSocketSharp.Net
 
     public override string ToString ()
     {
-      return _scheme == AuthenticationSchemes.Basic
-             ? ToBasicString ()
-             : _scheme == AuthenticationSchemes.Digest
-               ? ToDigestString ()
-               : String.Empty;
+      if (_scheme == AuthenticationSchemes.Basic)
+        return ToBasicString ();
+
+      if (_scheme == AuthenticationSchemes.Digest)
+        return ToDigestString ();
+
+      return String.Empty;
     }
 
     #endregion

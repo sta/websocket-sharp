@@ -36,7 +36,9 @@ namespace WebSocketSharp.Net
   {
     #region Private Constructors
 
-    private AuthenticationChallenge (AuthenticationSchemes scheme, NameValueCollection parameters)
+    private AuthenticationChallenge (
+      AuthenticationSchemes scheme, NameValueCollection parameters
+    )
       : base (scheme, parameters)
     {
     }
@@ -45,10 +47,13 @@ namespace WebSocketSharp.Net
 
     #region Internal Constructors
 
-    internal AuthenticationChallenge (AuthenticationSchemes scheme, string realm)
+    internal AuthenticationChallenge (
+      AuthenticationSchemes scheme, string realm
+    )
       : base (scheme, new NameValueCollection ())
     {
       Parameters["realm"] = realm;
+
       if (scheme == AuthenticationSchemes.Digest) {
         Parameters["nonce"] = CreateNonceValue ();
         Parameters["algorithm"] = "MD5";
@@ -89,17 +94,29 @@ namespace WebSocketSharp.Net
     internal static AuthenticationChallenge Parse (string value)
     {
       var chal = value.Split (new[] { ' ' }, 2);
+
       if (chal.Length != 2)
         return null;
 
       var schm = chal[0].ToLower ();
-      return schm == "basic"
-             ? new AuthenticationChallenge (
-                 AuthenticationSchemes.Basic, ParseParameters (chal[1]))
-             : schm == "digest"
-               ? new AuthenticationChallenge (
-                   AuthenticationSchemes.Digest, ParseParameters (chal[1]))
-               : null;
+
+      if (schm == "basic") {
+        var parameters = ParseParameters (chal[1]);
+
+        return new AuthenticationChallenge (
+                 AuthenticationSchemes.Basic, parameters
+               );
+      }
+      else if (schm == "digest") {
+        var parameters = ParseParameters (chal[1]);
+
+        return new AuthenticationChallenge (
+                 AuthenticationSchemes.Digest, parameters
+               );
+      }
+      else {
+        return null;
+      }
     }
 
     internal override string ToBasicString ()
@@ -109,36 +126,45 @@ namespace WebSocketSharp.Net
 
     internal override string ToDigestString ()
     {
-      var output = new StringBuilder (128);
+      var buff = new StringBuilder (128);
 
       var domain = Parameters["domain"];
-      if (domain != null)
-        output.AppendFormat (
+      var realm = Parameters["realm"];
+      var nonce = Parameters["nonce"];
+
+      if (domain != null) {
+        buff.AppendFormat (
           "Digest realm=\"{0}\", domain=\"{1}\", nonce=\"{2}\"",
-          Parameters["realm"],
+          realm,
           domain,
-          Parameters["nonce"]);
-      else
-        output.AppendFormat (
-          "Digest realm=\"{0}\", nonce=\"{1}\"", Parameters["realm"], Parameters["nonce"]);
+          nonce
+        );
+      }
+      else {
+        buff.AppendFormat ("Digest realm=\"{0}\", nonce=\"{1}\"", realm, nonce);
+      }
 
       var opaque = Parameters["opaque"];
+
       if (opaque != null)
-        output.AppendFormat (", opaque=\"{0}\"", opaque);
+        buff.AppendFormat (", opaque=\"{0}\"", opaque);
 
       var stale = Parameters["stale"];
+
       if (stale != null)
-        output.AppendFormat (", stale={0}", stale);
+        buff.AppendFormat (", stale={0}", stale);
 
       var algo = Parameters["algorithm"];
+
       if (algo != null)
-        output.AppendFormat (", algorithm={0}", algo);
+        buff.AppendFormat (", algorithm={0}", algo);
 
       var qop = Parameters["qop"];
-      if (qop != null)
-        output.AppendFormat (", qop=\"{0}\"", qop);
 
-      return output.ToString ();
+      if (qop != null)
+        buff.AppendFormat (", qop=\"{0}\"", qop);
+
+      return buff.ToString ();
     }
 
     #endregion

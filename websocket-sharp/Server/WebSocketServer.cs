@@ -522,12 +522,12 @@ namespace WebSocketSharp.Server
     /// Gets the configuration for secure connection.
     /// </summary>
     /// <remarks>
-    /// The configuration will be referenced when attempts to start,
+    /// The configuration is used when the server attempts to start,
     /// so it must be configured before the start method is called.
     /// </remarks>
     /// <value>
-    /// A <see cref="ServerSslConfiguration"/> that represents
-    /// the configuration used to provide secure connections.
+    /// A <see cref="ServerSslConfiguration"/> that represents the
+    /// configuration used to provide secure connections.
     /// </value>
     /// <exception cref="InvalidOperationException">
     /// The server does not provide secure connections.

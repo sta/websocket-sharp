@@ -5,7 +5,7 @@
  * The MIT License
  *
  * Copyright (c) 2014 liryna
- * Copyright (c) 2014-2020 sta.blockhead
+ * Copyright (c) 2014-2023 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -69,7 +69,7 @@ namespace WebSocketSharp.Net
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ServerSslConfiguration"/>
-    /// class that stores the parameters copied from the specified configuration.
+    /// class copying from the specified configuration.
     /// </summary>
     /// <param name="configuration">
     /// A <see cref="ServerSslConfiguration"/> from which to copy.
@@ -148,8 +148,11 @@ namespace WebSocketSharp.Net
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="RemoteCertificateValidationCallback"/> delegate that
-    ///   invokes the method called for validating the certificate.
+    ///   A <see cref="RemoteCertificateValidationCallback"/> delegate.
+    ///   </para>
+    ///   <para>
+    ///   The delegate invokes the method called when the server validates
+    ///   the certificate.
     ///   </para>
     ///   <para>
     ///   The default value is a delegate that invokes a method that only
@@ -170,14 +173,14 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the protocols used for authentication.
+    /// Gets or sets the enabled versions of the SSL/TLS protocols.
     /// </summary>
     /// <value>
     ///   <para>
     ///   Any of the <see cref="SslProtocols"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It represents the protocols used for authentication.
+    ///   It represents the enabled versions of the SSL/TLS protocols.
     ///   </para>
     ///   <para>
     ///   The default value is <see cref="SslProtocols.None"/>.
@@ -198,10 +201,10 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="X509Certificate2"/> or <see langword="null"/>.
+    ///   A <see cref="X509Certificate2"/> that represents an X.509 certificate.
     ///   </para>
     ///   <para>
-    ///   The certificate represents an X.509 certificate.
+    ///   <see langword="null"/> if not present.
     ///   </para>
     ///   <para>
     ///   The default value is <see langword="null"/>.
