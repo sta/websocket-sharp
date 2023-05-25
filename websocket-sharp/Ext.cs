@@ -1499,6 +1499,9 @@ namespace WebSocketSharp
           return true;
       }
 
+      if (address.IsInternal())
+          return true;
+
       var name = System.Net.Dns.GetHostName ();
       var addrs = System.Net.Dns.GetHostAddresses (name);
 
@@ -1508,6 +1511,30 @@ namespace WebSocketSharp
       }
 
       return false;
+    }
+
+    /// <summary>
+    /// An extension method to determine if an IP address is internal
+    /// Class A Private IP Range: 10.0.0.0 ? 10.255.255.255 
+    /// Class B Private IP Range: 172.16.0.0 ? 172.31.255.255
+    /// Class C Private IP Range: 192.168.0.0 ? 192.168.255.25
+    /// </summary>
+    /// <param name="address">The IP address that will be tested</param>
+    /// <returns>Returns true if the IP is internal, false if it is external</returns>
+    public static bool IsInternal(this System.Net.IPAddress address)
+    { 
+        byte[] bytes = address.GetAddressBytes();
+        switch( bytes[ 0 ] )
+        {
+            case 10:
+                return true;
+            case 172:
+                return bytes[ 1 ] < 32 && bytes[ 1 ] >= 16;
+            case 192:
+                return bytes[ 1 ] == 168;
+            default:
+                return false;
+        }
     }
 
     /// <summary>
