@@ -122,16 +122,16 @@ namespace WebSocketSharp.Net
                  AuthenticationSchemes.Basic, parameters
                );
       }
-      else if (schm == "digest") {
+
+      if (schm == "digest") {
         var parameters = ParseParameters (chal[1]);
 
         return new AuthenticationChallenge (
                  AuthenticationSchemes.Digest, parameters
                );
       }
-      else {
-        return null;
-      }
+
+      return null;
     }
 
     internal static NameValueCollection ParseParameters (string value)
