@@ -273,16 +273,16 @@ namespace WebSocketSharp.Net
                    AuthenticationSchemes.Basic, parameters
                  );
         }
-        else if (schm == "digest") {
+
+        if (schm == "digest") {
           var parameters = AuthenticationChallenge.ParseParameters (cred[1]);
 
           return new AuthenticationResponse (
                    AuthenticationSchemes.Digest, parameters
                  );
         }
-        else {
-          return null;
-        }
+
+        return null;
       }
       catch {
         return null;
