@@ -111,6 +111,12 @@ namespace WebSocketSharp.Net
 
     #region Public Properties
 
+    public string Algorithm {
+      get {
+        return Parameters["algorithm"];
+      }
+    }
+
     public string Cnonce {
       get {
         return Parameters["cnonce"];
