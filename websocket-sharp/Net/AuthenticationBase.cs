@@ -60,12 +60,6 @@ namespace WebSocketSharp.Net
 
     #region Public Properties
 
-    public string Nonce {
-      get {
-        return Parameters["nonce"];
-      }
-    }
-
     public string Opaque {
       get {
         return Parameters["opaque"];

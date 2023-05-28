@@ -77,6 +77,12 @@ namespace WebSocketSharp.Net
       }
     }
 
+    public string Nonce {
+      get {
+        return Parameters["nonce"];
+      }
+    }
+
     public string Stale {
       get {
         return Parameters["stale"];
