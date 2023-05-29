@@ -60,12 +60,6 @@ namespace WebSocketSharp.Net
 
     #region Public Properties
 
-    public string Qop {
-      get {
-        return Parameters["qop"];
-      }
-    }
-
     public string Realm {
       get {
         return Parameters["realm"];

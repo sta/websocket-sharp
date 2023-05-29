@@ -147,6 +147,12 @@ namespace WebSocketSharp.Net
       }
     }
 
+    public string Qop {
+      get {
+        return Parameters["qop"];
+      }
+    }
+
     public string Response {
       get {
         return Parameters["response"];
