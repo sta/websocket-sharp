@@ -83,6 +83,12 @@ namespace WebSocketSharp.Net
       }
     }
 
+    public string Opaque {
+      get {
+        return Parameters["opaque"];
+      }
+    }
+
     public string Stale {
       get {
         return Parameters["stale"];

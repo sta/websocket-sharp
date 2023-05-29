@@ -135,6 +135,12 @@ namespace WebSocketSharp.Net
       }
     }
 
+    public string Opaque {
+      get {
+        return Parameters["opaque"];
+      }
+    }
+
     public string Password {
       get {
         return Parameters["password"];
