@@ -153,6 +153,12 @@ namespace WebSocketSharp.Net
       }
     }
 
+    public string Realm {
+      get {
+        return Parameters["realm"];
+      }
+    }
+
     public string Response {
       get {
         return Parameters["response"];

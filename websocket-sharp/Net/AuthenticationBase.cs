@@ -60,12 +60,6 @@ namespace WebSocketSharp.Net
 
     #region Public Properties
 
-    public string Realm {
-      get {
-        return Parameters["realm"];
-      }
-    }
-
     public AuthenticationSchemes Scheme {
       get {
         return _scheme;

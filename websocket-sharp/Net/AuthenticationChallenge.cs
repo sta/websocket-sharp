@@ -95,6 +95,12 @@ namespace WebSocketSharp.Net
       }
     }
 
+    public string Realm {
+      get {
+        return Parameters["realm"];
+      }
+    }
+
     public string Stale {
       get {
         return Parameters["stale"];
