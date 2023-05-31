@@ -95,11 +95,24 @@ namespace WebSocketSharp
       _data = code.Append (reason);
       _length = _data.LongLength;
     }
+    
+    internal PayloadData (ushort code, string reason, int httpStatusCode, string httpResponseBody)
+    {
+      _data = code.Append (reason);
+      _length = _data.LongLength;
+      HttpStatusCode = httpStatusCode;
+      HttpResponseBody = httpResponseBody;
+
+    }
 
     #endregion
 
     #region Internal Properties
 
+    internal int HttpStatusCode { get; }
+    
+    internal string HttpResponseBody { get; }
+    
     internal ushort Code {
       get {
         return _length >= 2
