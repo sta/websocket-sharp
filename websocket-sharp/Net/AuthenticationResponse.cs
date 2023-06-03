@@ -442,12 +442,10 @@ namespace WebSocketSharp.Net
 
     public override string ToString ()
     {
-      var schm = Scheme;
-
-      if (schm == AuthenticationSchemes.Basic)
+      if (_scheme == AuthenticationSchemes.Basic)
         return ToBasicString ();
 
-      if (schm == AuthenticationSchemes.Digest)
+      if (_scheme == AuthenticationSchemes.Digest)
         return ToDigestString ();
 
       return String.Empty;
