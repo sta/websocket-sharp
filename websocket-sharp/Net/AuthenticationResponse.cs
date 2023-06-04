@@ -425,16 +425,14 @@ namespace WebSocketSharp.Net
 
     public IIdentity ToIdentity ()
     {
-      var schm = Scheme;
-
-      if (schm == AuthenticationSchemes.Basic) {
+      if (_scheme == AuthenticationSchemes.Basic) {
         var user = _parameters["username"];
         var pass = _parameters["password"];
 
         return new HttpBasicIdentity (user, pass);
       }
 
-      if (schm == AuthenticationSchemes.Digest)
+      if (_scheme == AuthenticationSchemes.Digest)
         return new HttpDigestIdentity (_parameters);
 
       return null;
