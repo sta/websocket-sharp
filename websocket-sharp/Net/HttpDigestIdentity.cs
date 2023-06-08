@@ -33,8 +33,8 @@ using System.Security.Principal;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Holds the username and other parameters from
-  /// an HTTP Digest authentication attempt.
+  /// Holds the username and other parameters from an HTTP Digest
+  /// authentication attempt.
   /// </summary>
   public class HttpDigestIdentity : GenericIdentity
   {
