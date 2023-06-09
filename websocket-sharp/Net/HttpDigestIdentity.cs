@@ -172,14 +172,14 @@ namespace WebSocketSharp.Net
       string password, string realm, string method, string entity
     )
     {
-      var copied = new NameValueCollection (_parameters);
+      var parameters = new NameValueCollection (_parameters);
 
-      copied["password"] = password;
-      copied["realm"] = realm;
-      copied["method"] = method;
-      copied["entity"] = entity;
+      parameters["password"] = password;
+      parameters["realm"] = realm;
+      parameters["method"] = method;
+      parameters["entity"] = entity;
 
-      var expected = AuthenticationResponse.CreateRequestDigest (copied);
+      var expected = AuthenticationResponse.CreateRequestDigest (parameters);
 
       return _parameters["response"] == expected;
     }
