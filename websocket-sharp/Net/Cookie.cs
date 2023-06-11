@@ -576,11 +576,13 @@ namespace WebSocketSharp.Net
 
         if (value[0] == '$') {
           var msg = "It starts with a dollar sign.";
+
           throw new ArgumentException (msg, "value");
         }
 
         if (!value.IsToken ()) {
           var msg = "It contains an invalid character.";
+
           throw new ArgumentException (msg, "value");
         }
 
