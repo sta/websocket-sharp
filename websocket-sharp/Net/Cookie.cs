@@ -699,6 +699,7 @@ namespace WebSocketSharp.Net
         if (value.Contains (_reservedCharsForValue)) {
           if (!value.IsEnclosedIn ('"')) {
             var msg = "A string not enclosed in double quotes.";
+
             throw new ArgumentException (msg, "value");
           }
         }
