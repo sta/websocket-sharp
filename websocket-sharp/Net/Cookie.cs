@@ -685,7 +685,7 @@ namespace WebSocketSharp.Net
     /// </value>
     /// <exception cref="ArgumentException">
     /// The value specified for a set operation is a string not enclosed in
-    /// double quotes that contains an invalid character.
+    /// double quotes although it contains a reserved character.
     /// </exception>
     public string Value {
       get {
