@@ -917,20 +917,15 @@ namespace WebSocketSharp.Net
       return buff.ToString ();
     }
 
-    /// <summary>
-    /// Returns a string that represents the current cookie instance.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="string"/> that is suitable for the Set-Cookie response
-    /// header.
-    /// </returns>
     internal string ToResponseString ()
     {
-      return _name.Length == 0
-             ? String.Empty
-             : _version == 0
-               ? toResponseStringVersion0 ()
-               : toResponseStringVersion1 ();
+      if (_name.Length == 0)
+        return String.Empty;
+
+      if (_version == 0)
+        return toResponseStringVersion0 ();
+
+      return toResponseStringVersion1 ();
     }
 
     internal static bool TryCreate (
