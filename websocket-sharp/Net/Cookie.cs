@@ -968,6 +968,7 @@ namespace WebSocketSharp.Net
     public override bool Equals (object comparand)
     {
       var cookie = comparand as Cookie;
+
       if (cookie == null)
         return false;
 
