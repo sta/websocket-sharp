@@ -990,13 +990,13 @@ namespace WebSocketSharp.Net
     /// </returns>
     public override int GetHashCode ()
     {
-      return hash (
-               StringComparer.InvariantCultureIgnoreCase.GetHashCode (_name),
-               _value.GetHashCode (),
-               _path.GetHashCode (),
-               StringComparer.InvariantCultureIgnoreCase.GetHashCode (_domain),
-               _version
-             );
+      var i = StringComparer.InvariantCultureIgnoreCase.GetHashCode (_name);
+      var j = _value.GetHashCode ();
+      var k = _path.GetHashCode ();
+      var l = StringComparer.InvariantCultureIgnoreCase.GetHashCode (_domain);
+      var m = _version;
+
+      return hash (i, j, k, l, m);
     }
 
     /// <summary>
