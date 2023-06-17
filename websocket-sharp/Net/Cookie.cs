@@ -845,8 +845,10 @@ namespace WebSocketSharp.Net
 
       for (var i = 0; i < len; i++) {
         var s = arr[i].Trim ();
+
         if (s.Length == 0) {
           res[i] = Int32.MinValue;
+
           continue;
         }
 
@@ -855,6 +857,7 @@ namespace WebSocketSharp.Net
       }
 
       result = res;
+
       return true;
     }
 
