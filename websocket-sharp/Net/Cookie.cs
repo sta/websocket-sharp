@@ -333,6 +333,7 @@ namespace WebSocketSharp.Net
                       : _expires;
 
         var span = expires - DateTime.Now;
+
         return span > TimeSpan.Zero
                ? (int) span.TotalSeconds
                : 0;
