@@ -292,11 +292,13 @@ namespace WebSocketSharp.Net
 
       if (name[0] == '$') {
         var msg = "It starts with a dollar sign.";
+
         throw new ArgumentException (msg, "name");
       }
 
       if (!name.IsToken ()) {
         var msg = "It contains an invalid character.";
+
         throw new ArgumentException (msg, "name");
       }
 
@@ -306,6 +308,7 @@ namespace WebSocketSharp.Net
       if (value.Contains (_reservedCharsForValue)) {
         if (!value.IsEnclosedIn ('"')) {
           var msg = "A string not enclosed in double quotes.";
+
           throw new ArgumentException (msg, "value");
         }
       }
