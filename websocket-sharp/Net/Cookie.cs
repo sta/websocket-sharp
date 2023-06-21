@@ -169,7 +169,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     ///   <para>
     ///   <paramref name="value"/> is a string not enclosed in double quotes
-    ///   that contains an invalid character.
+    ///   although it contains a reserved character.
     ///   </para>
     /// </exception>
     public Cookie (string name, string value)
