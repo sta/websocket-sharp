@@ -56,7 +56,8 @@ namespace WebSocketSharp.Net
   ///   <list type="bullet">
   ///     <item>
   ///       <term>
-  ///       <see href="http://web.archive.org/web/20020803110822/http://wp.netscape.com/newsref/std/cookie_spec.html">Netscape specification</see>
+  ///       <see href="http://web.archive.org/web/20020803110822/http://wp.netscape.com/newsref/std/cookie_spec.html">
+  ///       Netscape specification</see>
   ///       </term>
   ///     </item>
   ///     <item>
