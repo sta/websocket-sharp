@@ -151,19 +151,19 @@ namespace WebSocketSharp.Net
     ///   <paramref name="name"/> is an empty string.
     ///   </para>
     ///   <para>
-    ///   - or -
+    ///   -or-
     ///   </para>
     ///   <para>
     ///   <paramref name="name"/> starts with a dollar sign.
     ///   </para>
     ///   <para>
-    ///   - or -
+    ///   -or-
     ///   </para>
     ///   <para>
     ///   <paramref name="name"/> contains an invalid character.
     ///   </para>
     ///   <para>
-    ///   - or -
+    ///   -or-
     ///   </para>
     ///   <para>
     ///   <paramref name="value"/> is a string not enclosed in double quotes
