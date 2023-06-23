@@ -117,9 +117,6 @@ namespace WebSocketSharp.Net
 
     #region Internal Constructors
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Cookie"/> class.
-    /// </summary>
     internal Cookie ()
     {
       init (String.Empty, String.Empty, String.Empty, String.Empty);
