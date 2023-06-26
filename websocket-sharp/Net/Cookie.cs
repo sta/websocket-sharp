@@ -552,13 +552,13 @@ namespace WebSocketSharp.Net
     ///   The value specified for a set operation is an empty string.
     ///   </para>
     ///   <para>
-    ///   - or -
+    ///   -or-
     ///   </para>
     ///   <para>
     ///   The value specified for a set operation starts with a dollar sign.
     ///   </para>
     ///   <para>
-    ///   - or -
+    ///   -or-
     ///   </para>
     ///   <para>
     ///   The value specified for a set operation contains an invalid character.
