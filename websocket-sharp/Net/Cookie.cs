@@ -823,6 +823,7 @@ namespace WebSocketSharp.Net
 
       if (_commentUri != null) {
         var url = _commentUri.OriginalString;
+
         buff.AppendFormat (
           "; CommentURL={0}", !url.IsToken () ? url.Quote () : url
         );
