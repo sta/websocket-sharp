@@ -769,13 +769,14 @@ namespace WebSocketSharp.Net
       buff.AppendFormat ("{0}={1}", _name, _value);
 
       if (_expires != DateTime.MinValue) {
-        buff.AppendFormat (
-          "; Expires={0}",
-          _expires.ToUniversalTime ().ToString (
-            "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'",
-            CultureInfo.CreateSpecificCulture ("en-US")
-          )
-        );
+        var expires = _expires
+                      .ToUniversalTime ()
+                      .ToString (
+                        "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'",
+                        CultureInfo.CreateSpecificCulture ("en-US")
+                      );
+
+        buff.AppendFormat ("; Expires={0}", expires);
       }
 
       if (!_path.IsNullOrEmpty ())
