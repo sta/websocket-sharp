@@ -819,8 +819,11 @@ namespace WebSocketSharp.Net
           buff.Append ("; Port");
       }
 
-      if (_comment != null)
-        buff.AppendFormat ("; Comment={0}", HttpUtility.UrlEncode (_comment));
+      if (_comment != null) {
+        var comment = HttpUtility.UrlEncode (_comment);
+
+        buff.AppendFormat ("; Comment={0}", comment);
+      }
 
       if (_commentUri != null) {
         var url = _commentUri.OriginalString;
