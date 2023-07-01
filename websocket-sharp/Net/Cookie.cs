@@ -635,8 +635,8 @@ namespace WebSocketSharp.Net
         if (!tryCreatePorts (value, out ports))
           return;
 
-        _port = value;
         _ports = ports;
+        _port = value;
       }
     }
 
