@@ -631,6 +631,7 @@ namespace WebSocketSharp.Net
 
       internal set {
         int[] ports;
+
         if (!tryCreatePorts (value, out ports))
           return;
 
