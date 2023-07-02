@@ -492,7 +492,7 @@ namespace WebSocketSharp.Net
     ///   the cookie expires on.
     ///   </para>
     ///   <para>
-    ///   <see cref="DateTime.MinValue"/> if this attribute is not needed.
+    ///   <see cref="DateTime.MinValue"/> if not necessary.
     ///   </para>
     ///   <para>
     ///   The default value is <see cref="DateTime.MinValue"/>.
