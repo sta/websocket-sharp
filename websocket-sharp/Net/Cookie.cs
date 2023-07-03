@@ -449,7 +449,7 @@ namespace WebSocketSharp.Net
     ///   the cookie is valid for.
     ///   </para>
     ///   <para>
-    ///   An empty string if this attribute is not needed.
+    ///   An empty string if not necessary.
     ///   </para>
     /// </value>
     public string Domain {
