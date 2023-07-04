@@ -786,6 +786,7 @@ namespace WebSocketSharp.Net
     {
       if (_readOnly) {
         var msg = "The collection is read-only.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -793,10 +794,12 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("cookie");
 
       var idx = search (cookie);
+
       if (idx == -1)
         return false;
 
       _list.RemoveAt (idx);
+
       return true;
     }
 
