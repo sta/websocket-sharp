@@ -743,6 +743,7 @@ namespace WebSocketSharp.Net
 
       if (array.Length - index < _list.Count) {
         var msg = "The available space of the array is not enough to copy to.";
+
         throw new ArgumentException (msg);
       }
 
