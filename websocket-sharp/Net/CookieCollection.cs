@@ -684,6 +684,7 @@ namespace WebSocketSharp.Net
     {
       if (_readOnly) {
         var msg = "The collection is read-only.";
+
         throw new InvalidOperationException (msg);
       }
 
