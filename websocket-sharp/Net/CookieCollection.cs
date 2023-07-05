@@ -738,8 +738,11 @@ namespace WebSocketSharp.Net
       if (array == null)
         throw new ArgumentNullException ("array");
 
-      if (index < 0)
-        throw new ArgumentOutOfRangeException ("index", "Less than zero.");
+      if (index < 0) {
+        var msg = "Less than zero.";
+
+        throw new ArgumentOutOfRangeException ("index", msg);
+      }
 
       if (array.Length - index < _list.Count) {
         var msg = "The available space of the array is not enough to copy to.";
