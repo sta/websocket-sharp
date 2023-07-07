@@ -591,16 +591,19 @@ namespace WebSocketSharp.Net
     internal void SetOrRemove (Cookie cookie)
     {
       var idx = search (cookie);
+
       if (idx == -1) {
         if (cookie.Expired)
           return;
 
         _list.Add (cookie);
+
         return;
       }
 
       if (cookie.Expired) {
         _list.RemoveAt (idx);
+
         return;
       }
 
