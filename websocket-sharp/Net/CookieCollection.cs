@@ -618,8 +618,10 @@ namespace WebSocketSharp.Net
 
     internal void Sort ()
     {
-      if (_list.Count > 1)
-        _list.Sort (compareForSort);
+      if (_list.Count < 2)
+        return;
+
+      _list.Sort (compareForSort);
     }
 
     #endregion
