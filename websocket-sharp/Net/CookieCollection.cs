@@ -240,11 +240,16 @@ namespace WebSocketSharp.Net
     private static int compareForSorted (Cookie x, Cookie y)
     {
       var ret = x.Version - y.Version;
-      return ret != 0
-             ? ret
-             : (ret = x.Name.CompareTo (y.Name)) != 0
-               ? ret
-               : y.Path.Length - x.Path.Length;
+
+      if (ret != 0)
+        return ret;
+
+      ret = x.Name.CompareTo (y.Name);
+
+      if (ret != 0)
+        return ret;
+
+      return y.Path.Length - x.Path.Length;
     }
 
     private static CookieCollection parseRequest (string value)
