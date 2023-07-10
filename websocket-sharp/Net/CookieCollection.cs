@@ -223,8 +223,10 @@ namespace WebSocketSharp.Net
     private void add (Cookie cookie)
     {
       var idx = search (cookie);
+
       if (idx == -1) {
         _list.Add (cookie);
+
         return;
       }
 
