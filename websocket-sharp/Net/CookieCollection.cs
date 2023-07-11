@@ -586,9 +586,7 @@ namespace WebSocketSharp.Net
     internal static CookieCollection Parse (string value, bool response)
     {
       try {
-        return response
-               ? parseResponse (value)
-               : parseRequest (value);
+        return response ? parseResponse (value) : parseRequest (value);
       }
       catch (Exception ex) {
         throw new CookieException ("It could not be parsed.", ex);
