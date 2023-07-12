@@ -260,22 +260,25 @@ namespace WebSocketSharp.Net
 
       Cookie cookie = null;
       var ver = 0;
-
       var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
+
       var pairs = value.SplitHeaderValue (',', ';').ToList ();
 
       for (var i = 0; i < pairs.Count; i++) {
         var pair = pairs[i].Trim ();
+
         if (pair.Length == 0)
           continue;
 
         var idx = pair.IndexOf ('=');
+
         if (idx == -1) {
           if (cookie == null)
             continue;
 
           if (pair.Equals ("$port", caseInsensitive)) {
             cookie.Port = "\"\"";
+
             continue;
           }
 
@@ -285,6 +288,7 @@ namespace WebSocketSharp.Net
         if (idx == 0) {
           if (cookie != null) {
             ret.add (cookie);
+
             cookie = null;
           }
 
@@ -301,10 +305,12 @@ namespace WebSocketSharp.Net
             continue;
 
           int num;
+
           if (!Int32.TryParse (val.Unquote (), out num))
             continue;
 
           ver = num;
+
           continue;
         }
 
@@ -316,6 +322,7 @@ namespace WebSocketSharp.Net
             continue;
 
           cookie.Path = val;
+
           continue;
         }
 
@@ -327,6 +334,7 @@ namespace WebSocketSharp.Net
             continue;
 
           cookie.Domain = val;
+
           continue;
         }
 
@@ -338,6 +346,7 @@ namespace WebSocketSharp.Net
             continue;
 
           cookie.Port = val;
+
           continue;
         }
 
