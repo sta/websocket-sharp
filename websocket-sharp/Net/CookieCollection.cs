@@ -371,37 +371,43 @@ namespace WebSocketSharp.Net
       var ret = new CookieCollection ();
 
       Cookie cookie = null;
-
       var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
+
       var pairs = value.SplitHeaderValue (',', ';').ToList ();
 
       for (var i = 0; i < pairs.Count; i++) {
         var pair = pairs[i].Trim ();
+
         if (pair.Length == 0)
           continue;
 
         var idx = pair.IndexOf ('=');
+
         if (idx == -1) {
           if (cookie == null)
             continue;
 
           if (pair.Equals ("port", caseInsensitive)) {
             cookie.Port = "\"\"";
+
             continue;
           }
 
           if (pair.Equals ("discard", caseInsensitive)) {
             cookie.Discard = true;
+
             continue;
           }
 
           if (pair.Equals ("secure", caseInsensitive)) {
             cookie.Secure = true;
+
             continue;
           }
 
           if (pair.Equals ("httponly", caseInsensitive)) {
             cookie.HttpOnly = true;
+
             continue;
           }
 
@@ -411,6 +417,7 @@ namespace WebSocketSharp.Net
         if (idx == 0) {
           if (cookie != null) {
             ret.add (cookie);
+
             cookie = null;
           }
 
@@ -430,10 +437,12 @@ namespace WebSocketSharp.Net
             continue;
 
           int num;
+
           if (!Int32.TryParse (val.Unquote (), out num))
             continue;
 
           cookie.Version = num;
+
           continue;
         }
 
@@ -453,9 +462,11 @@ namespace WebSocketSharp.Net
             continue;
 
           var buff = new StringBuilder (val, 32);
+
           buff.AppendFormat (", {0}", pairs[i].Trim ());
 
           DateTime expires;
+
           if (
             !DateTime.TryParseExact (
               buff.ToString (),
@@ -469,6 +480,7 @@ namespace WebSocketSharp.Net
             continue;
 
           cookie.Expires = expires.ToLocalTime ();
+
           continue;
         }
 
@@ -480,10 +492,12 @@ namespace WebSocketSharp.Net
             continue;
 
           int num;
+
           if (!Int32.TryParse (val.Unquote (), out num))
             continue;
 
           cookie.MaxAge = num;
+
           continue;
         }
 
@@ -495,6 +509,7 @@ namespace WebSocketSharp.Net
             continue;
 
           cookie.Path = val;
+
           continue;
         }
 
@@ -506,6 +521,7 @@ namespace WebSocketSharp.Net
             continue;
 
           cookie.Domain = val;
+
           continue;
         }
 
@@ -517,6 +533,7 @@ namespace WebSocketSharp.Net
             continue;
 
           cookie.Port = val;
+
           continue;
         }
 
@@ -528,6 +545,7 @@ namespace WebSocketSharp.Net
             continue;
 
           cookie.Comment = urlDecode (val, Encoding.UTF8);
+
           continue;
         }
 
@@ -539,6 +557,7 @@ namespace WebSocketSharp.Net
             continue;
 
           cookie.CommentUri = val.Unquote ().ToUri ();
+
           continue;
         }
 
@@ -550,6 +569,7 @@ namespace WebSocketSharp.Net
             continue;
 
           cookie.SameSite = val.Unquote ();
+
           continue;
         }
 
