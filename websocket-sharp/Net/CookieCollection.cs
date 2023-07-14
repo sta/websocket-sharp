@@ -466,17 +466,16 @@ namespace WebSocketSharp.Net
           buff.AppendFormat (", {0}", pairs[i].Trim ());
 
           DateTime expires;
+          var done = DateTime.TryParseExact (
+                       buff.ToString (),
+                       new[] { "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'", "r" },
+                       CultureInfo.CreateSpecificCulture ("en-US"),
+                       DateTimeStyles.AdjustToUniversal
+                       | DateTimeStyles.AssumeUniversal,
+                       out expires
+                     );
 
-          if (
-            !DateTime.TryParseExact (
-              buff.ToString (),
-              new[] { "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'", "r" },
-              CultureInfo.CreateSpecificCulture ("en-US"),
-              DateTimeStyles.AdjustToUniversal
-              | DateTimeStyles.AssumeUniversal,
-              out expires
-            )
-          )
+          if (!done)
             continue;
 
           cookie.Expires = expires.ToLocalTime ();
