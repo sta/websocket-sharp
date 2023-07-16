@@ -465,6 +465,7 @@ namespace WebSocketSharp.Net
 
           buff.AppendFormat (", {0}", pairs[i].Trim ());
 
+          var s = buff.ToString ();
           var fmts = new[] { "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'", "r" };
           var provider = CultureInfo.CreateSpecificCulture ("en-US");
           var style = DateTimeStyles.AdjustToUniversal
@@ -473,7 +474,7 @@ namespace WebSocketSharp.Net
           DateTime expires;
 
           var done = DateTime.TryParseExact (
-                       buff.ToString (),
+                       s,
                        fmts,
                        provider,
                        style,
