@@ -474,11 +474,7 @@ namespace WebSocketSharp.Net
           DateTime expires;
 
           var done = DateTime.TryParseExact (
-                       s,
-                       fmts,
-                       provider,
-                       style,
-                       out expires
+                       s, fmts, provider, style, out expires
                      );
 
           if (!done)
