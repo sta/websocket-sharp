@@ -494,12 +494,12 @@ namespace WebSocketSharp.Net
 
           var s = val.Unquote ();
 
-          int num;
+          int maxAge;
 
-          if (!Int32.TryParse (s, out num))
+          if (!Int32.TryParse (s, out maxAge))
             continue;
 
-          cookie.MaxAge = num;
+          cookie.MaxAge = maxAge;
 
           continue;
         }
