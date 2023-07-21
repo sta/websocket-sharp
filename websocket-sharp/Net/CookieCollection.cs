@@ -85,6 +85,7 @@ namespace WebSocketSharp.Net
     internal IEnumerable<Cookie> Sorted {
       get {
         var list = new List<Cookie> (_list);
+
         if (list.Count > 1)
           list.Sort (compareForSorted);
 
