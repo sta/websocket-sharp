@@ -1117,6 +1117,7 @@ namespace WebSocketSharp.Net
         return new byte[0];
 
       var bytes = (encoding ?? Encoding.UTF8).GetBytes (s);
+
       return urlEncodeToBytes (bytes, 0, bytes.Length);
     }
 
