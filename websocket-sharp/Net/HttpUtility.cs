@@ -1100,6 +1100,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("bytes");
 
       var len = bytes.Length;
+
       return len > 0 ? urlEncodeToBytes (bytes, 0, len) : bytes;
     }
 
