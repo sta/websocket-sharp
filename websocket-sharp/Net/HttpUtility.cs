@@ -1088,11 +1088,12 @@ namespace WebSocketSharp.Net
       if (count < 0 || count > len - offset)
         throw new ArgumentOutOfRangeException ("count");
 
-      return count > 0
-             ? Encoding.ASCII.GetString (
-                 urlEncodeToBytes (bytes, offset, count)
-               )
-             : String.Empty;
+      if (count == 0)
+        return String.Empty;
+
+      var encodedBytes = urlEncodeToBytes (bytes, offset, count);
+
+      return Encoding.ASCII.GetString (encodedBytes);
     }
 
     public static byte[] UrlEncodeToBytes (byte[] bytes)
