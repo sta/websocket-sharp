@@ -1060,10 +1060,12 @@ namespace WebSocketSharp.Net
       if (encoding == null)
         encoding = Encoding.UTF8;
 
-      var bytes = new byte[encoding.GetMaxByteCount (len)];
+      var maxLen = encoding.GetMaxByteCount (len);
+      var bytes = new byte[maxLen];
       var realLen = encoding.GetBytes (s, 0, len, bytes, 0);
+      var encodedBytes = urlEncodeToBytes (bytes, 0, realLen);
 
-      return Encoding.ASCII.GetString (urlEncodeToBytes (bytes, 0, realLen));
+      return Encoding.ASCII.GetString (encodedBytes);
     }
 
     public static string UrlEncode (byte[] bytes, int offset, int count)
