@@ -1053,6 +1053,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("s");
 
       var len = s.Length;
+
       if (len == 0)
         return s;
 
