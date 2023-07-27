@@ -1038,9 +1038,12 @@ namespace WebSocketSharp.Net
 
       var len = bytes.Length;
 
-      return len > 0
-             ? Encoding.ASCII.GetString (urlEncodeToBytes (bytes, 0, len))
-             : String.Empty;
+      if (len == 0)
+        return String.Empty;
+
+      var encodedBytes = urlEncodeToBytes (bytes, 0, len);
+
+      return Encoding.ASCII.GetString (encodedBytes);
     }
 
     public static string UrlEncode (string s)
