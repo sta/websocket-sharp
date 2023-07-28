@@ -1064,10 +1064,10 @@ namespace WebSocketSharp.Net
       if (encoding == null)
         encoding = Encoding.UTF8;
 
-      var maxLen = encoding.GetMaxByteCount (len);
-      var bytes = new byte[maxLen];
-      var realLen = encoding.GetBytes (s, 0, len, bytes, 0);
-      var encodedBytes = urlEncodeToBytes (bytes, 0, realLen);
+      var maxCnt = encoding.GetMaxByteCount (len);
+      var bytes = new byte[maxCnt];
+      var cnt = encoding.GetBytes (s, 0, len, bytes, 0);
+      var encodedBytes = urlEncodeToBytes (bytes, 0, cnt);
 
       return Encoding.ASCII.GetString (encodedBytes);
     }
