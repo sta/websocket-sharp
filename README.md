@@ -544,7 +544,7 @@ public class Chat : WebSocketBehavior
 
   protected override void OnOpen ()
   {
-    _name = QueryString["name"];
+    _name = Context.QueryString["name"];
   }
 
   ...
