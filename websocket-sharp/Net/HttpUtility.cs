@@ -1010,6 +1010,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("bytes");
 
       var len = bytes.Length;
+
       if (len == 0) {
         if (offset != 0)
           throw new ArgumentOutOfRangeException ("offset");
