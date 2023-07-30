@@ -987,6 +987,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("bytes");
 
       var len = bytes.Length;
+
       return len > 0
              ? urlDecodeToBytes (bytes, 0, len)
              : bytes;
