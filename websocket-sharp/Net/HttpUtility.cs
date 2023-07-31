@@ -975,11 +975,12 @@ namespace WebSocketSharp.Net
       if (count < 0 || count > len - offset)
         throw new ArgumentOutOfRangeException ("count");
 
-      return count > 0
-             ? (encoding ?? Encoding.UTF8).GetString (
-                 urlDecodeToBytes (bytes, offset, count)
-               )
-             : String.Empty;
+      if (count == 0)
+        return String.Empty;
+
+      var decodedBytes = urlDecodeToBytes (bytes, offset, count);
+
+      return (encoding ?? Encoding.UTF8).GetString (decodedBytes);
     }
 
     public static byte[] UrlDecodeToBytes (byte[] bytes)
