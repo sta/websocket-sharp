@@ -945,10 +945,9 @@ namespace WebSocketSharp.Net
         return s;
 
       var bytes = Encoding.ASCII.GetBytes (s);
+      var decodedBytes = urlDecodeToBytes (bytes, 0, bytes.Length);
 
-      return (encoding ?? Encoding.UTF8).GetString (
-               urlDecodeToBytes (bytes, 0, bytes.Length)
-             );
+      return (encoding ?? Encoding.UTF8).GetString (decodedBytes);
     }
 
     public static string UrlDecode (
