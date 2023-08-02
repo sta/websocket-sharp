@@ -930,11 +930,12 @@ namespace WebSocketSharp.Net
 
       var len = bytes.Length;
 
-      return len > 0
-             ? (encoding ?? Encoding.UTF8).GetString (
-                 urlDecodeToBytes (bytes, 0, len)
-               )
-             : String.Empty;
+      if (len == 0)
+        return String.Empty;
+
+      var decodedBytes = urlDecodeToBytes (bytes, 0, len);
+
+      return (encoding ?? Encoding.UTF8).GetString (decodedBytes);
     }
 
     public static string UrlDecode (string s, Encoding encoding)
