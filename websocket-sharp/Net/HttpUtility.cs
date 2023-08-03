@@ -915,7 +915,9 @@ namespace WebSocketSharp.Net
       if (s.Length == 0)
         return;
 
-      output.Write (htmlEncode (s, false));
+      var encodedS = htmlEncode (s, false);
+
+      output.Write (encodedS);
     }
 
     public static string UrlDecode (string s)
