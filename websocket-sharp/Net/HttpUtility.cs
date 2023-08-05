@@ -871,7 +871,9 @@ namespace WebSocketSharp.Net
       if (s.Length == 0)
         return;
 
-      output.Write (htmlEncode (s, true));
+      var encodedS = htmlEncode (s, true);
+
+      output.Write (encodedS);
     }
 
     public static string HtmlDecode (string s)
