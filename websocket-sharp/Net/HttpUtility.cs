@@ -611,19 +611,22 @@ namespace WebSocketSharp.Net
     {
       using (var buff = new MemoryStream ()) {
         var end = offset + count - 1;
+
         for (var i = offset; i <= end; i++) {
           var b = bytes[i];
-
           var c = (char) b;
+
           if (c == '%') {
             if (i > end - 2)
               break;
 
             var num = getNumber (bytes, i + 1, 2);
+
             if (num == -1)
               break;
 
             buff.WriteByte ((byte) num);
+
             i += 2;
 
             continue;
@@ -631,6 +634,7 @@ namespace WebSocketSharp.Net
 
           if (c == '+') {
             buff.WriteByte ((byte) ' ');
+
             continue;
           }
 
@@ -638,6 +642,7 @@ namespace WebSocketSharp.Net
         }
 
         buff.Close ();
+
         return buff.ToArray ();
       }
     }
