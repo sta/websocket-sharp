@@ -691,10 +691,12 @@ namespace WebSocketSharp.Net
     {
       using (var buff = new MemoryStream ()) {
         var end = offset + count - 1;
+
         for (var i = offset; i <= end; i++)
           urlEncode (bytes[i], buff);
 
         buff.Close ();
+
         return buff.ToArray ();
       }
     }
