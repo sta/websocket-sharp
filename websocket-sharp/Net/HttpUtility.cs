@@ -651,23 +651,28 @@ namespace WebSocketSharp.Net
     {
       if (b > 31 && b < 127) {
         var c = (char) b;
+
         if (c == ' ') {
           output.WriteByte ((byte) '+');
+
           return;
         }
 
         if (isNumeric (c)) {
           output.WriteByte (b);
+
           return;
         }
 
         if (isAlphabet (c)) {
           output.WriteByte (b);
+
           return;
         }
 
         if (isUnreserved (c)) {
           output.WriteByte (b);
+
           return;
         }
       }
