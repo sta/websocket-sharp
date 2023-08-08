@@ -117,8 +117,10 @@ namespace WebSocketSharp.Net
       var ret = 0;
 
       var end = offset + count - 1;
+
       for (var i = offset; i <= end; i++) {
         var num = getNumber (s[i]);
+
         if (num == -1)
           return -1;
 
