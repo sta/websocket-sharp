@@ -123,7 +123,8 @@ namespace WebSocketSharp.Net
       var end = offset + count - 1;
 
       for (var i = offset; i <= end; i++) {
-        var num = getNumber (s[i]);
+        var c = s[i];
+        var num = getNumber (c);
 
         if (num == -1)
           return -1;
