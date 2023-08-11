@@ -153,12 +153,14 @@ namespace WebSocketSharp.Net
         if (state == 0) {
           if (c == '&') {
             reference.Append ('&');
+
             state = 1;
 
             continue;
           }
 
           buff.Append (c);
+
           continue;
         }
 
@@ -167,6 +169,7 @@ namespace WebSocketSharp.Net
 
           reference.Length = 0;
           reference.Append ('&');
+
           state = 1;
 
           continue;
@@ -196,6 +199,7 @@ namespace WebSocketSharp.Net
             var name = entity.Substring (1, entity.Length - 2);
 
             var entities = getEntities ();
+
             if (entities.ContainsKey (name))
               buff.Append (entities[name]);
             else
@@ -225,15 +229,18 @@ namespace WebSocketSharp.Net
 
           if (c == 'x') {
             state = reference.Length == 3 ? 4 : 2;
+
             continue;
           }
 
           if (!isNumeric (c)) {
             state = 2;
+
             continue;
           }
 
           num = num * 10 + (c - '0');
+
           continue;
         }
 
@@ -251,8 +258,10 @@ namespace WebSocketSharp.Net
           }
 
           var n = getNumber (c);
+
           if (n == -1) {
             state = 2;
+
             continue;
           }
 
