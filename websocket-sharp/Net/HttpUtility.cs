@@ -302,20 +302,23 @@ namespace WebSocketSharp.Net
     {
       var buff = new StringBuilder ();
 
+      string val = null;
+
       foreach (var c in s) {
-        buff.Append (
-          c == '"'
-          ? "&quot;"
-          : c == '&'
-            ? "&amp;"
-            : c == '<'
-              ? "&lt;"
-              : c == '>'
-                ? "&gt;"
-                : !minimal && c > 159
-                  ? String.Format ("&#{0};", (int) c)
-                  : c.ToString ()
-        );
+        if (c == '"')
+          val = "&quot;";
+        else if (c == '&')
+          val = "&amp;";
+        else if (c == '<')
+          val = "&lt;";
+        else if (c == '>')
+          val = "&gt;";
+        else if (!minimal && c > 159)
+          val = String.Format ("&#{0};", (int) c);
+        else
+          val = c.ToString ();
+
+        buff.Append (val);
       }
 
       return buff.ToString ();
