@@ -313,7 +313,7 @@ namespace WebSocketSharp.Net
           val = "&lt;";
         else if (c == '>')
           val = "&gt;";
-        else if (!minimal && c > 159)
+        else if (c > 159 && !minimal)
           val = String.Format ("&#{0};", (int) c);
         else
           val = c.ToString ();
