@@ -327,12 +327,14 @@ namespace WebSocketSharp.Net
           continue;
         }
 
-        if (c > 159 && !minimal) {
-          var val = String.Format ("&#{0};", (int) c);
+        if (c > 159) {
+          if (!minimal) {
+            var val = String.Format ("&#{0};", (int) c);
 
-          buff.Append (val);
+            buff.Append (val);
 
-          continue;
+            continue;
+          }
         }
 
         buff.Append (c);
