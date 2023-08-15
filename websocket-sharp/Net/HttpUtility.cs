@@ -105,12 +105,12 @@ namespace WebSocketSharp.Net
 
       for (var i = offset; i <= end; i++) {
         var c = (char) bytes[i];
-        var num = getNumber (c);
+        var n = getNumber (c);
 
-        if (num == -1)
+        if (n == -1)
           return -1;
 
-        ret = (ret << 4) + num;
+        ret = (ret << 4) + n;
       }
 
       return ret;
