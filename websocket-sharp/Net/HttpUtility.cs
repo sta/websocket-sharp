@@ -353,6 +353,7 @@ namespace WebSocketSharp.Net
     private static void initEntities ()
     {
       _entities = new Dictionary<string, char> ();
+
       _entities.Add ("nbsp", '\u00A0');
       _entities.Add ("iexcl", '\u00A1');
       _entities.Add ("cent", '\u00A2');
