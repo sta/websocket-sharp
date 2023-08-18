@@ -829,18 +829,22 @@ namespace WebSocketSharp.Net
         return null;
 
       var compType = StringComparison.OrdinalIgnoreCase;
+
       if (response.IndexOf (scheme.ToString (), compType) != 0)
         return null;
 
       var res = AuthenticationResponse.Parse (response);
+
       if (res == null)
         return null;
 
       var id = res.ToIdentity ();
+
       if (id == null)
         return null;
 
       NetworkCredential cred = null;
+
       try {
         cred = credentialsFinder (id);
       }
@@ -852,12 +856,14 @@ namespace WebSocketSharp.Net
 
       if (scheme == AuthenticationSchemes.Basic) {
         var basicId = (HttpBasicIdentity) id;
+
         return basicId.Password == cred.Password
                ? new GenericPrincipal (id, cred.Roles)
                : null;
       }
 
       var digestId = (HttpDigestIdentity) id;
+
       return digestId.IsValid (cred.Password, realm, method, null)
              ? new GenericPrincipal (id, cred.Roles)
              : null;
