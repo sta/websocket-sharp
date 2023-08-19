@@ -830,7 +830,7 @@ namespace WebSocketSharp.Net
 
       var compType = StringComparison.OrdinalIgnoreCase;
 
-      if (response.IndexOf (scheme.ToString (), compType) != 0)
+      if (!response.StartsWith (scheme.ToString (), compType))
         return null;
 
       var res = AuthenticationResponse.Parse (response);
