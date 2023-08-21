@@ -85,7 +85,7 @@ namespace WebSocketSharp.Net
     /// <paramref name="domain"/> and <paramref name="roles"/>.
     /// </summary>
     /// <param name="username">
-    /// A <see cref="string"/> that represents the username associated with
+    /// A <see cref="string"/> that specifies the username associated with
     /// the credentials.
     /// </param>
     /// <param name="password">
