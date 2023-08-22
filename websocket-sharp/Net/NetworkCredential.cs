@@ -93,7 +93,7 @@ namespace WebSocketSharp.Net
     /// associated with the credentials.
     /// </param>
     /// <param name="domain">
-    /// A <see cref="string"/> that represents the domain associated with
+    /// A <see cref="string"/> that specifies the domain associated with
     /// the credentials.
     /// </param>
     /// <param name="roles">
