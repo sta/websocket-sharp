@@ -97,8 +97,8 @@ namespace WebSocketSharp.Net
     /// the credentials.
     /// </param>
     /// <param name="roles">
-    /// An array of <see cref="string"/> that represents the roles
-    /// associated with the credentials if any.
+    /// An array of <see cref="string"/> that specifies the roles associated
+    /// with the credentials if any.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="username"/> is <see langword="null"/>.
