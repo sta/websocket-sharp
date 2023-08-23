@@ -80,9 +80,8 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NetworkCredential"/> class with
-    /// the specified <paramref name="username"/>, <paramref name="password"/>,
-    /// <paramref name="domain"/> and <paramref name="roles"/>.
+    /// Initializes a new instance of the <see cref="NetworkCredential"/> class
+    /// with the specified username, password, domain and roles.
     /// </summary>
     /// <param name="username">
     /// A <see cref="string"/> that specifies the username associated with
