@@ -61,7 +61,7 @@ namespace WebSocketSharp.Net
     /// the specified <paramref name="username"/> and <paramref name="password"/>.
     /// </summary>
     /// <param name="username">
-    /// A <see cref="string"/> that represents the username associated with
+    /// A <see cref="string"/> that specifies the username associated with
     /// the credentials.
     /// </param>
     /// <param name="password">
