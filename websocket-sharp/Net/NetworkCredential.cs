@@ -72,7 +72,7 @@ namespace WebSocketSharp.Net
     /// <paramref name="username"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="username"/> is empty.
+    /// <paramref name="username"/> is an empty string.
     /// </exception>
     public NetworkCredential (string username, string password)
       : this (username, password, null, null)
