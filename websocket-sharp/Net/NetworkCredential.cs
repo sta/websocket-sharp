@@ -57,8 +57,8 @@ namespace WebSocketSharp.Net
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NetworkCredential"/> class with
-    /// the specified <paramref name="username"/> and <paramref name="password"/>.
+    /// Initializes a new instance of the <see cref="NetworkCredential"/> class
+    /// with the specified username and password.
     /// </summary>
     /// <param name="username">
     /// A <see cref="string"/> that specifies the username associated with
