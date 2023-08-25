@@ -65,7 +65,7 @@ namespace WebSocketSharp.Net
     /// the credentials.
     /// </param>
     /// <param name="password">
-    /// A <see cref="string"/> that represents the password for the username
+    /// A <see cref="string"/> that specifies the password for the username
     /// associated with the credentials.
     /// </param>
     /// <exception cref="ArgumentNullException">
