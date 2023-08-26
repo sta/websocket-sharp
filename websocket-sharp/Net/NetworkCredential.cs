@@ -150,8 +150,8 @@ namespace WebSocketSharp.Net
     /// Gets the password for the username associated with the credentials.
     /// </summary>
     /// <remarks>
-    /// This property returns an empty string if the password was
-    /// initialized with <see langword="null"/>.
+    /// This property returns an empty string if the password was initialized
+    /// with <see langword="null"/>.
     /// </remarks>
     /// <value>
     /// A <see cref="string"/> that represents the password.
