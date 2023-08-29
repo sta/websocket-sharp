@@ -1119,6 +1119,7 @@ namespace WebSocketSharp.Net
 
       if (!canSetCookie (cookie)) {
         var msg = "It cannot be updated.";
+
         throw new ArgumentException (msg, "cookie");
       }
 
