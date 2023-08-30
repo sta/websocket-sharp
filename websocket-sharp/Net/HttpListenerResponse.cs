@@ -1072,11 +1072,13 @@ namespace WebSocketSharp.Net
     {
       if (_disposed) {
         var name = GetType ().ToString ();
+
         throw new ObjectDisposedException (name);
       }
 
       if (_headersSent) {
         var msg = "The response is already being sent.";
+
         throw new InvalidOperationException (msg);
       }
 
@@ -1085,12 +1087,15 @@ namespace WebSocketSharp.Net
 
       if (url.Length == 0) {
         var msg = "An empty string.";
+
         throw new ArgumentException (msg, "url");
       }
 
       Uri uri;
+
       if (!Uri.TryCreate (url, UriKind.Absolute, out uri)) {
         var msg = "Not an absolute URL.";
+
         throw new ArgumentException (msg, "url");
       }
 
