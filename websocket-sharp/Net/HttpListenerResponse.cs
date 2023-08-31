@@ -967,6 +967,7 @@ namespace WebSocketSharp.Net
     {
       if (_disposed) {
         var name = GetType ().ToString ();
+
         throw new ObjectDisposedException (name);
       }
 
@@ -977,6 +978,7 @@ namespace WebSocketSharp.Net
 
       if (len > Int32.MaxValue) {
         close (responseEntity, 1024, willBlock);
+
         return;
       }
 
