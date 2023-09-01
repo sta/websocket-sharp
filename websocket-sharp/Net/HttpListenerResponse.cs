@@ -774,6 +774,7 @@ namespace WebSocketSharp.Net
     private void close (bool force)
     {
       _disposed = true;
+
       _context.Connection.Close (force);
     }
 
