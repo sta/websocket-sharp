@@ -725,11 +725,13 @@ namespace WebSocketSharp.Net
       set {
         if (_disposed) {
           var name = GetType ().ToString ();
+
           throw new ObjectDisposedException (name);
         }
 
         if (_headersSent) {
           var msg = "The response is already being sent.";
+
           throw new InvalidOperationException (msg);
         }
 
@@ -738,11 +740,13 @@ namespace WebSocketSharp.Net
 
         if (value.Length == 0) {
           _statusDescription = _statusCode.GetStatusDescription ();
+
           return;
         }
 
         if (!isValidForStatusDescription (value)) {
           var msg = "It contains an invalid character.";
+
           throw new ArgumentException (msg, "value");
         }
 
