@@ -566,27 +566,30 @@ namespace WebSocketSharp.Net
       set {
         if (_disposed) {
           var name = GetType ().ToString ();
+
           throw new ObjectDisposedException (name);
         }
 
         if (_headersSent) {
           var msg = "The response is already being sent.";
+
           throw new InvalidOperationException (msg);
         }
 
         if (value == null) {
           _redirectLocation = null;
+
           return;
         }
 
-        if (value.Length == 0) {
-          var msg = "An empty string.";
-          throw new ArgumentException (msg, "value");
-        }
+        if (value.Length == 0)
+          throw new ArgumentException ("An empty string.", "value");
 
         Uri uri;
+
         if (!Uri.TryCreate (value, UriKind.Absolute, out uri)) {
           var msg = "Not an absolute URL.";
+
           throw new ArgumentException (msg, "value");
         }
 
