@@ -427,11 +427,13 @@ namespace WebSocketSharp.Net
       set {
         if (value == null) {
           _headers = null;
+
           return;
         }
 
         if (value.State != HttpHeaderType.Response) {
           var msg = "The value is not valid for a response.";
+
           throw new InvalidOperationException (msg);
         }
 
