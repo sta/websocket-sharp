@@ -87,6 +87,7 @@ namespace WebSocketSharp.Net
     internal HttpListenerResponse (HttpListenerContext context)
     {
       _context = context;
+
       _keepAlive = true;
       _statusCode = 200;
       _statusDescription = "OK";
