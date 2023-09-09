@@ -208,6 +208,12 @@ namespace WebSocketSharp.Net
       }
     }
 
+    internal string ObjectName {
+      get {
+        return GetType ().ToString ();
+      }
+    }
+
     internal string StatusLine {
       get {
         return String.Format (
