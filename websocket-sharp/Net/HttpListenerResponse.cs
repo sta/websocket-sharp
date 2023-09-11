@@ -496,11 +496,8 @@ namespace WebSocketSharp.Net
     /// </exception>
     public Stream OutputStream {
       get {
-        if (_disposed) {
-          var name = GetType ().ToString ();
-
-          throw new ObjectDisposedException (name);
-        }
+        if (_disposed)
+          throw new ObjectDisposedException (ObjectName);
 
         if (_outputStream == null)
           _outputStream = _context.Connection.GetResponseStream ();
