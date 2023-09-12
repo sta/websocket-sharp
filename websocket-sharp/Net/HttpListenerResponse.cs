@@ -568,11 +568,8 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        if (_disposed) {
-          var name = GetType ().ToString ();
-
-          throw new ObjectDisposedException (name);
-        }
+        if (_disposed)
+          throw new ObjectDisposedException (ObjectName);
 
         if (_headersSent) {
           var msg = "The response is already being sent.";
