@@ -216,12 +216,9 @@ namespace WebSocketSharp.Net
 
     internal string StatusLine {
       get {
-        return String.Format (
-                 "HTTP/{0} {1} {2}\r\n",
-                 _version,
-                 _statusCode,
-                 _statusDescription
-               );
+        var fmt = "HTTP/{0} {1} {2}\r\n";
+
+        return String.Format (fmt, _version, _statusCode, _statusDescription);
       }
     }
 
