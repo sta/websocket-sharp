@@ -1100,7 +1100,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Adds or updates a cookie in the cookies sent with the response.
+    /// Adds or updates an HTTP cookie in the cookies sent with the response.
     /// </summary>
     /// <param name="cookie">
     /// A <see cref="Cookie"/> to set.
