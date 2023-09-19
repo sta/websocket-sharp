@@ -757,14 +757,14 @@ namespace WebSocketSharp.Net
 
     private bool canSetCookie (Cookie cookie)
     {
-      var found = findCookie (cookie).ToList ();
+      var res = findCookie (cookie).ToList ();
 
-      if (found.Count == 0)
+      if (res.Count == 0)
         return true;
 
       var ver = cookie.Version;
 
-      foreach (var c in found) {
+      foreach (var c in res) {
         if (c.Version == ver)
           return true;
       }
