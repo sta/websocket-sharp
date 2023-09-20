@@ -867,7 +867,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Appends the specified cookie to the cookies sent with the response.
+    /// Appends the specified HTTP cookie to the cookies sent with the response.
     /// </summary>
     /// <param name="cookie">
     /// A <see cref="Cookie"/> to append.
