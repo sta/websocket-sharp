@@ -808,7 +808,9 @@ namespace WebSocketSharp.Net
       if (encoding == null)
         return value;
 
-      return String.Format ("{0}; charset={1}", value, encoding.WebName);
+      var fmt = "{0}; charset={1}";
+
+      return String.Format (fmt, value, encoding.WebName);
     }
 
     private IEnumerable<Cookie> findCookie (Cookie cookie)
