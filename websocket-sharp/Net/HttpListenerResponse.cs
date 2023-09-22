@@ -802,7 +802,7 @@ namespace WebSocketSharp.Net
       string value, Encoding encoding
     )
     {
-      if (value.IndexOf ("charset=", StringComparison.Ordinal) > -1)
+      if (value.Contains ("charset="))
         return value;
 
       if (encoding == null)
