@@ -171,11 +171,10 @@ namespace WebSocketSharp.Net
           headers.InternalSet ("Connection", "close", true);
         }
         else {
-          headers.InternalSet (
-            "Keep-Alive",
-            String.Format ("timeout=15,max={0}", 100 - reuses),
-            true
-          );
+          var fmt = "timeout=15,max={0}";
+          var val = String.Format (fmt, 100 - reuses);
+
+          headers.InternalSet ("Keep-Alive", val, true);
 
           if (_context.Request.ProtocolVersion < HttpVersion.Version11)
             headers.InternalSet ("Connection", "keep-alive", true);
