@@ -172,7 +172,8 @@ namespace WebSocketSharp.Net
         }
         else {
           var fmt = "timeout=15,max={0}";
-          var val = String.Format (fmt, 100 - reuses);
+          var max = 100 - reuses;
+          var val = String.Format (fmt, max);
 
           headers.InternalSet ("Keep-Alive", val, true);
 
