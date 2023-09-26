@@ -176,9 +176,6 @@ namespace WebSocketSharp.Net
           var val = String.Format (fmt, max);
 
           headers.InternalSet ("Keep-Alive", val, true);
-
-          if (_context.Request.ProtocolVersion < HttpVersion.Version11)
-            headers.InternalSet ("Connection", "keep-alive", true);
         }
 
         if (_redirectLocation != null)
