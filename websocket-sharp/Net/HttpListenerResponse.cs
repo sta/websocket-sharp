@@ -155,8 +155,11 @@ namespace WebSocketSharp.Net
          * - 500 Internal Server Error
          * - 503 Service Unavailable
          */
+
+        var reuses = _context.Connection.Reuses;
         var closeConn = !_context.Request.KeepAlive
                         || !_keepAlive
+                        || reuses >= 100
                         || _statusCode == 400
                         || _statusCode == 408
                         || _statusCode == 411
@@ -165,9 +168,7 @@ namespace WebSocketSharp.Net
                         || _statusCode == 500
                         || _statusCode == 503;
 
-        var reuses = _context.Connection.Reuses;
-
-        if (closeConn || reuses >= 100) {
+        if (closeConn) {
           headers.InternalSet ("Connection", "close", true);
         }
         else {
