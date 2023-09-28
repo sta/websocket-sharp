@@ -184,11 +184,9 @@ namespace WebSocketSharp.Net
 
         if (_cookies != null) {
           foreach (var cookie in _cookies) {
-            headers.InternalSet (
-              "Set-Cookie",
-              cookie.ToResponseString (),
-              true
-            );
+            var val = cookie.ToResponseString ();
+
+            headers.InternalSet ("Set-Cookie", val, true);
           }
         }
 
