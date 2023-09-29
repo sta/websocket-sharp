@@ -116,11 +116,9 @@ namespace WebSocketSharp.Net
           headers.Add (_headers);
 
         if (_contentType != null) {
-          headers.InternalSet (
-            "Content-Type",
-            createContentTypeHeaderText (_contentType, _contentEncoding),
-            true
-          );
+          var val = createContentTypeHeaderText (_contentType, _contentEncoding);
+
+          headers.InternalSet ("Content-Type", val, true);
         }
 
         if (headers["Server"] == null)
