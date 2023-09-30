@@ -125,11 +125,9 @@ namespace WebSocketSharp.Net
           headers.InternalSet ("Server", "websocket-sharp/1.0", true);
 
         if (headers["Date"] == null) {
-          headers.InternalSet (
-            "Date",
-            DateTime.UtcNow.ToString ("r", CultureInfo.InvariantCulture),
-            true
-          );
+          var val = DateTime.UtcNow.ToString ("r", CultureInfo.InvariantCulture);
+
+          headers.InternalSet ("Date", val, true);
         }
 
         if (_sendChunked) {
