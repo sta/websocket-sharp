@@ -134,11 +134,9 @@ namespace WebSocketSharp.Net
           headers.InternalSet ("Transfer-Encoding", "chunked", true);
         }
         else {
-          headers.InternalSet (
-            "Content-Length",
-            _contentLength.ToString (CultureInfo.InvariantCulture),
-            true
-          );
+          var val = _contentLength.ToString (CultureInfo.InvariantCulture);
+
+          headers.InternalSet ("Content-Length", val, true);
         }
 
         /*
