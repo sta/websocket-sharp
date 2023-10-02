@@ -63,23 +63,23 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private bool                _closeConnection;
-    private Encoding            _contentEncoding;
-    private long                _contentLength;
-    private string              _contentType;
-    private HttpListenerContext _context;
-    private CookieCollection    _cookies;
+    private bool                   _closeConnection;
+    private Encoding               _contentEncoding;
+    private long                   _contentLength;
+    private string                 _contentType;
+    private HttpListenerContext    _context;
+    private CookieCollection       _cookies;
     private static readonly string _defaultProductName;
-    private bool                _disposed;
-    private WebHeaderCollection _headers;
-    private bool                _headersSent;
-    private bool                _keepAlive;
-    private ResponseStream      _outputStream;
-    private Uri                 _redirectLocation;
-    private bool                _sendChunked;
-    private int                 _statusCode;
-    private string              _statusDescription;
-    private Version             _version;
+    private bool                   _disposed;
+    private WebHeaderCollection    _headers;
+    private bool                   _headersSent;
+    private bool                   _keepAlive;
+    private ResponseStream         _outputStream;
+    private Uri                    _redirectLocation;
+    private bool                   _sendChunked;
+    private int                    _statusCode;
+    private string                 _statusDescription;
+    private Version                _version;
 
     #endregion
 
