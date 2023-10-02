@@ -69,6 +69,7 @@ namespace WebSocketSharp.Net
     private string              _contentType;
     private HttpListenerContext _context;
     private CookieCollection    _cookies;
+    private static readonly string _defaultProductName;
     private bool                _disposed;
     private WebHeaderCollection _headers;
     private bool                _headersSent;
@@ -79,6 +80,15 @@ namespace WebSocketSharp.Net
     private int                 _statusCode;
     private string              _statusDescription;
     private Version             _version;
+
+    #endregion
+
+    #region Static Constructor
+
+    static HttpListenerResponse ()
+    {
+      _defaultProductName = "websocket-sharp/1.0";
+    }
 
     #endregion
 
