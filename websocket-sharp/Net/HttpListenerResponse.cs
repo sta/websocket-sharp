@@ -132,7 +132,7 @@ namespace WebSocketSharp.Net
         }
 
         if (headers["Server"] == null)
-          headers.InternalSet ("Server", "websocket-sharp/1.0", true);
+          headers.InternalSet ("Server", _defaultProductName, true);
 
         if (headers["Date"] == null) {
           var val = DateTime.UtcNow.ToString ("r", CultureInfo.InvariantCulture);
