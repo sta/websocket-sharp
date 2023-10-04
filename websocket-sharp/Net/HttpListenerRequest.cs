@@ -252,7 +252,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the headers included in the request.
+    /// Gets the HTTP headers included in the request.
     /// </summary>
     /// <value>
     /// A <see cref="NameValueCollection"/> that contains the headers.
