@@ -219,7 +219,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the cookies included in the request.
+    /// Gets the HTTP cookies included in the request.
     /// </summary>
     /// <value>
     ///   <para>
