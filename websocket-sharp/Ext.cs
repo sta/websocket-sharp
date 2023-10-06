@@ -431,7 +431,8 @@ namespace WebSocketSharp
       this NameValueCollection headers, bool response
     )
     {
-      var val = headers[response ? "Set-Cookie" : "Cookie"];
+      var name = response ? "Set-Cookie" : "Cookie";
+      var val = headers[name];
 
       return val != null
              ? CookieCollection.Parse (val, response)
