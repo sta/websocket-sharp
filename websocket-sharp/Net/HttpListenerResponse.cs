@@ -389,7 +389,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the collection of cookies sent with the response.
+    /// Gets or sets the collection of the HTTP cookies sent with the response.
     /// </summary>
     /// <value>
     /// A <see cref="CookieCollection"/> that contains the cookies sent with
