@@ -885,7 +885,8 @@ namespace WebSocketSharp.Net
     /// This method is not supported.
     /// </exception>
     public IAsyncResult BeginGetClientCertificate (
-      AsyncCallback requestCallback, object state
+      AsyncCallback requestCallback,
+      object state
     )
     {
       throw new NotSupportedException ();
