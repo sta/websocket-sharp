@@ -488,10 +488,7 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="Uri"/> or <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   The Uri represents the value of the Referer header.
+    ///   A <see cref="Uri"/> that represents the value of the Referer header.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if the header value is not available.
