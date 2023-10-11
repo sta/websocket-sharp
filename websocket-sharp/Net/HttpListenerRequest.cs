@@ -561,11 +561,9 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   An array of <see cref="string"/> or <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   The array contains the names of the natural languages specified in
-    ///   the value of the Accept-Language header.
+    ///   An array of <see cref="string"/> that contains the names of the
+    ///   natural languages specified in the value of the Accept-Language
+    ///   header.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if the header is not present.
