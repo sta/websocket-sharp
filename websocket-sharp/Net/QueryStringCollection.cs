@@ -126,8 +126,10 @@ namespace WebSocketSharp.Net
     {
       var buff = new StringBuilder ();
 
+      var fmt = "{0}={1}&";
+
       foreach (var key in AllKeys)
-        buff.AppendFormat ("{0}={1}&", key, this[key]);
+        buff.AppendFormat (fmt, key, this[key]);
 
       if (buff.Length > 0)
         buff.Length--;
