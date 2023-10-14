@@ -124,6 +124,9 @@ namespace WebSocketSharp.Net
 
     public override string ToString ()
     {
+      if (Count == 0)
+        return String.Empty;
+
       var buff = new StringBuilder ();
 
       var fmt = "{0}={1}&";
