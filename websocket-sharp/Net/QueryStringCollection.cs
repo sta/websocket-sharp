@@ -134,8 +134,7 @@ namespace WebSocketSharp.Net
       foreach (var key in AllKeys)
         buff.AppendFormat (fmt, key, this[key]);
 
-      if (buff.Length > 0)
-        buff.Length--;
+      buff.Length--;
 
       return buff.ToString ();
     }
