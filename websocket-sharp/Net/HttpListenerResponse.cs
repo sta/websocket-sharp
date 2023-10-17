@@ -797,7 +797,8 @@ namespace WebSocketSharp.Net
     }
 
     private static string createContentTypeHeaderText (
-      string value, Encoding encoding
+      string value,
+      Encoding encoding
     )
     {
       if (value.Contains ("charset="))
