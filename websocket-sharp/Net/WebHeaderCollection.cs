@@ -1844,8 +1844,10 @@ namespace WebSocketSharp.Net
 
       var buff = new StringBuilder ();
 
+      var fmt = "{0}: {1}\r\n";
+
       for (var i = 0; i < cnt; i++)
-        buff.AppendFormat ("{0}: {1}\r\n", GetKey (i), Get (i));
+        buff.AppendFormat (fmt, GetKey (i), Get (i));
 
       buff.Append ("\r\n");
 
