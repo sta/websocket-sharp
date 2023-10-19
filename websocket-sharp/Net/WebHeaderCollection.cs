@@ -1461,7 +1461,8 @@ namespace WebSocketSharp.Net
       )
     ]
     public override void GetObjectData (
-      SerializationInfo serializationInfo, StreamingContext streamingContext
+      SerializationInfo serializationInfo,
+      StreamingContext streamingContext
     )
     {
       if (serializationInfo == null)
