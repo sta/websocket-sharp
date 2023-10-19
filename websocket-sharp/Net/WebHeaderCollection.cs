@@ -1880,7 +1880,8 @@ namespace WebSocketSharp.Net
       )
     ]
     void ISerializable.GetObjectData (
-      SerializationInfo serializationInfo, StreamingContext streamingContext
+      SerializationInfo serializationInfo,
+      StreamingContext streamingContext
     )
     {
       GetObjectData (serializationInfo, streamingContext);
