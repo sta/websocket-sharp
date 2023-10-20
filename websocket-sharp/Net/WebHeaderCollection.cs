@@ -1319,6 +1319,7 @@ namespace WebSocketSharp.Net
     public override void Clear ()
     {
       base.Clear ();
+
       _state = HttpHeaderType.Unspecified;
     }
 
