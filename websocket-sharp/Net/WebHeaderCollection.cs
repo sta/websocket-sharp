@@ -580,7 +580,8 @@ namespace WebSocketSharp.Net
     /// <paramref name="serializationInfo"/>.
     /// </exception>
     protected WebHeaderCollection (
-      SerializationInfo serializationInfo, StreamingContext streamingContext
+      SerializationInfo serializationInfo,
+      StreamingContext streamingContext
     )
     {
       if (serializationInfo == null)
