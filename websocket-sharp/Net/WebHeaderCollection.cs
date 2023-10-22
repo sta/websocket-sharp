@@ -866,10 +866,10 @@ namespace WebSocketSharp.Net
 
     private static HttpHeaderInfo getHeaderInfo (string name)
     {
-      var comparison = StringComparison.InvariantCultureIgnoreCase;
+      var compType = StringComparison.InvariantCultureIgnoreCase;
 
       foreach (var headerInfo in _headers.Values) {
-        if (headerInfo.HeaderName.Equals (name, comparison))
+        if (headerInfo.HeaderName.Equals (name, compType))
           return headerInfo;
       }
 
