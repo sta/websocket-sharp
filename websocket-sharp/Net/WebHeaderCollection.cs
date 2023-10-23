@@ -988,17 +988,19 @@ namespace WebSocketSharp.Net
 
       var buff = new StringBuilder ();
 
+      var fmt = "{0}: {1}\r\n";
+
       for (var i = 0; i < cnt; i++) {
         var name = GetKey (i);
 
         if (isMultiValue (name, response)) {
           foreach (var val in GetValues (i))
-            buff.AppendFormat ("{0}: {1}\r\n", name, val);
+            buff.AppendFormat (fmt, name, val);
 
           continue;
         }
 
-        buff.AppendFormat ("{0}: {1}\r\n", name, Get (i));
+        buff.AppendFormat (fmt, name, Get (i));
       }
 
       buff.Append ("\r\n");
