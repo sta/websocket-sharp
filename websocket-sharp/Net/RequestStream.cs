@@ -232,7 +232,11 @@ namespace WebSocketSharp.Net
     }
 
     public override IAsyncResult BeginWrite (
-      byte[] buffer, int offset, int count, AsyncCallback callback, object state
+      byte[] buffer,
+      int offset,
+      int count,
+      AsyncCallback callback,
+      object state
     )
     {
       throw new NotSupportedException ();
