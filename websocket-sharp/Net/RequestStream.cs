@@ -184,11 +184,8 @@ namespace WebSocketSharp.Net
       object state
     )
     {
-      if (_disposed) {
-        var name = GetType ().ToString ();
-
-        throw new ObjectDisposedException (name);
-      }
+      if (_disposed)
+        throw new ObjectDisposedException (ObjectName);
 
       if (buffer == null)
         throw new ArgumentNullException ("buffer");
