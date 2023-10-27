@@ -88,6 +88,12 @@ namespace WebSocketSharp.Net
       }
     }
 
+    internal string ObjectName {
+      get {
+        return GetType ().ToString ();
+      }
+    }
+
     internal int Offset {
       get {
         return _offset;
