@@ -286,11 +286,8 @@ namespace WebSocketSharp.Net
 
     public override int Read (byte[] buffer, int offset, int count)
     {
-      if (_disposed) {
-        var name = GetType ().ToString ();
-
-        throw new ObjectDisposedException (name);
-      }
+      if (_disposed)
+        throw new ObjectDisposedException (ObjectName);
 
       if (buffer == null)
         throw new ArgumentNullException ("buffer");
