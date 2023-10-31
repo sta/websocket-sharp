@@ -307,7 +307,7 @@ namespace WebSocketSharp.Net
       var len = buffer.Length;
 
       if (offset + count > len) {
-        var msg = "The sum of 'offset' and 'count' is greater than the length of 'buffer'.";
+        var msg = "The sum of offset and count is greater than the length of buffer.";
 
         throw new ArgumentException (msg);
       }
