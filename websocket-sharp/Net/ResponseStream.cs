@@ -97,6 +97,16 @@ namespace WebSocketSharp.Net
 
     #endregion
 
+    #region Internal Properties
+
+    internal string ObjectName {
+      get {
+        return GetType ().ToString ();
+      }
+    }
+
+    #endregion
+
     #region Public Properties
 
     public override bool CanRead {
