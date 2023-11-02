@@ -334,11 +334,8 @@ namespace WebSocketSharp.Net
       object state
     )
     {
-      if (_disposed) {
-        var name = GetType ().ToString ();
-
-        throw new ObjectDisposedException (name);
-      }
+      if (_disposed)
+        throw new ObjectDisposedException (ObjectName);
 
       return _bodyBuffer.BeginWrite (buffer, offset, count, callback, state);
     }
