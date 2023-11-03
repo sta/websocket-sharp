@@ -357,11 +357,8 @@ namespace WebSocketSharp.Net
 
     public override void EndWrite (IAsyncResult asyncResult)
     {
-      if (_disposed) {
-        var name = GetType ().ToString ();
-
-        throw new ObjectDisposedException (name);
-      }
+      if (_disposed)
+        throw new ObjectDisposedException (ObjectName);
 
       _bodyBuffer.EndWrite (asyncResult);
     }
