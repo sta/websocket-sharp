@@ -261,7 +261,9 @@ namespace WebSocketSharp.Net
     }
 
     private void writeWithoutThrowingException (
-      byte[] buffer, int offset, int count
+      byte[] buffer,
+      int offset,
+      int count
     )
     {
       try {
