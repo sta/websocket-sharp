@@ -250,7 +250,9 @@ namespace WebSocketSharp.Net
     }
 
     private void writeChunkedWithoutThrowingException (
-      byte[] buffer, int offset, int count
+      byte[] buffer,
+      int offset,
+      int count
     )
     {
       try {
