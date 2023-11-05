@@ -235,9 +235,10 @@ namespace WebSocketSharp.Net
 
     private static byte[] getChunkSizeBytes (int size)
     {
-      var chunkSize = String.Format ("{0:x}\r\n", size);
+      var fmt = "{0:x}\r\n";
+      var s = String.Format (fmt, size);
 
-      return Encoding.ASCII.GetBytes (chunkSize);
+      return Encoding.ASCII.GetBytes (s);
     }
 
     private void writeChunked (byte[] buffer, int offset, int count)
