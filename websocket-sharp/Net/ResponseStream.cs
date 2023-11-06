@@ -233,7 +233,7 @@ namespace WebSocketSharp.Net
       return true;
     }
 
-    private static byte[] getChunkSizeBytes (int size)
+    private static byte[] getChunkSizeStringAsBytes (int size)
     {
       var fmt = "{0:x}\r\n";
       var s = String.Format (fmt, size);
@@ -243,7 +243,7 @@ namespace WebSocketSharp.Net
 
     private void writeChunked (byte[] buffer, int offset, int count)
     {
-      var size = getChunkSizeBytes (count);
+      var size = getChunkSizeStringAsBytes (count);
 
       _innerStream.Write (size, 0, size.Length);
       _innerStream.Write (buffer, offset, count);
