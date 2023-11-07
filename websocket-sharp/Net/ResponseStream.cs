@@ -192,6 +192,7 @@ namespace WebSocketSharp.Net
 
       if (!closing) {
         _bodyBuffer = new MemoryStream ();
+
         return;
       }
 
