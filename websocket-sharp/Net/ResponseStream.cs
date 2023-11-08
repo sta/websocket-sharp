@@ -186,7 +186,9 @@ namespace WebSocketSharp.Net
           }
         }
         else if (len > 0) {
-          _writeBody (_bodyBuffer.GetBuffer (), 0, (int) len);
+          var buff = _bodyBuffer.GetBuffer ();
+
+          _writeBody (buff, 0, (int) len);
         }
       }
 
