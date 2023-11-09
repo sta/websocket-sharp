@@ -214,21 +214,21 @@ namespace WebSocketSharp.Net
       var statusLine = _response.StatusLine;
       var headers = _response.FullHeaders;
 
-      var buff = new MemoryStream ();
+      var stream = new MemoryStream ();
       var enc = Encoding.UTF8;
 
-      using (var writer = new StreamWriter (buff, enc, 256)) {
+      using (var writer = new StreamWriter (stream, enc, 256)) {
         writer.Write (statusLine);
         writer.Write (headers.ToStringMultiValue (true));
         writer.Flush ();
 
         var start = enc.GetPreamble ().Length;
-        var len = buff.Length - start;
+        var len = stream.Length - start;
 
         if (len > _maxHeadersLength)
           return false;
 
-        _write (buff.GetBuffer (), start, (int) len);
+        _write (stream.GetBuffer (), start, (int) len);
       }
 
       _response.CloseConnection = headers["Connection"] == "close";
