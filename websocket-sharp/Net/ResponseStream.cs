@@ -228,7 +228,9 @@ namespace WebSocketSharp.Net
         if (len > _maxHeadersLength)
           return false;
 
-        _write (stream.GetBuffer (), start, (int) len);
+        var buff = stream.GetBuffer ();
+
+        _write (buff, start, (int) len);
       }
 
       _response.CloseConnection = headers["Connection"] == "close";
