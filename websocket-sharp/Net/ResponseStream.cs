@@ -211,14 +211,13 @@ namespace WebSocketSharp.Net
           return false;
       }
 
-      var statusLine = _response.StatusLine;
       var headers = _response.FullHeaders;
 
       var stream = new MemoryStream ();
       var enc = Encoding.UTF8;
 
       using (var writer = new StreamWriter (stream, enc, 256)) {
-        writer.Write (statusLine);
+        writer.Write (_response.StatusLine);
         writer.Write (headers.ToStringMultiValue (true));
         writer.Flush ();
 
