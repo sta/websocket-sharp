@@ -218,7 +218,10 @@ namespace WebSocketSharp.Net
 
       using (var writer = new StreamWriter (stream, enc, 256)) {
         writer.Write (_response.StatusLine);
-        writer.Write (headers.ToStringMultiValue (true));
+
+        var s = headers.ToStringMultiValue (true);
+
+        writer.Write (s);
         writer.Flush ();
 
         var start = enc.GetPreamble ().Length;
