@@ -171,7 +171,8 @@ namespace WebSocketSharp.Net
     #region Private Methods
 
     private static void addSpecial (
-      List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix
+      List<HttpListenerPrefix> prefixes,
+      HttpListenerPrefix prefix
     )
     {
       var path = prefix.Path;
