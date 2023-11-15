@@ -200,9 +200,7 @@ namespace WebSocketSharp.Net
 
         conns = new HttpConnection[cnt];
 
-        var vals = _connections.Values;
-        vals.CopyTo (conns, 0);
-
+        _connections.Values.CopyTo (conns, 0);
         _connections.Clear ();
       }
 
