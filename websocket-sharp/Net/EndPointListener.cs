@@ -213,6 +213,7 @@ namespace WebSocketSharp.Net
       var rsa = new RSACryptoServiceProvider ();
 
       var key = File.ReadAllBytes (path);
+
       rsa.ImportCspBlob (key);
 
       return rsa;
