@@ -220,7 +220,9 @@ namespace WebSocketSharp.Net
     }
 
     private static X509Certificate2 getCertificate (
-      int port, string folderPath, X509Certificate2 defaultCertificate
+      int port,
+      string folderPath,
+      X509Certificate2 defaultCertificate
     )
     {
       if (folderPath == null || folderPath.Length == 0)
