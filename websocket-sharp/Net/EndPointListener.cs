@@ -234,17 +234,18 @@ namespace WebSocketSharp.Net
 
         var exists = File.Exists (cer) && File.Exists (key);
 
-        if (exists) {
-          var cert = new X509Certificate2 (cer);
-          cert.PrivateKey = createRSAFromFile (key);
+        if (!exists)
+          return defaultCertificate;
 
-          return cert;
-        }
+        var cert = new X509Certificate2 (cer);
+
+        cert.PrivateKey = createRSAFromFile (key);
+
+        return cert;
       }
       catch {
+        return defaultCertificate;
       }
-
-      return defaultCertificate;
     }
 
     private void leaveIfNoPrefix ()
