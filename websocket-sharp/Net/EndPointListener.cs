@@ -325,7 +325,8 @@ namespace WebSocketSharp.Net
     }
 
     private static bool removeSpecial (
-      List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix
+      List<HttpListenerPrefix> prefixes,
+      HttpListenerPrefix prefix
     )
     {
       var path = prefix.Path;
