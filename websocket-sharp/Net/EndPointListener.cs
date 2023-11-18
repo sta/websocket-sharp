@@ -301,7 +301,8 @@ namespace WebSocketSharp.Net
     }
 
     private static void processAccepted (
-      Socket socket, EndPointListener listener
+      Socket socket,
+      EndPointListener listener
     )
     {
       HttpConnection conn = null;
