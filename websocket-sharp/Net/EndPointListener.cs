@@ -344,7 +344,8 @@ namespace WebSocketSharp.Net
     }
 
     private static HttpListener searchHttpListenerFromSpecial (
-      string path, List<HttpListenerPrefix> prefixes
+      string path,
+      List<HttpListenerPrefix> prefixes
     )
     {
       if (prefixes == null)
