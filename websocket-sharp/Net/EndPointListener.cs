@@ -362,10 +362,13 @@ namespace WebSocketSharp.Net
         if (len < bestLen)
           continue;
 
-        if (path.StartsWith (prefPath, StringComparison.Ordinal)) {
-          bestLen = len;
-          ret = pref.Listener;
-        }
+        var match = path.StartsWith (prefPath, StringComparison.Ordinal);
+
+        if (!match)
+          continue;
+
+        bestLen = len;
+        ret = pref.Listener;
       }
 
       return ret;
