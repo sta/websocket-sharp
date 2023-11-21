@@ -434,10 +434,13 @@ namespace WebSocketSharp.Net
           if (len < bestLen)
             continue;
 
-          if (path.StartsWith (prefPath, StringComparison.Ordinal)) {
-            bestLen = len;
-            listener = pref.Listener;
-          }
+          var match = path.StartsWith (prefPath, StringComparison.Ordinal);
+
+          if (!match)
+            continue;
+
+          bestLen = len;
+          listener = pref.Listener;
         }
 
         if (bestLen != -1)
