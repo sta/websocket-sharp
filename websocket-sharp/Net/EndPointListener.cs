@@ -503,9 +503,8 @@ namespace WebSocketSharp.Net
 
         if (idx > -1) {
           if (current[idx].Listener != prefix.Listener) {
-            var msg = String.Format (
-                        "There is another listener for {0}.", prefix
-                      );
+            var fmt = "There is another listener for {0}.";
+            var msg = String.Format (fmt, prefix);
 
             throw new HttpListenerException (87, msg);
           }
