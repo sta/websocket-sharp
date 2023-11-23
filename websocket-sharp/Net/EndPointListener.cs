@@ -581,6 +581,7 @@ namespace WebSocketSharp.Net
           break;
 
         future = new List<HttpListenerPrefix> (current);
+
         future.Remove (prefix);
       }
       while (
