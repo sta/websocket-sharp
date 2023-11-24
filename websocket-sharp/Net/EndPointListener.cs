@@ -545,7 +545,8 @@ namespace WebSocketSharp.Net
             break;
         }
         while (
-          Interlocked.CompareExchange (ref _unhandled, future, current) != current
+          Interlocked.CompareExchange (ref _unhandled, future, current)
+          != current
         );
 
         leaveIfNoPrefix ();
