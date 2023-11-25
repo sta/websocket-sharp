@@ -475,7 +475,8 @@ namespace WebSocketSharp.Net
           addSpecial (future, prefix);
         }
         while (
-          Interlocked.CompareExchange (ref _unhandled, future, current) != current
+          Interlocked.CompareExchange (ref _unhandled, future, current)
+          != current
         );
 
         return;
