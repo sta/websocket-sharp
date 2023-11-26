@@ -501,6 +501,7 @@ namespace WebSocketSharp.Net
 
       do {
         current = _prefixes;
+
         var idx = current.IndexOf (prefix);
 
         if (idx > -1) {
