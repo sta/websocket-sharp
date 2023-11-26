@@ -516,6 +516,7 @@ namespace WebSocketSharp.Net
         }
 
         future = new List<HttpListenerPrefix> (current);
+
         future.Add (prefix);
       }
       while (
