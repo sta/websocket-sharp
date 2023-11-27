@@ -520,7 +520,8 @@ namespace WebSocketSharp.Net
         future.Add (prefix);
       }
       while (
-        Interlocked.CompareExchange (ref _prefixes, future, current) != current
+        Interlocked.CompareExchange (ref _prefixes, future, current)
+        != current
       );
     }
 
