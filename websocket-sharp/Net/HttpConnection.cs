@@ -601,10 +601,18 @@ namespace WebSocketSharp.Net
 
         _inputStream = chunked
                        ? new ChunkedRequestStream (
-                           _stream, buff, _position, cnt, _context
+                           _stream,
+                           buff,
+                           _position,
+                           cnt,
+                           _context
                          )
                        : new RequestStream (
-                           _stream, buff, _position, cnt, contentLength
+                           _stream,
+                           buff,
+                           _position,
+                           cnt,
+                           contentLength
                          );
 
         disposeRequestBuffer ();
