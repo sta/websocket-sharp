@@ -451,7 +451,10 @@ namespace WebSocketSharp.Net
     }
 
     private string readLineFrom (
-      byte[] buffer, int offset, int length, out int nread
+      byte[] buffer,
+      int offset,
+      int length,
+      out int nread
     )
     {
       nread = 0;
