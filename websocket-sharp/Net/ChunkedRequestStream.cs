@@ -201,6 +201,7 @@ namespace WebSocketSharp.Net
 
       if (count == 0) {
         ares.Count = nread;
+
         ares.Complete ();
 
         return ares;
