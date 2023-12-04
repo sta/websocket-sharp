@@ -211,6 +211,7 @@ namespace WebSocketSharp.Net
         _noMoreData = nread == 0;
 
         ares.Count = nread;
+
         ares.Complete ();
 
         return ares;
