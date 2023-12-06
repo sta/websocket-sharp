@@ -222,6 +222,7 @@ namespace WebSocketSharp.Net
       ares.Count = _bufferLength;
 
       var rstate = new ReadBufferState (buffer, offset, count, ares);
+
       rstate.InitialCount += nread;
 
       base.BeginRead (ares.Buffer, ares.Offset, ares.Count, onRead, rstate);
