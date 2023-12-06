@@ -124,6 +124,7 @@ namespace WebSocketSharp.Net
         var nread = base.EndRead (asyncResult);
 
         _decoder.Write (ares.Buffer, ares.Offset, nread);
+
         nread = _decoder.Read (rstate.Buffer, rstate.Offset, rstate.Count);
 
         rstate.Offset += nread;
