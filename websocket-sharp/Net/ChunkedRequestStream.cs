@@ -134,6 +134,7 @@ namespace WebSocketSharp.Net
           _noMoreData = !_decoder.WantsMore && nread == 0;
 
           ares.Count = rstate.InitialCount - rstate.Count;
+
           ares.Complete ();
 
           return;
