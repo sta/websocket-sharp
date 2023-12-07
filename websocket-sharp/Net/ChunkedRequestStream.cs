@@ -144,6 +144,7 @@ namespace WebSocketSharp.Net
       }
       catch (Exception ex) {
         _context.ErrorMessage = "I/O operation aborted";
+
         _context.SendError ();
 
         ares.Complete (ex);
