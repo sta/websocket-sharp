@@ -56,7 +56,10 @@ namespace WebSocketSharp.Net
     #region Public Constructors
 
     public ReadBufferState (
-      byte[] buffer, int offset, int count, HttpStreamAsyncResult asyncResult
+      byte[] buffer,
+      int offset,
+      int count,
+      HttpStreamAsyncResult asyncResult
     )
     {
       _buffer = buffer;
