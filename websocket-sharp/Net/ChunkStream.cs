@@ -163,7 +163,9 @@ namespace WebSocketSharp.Net
     }
 
     private InputChunkState setChunkSize (
-      byte[] buffer, ref int offset, int length
+      byte[] buffer,
+      ref int offset,
+      int length
     )
     {
       byte b = 0;
