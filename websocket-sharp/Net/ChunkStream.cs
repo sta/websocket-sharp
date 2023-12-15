@@ -293,7 +293,10 @@ namespace WebSocketSharp.Net
     private static void throwProtocolViolation (string message)
     {
       throw new WebException (
-              message, null, WebExceptionStatus.ServerProtocolViolation, null
+              message,
+              null,
+              WebExceptionStatus.ServerProtocolViolation,
+              null
             );
     }
 
