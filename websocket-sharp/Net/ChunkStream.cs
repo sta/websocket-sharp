@@ -365,7 +365,9 @@ namespace WebSocketSharp.Net
     }
 
     private InputChunkState writeData (
-      byte[] buffer, ref int offset, int length
+      byte[] buffer,
+      ref int offset,
+      int length
     )
     {
       var cnt = length - offset;
