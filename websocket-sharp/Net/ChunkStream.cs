@@ -381,6 +381,7 @@ namespace WebSocketSharp.Net
       Buffer.BlockCopy (buffer, offset, data, 0, cnt);
 
       var chunk = new Chunk (data);
+
       _chunks.Add (chunk);
 
       offset += cnt;
