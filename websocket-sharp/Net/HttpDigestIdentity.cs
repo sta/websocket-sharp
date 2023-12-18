@@ -169,7 +169,10 @@ namespace WebSocketSharp.Net
     #region Internal Methods
 
     internal bool IsValid (
-      string password, string realm, string method, string entity
+      string password,
+      string realm,
+      string method,
+      string entity
     )
     {
       var parameters = new NameValueCollection (_parameters);
