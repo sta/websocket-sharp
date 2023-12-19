@@ -249,15 +249,6 @@ namespace WebSocketSharp.Net
       return pref != null && _prefix.Equals (pref._prefix);
     }
 
-    /// <summary>
-    /// Gets the hash code for the current instance.
-    /// </summary>
-    /// <remarks>
-    /// This method will be required to detect duplicates in any collection.
-    /// </remarks>
-    /// <returns>
-    /// An <see cref="int"/> that represents the hash code.
-    /// </returns>
     public override int GetHashCode ()
     {
       return _prefix.GetHashCode ();
