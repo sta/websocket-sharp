@@ -223,25 +223,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    /// <summary>
-    /// Determines whether the current instance is equal to the specified
-    /// <see cref="object"/> instance.
-    /// </summary>
-    /// <remarks>
-    /// This method will be required to detect duplicates in any collection.
-    /// </remarks>
-    /// <param name="obj">
-    ///   <para>
-    ///   An <see cref="object"/> instance to compare to the current instance.
-    ///   </para>
-    ///   <para>
-    ///   An reference to a <see cref="HttpListenerPrefix"/> instance.
-    ///   </para>
-    /// </param>
-    /// <returns>
-    /// <c>true</c> if the current instance and <paramref name="obj"/> have
-    /// the same URI prefix; otherwise, <c>false</c>.
-    /// </returns>
     public override bool Equals (object obj)
     {
       var pref = obj as HttpListenerPrefix;
