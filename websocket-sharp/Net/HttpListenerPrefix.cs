@@ -125,7 +125,10 @@ namespace WebSocketSharp.Net
 
     private void parse (string uriPrefix)
     {
-      if (uriPrefix.StartsWith ("https", StringComparison.Ordinal))
+      var compType = StringComparison.Ordinal;
+      var secure = uriPrefix.StartsWith ("https", compType);
+
+      if (secure)
         _secure = true;
 
       var len = uriPrefix.Length;
