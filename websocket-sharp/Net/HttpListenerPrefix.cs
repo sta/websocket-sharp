@@ -132,7 +132,6 @@ namespace WebSocketSharp.Net
       var len = uriPrefix.Length;
       var host = uriPrefix.IndexOf (':') + 3;
       var root = uriPrefix.IndexOf ('/', host + 1, len - host - 1);
-
       var colon = uriPrefix.LastIndexOf (':', root - 1, root - host - 1);
 
       if (uriPrefix[root - 1] != ']' && colon > host) {
