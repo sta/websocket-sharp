@@ -134,7 +134,9 @@ namespace WebSocketSharp.Net
       var root = uriPrefix.IndexOf ('/', host + 1, len - host - 1);
       var colon = uriPrefix.LastIndexOf (':', root - 1, root - host - 1);
 
-      if (uriPrefix[root - 1] != ']' && colon > host) {
+      var hasPort = uriPrefix[root - 1] != ']' && colon > host;
+
+      if (hasPort) {
         _host = uriPrefix.Substring (host, colon - host);
         _port = uriPrefix.Substring (colon + 1, root - colon - 1);
       }
