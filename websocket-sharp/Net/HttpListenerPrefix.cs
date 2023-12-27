@@ -178,7 +178,7 @@ namespace WebSocketSharp.Net
                  || uriPrefix.StartsWith ("https://", compType);
 
       if (!schm) {
-        var msg = "The scheme is not 'http' or 'https'.";
+        var msg = "The scheme is not http or https.";
 
         throw new ArgumentException (msg, "uriPrefix");
       }
