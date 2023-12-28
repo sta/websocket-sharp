@@ -174,10 +174,10 @@ namespace WebSocketSharp.Net
       }
 
       var compType = StringComparison.Ordinal;
-      var schm = uriPrefix.StartsWith ("http://", compType)
-                 || uriPrefix.StartsWith ("https://", compType);
+      var isHttpSchm = uriPrefix.StartsWith ("http://", compType)
+                       || uriPrefix.StartsWith ("https://", compType);
 
-      if (!schm) {
+      if (!isHttpSchm) {
         var msg = "The scheme is not http or https.";
 
         throw new ArgumentException (msg, "uriPrefix");
