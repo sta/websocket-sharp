@@ -58,19 +58,6 @@ namespace WebSocketSharp.Net
 
     #region Internal Constructors
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HttpListenerPrefix"/> class
-    /// with the specified URI prefix and HTTP listener.
-    /// </summary>
-    /// <remarks>
-    /// This constructor must be called after calling the CheckPrefix method.
-    /// </remarks>
-    /// <param name="uriPrefix">
-    /// A <see cref="string"/> that specifies the URI prefix.
-    /// </param>
-    /// <param name="listener">
-    /// A <see cref="HttpListener"/> that specifies the HTTP listener.
-    /// </param>
     internal HttpListenerPrefix (string uriPrefix, HttpListener listener)
     {
       _original = uriPrefix;
