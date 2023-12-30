@@ -52,7 +52,7 @@ namespace WebSocketSharp.Net
     private string       _path;
     private string       _port;
     private string       _prefix;
-    private bool         _secure;
+    private bool         _isSecure;
 
     #endregion
 
@@ -78,7 +78,7 @@ namespace WebSocketSharp.Net
 
     public bool IsSecure {
       get {
-        return _secure;
+        return _isSecure;
       }
     }
 
@@ -114,7 +114,7 @@ namespace WebSocketSharp.Net
     {
       var compType = StringComparison.Ordinal;
 
-      _secure = uriPrefix.StartsWith ("https", compType);
+      _isSecure = uriPrefix.StartsWith ("https", compType);
 
       var len = uriPrefix.Length;
       var host = uriPrefix.IndexOf (':') + 3;
@@ -129,14 +129,14 @@ namespace WebSocketSharp.Net
       }
       else {
         _host = uriPrefix.Substring (host, root - host);
-        _port = _secure ? "443" : "80";
+        _port = _isSecure ? "443" : "80";
       }
 
       _path = uriPrefix.Substring (root);
 
       _prefix = String.Format (
                   "{0}://{1}:{2}{3}",
-                  _secure ? "https" : "http",
+                  _isSecure ? "https" : "http",
                   _host,
                   _port,
                   _path
