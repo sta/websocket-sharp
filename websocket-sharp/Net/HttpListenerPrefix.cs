@@ -117,18 +117,18 @@ namespace WebSocketSharp.Net
       _isSecure = uriPrefix.StartsWith ("https", compType);
 
       var len = uriPrefix.Length;
-      var host = uriPrefix.IndexOf (':') + 3;
-      var root = uriPrefix.IndexOf ('/', host + 1, len - host - 1);
-      var colon = uriPrefix.LastIndexOf (':', root - 1, root - host - 1);
+      var hostStartIdx = uriPrefix.IndexOf (':') + 3;
+      var root = uriPrefix.IndexOf ('/', hostStartIdx + 1, len - hostStartIdx - 1);
+      var colon = uriPrefix.LastIndexOf (':', root - 1, root - hostStartIdx - 1);
 
-      var hasPort = uriPrefix[root - 1] != ']' && colon > host;
+      var hasPort = uriPrefix[root - 1] != ']' && colon > hostStartIdx;
 
       if (hasPort) {
-        _host = uriPrefix.Substring (host, colon - host);
+        _host = uriPrefix.Substring (hostStartIdx, colon - hostStartIdx);
         _port = uriPrefix.Substring (colon + 1, root - colon - 1);
       }
       else {
-        _host = uriPrefix.Substring (host, root - host);
+        _host = uriPrefix.Substring (hostStartIdx, root - hostStartIdx);
         _port = _isSecure ? "443" : "80";
       }
 
