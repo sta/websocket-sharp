@@ -119,13 +119,13 @@ namespace WebSocketSharp.Net
       var len = uriPrefix.Length;
       var hostStartIdx = uriPrefix.IndexOf (':') + 3;
       var rootIdx = uriPrefix.IndexOf ('/', hostStartIdx + 1, len - hostStartIdx - 1);
-      var colon = uriPrefix.LastIndexOf (':', rootIdx - 1, rootIdx - hostStartIdx - 1);
+      var colonIdx = uriPrefix.LastIndexOf (':', rootIdx - 1, rootIdx - hostStartIdx - 1);
 
-      var hasPort = uriPrefix[rootIdx - 1] != ']' && colon > hostStartIdx;
+      var hasPort = uriPrefix[rootIdx - 1] != ']' && colonIdx > hostStartIdx;
 
       if (hasPort) {
-        _host = uriPrefix.Substring (hostStartIdx, colon - hostStartIdx);
-        _port = uriPrefix.Substring (colon + 1, rootIdx - colon - 1);
+        _host = uriPrefix.Substring (hostStartIdx, colonIdx - hostStartIdx);
+        _port = uriPrefix.Substring (colonIdx + 1, rootIdx - colonIdx - 1);
       }
       else {
         _host = uriPrefix.Substring (hostStartIdx, rootIdx - hostStartIdx);
