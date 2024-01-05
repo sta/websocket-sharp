@@ -134,8 +134,10 @@ namespace WebSocketSharp.Net
 
       _path = uriPrefix.Substring (rootIdx);
 
+      var fmt = "{0}://{1}:{2}{3}";
+
       _prefix = String.Format (
-                  "{0}://{1}:{2}{3}",
+                  fmt,
                   _isSecure ? "https" : "http",
                   _host,
                   _port,
