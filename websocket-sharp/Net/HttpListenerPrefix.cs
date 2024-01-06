@@ -53,6 +53,7 @@ namespace WebSocketSharp.Net
     private string       _path;
     private string       _port;
     private string       _prefix;
+    private string       _scheme;
 
     #endregion
 
@@ -106,6 +107,12 @@ namespace WebSocketSharp.Net
       }
     }
 
+    public string Scheme {
+      get {
+        return _scheme;
+      }
+    }
+
     #endregion
 
     #region Private Methods
@@ -115,6 +122,7 @@ namespace WebSocketSharp.Net
       var compType = StringComparison.Ordinal;
 
       _isSecure = uriPrefix.StartsWith ("https", compType);
+      _scheme = _isSecure ? "https" : "http";
 
       var len = uriPrefix.Length;
       var hostStartIdx = uriPrefix.IndexOf (':') + 3;
@@ -138,7 +146,7 @@ namespace WebSocketSharp.Net
 
       _prefix = String.Format (
                   fmt,
-                  _isSecure ? "https" : "http",
+                  _scheme,
                   _host,
                   _port,
                   _path
