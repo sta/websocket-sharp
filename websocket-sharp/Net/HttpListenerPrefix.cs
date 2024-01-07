@@ -144,13 +144,7 @@ namespace WebSocketSharp.Net
 
       var fmt = "{0}://{1}:{2}{3}";
 
-      _prefix = String.Format (
-                  fmt,
-                  _scheme,
-                  _host,
-                  _port,
-                  _path
-                );
+      _prefix = String.Format (fmt, _scheme, _host, _port, _path);
     }
 
     #endregion
