@@ -124,9 +124,9 @@ namespace WebSocketSharp.Net
       _isSecure = uriPrefix.StartsWith ("https", compType);
       _scheme = _isSecure ? "https" : "http";
 
-      var len = uriPrefix.Length;
       var hostStartIdx = uriPrefix.IndexOf (':') + 3;
 
+      var len = uriPrefix.Length;
       var rootIdx = uriPrefix
                     .IndexOf ('/', hostStartIdx + 1, len - hostStartIdx - 1);
 
