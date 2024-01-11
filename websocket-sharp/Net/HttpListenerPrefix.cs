@@ -186,23 +186,23 @@ namespace WebSocketSharp.Net
         throw new ArgumentException (msg, "uriPrefix");
       }
 
-      var host = uriPrefix.IndexOf (':') + 3;
+      var hostStartIdx = uriPrefix.IndexOf (':') + 3;
 
-      if (host >= end) {
+      if (hostStartIdx >= end) {
         var msg = "No host is specified.";
 
         throw new ArgumentException (msg, "uriPrefix");
       }
 
-      if (uriPrefix[host] == ':') {
+      if (uriPrefix[hostStartIdx] == ':') {
         var msg = "No host is specified.";
 
         throw new ArgumentException (msg, "uriPrefix");
       }
 
-      var root = uriPrefix.IndexOf ('/', host, len - host);
+      var root = uriPrefix.IndexOf ('/', hostStartIdx, len - hostStartIdx);
 
-      if (root == host) {
+      if (root == hostStartIdx) {
         var msg = "No host is specified.";
 
         throw new ArgumentException (msg, "uriPrefix");
