@@ -200,21 +200,21 @@ namespace WebSocketSharp.Net
         throw new ArgumentException (msg, "uriPrefix");
       }
 
-      var root = uriPrefix.IndexOf ('/', hostStartIdx, len - hostStartIdx);
+      var rootIdx = uriPrefix.IndexOf ('/', hostStartIdx, len - hostStartIdx);
 
-      if (root == hostStartIdx) {
+      if (rootIdx == hostStartIdx) {
         var msg = "No host is specified.";
 
         throw new ArgumentException (msg, "uriPrefix");
       }
 
-      if (uriPrefix[root - 1] == ':') {
+      if (uriPrefix[rootIdx - 1] == ':') {
         var msg = "No port is specified.";
 
         throw new ArgumentException (msg, "uriPrefix");
       }
 
-      if (root == end - 1) {
+      if (rootIdx == end - 1) {
         var msg = "No path is specified.";
 
         throw new ArgumentException (msg, "uriPrefix");
