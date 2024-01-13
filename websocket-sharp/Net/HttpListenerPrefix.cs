@@ -178,9 +178,9 @@ namespace WebSocketSharp.Net
         throw new ArgumentException (msg, "uriPrefix");
       }
 
-      var end = len - 1;
+      var endIdx = len - 1;
 
-      if (uriPrefix[end] != '/') {
+      if (uriPrefix[endIdx] != '/') {
         var msg = "It ends without '/'.";
 
         throw new ArgumentException (msg, "uriPrefix");
@@ -188,7 +188,7 @@ namespace WebSocketSharp.Net
 
       var hostStartIdx = uriPrefix.IndexOf (':') + 3;
 
-      if (hostStartIdx >= end) {
+      if (hostStartIdx >= endIdx) {
         var msg = "No host is specified.";
 
         throw new ArgumentException (msg, "uriPrefix");
@@ -214,7 +214,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentException (msg, "uriPrefix");
       }
 
-      if (rootIdx == end - 1) {
+      if (rootIdx == endIdx - 1) {
         var msg = "No path is specified.";
 
         throw new ArgumentException (msg, "uriPrefix");
