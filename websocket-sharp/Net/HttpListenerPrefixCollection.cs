@@ -65,6 +65,7 @@ namespace WebSocketSharp.Net
     internal HttpListenerPrefixCollection (HttpListener listener)
     {
       _listener = listener;
+
       _prefixes = new List<string> ();
     }
 
