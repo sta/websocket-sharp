@@ -124,7 +124,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     ///   <para>
     ///   It must be a well-formed URI prefix with http or https scheme,
-    ///   and must end with a '/'.
+    ///   and must end with a forward slash (/).
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentNullException">
