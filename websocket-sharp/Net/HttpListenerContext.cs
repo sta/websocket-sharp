@@ -390,7 +390,8 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     public HttpListenerWebSocketContext AcceptWebSocket (
-      string protocol, Action<WebSocket> initializer
+      string protocol,
+      Action<WebSocket> initializer
     )
     {
       if (_websocketContext != null) {
