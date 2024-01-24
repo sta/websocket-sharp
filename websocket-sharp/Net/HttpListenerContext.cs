@@ -204,7 +204,8 @@ namespace WebSocketSharp.Net
     }
 
     internal void SendAuthenticationChallenge (
-      AuthenticationSchemes scheme, string realm
+      AuthenticationSchemes scheme,
+      string realm
     )
     {
       _response.StatusCode = 401;
