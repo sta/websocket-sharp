@@ -210,8 +210,9 @@ namespace WebSocketSharp.Net
     {
       _response.StatusCode = 401;
 
-      var chal = new AuthenticationChallenge (scheme, realm).ToString ();
-      _response.Headers.InternalSet ("WWW-Authenticate", chal, true);
+      var val = new AuthenticationChallenge (scheme, realm).ToString ();
+
+      _response.Headers.InternalSet ("WWW-Authenticate", val, true);
 
       _response.Close ();
     }
