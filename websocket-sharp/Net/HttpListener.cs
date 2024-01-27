@@ -972,6 +972,7 @@ namespace WebSocketSharp.Net
         cleanupContextRegistry ();
 
         var msg = "The listener is stopped.";
+
         cleanupWaitQueue (msg);
 
         EndPointManager.RemoveListener (this);
