@@ -650,6 +650,7 @@ namespace WebSocketSharp.Net
         }
 
         var ares = _waitQueue.Dequeue ();
+
         ares.Complete (context, false);
 
         return true;
