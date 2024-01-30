@@ -615,6 +615,7 @@ namespace WebSocketSharp.Net
         cleanupContextRegistry ();
 
         var msg = "The listener is closed.";
+
         cleanupWaitQueue (msg);
 
         EndPointManager.RemoveListener (this);
