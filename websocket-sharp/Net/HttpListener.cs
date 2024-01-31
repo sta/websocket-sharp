@@ -591,6 +591,7 @@ namespace WebSocketSharp.Net
 
       foreach (var ares in aress) {
         var ex = new HttpListenerException (995, message);
+
         ares.Complete (ex);
       }
     }
