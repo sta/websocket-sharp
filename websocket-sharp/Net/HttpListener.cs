@@ -518,7 +518,8 @@ namespace WebSocketSharp.Net
     }
 
     private HttpListenerAsyncResult beginGetContext (
-      AsyncCallback callback, object state
+      AsyncCallback callback,
+      object state
     )
     {
       lock (_contextRegistrySync) {
