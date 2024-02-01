@@ -538,6 +538,7 @@ namespace WebSocketSharp.Net
         }
 
         var ctx = _contextQueue.Dequeue ();
+
         ares.Complete (ctx, true);
 
         return ares;
