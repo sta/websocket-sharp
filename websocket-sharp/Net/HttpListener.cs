@@ -501,6 +501,7 @@ namespace WebSocketSharp.Net
 
       if (schm == AuthenticationSchemes.None) {
         var msg = "Authentication not allowed";
+
         context.SendError (403, msg);
 
         return false;
