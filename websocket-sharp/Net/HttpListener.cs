@@ -112,10 +112,8 @@ namespace WebSocketSharp.Net
     {
       _authSchemes = AuthenticationSchemes.Anonymous;
       _contextQueue = new Queue<HttpListenerContext> ();
-
       _contextRegistry = new LinkedList<HttpListenerContext> ();
       _contextRegistrySync = ((ICollection) _contextRegistry).SyncRoot;
-
       _log = new Logger ();
       _objectName = GetType ().ToString ();
       _prefixes = new HttpListenerPrefixCollection (this);
