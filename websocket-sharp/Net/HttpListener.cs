@@ -125,6 +125,12 @@ namespace WebSocketSharp.Net
 
     #region Internal Properties
 
+    internal string ObjectName {
+      get {
+        return GetType ().ToString ();
+      }
+    }
+
     internal bool ReuseAddress {
       get {
         return _reuseAddress;
