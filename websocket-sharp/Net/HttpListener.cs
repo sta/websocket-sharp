@@ -215,7 +215,7 @@ namespace WebSocketSharp.Net
     public Func<HttpListenerRequest, AuthenticationSchemes> AuthenticationSchemeSelector {
       get {
         if (_disposed)
-          throw new ObjectDisposedException (_objectName);
+          throw new ObjectDisposedException (ObjectName);
 
         return _authSchemeSelector;
       }
