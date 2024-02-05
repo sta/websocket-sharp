@@ -222,7 +222,7 @@ namespace WebSocketSharp.Net
 
       set {
         if (_disposed)
-          throw new ObjectDisposedException (_objectName);
+          throw new ObjectDisposedException (ObjectName);
 
         _authSchemeSelector = value;
       }
