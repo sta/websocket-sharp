@@ -198,12 +198,14 @@ namespace WebSocketSharp.Net
     /// <value>
     ///   <para>
     ///   A <c>Func&lt;<see cref="HttpListenerRequest"/>,
-    ///   <see cref="AuthenticationSchemes"/>&gt;</c> delegate or
-    ///   <see langword="null"/> if not needed.
+    ///   <see cref="AuthenticationSchemes"/>&gt;</c> delegate.
     ///   </para>
     ///   <para>
     ///   The delegate references the method used to select
     ///   an authentication scheme.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not needed.
     ///   </para>
     ///   <para>
     ///   The default value is <see langword="null"/>.
