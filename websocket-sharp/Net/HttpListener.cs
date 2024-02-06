@@ -181,7 +181,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the delegate called to select the scheme used to
+    /// Gets or sets the delegate called to determine the scheme used to
     /// authenticate the clients.
     /// </summary>
     /// <remarks>
