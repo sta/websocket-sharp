@@ -197,8 +197,8 @@ namespace WebSocketSharp.Net
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <c>Func&lt;<see cref="HttpListenerRequest"/>,
-    ///   <see cref="AuthenticationSchemes"/>&gt;</c> delegate.
+    ///   A <see cref="T:System.Func{HttpListenerRequest, AuthenticationSchemes}"/>
+    ///   delegate.
     ///   </para>
     ///   <para>
     ///   The delegate references the method used to select
