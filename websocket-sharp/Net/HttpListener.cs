@@ -205,7 +205,7 @@ namespace WebSocketSharp.Net
     ///   scheme.
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> if not needed.
+    ///   <see langword="null"/> if not necessary.
     ///   </para>
     ///   <para>
     ///   The default value is <see langword="null"/>.
