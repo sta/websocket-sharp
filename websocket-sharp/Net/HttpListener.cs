@@ -298,7 +298,7 @@ namespace WebSocketSharp.Net
     public bool IgnoreWriteExceptions {
       get {
         if (_disposed)
-          throw new ObjectDisposedException (_objectName);
+          throw new ObjectDisposedException (ObjectName);
 
         return _ignoreWriteExceptions;
       }
