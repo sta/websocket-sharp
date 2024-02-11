@@ -370,7 +370,7 @@ namespace WebSocketSharp.Net
     public HttpListenerPrefixCollection Prefixes {
       get {
         if (_disposed)
-          throw new ObjectDisposedException (_objectName);
+          throw new ObjectDisposedException (ObjectName);
 
         return _prefixes;
       }
