@@ -381,7 +381,7 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <remarks>
     /// If this property is <see langword="null"/> or an empty string,
-    /// "SECRET AREA" will be used as the name of the realm.
+    /// "SECRET AREA" is used as the name of the realm.
     /// </remarks>
     /// <value>
     ///   <para>
