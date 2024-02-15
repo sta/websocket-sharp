@@ -464,8 +464,7 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <c>Func&lt;<see cref="IIdentity"/>,
-    ///   <see cref="NetworkCredential"/>&gt;</c> delegate.
+    ///   A <see cref="T:System.Func{IIdentity, NetworkCredential}"/> delegate.
     ///   </para>
     ///   <para>
     ///   It references the method used to find the credentials.
