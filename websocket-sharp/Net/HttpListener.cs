@@ -465,11 +465,13 @@ namespace WebSocketSharp.Net
     /// <value>
     ///   <para>
     ///   A <c>Func&lt;<see cref="IIdentity"/>,
-    ///   <see cref="NetworkCredential"/>&gt;</c> delegate or
-    ///   <see langword="null"/> if not needed.
+    ///   <see cref="NetworkCredential"/>&gt;</c> delegate.
     ///   </para>
     ///   <para>
     ///   It references the method used to find the credentials.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not necessary.
     ///   </para>
     ///   <para>
     ///   The default value is <see langword="null"/>.
