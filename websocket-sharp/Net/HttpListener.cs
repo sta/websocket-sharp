@@ -693,7 +693,7 @@ namespace WebSocketSharp.Net
     internal void CheckDisposed ()
     {
       if (_disposed)
-        throw new ObjectDisposedException (_objectName);
+        throw new ObjectDisposedException (ObjectName);
     }
 
     internal bool RegisterContext (HttpListenerContext context)
