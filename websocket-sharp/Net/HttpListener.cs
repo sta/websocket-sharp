@@ -776,7 +776,7 @@ namespace WebSocketSharp.Net
     public IAsyncResult BeginGetContext (AsyncCallback callback, object state)
     {
       if (_disposed)
-        throw new ObjectDisposedException (_objectName);
+        throw new ObjectDisposedException (ObjectName);
 
       if (!_listening) {
         var msg = "The listener has not been started.";
