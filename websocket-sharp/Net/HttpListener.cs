@@ -737,7 +737,7 @@ namespace WebSocketSharp.Net
     /// <remarks>
     ///   <para>
     ///   This asynchronous operation must be completed by calling
-    ///   the EndGetContext method.
+    ///   the <see cref="EndGetContext"/> method.
     ///   </para>
     ///   <para>
     ///   Typically, the EndGetContext method is called by
