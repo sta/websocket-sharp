@@ -740,7 +740,7 @@ namespace WebSocketSharp.Net
     ///   the <see cref="EndGetContext"/> method.
     ///   </para>
     ///   <para>
-    ///   Typically, the EndGetContext method is called by
+    ///   Typically, the <see cref="EndGetContext"/> method is called by
     ///   <paramref name="callback"/>.
     ///   </para>
     /// </remarks>
