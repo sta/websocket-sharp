@@ -760,6 +760,9 @@ namespace WebSocketSharp.Net
     /// An <see cref="object"/> that specifies a user defined object to
     /// pass to <paramref name="callback"/>.
     /// </param>
+    /// <exception cref="HttpListenerException">
+    /// This method is canceled.
+    /// </exception>
     /// <exception cref="InvalidOperationException">
     ///   <para>
     ///   This listener has not been started or is currently stopped.
@@ -770,9 +773,6 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   This listener has no URI prefix on which listens.
     ///   </para>
-    /// </exception>
-    /// <exception cref="HttpListenerException">
-    /// This method is canceled.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
