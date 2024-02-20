@@ -736,7 +736,7 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   This asynchronous operation must be completed by calling
+    ///   This asynchronous operation must be ended by calling
     ///   the <see cref="EndGetContext"/> method.
     ///   </para>
     ///   <para>
