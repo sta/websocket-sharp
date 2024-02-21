@@ -820,7 +820,7 @@ namespace WebSocketSharp.Net
     /// </returns>
     /// <param name="asyncResult">
     /// An <see cref="IAsyncResult"/> instance obtained by calling
-    /// the BeginGetContext method.
+    /// the <see cref="BeginGetContext"/> method.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="asyncResult"/> is <see langword="null"/>.
