@@ -849,7 +849,7 @@ namespace WebSocketSharp.Net
     public HttpListenerContext EndGetContext (IAsyncResult asyncResult)
     {
       if (_disposed)
-        throw new ObjectDisposedException (_objectName);
+        throw new ObjectDisposedException (ObjectName);
 
       if (!_listening) {
         var msg = "The listener has not been started.";
