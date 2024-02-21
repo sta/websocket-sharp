@@ -812,8 +812,8 @@ namespace WebSocketSharp.Net
     /// Ends an asynchronous operation to get an incoming request.
     /// </summary>
     /// <remarks>
-    /// This method completes an asynchronous operation started by
-    /// calling the BeginGetContext method.
+    /// This method ends an asynchronous operation started by calling
+    /// the <see cref="BeginGetContext"/> method.
     /// </remarks>
     /// <returns>
     /// A <see cref="HttpListenerContext"/> that represents a request.
