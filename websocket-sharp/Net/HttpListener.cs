@@ -822,12 +822,15 @@ namespace WebSocketSharp.Net
     /// An <see cref="IAsyncResult"/> instance obtained by calling
     /// the <see cref="BeginGetContext"/> method.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="asyncResult"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="asyncResult"/> was not obtained by calling
     /// the <see cref="BeginGetContext"/> method.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="asyncResult"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="HttpListenerException">
+    /// This method is canceled.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     ///   <para>
@@ -839,9 +842,6 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   This method was already called for <paramref name="asyncResult"/>.
     ///   </para>
-    /// </exception>
-    /// <exception cref="HttpListenerException">
-    /// This method is canceled.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
