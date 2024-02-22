@@ -827,7 +827,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="asyncResult"/> was not obtained by calling
-    /// the BeginGetContext method.
+    /// the <see cref="BeginGetContext"/> method.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     ///   <para>
