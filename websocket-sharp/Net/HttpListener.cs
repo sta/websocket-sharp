@@ -914,7 +914,7 @@ namespace WebSocketSharp.Net
     public HttpListenerContext GetContext ()
     {
       if (_disposed)
-        throw new ObjectDisposedException (_objectName);
+        throw new ObjectDisposedException (ObjectName);
 
       if (!_listening) {
         var msg = "The listener has not been started.";
