@@ -973,11 +973,11 @@ namespace WebSocketSharp.Net
     public void Stop ()
     {
       if (_disposed)
-        throw new ObjectDisposedException (_objectName);
+        throw new ObjectDisposedException (ObjectName);
 
       lock (_sync) {
         if (_disposed)
-          throw new ObjectDisposedException (_objectName);
+          throw new ObjectDisposedException (ObjectName);
 
         lock (_contextRegistrySync) {
           if (!_listening)
