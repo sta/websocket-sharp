@@ -349,8 +349,14 @@ namespace WebSocketSharp.Net
     /// <value>
     /// A <see cref="Logger"/> that provides the logging functions.
     /// </value>
+    /// <exception cref="ObjectDisposedException">
+    /// This listener has been closed.
+    /// </exception>
     public Logger Log {
       get {
+        if (_disposed)
+          throw new ObjectDisposedException (ObjectName);
+
         return _log;
       }
     }
