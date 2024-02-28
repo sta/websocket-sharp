@@ -797,6 +797,13 @@ namespace WebSocketSharp
       close (data, false, false);
     }
 
+    private void abort(ushort code, string reason, int httpStatusCode, string httpResponseBody)
+    {
+      var data = new PayloadData(code, reason, httpStatusCode, httpResponseBody);
+    
+      close(data, false, false);
+    }
+    
     // As server
     private bool accept ()
     {
@@ -1507,7 +1514,7 @@ namespace WebSocketSharp
         _log.Error (msg);
         _log.Debug (res.ToString ());
 
-        abort (1002, "A handshake error has occurred.");
+        abort (1002, "A handshake error has occurred.", res.StatusCode, res.MessageBody);
 
         return false;
       }
