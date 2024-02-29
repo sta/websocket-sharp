@@ -175,7 +175,9 @@ namespace WebSocketSharp.Net
     #region Private Methods
 
     private static string createErrorContent (
-      int statusCode, string statusDescription, string message
+      int statusCode,
+      string statusDescription,
+      string message
     )
     {
       return message != null && message.Length > 0
