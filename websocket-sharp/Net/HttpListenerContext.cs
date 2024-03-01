@@ -312,17 +312,6 @@ namespace WebSocketSharp.Net
     ///   <see langword="null"/> if not necessary.
     ///   </para>
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    ///   <para>
-    ///   This method has already been done.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The client request is not a WebSocket handshake request.
-    ///   </para>
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="protocol"/> is empty.
@@ -332,6 +321,17 @@ namespace WebSocketSharp.Net
     ///   </para>
     ///   <para>
     ///   <paramref name="protocol"/> contains an invalid character.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    ///   <para>
+    ///   This method has already been done.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The client request is not a WebSocket handshake request.
     ///   </para>
     /// </exception>
     public HttpListenerWebSocketContext AcceptWebSocket (string protocol)
