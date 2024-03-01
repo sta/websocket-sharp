@@ -314,7 +314,7 @@ namespace WebSocketSharp.Net
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="protocol"/> is empty.
+    ///   <paramref name="protocol"/> is an empty string.
     ///   </para>
     ///   <para>
     ///   -or-
