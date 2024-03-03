@@ -361,8 +361,8 @@ namespace WebSocketSharp.Net
     ///   An <see cref="T:System.Action{WebSocket}"/> delegate.
     ///   </para>
     ///   <para>
-    ///   It specifies the delegate that invokes the method called when
-    ///   initializing a new WebSocket instance.
+    ///   It specifies the delegate called when a new WebSocket instance is
+    ///   initialized.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
