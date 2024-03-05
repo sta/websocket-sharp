@@ -869,7 +869,7 @@ namespace WebSocketSharp.Net
     /// </param>
     /// <param name="state">
     /// An <see cref="object"/> that specifies a user defined object to pass
-    /// to the callback delegate.
+    /// to <paramref name="requestCallback"/>.
     /// </param>
     /// <exception cref="NotSupportedException">
     /// This method is not supported.
