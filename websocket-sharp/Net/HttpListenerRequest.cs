@@ -859,8 +859,13 @@ namespace WebSocketSharp.Net
     /// the operation.
     /// </returns>
     /// <param name="requestCallback">
-    /// An <see cref="AsyncCallback"/> delegate that invokes the method called
-    /// when the operation is complete.
+    ///   <para>
+    ///   An <see cref="AsyncCallback"/> delegate.
+    ///   </para>
+    ///   <para>
+    ///   It specifies the delegate called when the asynchronous operation is
+    ///   complete.
+    ///   </para>
     /// </param>
     /// <param name="state">
     /// An <see cref="object"/> that specifies a user defined object to pass
