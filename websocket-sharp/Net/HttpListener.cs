@@ -757,8 +757,8 @@ namespace WebSocketSharp.Net
     ///   An <see cref="AsyncCallback"/> delegate.
     ///   </para>
     ///   <para>
-    ///   It specifies the delegate called when the asynchronous operation
-    ///   completes.
+    ///   It specifies the delegate called when the asynchronous operation is
+    ///   complete.
     ///   </para>
     /// </param>
     /// <param name="state">
