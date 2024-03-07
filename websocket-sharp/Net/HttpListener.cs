@@ -749,7 +749,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </remarks>
     /// <returns>
-    /// An <see cref="IAsyncResult"/> that represents the status of
+    /// An <see cref="IAsyncResult"/> instance that represents the status of
     /// the asynchronous operation.
     /// </returns>
     /// <param name="callback">
