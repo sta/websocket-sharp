@@ -762,8 +762,8 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </param>
     /// <param name="state">
-    /// An <see cref="object"/> that specifies a user defined object to
-    /// pass to <paramref name="callback"/>.
+    /// An <see cref="object"/> that specifies a user defined object to pass to
+    /// <paramref name="callback"/>.
     /// </param>
     /// <exception cref="HttpListenerException">
     /// This method is canceled.
