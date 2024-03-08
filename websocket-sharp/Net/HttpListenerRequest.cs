@@ -891,8 +891,8 @@ namespace WebSocketSharp.Net
     /// provided by the client.
     /// </returns>
     /// <param name="asyncResult">
-    /// An <see cref="IAsyncResult"/> instance returned when the operation
-    /// started.
+    /// An <see cref="IAsyncResult"/> instance obtained by calling
+    /// the <see cref="BeginGetClientCertificate"/> method.
     /// </param>
     /// <exception cref="NotSupportedException">
     /// This method is not supported.
