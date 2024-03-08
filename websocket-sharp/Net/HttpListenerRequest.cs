@@ -868,8 +868,8 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </param>
     /// <param name="state">
-    /// An <see cref="object"/> that specifies a user defined object to pass
-    /// to <paramref name="requestCallback"/>.
+    /// An <see cref="object"/> that specifies a user defined object to pass to
+    /// <paramref name="requestCallback"/>.
     /// </param>
     /// <exception cref="NotSupportedException">
     /// This method is not supported.
