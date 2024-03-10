@@ -1106,12 +1106,12 @@ namespace WebSocketSharp.Net
     /// <param name="cookie">
     /// A <see cref="Cookie"/> to set.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="cookie"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="cookie"/> already exists in the cookies but
     /// it cannot be updated.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="cookie"/> is <see langword="null"/>.
     /// </exception>
     public void SetCookie (Cookie cookie)
     {
