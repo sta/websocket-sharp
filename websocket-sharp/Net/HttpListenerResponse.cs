@@ -1050,9 +1050,6 @@ namespace WebSocketSharp.Net
     /// A <see cref="string"/> that specifies the absolute URL to which
     /// the client is redirected to locate a requested resource.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="url"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="url"/> is an empty string.
@@ -1063,6 +1060,9 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   <paramref name="url"/> is not an absolute URL.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="url"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The response is already being sent.
