@@ -705,11 +705,11 @@ namespace WebSocketSharp.Net
     ///   An empty string if an RFC 2616 description does not exist.
     ///   </para>
     /// </value>
-    /// <exception cref="ArgumentNullException">
-    /// The value specified for a set operation is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// The value specified for a set operation contains an invalid character.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// The value specified for a set operation is <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The response is already being sent.
