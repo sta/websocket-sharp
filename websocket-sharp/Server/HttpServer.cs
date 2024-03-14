@@ -1227,7 +1227,8 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </exception>
     public void AddWebSocketService<TBehavior> (
-      string path, Action<TBehavior> initializer
+      string path,
+      Action<TBehavior> initializer
     )
       where TBehavior : WebSocketBehavior, new ()
     {
