@@ -1130,9 +1130,6 @@ namespace WebSocketSharp.Server
     ///   Also it must have a public parameterless constructor.
     ///   </para>
     /// </typeparam>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="path"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="path"/> is an empty string.
@@ -1156,6 +1153,9 @@ namespace WebSocketSharp.Server
     ///   <para>
     ///   <paramref name="path"/> is already in use.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
     /// </exception>
     public void AddWebSocketService<TBehavior> (string path)
       where TBehavior : WebSocketBehavior, new ()
