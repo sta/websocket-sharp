@@ -239,11 +239,11 @@ namespace WebSocketSharp.Server
     /// An <see cref="int"/> that specifies the number of the port on which
     /// to listen.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="address"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="address"/> is not a local IP address.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="address"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="port"/> is less than 1 or greater than 65535.
