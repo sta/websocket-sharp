@@ -273,11 +273,11 @@ namespace WebSocketSharp.Server
     /// A <see cref="bool"/>: <c>true</c> if the new instance provides
     /// secure connections; otherwise, <c>false</c>.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="address"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="address"/> is not a local IP address.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="address"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="port"/> is less than 1 or greater than 65535.
