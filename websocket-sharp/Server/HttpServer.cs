@@ -373,9 +373,6 @@ namespace WebSocketSharp.Server
     ///   The default value is "./Public".
     ///   </para>
     /// </value>
-    /// <exception cref="ArgumentNullException">
-    /// The value specified for a set operation is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   The value specified for a set operation is an empty string.
@@ -392,6 +389,9 @@ namespace WebSocketSharp.Server
     ///   <para>
     ///   The value specified for a set operation is an invalid path string.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// The value specified for a set operation is <see langword="null"/>.
     /// </exception>
     public string DocumentRootPath {
       get {
