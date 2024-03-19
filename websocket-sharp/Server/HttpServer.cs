@@ -367,7 +367,7 @@ namespace WebSocketSharp.Server
     ///   from which to find the requested file.
     ///   </para>
     ///   <para>
-    ///   '/' or '\' is trimmed from the end of the value if present.
+    ///   / or \ is trimmed from the end of the value if present.
     ///   </para>
     ///   <para>
     ///   The default value is "./Public".
