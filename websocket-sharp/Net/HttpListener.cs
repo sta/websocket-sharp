@@ -468,10 +468,12 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="T:System.Func{IIdentity, NetworkCredential}"/> delegate.
+    ///   A <see cref="T:System.Func{IIdentity, NetworkCredential}"/>
+    ///   delegate.
     ///   </para>
     ///   <para>
-    ///   The delegate invokes the method used to find the credentials.
+    ///   It represents the delegate called when the listener finds
+    ///   the credentials used to authenticate a client.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if not necessary.
