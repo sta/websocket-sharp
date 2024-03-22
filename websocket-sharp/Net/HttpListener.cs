@@ -476,6 +476,10 @@ namespace WebSocketSharp.Net
     ///   the credentials used to authenticate a client.
     ///   </para>
     ///   <para>
+    ///   It must return <see langword="null"/> if the credentials
+    ///   are not found.
+    ///   </para>
+    ///   <para>
     ///   <see langword="null"/> if not necessary.
     ///   </para>
     ///   <para>
