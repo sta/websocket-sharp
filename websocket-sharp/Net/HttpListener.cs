@@ -199,8 +199,8 @@ namespace WebSocketSharp.Net
     ///   delegate.
     ///   </para>
     ///   <para>
-    ///   The delegate invokes the method used to select an authentication
-    ///   scheme.
+    ///   It represents the delegate called when the listener selects
+    ///   an authentication scheme.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if not necessary.
