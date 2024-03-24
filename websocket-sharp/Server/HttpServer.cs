@@ -817,7 +817,9 @@ namespace WebSocketSharp.Server
     }
 
     private static HttpListener createListener (
-      string hostname, int port, bool secure
+      string hostname,
+      int port,
+      bool secure
     )
     {
       var lsnr = new HttpListener ();
