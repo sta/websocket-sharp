@@ -822,14 +822,14 @@ namespace WebSocketSharp.Server
       bool secure
     )
     {
-      var lsnr = new HttpListener ();
+      var ret = new HttpListener ();
 
       var schm = secure ? "https" : "http";
       var pref = String.Format ("{0}://{1}:{2}/", schm, hostname, port);
 
-      lsnr.Prefixes.Add (pref);
+      ret.Prefixes.Add (pref);
 
-      return lsnr;
+      return ret;
     }
 
     private void init (
