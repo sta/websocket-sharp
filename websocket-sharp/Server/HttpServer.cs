@@ -824,8 +824,9 @@ namespace WebSocketSharp.Server
     {
       var ret = new HttpListener ();
 
+      var fmt = "{0}://{1}:{2}/";
       var schm = secure ? "https" : "http";
-      var pref = String.Format ("{0}://{1}:{2}/", schm, hostname, port);
+      var pref = String.Format (fmt, schm, hostname, port);
 
       ret.Prefixes.Add (pref);
 
