@@ -834,7 +834,10 @@ namespace WebSocketSharp.Server
     }
 
     private void init (
-      string hostname, System.Net.IPAddress address, int port, bool secure
+      string hostname,
+      System.Net.IPAddress address,
+      int port,
+      bool secure
     )
     {
       _hostname = hostname;
