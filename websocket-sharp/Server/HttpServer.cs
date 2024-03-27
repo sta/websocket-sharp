@@ -875,6 +875,7 @@ namespace WebSocketSharp.Server
 
       if (evt == null) {
         context.ErrorStatusCode = 501;
+
         context.SendError ();
 
         return;
