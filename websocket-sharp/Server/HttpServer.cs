@@ -846,7 +846,7 @@ namespace WebSocketSharp.Server
       _isSecure = secure;
 
       _docRootPath = "./Public";
-      _listener = createListener (_hostname, _port, _isSecure);
+      _listener = createListener (hostname, port, secure);
       _log = _listener.Log;
       _services = new WebSocketServiceManager (_log);
       _sync = new object ();
