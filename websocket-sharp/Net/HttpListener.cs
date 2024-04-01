@@ -81,7 +81,7 @@ namespace WebSocketSharp.Net
     private static readonly string                           _defaultRealm;
     private bool                                             _disposed;
     private bool                                             _ignoreWriteExceptions;
-    private volatile bool                                    _listening;
+    private volatile bool                                    _isListening;
     private Logger                                           _log;
     private HttpListenerPrefixCollection                     _prefixes;
     private string                                           _realm;
@@ -317,7 +317,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public bool IsListening {
       get {
-        return _listening;
+        return _isListening;
       }
     }
 
@@ -541,7 +541,7 @@ namespace WebSocketSharp.Net
     )
     {
       lock (_contextRegistrySync) {
-        if (!_listening) {
+        if (!_isListening) {
           var msg = "The method is canceled.";
 
           throw new HttpListenerException (995, msg);
@@ -623,13 +623,13 @@ namespace WebSocketSharp.Net
           return;
 
         lock (_contextRegistrySync) {
-          if (!_listening) {
+          if (!_isListening) {
             _disposed = true;
 
             return;
           }
 
-          _listening = false;
+          _isListening = false;
         }
 
         cleanupContextQueue (force);
@@ -654,11 +654,11 @@ namespace WebSocketSharp.Net
 
     private bool registerContext (HttpListenerContext context)
     {
-      if (!_listening)
+      if (!_isListening)
         return false;
 
       lock (_contextRegistrySync) {
-        if (!_listening)
+        if (!_isListening)
           return false;
 
         context.Listener = this;
@@ -793,7 +793,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         throw new ObjectDisposedException (ObjectName);
 
-      if (!_listening) {
+      if (!_isListening) {
         var msg = "The listener has not been started.";
 
         throw new InvalidOperationException (msg);
@@ -862,7 +862,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         throw new ObjectDisposedException (ObjectName);
 
-      if (!_listening) {
+      if (!_isListening) {
         var msg = "The listener has not been started.";
 
         throw new InvalidOperationException (msg);
@@ -927,7 +927,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         throw new ObjectDisposedException (ObjectName);
 
-      if (!_listening) {
+      if (!_isListening) {
         var msg = "The listener has not been started.";
 
         throw new InvalidOperationException (msg);
@@ -965,12 +965,12 @@ namespace WebSocketSharp.Net
           throw new ObjectDisposedException (ObjectName);
 
         lock (_contextRegistrySync) {
-          if (_listening)
+          if (_isListening)
             return;
 
           EndPointManager.AddListener (this);
 
-          _listening = true;
+          _isListening = true;
         }
       }
     }
@@ -991,10 +991,10 @@ namespace WebSocketSharp.Net
           throw new ObjectDisposedException (ObjectName);
 
         lock (_contextRegistrySync) {
-          if (!_listening)
+          if (!_isListening)
             return;
 
-          _listening = false;
+          _isListening = false;
         }
 
         cleanupContextQueue (false);
