@@ -64,7 +64,8 @@ namespace WebSocketSharp.Server
     #region Internal Constructors
 
     internal HttpRequestEventArgs (
-      HttpListenerContext context, string documentRootPath
+      HttpListenerContext context,
+      string documentRootPath
     )
     {
       _context = context;
