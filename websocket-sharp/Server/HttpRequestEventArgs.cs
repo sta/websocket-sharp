@@ -107,12 +107,11 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="IPrincipal"/> instance or <see langword="null"/>
-    ///   if not authenticated.
+    ///   A <see cref="IPrincipal"/> instance that represents identity,
+    ///   authentication scheme, and security roles for the client.
     ///   </para>
     ///   <para>
-    ///   That instance describes the identity, authentication scheme,
-    ///   and security roles for the client.
+    ///   <see langword="null"/> if the client is not authenticated.
     ///   </para>
     /// </value>
     public IPrincipal User {
