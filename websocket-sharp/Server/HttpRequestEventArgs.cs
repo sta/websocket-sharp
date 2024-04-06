@@ -169,8 +169,8 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </returns>
     /// <param name="path">
-    /// A <see cref="string"/> that specifies a virtual path to
-    /// find the file from the document folder.
+    /// A <see cref="string"/> that specifies a virtual path to find
+    /// the file from the document folder.
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
