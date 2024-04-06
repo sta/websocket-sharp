@@ -161,11 +161,11 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <returns>
     ///   <para>
-    ///   An array of <see cref="byte"/> or <see langword="null"/>
-    ///   if it fails.
+    ///   An array of <see cref="byte"/> that receives the contents of
+    ///   the file.
     ///   </para>
     ///   <para>
-    ///   That array receives the contents of the file.
+    ///   <see langword="null"/> if the read has failed.
     ///   </para>
     /// </returns>
     /// <param name="path">
