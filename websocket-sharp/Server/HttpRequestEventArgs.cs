@@ -250,8 +250,11 @@ namespace WebSocketSharp.Server
       if (path.Length == 0)
         throw new ArgumentException ("An empty string.", "path");
 
-      if (path.IndexOf ("..") > -1)
-        throw new ArgumentException ("It contains '..'.", "path");
+      if (path.IndexOf ("..") > -1) {
+        var msg = "It contains \"..\".";
+
+        throw new ArgumentException (msg, "path");
+      }
 
       path = createFilePath (path);
 
