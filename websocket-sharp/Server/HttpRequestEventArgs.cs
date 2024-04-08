@@ -228,9 +228,6 @@ namespace WebSocketSharp.Server
     ///   That array receives the contents of the file.
     ///   </para>
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="path"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="path"/> is an empty string.
@@ -241,6 +238,9 @@ namespace WebSocketSharp.Server
     ///   <para>
     ///   <paramref name="path"/> contains "..".
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
     /// </exception>
     public bool TryReadFile (string path, out byte[] contents)
     {
