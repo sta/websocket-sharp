@@ -221,11 +221,11 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="contents">
     ///   <para>
-    ///   When this method returns, an array of <see cref="byte"/> or
-    ///   <see langword="null"/> if it fails.
+    ///   When this method returns, an array of <see cref="byte"/> that
+    ///   receives the contents of the file.
     ///   </para>
     ///   <para>
-    ///   That array receives the contents of the file.
+    ///   <see langword="null"/> if the read has failed.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
