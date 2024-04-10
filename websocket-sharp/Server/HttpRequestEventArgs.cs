@@ -213,7 +213,7 @@ namespace WebSocketSharp.Server
     /// the <see cref="HttpServer"/> class.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if it succeeds to read; otherwise, <c>false</c>.
+    /// <c>true</c> if the try has succeeded; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="path">
     /// A <see cref="string"/> that specifies a virtual path to find
