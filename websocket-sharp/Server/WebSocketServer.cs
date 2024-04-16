@@ -935,7 +935,9 @@ namespace WebSocketSharp.Server
     }
 
     private static bool tryCreateUri (
-      string uriString, out Uri result, out string message
+      string uriString,
+      out Uri result,
+      out string message
     )
     {
       if (!uriString.TryCreateWebSocketUri (out result, out message))
