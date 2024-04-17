@@ -878,7 +878,9 @@ namespace WebSocketSharp.Server
     {
       if (_reuseAddress) {
         _listener.Server.SetSocketOption (
-          SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true
+          SocketOptionLevel.Socket,
+          SocketOptionName.ReuseAddress,
+          true
         );
       }
 
