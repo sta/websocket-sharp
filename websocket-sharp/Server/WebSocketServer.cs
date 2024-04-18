@@ -789,7 +789,11 @@ namespace WebSocketSharp.Server
             state => {
               try {
                 var ctx = new TcpListenerWebSocketContext (
-                            cl, null, _secure, _sslConfigInUse, _log
+                            cl,
+                            null,
+                            _secure,
+                            _sslConfigInUse,
+                            _log
                           );
 
                 processRequest (ctx);
