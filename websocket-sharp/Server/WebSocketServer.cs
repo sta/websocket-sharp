@@ -70,7 +70,7 @@ namespace WebSocketSharp.Server
     private string                             _realmInUse;
     private Thread                             _receiveThread;
     private bool                               _reuseAddress;
-    private bool                               _secure;
+    private bool                               _isSecure;
     private WebSocketServiceManager            _services;
     private ServerSslConfiguration             _sslConfig;
     private ServerSslConfiguration             _sslConfigInUse;
@@ -387,7 +387,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public bool IsSecure {
       get {
-        return _secure;
+        return _isSecure;
       }
     }
 
@@ -534,7 +534,7 @@ namespace WebSocketSharp.Server
     /// </exception>
     public ServerSslConfiguration SslConfiguration {
       get {
-        if (!_secure) {
+        if (!_isSecure) {
           var msg = "The server does not provide secure connections.";
 
           throw new InvalidOperationException (msg);
@@ -730,7 +730,7 @@ namespace WebSocketSharp.Server
       _hostname = hostname;
       _address = address;
       _port = port;
-      _secure = secure;
+      _isSecure = secure;
 
       _authSchemes = AuthenticationSchemes.Anonymous;
       _dnsStyle = Uri.CheckHostName (hostname) == UriHostNameType.Dns;
@@ -794,7 +794,7 @@ namespace WebSocketSharp.Server
                 var ctx = new TcpListenerWebSocketContext (
                             cl,
                             null,
-                            _secure,
+                            _isSecure,
                             _sslConfigInUse,
                             _log
                           );
@@ -851,7 +851,7 @@ namespace WebSocketSharp.Server
         if (_state == ServerState.Start || _state == ServerState.ShuttingDown)
           return;
 
-        if (_secure) {
+        if (_isSecure) {
           var src = getSslConfiguration ();
           var conf = new ServerSslConfiguration (src);
 
