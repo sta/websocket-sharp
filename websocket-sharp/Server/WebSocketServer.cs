@@ -61,8 +61,8 @@ namespace WebSocketSharp.Server
     private System.Net.IPAddress               _address;
     private AuthenticationSchemes              _authSchemes;
     private static readonly string             _defaultRealm;
-    private bool                               _isDnsStyle;
     private string                             _hostname;
+    private bool                               _isDnsStyle;
     private bool                               _isSecure;
     private TcpListener                        _listener;
     private Logger                             _log;
