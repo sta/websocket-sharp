@@ -61,7 +61,7 @@ namespace WebSocketSharp.Server
     private System.Net.IPAddress               _address;
     private AuthenticationSchemes              _authSchemes;
     private static readonly string             _defaultRealm;
-    private bool                               _dnsStyle;
+    private bool                               _isDnsStyle;
     private string                             _hostname;
     private bool                               _isSecure;
     private TcpListener                        _listener;
@@ -700,7 +700,7 @@ namespace WebSocketSharp.Server
 
     private bool checkHostNameForRequest (string name)
     {
-      return !_dnsStyle
+      return !_isDnsStyle
              || Uri.CheckHostName (name) != UriHostNameType.Dns
              || name == _hostname;
     }
@@ -733,7 +733,7 @@ namespace WebSocketSharp.Server
       _isSecure = secure;
 
       _authSchemes = AuthenticationSchemes.Anonymous;
-      _dnsStyle = Uri.CheckHostName (hostname) == UriHostNameType.Dns;
+      _isDnsStyle = Uri.CheckHostName (hostname) == UriHostNameType.Dns;
       _listener = new TcpListener (address, port);
       _log = new Logger ();
       _services = new WebSocketServiceManager (_log);
