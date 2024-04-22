@@ -152,9 +152,6 @@ namespace WebSocketSharp.Server
     /// <param name="url">
     /// A <see cref="string"/> that specifies the WebSocket URL of the server.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="url"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="url"/> is an empty string.
@@ -165,6 +162,9 @@ namespace WebSocketSharp.Server
     ///   <para>
     ///   <paramref name="url"/> is invalid.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="url"/> is <see langword="null"/>.
     /// </exception>
     public WebSocketServer (string url)
     {
