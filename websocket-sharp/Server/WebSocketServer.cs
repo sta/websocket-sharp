@@ -557,11 +557,11 @@ namespace WebSocketSharp.Server
     ///   delegate.
     ///   </para>
     ///   <para>
-    ///   The delegate invokes the method called when the server finds
+    ///   It represents the delegate called when the server finds
     ///   the credentials used to authenticate a client.
     ///   </para>
     ///   <para>
-    ///   The method must return <see langword="null"/> if the credentials
+    ///   It must return <see langword="null"/> if the credentials
     ///   are not found.
     ///   </para>
     ///   <para>
