@@ -545,7 +545,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the delegate used to find the credentials for an identity.
+    /// Gets or sets the delegate called to find the credentials for
+    /// an identity used to authenticate a client.
     /// </summary>
     /// <remarks>
     /// The set operation works if the current state of the server is
