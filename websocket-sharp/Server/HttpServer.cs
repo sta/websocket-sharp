@@ -69,7 +69,6 @@ namespace WebSocketSharp.Server
 
     private System.Net.IPAddress    _address;
     private string                  _docRootPath;
-    private string                  _hostname;
     private bool                    _isSecure;
     private HttpListener            _listener;
     private Logger                  _log;
@@ -840,7 +839,6 @@ namespace WebSocketSharp.Server
       bool secure
     )
     {
-      _hostname = hostname;
       _address = address;
       _port = port;
       _isSecure = secure;
