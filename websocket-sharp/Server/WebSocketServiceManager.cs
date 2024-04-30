@@ -552,11 +552,13 @@ namespace WebSocketSharp.Server
     /// <param name="host">
     ///   <para>
     ///   When this method returns, a <see cref="WebSocketServiceHost"/>
-    ///   instance or <see langword="null"/> if not found.
+    ///   instance that receives the service host instance.
     ///   </para>
     ///   <para>
-    ///   The service host instance provides the function to access
-    ///   the information in the service.
+    ///   It provides the function to access the information in the service.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not found.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
