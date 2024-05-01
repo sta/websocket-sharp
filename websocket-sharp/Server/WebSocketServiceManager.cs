@@ -537,8 +537,7 @@ namespace WebSocketSharp.Server
     /// the specified path.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the service is successfully found; otherwise,
-    /// <c>false</c>.
+    /// <c>true</c> if the try has succeeded; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="path">
     ///   <para>
