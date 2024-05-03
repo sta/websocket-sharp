@@ -384,7 +384,8 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </exception>
     public void AddService<TBehavior> (
-      string path, Action<TBehavior> initializer
+      string path,
+      Action<TBehavior> initializer
     )
       where TBehavior : WebSocketBehavior, new ()
     {
