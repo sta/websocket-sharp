@@ -120,7 +120,7 @@ namespace WebSocketSharp.Server
     /// <param name="path">
     ///   <para>
     ///   A <see cref="string"/> that specifies an absolute path to
-    ///   the service to find.
+    ///   the service to get.
     ///   </para>
     ///   <para>
     ///   / is trimmed from the end of the string if present.
