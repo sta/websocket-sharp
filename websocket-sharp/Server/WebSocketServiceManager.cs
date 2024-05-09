@@ -288,7 +288,8 @@ namespace WebSocketSharp.Server
     #region Internal Methods
 
     internal bool InternalTryGetServiceHost (
-      string path, out WebSocketServiceHost host
+      string path,
+      out WebSocketServiceHost host
     )
     {
       path = path.TrimSlashFromEnd ();
