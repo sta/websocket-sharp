@@ -42,7 +42,9 @@ namespace WebSocketSharp.Server
     #region Internal Constructors
 
     internal WebSocketServiceHost (
-      string path, Action<TBehavior> initializer, Logger log
+      string path,
+      Action<TBehavior> initializer,
+      Logger log
     )
       : base (path, log)
     {
