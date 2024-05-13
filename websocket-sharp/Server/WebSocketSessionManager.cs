@@ -1599,11 +1599,11 @@ namespace WebSocketSharp.Server
     ///   the information in the session.
     ///   </para>
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="id"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="id"/> is an empty string.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="id"/> is <see langword="null"/>.
     /// </exception>
     public bool TryGetSession (string id, out IWebSocketSession session)
     {
