@@ -1583,8 +1583,7 @@ namespace WebSocketSharp.Server
     /// Tries to get the session instance with the specified ID.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the session instance is successfully found; otherwise,
-    /// <c>false</c>.
+    /// <c>true</c> if the try has succeeded; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="id">
     /// A <see cref="string"/> that specifies the ID of the session to find.
