@@ -1590,12 +1590,14 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="session">
     ///   <para>
-    ///   When this method returns, a <see cref="IWebSocketSession"/>
-    ///   instance or <see langword="null"/> if not found.
+    ///   When this method returns, a <see cref="IWebSocketSession"/> instance
+    ///   that receives the session instance.
     ///   </para>
     ///   <para>
-    ///   The session instance provides the function to access
-    ///   the information in the session.
+    ///   It provides the function to access the information in the session.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not found.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
