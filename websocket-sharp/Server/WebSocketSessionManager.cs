@@ -1513,7 +1513,10 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </exception>
     public void SendToAsync (
-      Stream stream, int length, string id, Action<bool> completed
+      Stream stream,
+      int length,
+      string id,
+      Action<bool> completed
     )
     {
       IWebSocketSession session;
