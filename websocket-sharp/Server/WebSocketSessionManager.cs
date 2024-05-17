@@ -1467,17 +1467,6 @@ namespace WebSocketSharp.Server
     ///   <see langword="null"/> if not necessary.
     ///   </para>
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    ///   <para>
-    ///   <paramref name="id"/> is <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="stream"/> is <see langword="null"/>.
-    ///   </para>
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="id"/> is an empty string.
@@ -1499,6 +1488,17 @@ namespace WebSocketSharp.Server
     ///   </para>
     ///   <para>
     ///   No data could be read from <paramref name="stream"/>.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    ///   <para>
+    ///   <paramref name="id"/> is <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="stream"/> is <see langword="null"/>.
     ///   </para>
     /// </exception>
     /// <exception cref="InvalidOperationException">
