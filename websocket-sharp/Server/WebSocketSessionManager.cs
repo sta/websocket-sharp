@@ -1122,6 +1122,9 @@ namespace WebSocketSharp.Server
     /// <param name="id">
     /// A <see cref="string"/> that specifies the ID of the session.
     /// </param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="id"/> is an empty string.
+    /// </exception>
     /// <exception cref="ArgumentNullException">
     ///   <para>
     ///   <paramref name="id"/> is <see langword="null"/>.
@@ -1132,9 +1135,6 @@ namespace WebSocketSharp.Server
     ///   <para>
     ///   <paramref name="data"/> is <see langword="null"/>.
     ///   </para>
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="id"/> is an empty string.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     ///   <para>
