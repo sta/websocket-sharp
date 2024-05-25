@@ -1080,9 +1080,6 @@ namespace WebSocketSharp.Server
     /// <param name="id">
     /// A <see cref="string"/> that specifies the ID of the session.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="id"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="id"/> is an empty string.
@@ -1094,11 +1091,14 @@ namespace WebSocketSharp.Server
     ///   <paramref name="message"/> could not be UTF-8-encoded.
     ///   </para>
     /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// The session could not be found.
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="id"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The size of <paramref name="message"/> is greater than 125 bytes.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The session could not be found.
     /// </exception>
     public bool PingTo (string message, string id)
     {
