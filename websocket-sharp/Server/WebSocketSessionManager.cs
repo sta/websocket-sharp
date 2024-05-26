@@ -1039,11 +1039,11 @@ namespace WebSocketSharp.Server
     /// <param name="id">
     /// A <see cref="string"/> that specifies the ID of the session.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="id"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="id"/> is an empty string.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="id"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The session could not be found.
