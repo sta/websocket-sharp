@@ -983,9 +983,6 @@ namespace WebSocketSharp.Server
     ///   Its size must be 123 bytes or less in UTF-8.
     ///   </para>
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="id"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="id"/> is an empty string.
@@ -1010,11 +1007,14 @@ namespace WebSocketSharp.Server
     ///   <paramref name="reason"/> could not be UTF-8-encoded.
     ///   </para>
     /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// The session could not be found.
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="id"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The size of <paramref name="reason"/> is greater than 123 bytes.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The session could not be found.
     /// </exception>
     public void CloseSession (string id, CloseStatusCode code, string reason)
     {
