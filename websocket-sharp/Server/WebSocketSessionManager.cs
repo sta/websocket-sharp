@@ -679,11 +679,11 @@ namespace WebSocketSharp.Server
     ///   <see langword="null"/> if not necessary.
     ///   </para>
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The current state of the service is not Start.
-    /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="data"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the service is not Start.
     /// </exception>
     public void BroadcastAsync (byte[] data, Action completed)
     {
