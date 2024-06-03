@@ -541,14 +541,14 @@ namespace WebSocketSharp.Server
     /// <param name="data">
     /// A <see cref="string"/> that specifies the text data to send.
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The current state of the service is not Start.
+    /// <exception cref="ArgumentException">
+    /// <paramref name="data"/> could not be UTF-8-encoded.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="data"/> is <see langword="null"/>.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="data"/> could not be UTF-8-encoded.
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the service is not Start.
     /// </exception>
     public void Broadcast (string data)
     {
