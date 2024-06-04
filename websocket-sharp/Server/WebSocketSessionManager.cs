@@ -512,11 +512,11 @@ namespace WebSocketSharp.Server
     /// <param name="data">
     /// An array of <see cref="byte"/> that specifies the binary data to send.
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The current state of the service is not Start.
-    /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="data"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the service is not Start.
     /// </exception>
     public void Broadcast (byte[] data)
     {
