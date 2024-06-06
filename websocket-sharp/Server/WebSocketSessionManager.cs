@@ -345,7 +345,7 @@ namespace WebSocketSharp.Server
       Action completed
     )
     {
-      var cache = new Dictionary <CompressionMethod, Stream> ();
+      var cache = new Dictionary<CompressionMethod, Stream> ();
 
       try {
         foreach (var session in Sessions) {
