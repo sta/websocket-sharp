@@ -340,7 +340,9 @@ namespace WebSocketSharp.Server
     }
 
     private void broadcast (
-      Opcode opcode, Stream sourceStream, Action completed
+      Opcode opcode,
+      Stream sourceStream,
+      Action completed
     )
     {
       var cache = new Dictionary <CompressionMethod, Stream> ();
