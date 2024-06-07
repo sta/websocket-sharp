@@ -251,7 +251,8 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <value>
     ///   <para>
-    ///   An <c>IEnumerable&lt;IWebSocketSession&gt;</c> instance.
+    ///   An <see cref="T:System.Collections.Generic.IEnumerable{IWebSocketSession}"/>
+    ///   instance.
     ///   </para>
     ///   <para>
     ///   It provides an enumerator which supports the iteration over
