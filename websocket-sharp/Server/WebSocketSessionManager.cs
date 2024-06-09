@@ -194,7 +194,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </value>
     /// <param name="id">
-    /// A <see cref="string"/> that specifies the ID of the session to find.
+    /// A <see cref="string"/> that specifies the ID of the session to get.
     /// </param>
     /// <exception cref="ArgumentException">
     /// <paramref name="id"/> is an empty string.
