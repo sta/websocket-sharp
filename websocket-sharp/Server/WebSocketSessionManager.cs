@@ -139,7 +139,8 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <value>
     ///   <para>
-    ///   An <c>IEnumerable&lt;string&gt;</c> instance.
+    ///   An <see cref="T:System.Collections.Generic.IEnumerable{string}"/>
+    ///   instance.
     ///   </para>
     ///   <para>
     ///   It provides an enumerator which supports the iteration over
