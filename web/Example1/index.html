@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/106/three.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="notify.min.js"></script>
+    <script src="OrbitControls.js"></script>
+    <script src="main.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="main.css">
+    <title>Example 1</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row page-header">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">ws://</span>
+                    </div>
+                    <input id="ws-address" type="text" class="form-control" aria-label="WebSocketserver address" aria-describedby="btn-connect" value="127.0.0.1:55555/Example1">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="btn-connect">Connect</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div id="scene-container"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

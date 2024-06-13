@@ -1,0 +1,8 @@
+.page-header {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#scene-container {
+    min-height: 70vh;
+}
