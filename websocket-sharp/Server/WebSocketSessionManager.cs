@@ -1589,7 +1589,8 @@ namespace WebSocketSharp.Server
         }
       }
 
-      _sweeping = false;
+      lock (_forSweep)
+        _sweeping = false;
     }
 
     /// <summary>
