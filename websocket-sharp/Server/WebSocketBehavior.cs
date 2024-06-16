@@ -1433,7 +1433,7 @@ namespace WebSocketSharp.Server
     /// <value>
     ///   <para>
     ///   A <see cref="WebSocketSharp.WebSocket"/> that represents
-    ///   the interface.
+    ///   the WebSocket interface.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if the session has not started yet.
