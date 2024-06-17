@@ -1381,20 +1381,6 @@ namespace WebSocketSharp.Server
     ///   <see langword="null"/> if not necessary.
     ///   </para>
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    ///   <para>
-    ///   The session has not started yet.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The current state of the WebSocket interface is not Open.
-    ///   </para>
-    /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="stream"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="stream"/> cannot be read.
@@ -1410,6 +1396,20 @@ namespace WebSocketSharp.Server
     ///   </para>
     ///   <para>
     ///   No data could be read from <paramref name="stream"/>.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="stream"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    ///   <para>
+    ///   The session has not started yet.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The current state of the WebSocket interface is not Open.
     ///   </para>
     /// </exception>
     protected void SendAsync (Stream stream, int length, Action<bool> completed)
