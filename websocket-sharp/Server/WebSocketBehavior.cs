@@ -1320,6 +1320,12 @@ namespace WebSocketSharp.Server
     ///   <see langword="null"/> if not necessary.
     ///   </para>
     /// </param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="data"/> could not be UTF-8-encoded.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="data"/> is <see langword="null"/>.
+    /// </exception>
     /// <exception cref="InvalidOperationException">
     ///   <para>
     ///   The session has not started yet.
@@ -1330,12 +1336,6 @@ namespace WebSocketSharp.Server
     ///   <para>
     ///   The current state of the WebSocket interface is not Open.
     ///   </para>
-    /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="data"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="data"/> could not be UTF-8-encoded.
     /// </exception>
     protected void SendAsync (string data, Action<bool> completed)
     {
