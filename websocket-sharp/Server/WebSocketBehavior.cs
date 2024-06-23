@@ -1055,20 +1055,6 @@ namespace WebSocketSharp.Server
     ///   The file is sent as the binary data.
     ///   </para>
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    ///   <para>
-    ///   The session has not started yet.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The current state of the WebSocket interface is not Open.
-    ///   </para>
-    /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="fileInfo"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   The file does not exist.
@@ -1078,6 +1064,20 @@ namespace WebSocketSharp.Server
     ///   </para>
     ///   <para>
     ///   The file could not be opened.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="fileInfo"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    ///   <para>
+    ///   The session has not started yet.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The current state of the WebSocket interface is not Open.
     ///   </para>
     /// </exception>
     protected void Send (FileInfo fileInfo)
