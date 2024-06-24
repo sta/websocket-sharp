@@ -1019,6 +1019,9 @@ namespace WebSocketSharp.Server
     /// <param name="data">
     /// An array of <see cref="byte"/> that specifies the binary data to send.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="data"/> is <see langword="null"/>.
+    /// </exception>
     /// <exception cref="InvalidOperationException">
     ///   <para>
     ///   The session has not started yet.
@@ -1029,9 +1032,6 @@ namespace WebSocketSharp.Server
     ///   <para>
     ///   The current state of the WebSocket interface is not Open.
     ///   </para>
-    /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="data"/> is <see langword="null"/>.
     /// </exception>
     protected void Send (byte[] data)
     {
