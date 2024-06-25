@@ -993,14 +993,14 @@ namespace WebSocketSharp.Server
     ///   Its size must be 125 bytes or less in UTF-8.
     ///   </para>
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The session has not started yet.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="message"/> could not be UTF-8-encoded.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The size of <paramref name="message"/> is greater than 125 bytes.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
     /// </exception>
     protected bool Ping (string message)
     {
