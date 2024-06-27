@@ -810,20 +810,6 @@ namespace WebSocketSharp.Server
     ///   Its size must be 123 bytes or less in UTF-8.
     ///   </para>
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The session has not started yet.
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    ///   <para>
-    ///   <paramref name="code"/> is less than 1000 or greater than 4999.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The size of <paramref name="reason"/> is greater than 123 bytes.
-    ///   </para>
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="code"/> is 1010 (mandatory extension).
@@ -841,6 +827,20 @@ namespace WebSocketSharp.Server
     ///   <para>
     ///   <paramref name="reason"/> could not be UTF-8-encoded.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    ///   <para>
+    ///   <paramref name="code"/> is less than 1000 or greater than 4999.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The size of <paramref name="reason"/> is greater than 123 bytes.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
     /// </exception>
     protected void CloseAsync (ushort code, string reason)
     {
