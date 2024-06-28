@@ -717,9 +717,6 @@ namespace WebSocketSharp.Server
     ///   Its size must be 123 bytes or less in UTF-8.
     ///   </para>
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The session has not started yet.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="code"/> is <see cref="CloseStatusCode.MandatoryExtension"/>.
@@ -740,6 +737,9 @@ namespace WebSocketSharp.Server
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The size of <paramref name="reason"/> is greater than 123 bytes.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
     /// </exception>
     protected void Close (CloseStatusCode code, string reason)
     {
