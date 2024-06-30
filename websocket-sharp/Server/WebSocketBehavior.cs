@@ -573,7 +573,8 @@ namespace WebSocketSharp.Server
     #region Internal Methods
 
     internal void Start (
-      WebSocketContext context, WebSocketSessionManager sessions
+      WebSocketContext context,
+      WebSocketSessionManager sessions
     )
     {
       _context = context;
