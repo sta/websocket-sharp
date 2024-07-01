@@ -443,11 +443,11 @@ namespace WebSocketSharp.Server
     ///   The default value is an empty string.
     ///   </para>
     /// </value>
-    /// <exception cref="InvalidOperationException">
-    /// The set operation is not available if the session has already started.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// The value specified for a set operation is not a token.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The set operation is not available if the session has already started.
     /// </exception>
     public string Protocol {
       get {
