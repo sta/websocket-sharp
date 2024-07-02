@@ -399,16 +399,17 @@ namespace WebSocketSharp.Server
     ///   A <see cref="T:System.Func{string, bool}"/> delegate.
     ///   </para>
     ///   <para>
-    ///   The delegate invokes the method called when the WebSocket interface
+    ///   It represents the delegate called when the WebSocket interface
     ///   for a session validates the handshake request.
     ///   </para>
     ///   <para>
-    ///   The <see cref="string"/> parameter passed to the method is the value
-    ///   of the Origin header or <see langword="null"/> if the header is not
-    ///   present.
+    ///   The <see cref="string"/> parameter passed to the delegate is
+    ///   the value of the Origin header or <see langword="null"/> if
+    ///   the header is not present.
     ///   </para>
     ///   <para>
-    ///   The method must return <c>true</c> if the header value is valid.
+    ///   The method invoked by the delegate must return <c>true</c>
+    ///   if the header value is valid.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if not necessary.
