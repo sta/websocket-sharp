@@ -256,19 +256,20 @@ namespace WebSocketSharp.Server
     ///   delegate.
     ///   </para>
     ///   <para>
-    ///   The delegate invokes the method called when the WebSocket interface
+    ///   It represents the delegate called when the WebSocket interface
     ///   for a session validates the handshake request.
     ///   </para>
     ///   <para>
-    ///   1st <see cref="CookieCollection"/> parameter passed to the method
+    ///   1st <see cref="CookieCollection"/> parameter passed to the delegate
     ///   contains the cookies to validate.
     ///   </para>
     ///   <para>
-    ///   2nd <see cref="CookieCollection"/> parameter passed to the method
+    ///   2nd <see cref="CookieCollection"/> parameter passed to the delegate
     ///   receives the cookies to send to the client.
     ///   </para>
     ///   <para>
-    ///   The method must return <c>true</c> if the cookies are valid.
+    ///   The method invoked by the delegate must return <c>true</c>
+    ///   if the cookies are valid.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if not necessary.
