@@ -374,6 +374,7 @@ namespace WebSocketSharp.Net.WebSockets
     internal void Close (HttpStatusCode code)
     {
       _context.Response.StatusCode = (int) code;
+
       _context.Response.Close ();
     }
 
