@@ -142,9 +142,10 @@ namespace WebSocketSharp
 
     internal static HttpRequest CreateConnectRequest (Uri targetUri)
     {
+      var fmt = "{0}:{1}";
       var host = targetUri.DnsSafeHost;
       var port = targetUri.Port;
-      var authority = String.Format ("{0}:{1}", host, port);
+      var authority = String.Format (fmt, host, port);
 
       var ret = new HttpRequest ("CONNECT", authority);
 
