@@ -162,10 +162,10 @@ namespace WebSocketSharp
 
       var port = targetUri.Port;
       var schm = targetUri.Scheme;
-      var defaultPort = (port == 80 && schm == "ws")
-                        || (port == 443 && schm == "wss");
+      var isDefaultPort = (port == 80 && schm == "ws")
+                          || (port == 443 && schm == "wss");
 
-      headers["Host"] = !defaultPort
+      headers["Host"] = !isDefaultPort
                         ? targetUri.Authority
                         : targetUri.DnsSafeHost;
 
