@@ -1234,7 +1234,8 @@ namespace WebSocketSharp
     }
 
     internal static bool Upgrades (
-      this NameValueCollection headers, string protocol
+      this NameValueCollection headers,
+      string protocol
     )
     {
       var compType = StringComparison.OrdinalIgnoreCase;
