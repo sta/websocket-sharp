@@ -46,7 +46,10 @@ namespace WebSocketSharp
     #region Private Constructors
 
     private HttpResponse (
-      int code, string reason, Version version, NameValueCollection headers
+      int code,
+      string reason,
+      Version version,
+      NameValueCollection headers
     )
       : base (version, headers)
     {
