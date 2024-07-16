@@ -95,10 +95,17 @@ namespace WebSocketSharp
       get {
         return _reason != null
                ? String.Format (
-                   "HTTP/{0} {1} {2}{3}", ProtocolVersion, _code, _reason, CrLf
+                   "HTTP/{0} {1} {2}{3}",
+                   ProtocolVersion,
+                   _code,
+                   _reason,
+                   CrLf
                  )
                : String.Format (
-                   "HTTP/{0} {1}{2}", ProtocolVersion, _code, CrLf
+                   "HTTP/{0} {1}{2}",
+                   ProtocolVersion,
+                   _code,
+                   CrLf
                  );
       }
     }
