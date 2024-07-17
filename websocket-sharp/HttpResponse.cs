@@ -244,7 +244,8 @@ namespace WebSocketSharp
     }
 
     internal static HttpResponse ReadResponse (
-      Stream stream, int millisecondsTimeout
+      Stream stream,
+      int millisecondsTimeout
     )
     {
       return Read<HttpResponse> (stream, Parse, millisecondsTimeout);
