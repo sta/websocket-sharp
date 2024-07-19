@@ -227,7 +227,8 @@ namespace WebSocketSharp
     }
 
     internal static bool Contains (
-      this NameValueCollection collection, string name
+      this NameValueCollection collection,
+      string name
     )
     {
       return collection[name] != null;
