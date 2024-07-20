@@ -255,7 +255,8 @@ namespace WebSocketSharp
     }
 
     internal static bool Contains<T> (
-      this IEnumerable<T> source, Func<T, bool> condition
+      this IEnumerable<T> source,
+      Func<T, bool> condition
     )
     {
       foreach (T elm in source) {
