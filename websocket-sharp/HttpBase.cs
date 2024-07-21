@@ -236,7 +236,10 @@ namespace WebSocketSharp
     #region Protected Methods
 
     protected static T Read<T> (
-      Stream stream, Func<string[], T> parser, int millisecondsTimeout
+      Stream stream,
+      Func<string[],
+      T> parser,
+      int millisecondsTimeout
     )
       where T : HttpBase
     {
