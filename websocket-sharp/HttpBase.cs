@@ -237,8 +237,7 @@ namespace WebSocketSharp
 
     protected static T Read<T> (
       Stream stream,
-      Func<string[],
-      T> parser,
+      Func<string[], T> parser,
       int millisecondsTimeout
     )
       where T : HttpBase
