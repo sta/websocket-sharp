@@ -167,7 +167,7 @@ namespace WebSocketSharp
       }
 
       if (len < 0) {
-        var msg = "It is less than zero.";
+        var msg = "Less than zero.";
 
         throw new ArgumentOutOfRangeException ("length", msg);
       }
