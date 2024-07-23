@@ -161,7 +161,7 @@ namespace WebSocketSharp
       long len;
 
       if (!Int64.TryParse (length, out len)) {
-        var msg = "It cannot be parsed.";
+        var msg = "It could not be parsed.";
 
         throw new ArgumentException (msg, "length");
       }
