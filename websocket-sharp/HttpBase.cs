@@ -96,8 +96,10 @@ namespace WebSocketSharp
       get {
         var buff = new StringBuilder (64);
 
+        var fmt = "{0}: {1}{2}";
+
         foreach (var key in _headers.AllKeys)
-          buff.AppendFormat ("{0}: {1}{2}", key, _headers[key], CrLf);
+          buff.AppendFormat (fmt, key, _headers[key], CrLf);
 
         buff.Append (CrLf);
 
