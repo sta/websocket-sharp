@@ -537,7 +537,9 @@ namespace WebSocketSharp
     }
 
     internal static bool IsEqualTo (
-      this int value, char c, Action<int> beforeComparing
+      this int value,
+      char c,
+      Action<int> beforeComparing
     )
     {
       beforeComparing (value);
