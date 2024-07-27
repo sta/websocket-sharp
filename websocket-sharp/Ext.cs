@@ -692,7 +692,9 @@ namespace WebSocketSharp
     }
 
     internal static byte[] ReadBytes (
-      this Stream stream, long length, int bufferLength
+      this Stream stream,
+      long length,
+      int bufferLength
     )
     {
       using (var dest = new MemoryStream ()) {
