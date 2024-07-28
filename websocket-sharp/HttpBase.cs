@@ -250,6 +250,7 @@ namespace WebSocketSharp
       var timer = new Timer (
                     state => {
                       timeout = true;
+
                       stream.Close ();
                     },
                     null,
