@@ -832,6 +832,7 @@ namespace WebSocketSharp
                     dest.Close ();
 
                     var ret = dest.ToArray ();
+
                     completed (ret);
                   }
 
@@ -845,8 +846,9 @@ namespace WebSocketSharp
                 if (nread == len) {
                   if (completed != null) {
                     dest.Close ();
-                
+
                     var ret = dest.ToArray ();
+
                     completed (ret);
                   }
 
