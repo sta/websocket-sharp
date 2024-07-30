@@ -632,7 +632,8 @@ namespace WebSocketSharp
     }
 
     internal static bool KeepsAlive (
-      this NameValueCollection headers, Version version
+      this NameValueCollection headers,
+      Version version
     )
     {
       var compType = StringComparison.OrdinalIgnoreCase;
