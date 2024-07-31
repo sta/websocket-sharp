@@ -638,9 +638,9 @@ namespace WebSocketSharp
     {
       var compType = StringComparison.OrdinalIgnoreCase;
 
-      return version < HttpVersion.Version11
-             ? headers.Contains ("Connection", "keep-alive", compType)
-             : !headers.Contains ("Connection", "close", compType);
+      return version > HttpVersion.Version10
+             ? !headers.Contains ("Connection", "close", compType)
+             : headers.Contains ("Connection", "keep-alive", compType);
     }
 
     internal static bool MaybeUri (this string value)
