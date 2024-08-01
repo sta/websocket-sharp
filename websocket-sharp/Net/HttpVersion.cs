@@ -2,7 +2,7 @@
 /*
  * HttpVersion.cs
  *
- * This code is derived from System.Net.HttpVersion.cs of Mono
+ * This code is derived from HttpVersion.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
