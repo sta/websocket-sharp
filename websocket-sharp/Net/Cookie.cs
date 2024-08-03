@@ -943,7 +943,9 @@ namespace WebSocketSharp.Net
     }
 
     internal static bool TryCreate (
-      string name, string value, out Cookie result
+      string name,
+      string value,
+      out Cookie result
     )
     {
       result = null;
