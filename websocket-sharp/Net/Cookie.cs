@@ -253,9 +253,6 @@ namespace WebSocketSharp.Net
     /// A <see cref="string"/> that specifies the value of the Domain
     /// attribute of the cookie.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="name"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="name"/> is an empty string.
@@ -279,6 +276,9 @@ namespace WebSocketSharp.Net
     ///   <paramref name="value"/> is a string not enclosed in double quotes
     ///   although it contains a reserved character.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="name"/> is <see langword="null"/>.
     /// </exception>
     public Cookie (string name, string value, string path, string domain)
     {
