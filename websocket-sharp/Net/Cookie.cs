@@ -544,9 +544,6 @@ namespace WebSocketSharp.Net
     ///   RFC 2616</see>.
     ///   </para>
     /// </value>
-    /// <exception cref="ArgumentNullException">
-    /// The value specified for a set operation is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   The value specified for a set operation is an empty string.
@@ -563,6 +560,9 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   The value specified for a set operation contains an invalid character.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// The value specified for a set operation is <see langword="null"/>.
     /// </exception>
     public string Name {
       get {
