@@ -702,11 +702,11 @@ namespace WebSocketSharp.Net
     /// <param name="cookies">
     /// A <see cref="CookieCollection"/> that contains the cookies to add.
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The collection is read-only.
-    /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="cookies"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The collection is read-only.
     /// </exception>
     public void Add (CookieCollection cookies)
     {
