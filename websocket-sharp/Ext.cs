@@ -210,12 +210,11 @@ namespace WebSocketSharp
     }
 
     internal static Stream Compress (
-      this Stream stream, CompressionMethod method
+      this Stream stream,
+      CompressionMethod method
     )
     {
-      return method == CompressionMethod.Deflate
-             ? stream.compress ()
-             : stream;
+      return method == CompressionMethod.Deflate ? stream.compress () : stream;
     }
 
     internal static bool Contains (this string value, params char[] anyOf)
