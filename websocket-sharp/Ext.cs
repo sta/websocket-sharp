@@ -307,7 +307,9 @@ namespace WebSocketSharp
     }
 
     internal static void CopyTo (
-      this Stream sourceStream, Stream destinationStream, int bufferLength
+      this Stream sourceStream,
+      Stream destinationStream,
+      int bufferLength
     )
     {
       var buff = new byte[bufferLength];
