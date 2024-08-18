@@ -375,7 +375,8 @@ namespace WebSocketSharp
     }
 
     internal static Stream Decompress (
-      this Stream stream, CompressionMethod method
+      this Stream stream,
+      CompressionMethod method
     )
     {
       return method == CompressionMethod.Deflate
