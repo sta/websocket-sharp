@@ -395,7 +395,9 @@ namespace WebSocketSharp
     }
 
     internal static void Emit (
-      this EventHandler eventHandler, object sender, EventArgs e
+      this EventHandler eventHandler,
+      object sender,
+      EventArgs e
     )
     {
       if (eventHandler == null)
