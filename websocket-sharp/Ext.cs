@@ -407,7 +407,9 @@ namespace WebSocketSharp
     }
 
     internal static void Emit<TEventArgs> (
-      this EventHandler<TEventArgs> eventHandler, object sender, TEventArgs e
+      this EventHandler<TEventArgs> eventHandler,
+      object sender,
+      TEventArgs e
     )
       where TEventArgs : EventArgs
     {
