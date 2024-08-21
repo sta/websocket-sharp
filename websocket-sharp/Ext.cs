@@ -518,7 +518,9 @@ namespace WebSocketSharp
     }
 
     internal static string GetValue (
-      this string nameAndValue, char separator, bool unquote
+      this string nameAndValue,
+      char separator,
+      bool unquote
     )
     {
       var idx = nameAndValue.IndexOf (separator);
