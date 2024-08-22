@@ -534,7 +534,8 @@ namespace WebSocketSharp
     }
 
     internal static bool IsCompressionExtension (
-      this string value, CompressionMethod method
+      this string value,
+      CompressionMethod method
     )
     {
       var extStr = method.ToExtensionString ();
