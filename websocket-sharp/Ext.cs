@@ -906,7 +906,8 @@ namespace WebSocketSharp
     }
 
     internal static IEnumerable<string> SplitHeaderValue (
-      this string value, params char[] separators
+      this string value,
+      params char[] separators
     )
     {
       var len = value.Length;
@@ -918,6 +919,7 @@ namespace WebSocketSharp
 
       for (var i = 0; i <= end; i++) {
         var c = value[i];
+
         buff.Append (c);
 
         if (c == '"') {
