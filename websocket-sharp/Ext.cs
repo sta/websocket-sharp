@@ -1006,7 +1006,8 @@ namespace WebSocketSharp
     }
 
     internal static string ToExtensionString (
-      this CompressionMethod method, params string[] parameters
+      this CompressionMethod method,
+      params string[] parameters
     )
     {
       if (method == CompressionMethod.None)
