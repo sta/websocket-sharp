@@ -1057,7 +1057,8 @@ namespace WebSocketSharp
     }
 
     internal static string ToString (
-      this System.Net.IPAddress address, bool bracketIPv6
+      this System.Net.IPAddress address,
+      bool bracketIPv6
     )
     {
       return bracketIPv6
