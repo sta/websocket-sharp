@@ -1109,7 +1109,8 @@ namespace WebSocketSharp
     }
 
     internal static bool TryCreateVersion (
-      this string versionString, out Version result
+      this string versionString,
+      out Version result
     )
     {
       result = null;
