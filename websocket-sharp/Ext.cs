@@ -1126,7 +1126,9 @@ namespace WebSocketSharp
     }
 
     internal static bool TryCreateWebSocketUri (
-      this string uriString, out Uri result, out string message
+      this string uriString,
+      out Uri result,
+      out string message
     )
     {
       result = null;
