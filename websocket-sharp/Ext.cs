@@ -1152,7 +1152,7 @@ namespace WebSocketSharp
       var valid = schm == "ws" || schm == "wss";
 
       if (!valid) {
-        message = "The scheme part is not 'ws' or 'wss'.";
+        message = "The scheme part is not \"ws\" or \"wss\".";
 
         return false;
       }
