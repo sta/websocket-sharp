@@ -1225,7 +1225,8 @@ namespace WebSocketSharp
     }
 
     internal static bool TryOpenRead (
-      this FileInfo fileInfo, out FileStream fileStream
+      this FileInfo fileInfo,
+      out FileStream fileStream
     )
     {
       fileStream = null;
