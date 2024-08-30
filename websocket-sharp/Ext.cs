@@ -1284,7 +1284,9 @@ namespace WebSocketSharp
     }
 
     internal static void WriteBytes (
-      this Stream stream, byte[] bytes, int bufferLength
+      this Stream stream,
+      byte[] bytes,
+      int bufferLength
     )
     {
       using (var src = new MemoryStream (bytes))
