@@ -892,7 +892,8 @@ namespace WebSocketSharp.Net
     }
 
     internal static bool TryGetEncoding (
-      string contentType, out Encoding result
+      string contentType,
+      out Encoding result
     )
     {
       result = null;
