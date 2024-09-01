@@ -1019,7 +1019,10 @@ namespace WebSocketSharp.Net
     }
 
     public static string UrlDecode (
-      byte[] bytes, int offset, int count, Encoding encoding
+      byte[] bytes,
+      int offset,
+      int count,
+      Encoding encoding
     )
     {
       if (bytes == null)
