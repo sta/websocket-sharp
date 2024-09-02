@@ -1100,9 +1100,7 @@ namespace WebSocketSharp.Net
       if (count < 0 || count > len - offset)
         throw new ArgumentOutOfRangeException ("count");
 
-      return count > 0
-             ? urlDecodeToBytes (bytes, offset, count)
-             : new byte[0];
+      return count > 0 ? urlDecodeToBytes (bytes, offset, count) : new byte[0];
     }
 
     public static string UrlEncode (byte[] bytes)
