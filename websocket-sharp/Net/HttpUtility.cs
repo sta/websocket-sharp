@@ -1061,9 +1061,7 @@ namespace WebSocketSharp.Net
 
       var len = bytes.Length;
 
-      return len > 0
-             ? urlDecodeToBytes (bytes, 0, len)
-             : bytes;
+      return len > 0 ? urlDecodeToBytes (bytes, 0, len) : bytes;
     }
 
     public static byte[] UrlDecodeToBytes (string s)
