@@ -747,7 +747,10 @@ namespace WebSocketSharp.Net
     #region Internal Methods
 
     internal static Uri CreateRequestUrl (
-      string requestUri, string host, bool websocketRequest, bool secure
+      string requestUri,
+      string host,
+      bool websocketRequest,
+      bool secure
     )
     {
       if (requestUri == null || requestUri.Length == 0)
