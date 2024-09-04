@@ -610,8 +610,7 @@ namespace WebSocketSharp.Net
 
     private static bool isAlphabet (char c)
     {
-      return (c >= 'A' && c <= 'Z')
-             || (c >= 'a' && c <= 'z');
+      return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
     }
 
     private static bool isNumeric (char c)
