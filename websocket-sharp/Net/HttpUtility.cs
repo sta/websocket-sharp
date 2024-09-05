@@ -168,6 +168,7 @@ namespace WebSocketSharp.Net
           buff.Append (reference.ToString ());
 
           reference.Length = 0;
+
           reference.Append ('&');
 
           state = 1;
