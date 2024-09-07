@@ -1077,9 +1077,6 @@ namespace WebSocketSharp.Net
     /// A <see cref="string"/> that specifies the header to add,
     /// with the name and value separated by a colon character (':').
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="header"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="header"/> is an empty string.
@@ -1122,6 +1119,9 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   <paramref name="header"/> is a restricted header.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="header"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The length of the value part of <paramref name="header"/> is greater
