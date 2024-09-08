@@ -1152,9 +1152,7 @@ namespace WebSocketSharp.Net
       }
 
       var name = header.Substring (0, idx);
-      var val = idx < len - 1
-                ? header.Substring (idx + 1)
-                : String.Empty;
+      var val = idx < len - 1 ? header.Substring (idx + 1) : String.Empty;
 
       name = checkName (name, "header");
       val = checkValue (val, "header");
