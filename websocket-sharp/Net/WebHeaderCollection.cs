@@ -1022,9 +1022,6 @@ namespace WebSocketSharp.Net
     /// <param name="headerValue">
     /// A <see cref="string"/> that specifies the value of the header to add.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="headerName"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="headerName"/> is an empty string.
@@ -1047,6 +1044,9 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   <paramref name="headerValue"/> contains an invalid character.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="headerName"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The length of <paramref name="headerValue"/> is greater than 65,535
