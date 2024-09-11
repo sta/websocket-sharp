@@ -1063,6 +1063,7 @@ namespace WebSocketSharp.Net
       var headerType = getHeaderType (headerName);
 
       checkAllowed (headerType);
+
       add (headerName, headerValue, headerType);
     }
 
