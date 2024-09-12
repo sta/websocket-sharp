@@ -1208,6 +1208,7 @@ namespace WebSocketSharp.Net
 
       checkRestricted (name, HttpHeaderType.Request);
       checkAllowed (HttpHeaderType.Request);
+
       add (name, value, HttpHeaderType.Request);
     }
 
