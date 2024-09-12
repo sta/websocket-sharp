@@ -1254,6 +1254,7 @@ namespace WebSocketSharp.Net
 
       checkRestricted (name, HttpHeaderType.Response);
       checkAllowed (HttpHeaderType.Response);
+
       add (name, value, HttpHeaderType.Response);
     }
 
