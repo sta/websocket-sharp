@@ -1497,9 +1497,6 @@ namespace WebSocketSharp.Net
     /// <param name="headerName">
     /// A <see cref="string"/> that specifies the name of the header to test.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="headerName"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="headerName"/> is an empty string.
@@ -1516,6 +1513,9 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   <paramref name="headerName"/> contains an invalid character.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="headerName"/> is <see langword="null"/>.
     /// </exception>
     public static bool IsRestricted (string headerName)
     {
