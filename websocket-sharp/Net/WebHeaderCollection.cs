@@ -1536,9 +1536,6 @@ namespace WebSocketSharp.Net
     /// A <see cref="bool"/>: <c>true</c> if the test is for the response;
     /// otherwise, <c>false</c>.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="headerName"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="headerName"/> is an empty string.
@@ -1555,6 +1552,9 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   <paramref name="headerName"/> contains an invalid character.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="headerName"/> is <see langword="null"/>.
     /// </exception>
     public static bool IsRestricted (string headerName, bool response)
     {
