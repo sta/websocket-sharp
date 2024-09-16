@@ -1599,6 +1599,7 @@ namespace WebSocketSharp.Net
 
       checkRestricted (name, HttpHeaderType.Request);
       checkAllowed (HttpHeaderType.Request);
+
       base.Remove (name);
     }
 
