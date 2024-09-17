@@ -1637,9 +1637,6 @@ namespace WebSocketSharp.Net
     /// <param name="name">
     /// A <see cref="string"/> that specifies the name of the header to remove.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="name"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="name"/> is an empty string.
@@ -1662,6 +1659,9 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   <paramref name="name"/> is a restricted header name.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="name"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// This instance does not allow the header.
