@@ -1674,6 +1674,7 @@ namespace WebSocketSharp.Net
 
       checkRestricted (name, headerType);
       checkAllowed (headerType);
+
       base.Remove (name);
     }
 
