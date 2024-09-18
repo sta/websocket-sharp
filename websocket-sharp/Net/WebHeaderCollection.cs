@@ -1766,6 +1766,7 @@ namespace WebSocketSharp.Net
 
       checkRestricted (name, HttpHeaderType.Response);
       checkAllowed (HttpHeaderType.Response);
+
       set (name, value, HttpHeaderType.Response);
     }
 
