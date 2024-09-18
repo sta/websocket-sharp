@@ -1720,6 +1720,7 @@ namespace WebSocketSharp.Net
 
       checkRestricted (name, HttpHeaderType.Request);
       checkAllowed (HttpHeaderType.Request);
+
       set (name, value, HttpHeaderType.Request);
     }
 
