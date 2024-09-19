@@ -1827,6 +1827,7 @@ namespace WebSocketSharp.Net
 
       checkRestricted (name, headerType);
       checkAllowed (headerType);
+
       set (name, value, headerType);
     }
 
