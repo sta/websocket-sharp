@@ -1779,9 +1779,6 @@ namespace WebSocketSharp.Net
     /// <param name="value">
     /// A <see cref="string"/> that specifies the value of the header to set.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="name"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="name"/> is an empty string.
@@ -1810,6 +1807,9 @@ namespace WebSocketSharp.Net
     ///   <para>
     ///   <paramref name="name"/> is a restricted header name.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="name"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The length of <paramref name="value"/> is greater than 65,535
