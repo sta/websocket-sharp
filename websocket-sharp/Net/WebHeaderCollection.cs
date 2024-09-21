@@ -1387,7 +1387,7 @@ namespace WebSocketSharp.Net
     /// </returns>
     /// <param name="index">
     /// An <see cref="int"/> that specifies the zero-based index of the header
-    /// to find.
+    /// to get.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index"/> is out of allowable range of indexes for
