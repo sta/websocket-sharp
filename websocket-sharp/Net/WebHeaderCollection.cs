@@ -560,9 +560,9 @@ namespace WebSocketSharp.Net
     #region Protected Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebHeaderCollection"/> class
-    /// from the specified instances of the <see cref="SerializationInfo"/> and
-    /// <see cref="StreamingContext"/> classes.
+    /// Initializes a new instance of the <see cref="WebHeaderCollection"/>
+    /// class from the specified instances of the <see cref="SerializationInfo"/>
+    /// and <see cref="StreamingContext"/> classes.
     /// </summary>
     /// <param name="serializationInfo">
     /// A <see cref="SerializationInfo"/> that contains the serialized
