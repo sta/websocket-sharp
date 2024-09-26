@@ -1489,7 +1489,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Determines whether the specified HTTP header can be set for the request.
+    /// Determines whether the specified header can be set for the request.
     /// </summary>
     /// <returns>
     /// <c>true</c> if the header cannot be set; otherwise, <c>false</c>.
