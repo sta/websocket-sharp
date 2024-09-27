@@ -77,6 +77,19 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
+    /// Gets the http context.
+    /// </summary>
+    ///<value>
+    /// A <see cref="HttpListenerContext"/> that provides the methods and
+    /// properties for the http context .
+    /// </value>
+    public HttpListenerContext Context {
+      get {
+        return _context;
+      }
+    }
+    
+    /// <summary>
     /// Gets the request data sent from a client.
     /// </summary>
     /// <value>
