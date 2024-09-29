@@ -57,7 +57,8 @@ namespace WebSocketSharp.Net
     #region Internal Constructors
 
     internal AuthenticationChallenge (
-      AuthenticationSchemes scheme, string realm
+      AuthenticationSchemes scheme,
+      string realm
     )
       : this (scheme, new NameValueCollection ())
     {
