@@ -175,7 +175,8 @@ namespace WebSocketSharp.Net
         var parameters = ParseParameters (chal[1]);
 
         return new AuthenticationChallenge (
-                 AuthenticationSchemes.Basic, parameters
+                 AuthenticationSchemes.Basic,
+                 parameters
                );
       }
 
@@ -183,7 +184,8 @@ namespace WebSocketSharp.Net
         var parameters = ParseParameters (chal[1]);
 
         return new AuthenticationChallenge (
-                 AuthenticationSchemes.Digest, parameters
+                 AuthenticationSchemes.Digest,
+                 parameters
                );
       }
 
