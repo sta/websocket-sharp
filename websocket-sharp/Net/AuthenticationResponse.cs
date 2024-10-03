@@ -105,9 +105,7 @@ namespace WebSocketSharp.Net
 
     internal uint NonceCount {
       get {
-        return _nonceCount < UInt32.MaxValue
-               ? _nonceCount
-               : 0;
+        return _nonceCount < UInt32.MaxValue ? _nonceCount : 0;
       }
     }
 
