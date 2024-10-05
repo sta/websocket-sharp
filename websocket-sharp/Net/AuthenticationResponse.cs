@@ -293,7 +293,12 @@ namespace WebSocketSharp.Net
       var secret = hash (a1);
       var data = qop != null
                  ? String.Format (
-                     "{0}:{1}:{2}:{3}:{4}", nonce, nc, cnonce, qop, hash (a2)
+                     "{0}:{1}:{2}:{3}:{4}",
+                     nonce,
+                     nc,
+                     cnonce,
+                     qop,
+                     hash (a2)
                    )
                  : String.Format ("{0}:{1}", nonce, hash (a2));
 
