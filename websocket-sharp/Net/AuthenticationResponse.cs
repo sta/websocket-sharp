@@ -321,7 +321,8 @@ namespace WebSocketSharp.Net
           var parameters = ParseBasicCredentials (cred[1]);
 
           return new AuthenticationResponse (
-                   AuthenticationSchemes.Basic, parameters
+                   AuthenticationSchemes.Basic,
+                   parameters
                  );
         }
 
@@ -329,7 +330,8 @@ namespace WebSocketSharp.Net
           var parameters = AuthenticationChallenge.ParseParameters (cred[1]);
 
           return new AuthenticationResponse (
-                   AuthenticationSchemes.Digest, parameters
+                   AuthenticationSchemes.Digest,
+                   parameters
                  );
         }
 
