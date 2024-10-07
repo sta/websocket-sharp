@@ -420,7 +420,10 @@ namespace WebSocketSharp.Net
         var nc = _parameters["nc"];
 
         buff.AppendFormat (
-          ", qop={0}, cnonce=\"{1}\", nc={2}", qop, cnonce, nc
+          ", qop={0}, cnonce=\"{1}\", nc={2}",
+          qop,
+          cnonce,
+          nc
         );
       }
 
