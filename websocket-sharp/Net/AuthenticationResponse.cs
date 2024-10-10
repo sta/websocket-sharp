@@ -376,9 +376,9 @@ namespace WebSocketSharp.Net
     {
       var uname = _parameters["username"];
       var passwd = _parameters["password"];
-      var userPasswd = String.Format ("{0}:{1}", uname, passwd);
+      var userPass = String.Format ("{0}:{1}", uname, passwd);
 
-      var bytes = Encoding.UTF8.GetBytes (userPasswd);
+      var bytes = Encoding.UTF8.GetBytes (userPass);
       var cred = Convert.ToBase64String (bytes);
 
       return "Basic " + cred;
