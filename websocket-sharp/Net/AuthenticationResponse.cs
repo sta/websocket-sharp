@@ -388,7 +388,7 @@ namespace WebSocketSharp.Net
     {
       var buff = new StringBuilder (256);
 
-      var user = _parameters["username"];
+      var uname = _parameters["username"];
       var realm = _parameters["realm"];
       var nonce = _parameters["nonce"];
       var uri = _parameters["uri"];
@@ -396,7 +396,7 @@ namespace WebSocketSharp.Net
 
       buff.AppendFormat (
         "Digest username=\"{0}\", realm=\"{1}\", nonce=\"{2}\", uri=\"{3}\", response=\"{4}\"",
-        user,
+        uname,
         realm,
         nonce,
         uri,
