@@ -272,7 +272,7 @@ namespace WebSocketSharp.Net
     internal static string CreateRequestDigest (NameValueCollection parameters)
     {
       var uname = parameters["username"];
-      var pass = parameters["password"];
+      var passwd = parameters["password"];
       var realm = parameters["realm"];
       var nonce = parameters["nonce"];
       var uri = parameters["uri"];
@@ -283,8 +283,8 @@ namespace WebSocketSharp.Net
       var method = parameters["method"];
 
       var a1 = algo != null && algo.ToLower () == "md5-sess"
-               ? createA1 (uname, pass, realm, nonce, cnonce)
-               : createA1 (uname, pass, realm);
+               ? createA1 (uname, passwd, realm, nonce, cnonce)
+               : createA1 (uname, passwd, realm);
 
       var a2 = qop != null && qop.ToLower () == "auth-int"
                ? createA2 (method, uri, parameters["entity"])
