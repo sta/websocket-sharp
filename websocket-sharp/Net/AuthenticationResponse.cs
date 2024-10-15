@@ -437,10 +437,10 @@ namespace WebSocketSharp.Net
     public IIdentity ToIdentity ()
     {
       if (_scheme == AuthenticationSchemes.Basic) {
-        var user = _parameters["username"];
-        var pass = _parameters["password"];
+        var uname = _parameters["username"];
+        var passwd = _parameters["password"];
 
-        return new HttpBasicIdentity (user, pass);
+        return new HttpBasicIdentity (uname, passwd);
       }
 
       if (_scheme == AuthenticationSchemes.Digest)
