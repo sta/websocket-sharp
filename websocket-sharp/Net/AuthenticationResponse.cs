@@ -353,18 +353,18 @@ namespace WebSocketSharp.Net
 
       // The format is [<domain>\]<username>:<password>.
 
-      var i = userPass.IndexOf (':');
-      var uname = userPass.Substring (0, i);
-      var passwd = i < userPass.Length - 1
-                   ? userPass.Substring (i + 1)
+      var idx = userPass.IndexOf (':');
+      var uname = userPass.Substring (0, idx);
+      var passwd = idx < userPass.Length - 1
+                   ? userPass.Substring (idx + 1)
                    : String.Empty;
 
       // Check if <domain> exists.
 
-      i = uname.IndexOf ('\\');
+      idx = uname.IndexOf ('\\');
 
-      if (i > -1)
-        uname = uname.Substring (i + 1);
+      if (idx > -1)
+        uname = uname.Substring (idx + 1);
 
       ret["username"] = uname;
       ret["password"] = passwd;
