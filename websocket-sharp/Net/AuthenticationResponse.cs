@@ -349,7 +349,7 @@ namespace WebSocketSharp.Net
       // Decode the basic-credentials (a Base64 encoded string).
 
       var bytes = Convert.FromBase64String (value);
-      var userPass = Encoding.Default.GetString (bytes);
+      var userPass = Encoding.UTF8.GetString (bytes);
 
       // The format is [<domain>\]<username>:<password>.
 
