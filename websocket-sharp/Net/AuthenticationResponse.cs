@@ -229,12 +229,11 @@ namespace WebSocketSharp.Net
 
     private static string hash (string value)
     {
-      var md5 = MD5.Create ();
+      var buff = new StringBuilder (64);
 
+      var md5 = MD5.Create ();
       var bytes = Encoding.UTF8.GetBytes (value);
       var res = md5.ComputeHash (bytes);
-
-      var buff = new StringBuilder (64);
 
       foreach (var b in res)
         buff.Append (b.ToString ("x2"));
