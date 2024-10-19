@@ -246,11 +246,11 @@ namespace WebSocketSharp.Net
       var qops = _parameters["qop"];
 
       if (qops != null) {
-        var auth = qops.Split (',').Contains (
-                     qop => qop.Trim ().ToLower () == "auth"
-                   );
+        var hasAuth = qops.Split (',').Contains (
+                        qop => qop.Trim ().ToLower () == "auth"
+                      );
 
-        if (auth) {
+        if (hasAuth) {
           _parameters["qop"] = "auth";
           _parameters["cnonce"] = AuthenticationChallenge.CreateNonceValue ();
           _parameters["nc"] = String.Format ("{0:x8}", ++_nonceCount);
