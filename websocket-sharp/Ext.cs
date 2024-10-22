@@ -3,9 +3,9 @@
  * Ext.cs
  *
  * Some parts of this code are derived from Mono (http://www.mono-project.com):
- * - GetStatusDescription is derived from HttpListenerResponse.cs (System.Net)
- * - MaybeUri is derived from Uri.cs (System)
- * - isPredefinedScheme is derived from Uri.cs (System)
+ * - The GetStatusDescription method is derived from HttpListenerResponse.cs (System.Net)
+ * - The MaybeUri method is derived from Uri.cs (System)
+ * - The isPredefinedScheme method is derived from Uri.cs (System)
  *
  * The MIT License
  *
