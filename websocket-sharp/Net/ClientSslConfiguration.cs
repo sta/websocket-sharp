@@ -67,11 +67,11 @@ namespace WebSocketSharp.Net
     /// A <see cref="string"/> that specifies the name of the server that
     /// will share a secure connection with a client.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="targetHost"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="targetHost"/> is an empty string.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="targetHost"/> is <see langword="null"/>.
     /// </exception>
     public ClientSslConfiguration (string targetHost)
     {
