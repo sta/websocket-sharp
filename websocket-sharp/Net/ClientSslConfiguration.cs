@@ -259,11 +259,11 @@ namespace WebSocketSharp.Net
     /// A <see cref="string"/> that represents the name of the server that
     /// will share a secure connection with a client.
     /// </value>
-    /// <exception cref="ArgumentNullException">
-    /// The value specified for a set operation is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// The value specified for a set operation is an empty string.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// The value specified for a set operation is <see langword="null"/>.
     /// </exception>
     public string TargetHost {
       get {
