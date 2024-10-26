@@ -235,8 +235,7 @@ namespace WebSocketSharp.Net
     ///   the certificate.
     ///   </para>
     ///   <para>
-    ///   The default value is a delegate that invokes a method that only
-    ///   returns <c>true</c>.
+    ///   The default value invokes a method that only returns <c>true</c>.
     ///   </para>
     /// </value>
     public RemoteCertificateValidationCallback ServerCertificateValidationCallback {
