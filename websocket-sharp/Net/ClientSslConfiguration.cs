@@ -174,12 +174,12 @@ namespace WebSocketSharp.Net
     ///   A <see cref="LocalCertificateSelectionCallback"/> delegate.
     ///   </para>
     ///   <para>
-    ///   The delegate invokes the method called when a client selects
+    ///   It represents the delegate called when a client selects
     ///   the certificate.
     ///   </para>
     ///   <para>
-    ///   The default value is a delegate that invokes a method that only
-    ///   returns <see langword="null"/>.
+    ///   The default value invokes a method that only returns
+    ///   <see langword="null"/>.
     ///   </para>
     /// </value>
     public LocalCertificateSelectionCallback ClientCertificateSelectionCallback {
