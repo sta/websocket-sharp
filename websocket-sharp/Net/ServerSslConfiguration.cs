@@ -152,7 +152,7 @@ namespace WebSocketSharp.Net
     ///   A <see cref="RemoteCertificateValidationCallback"/> delegate.
     ///   </para>
     ///   <para>
-    ///   It represents the delegate called when a server validates
+    ///   It represents the delegate called when the server validates
     ///   the certificate.
     ///   </para>
     ///   <para>
