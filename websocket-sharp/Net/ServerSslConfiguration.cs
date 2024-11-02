@@ -118,12 +118,12 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the client is asked for
+    /// Gets or sets a value indicating whether each client is asked for
     /// a certificate for authentication.
     /// </summary>
     /// <value>
     ///   <para>
-    ///   <c>true</c> if the client is asked for a certificate for
+    ///   <c>true</c> if each client is asked for a certificate for
     ///   authentication; otherwise, <c>false</c>.
     ///   </para>
     ///   <para>
