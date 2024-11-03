@@ -142,7 +142,7 @@ namespace WebSocketSharp.Net
 
     /// <summary>
     /// Gets or sets the callback used to validate the certificate supplied by
-    /// a client.
+    /// each client.
     /// </summary>
     /// <remarks>
     /// The certificate is valid if the callback returns <c>true</c>.
