@@ -175,7 +175,7 @@ namespace WebSocketSharp.Net
     ///   A <see cref="LocalCertificateSelectionCallback"/> delegate.
     ///   </para>
     ///   <para>
-    ///   It represents the delegate called when a client selects
+    ///   It represents the delegate called when the client selects
     ///   the certificate.
     ///   </para>
     ///   <para>
