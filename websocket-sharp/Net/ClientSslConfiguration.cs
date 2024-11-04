@@ -257,7 +257,7 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the name of the server that
-    /// will share a secure connection with a client.
+    /// will share a secure connection with the client.
     /// </value>
     /// <exception cref="ArgumentException">
     /// The value specified for a set operation is an empty string.
