@@ -66,7 +66,7 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <param name="targetHost">
     /// A <see cref="string"/> that specifies the name of the server that
-    /// will share a secure connection with a client.
+    /// will share a secure connection with the client.
     /// </param>
     /// <exception cref="ArgumentException">
     /// <paramref name="targetHost"/> is an empty string.
