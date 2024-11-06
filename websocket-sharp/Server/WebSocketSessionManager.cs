@@ -77,7 +77,6 @@ namespace WebSocketSharp.Server
       _log = log;
 
       _forSweep = new object ();
-      _keepClean = true;
       _sessions = new Dictionary<string, IWebSocketSession> ();
       _state = ServerState.Ready;
       _sync = ((ICollection) _sessions).SyncRoot;

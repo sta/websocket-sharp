@@ -54,8 +54,8 @@ namespace Example3
       // To change the wait time for the response to the WebSocket Ping or Close.
       //httpsv.WaitTime = TimeSpan.FromSeconds (2);
 
-      // Not to remove the inactive WebSocket sessions periodically.
-      //httpsv.KeepClean = false;
+      // To remove the inactive WebSocket sessions periodically.
+      //httpsv.KeepClean = true;
 #endif
       // To provide the secure connection.
       /*

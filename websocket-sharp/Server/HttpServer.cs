@@ -480,7 +480,7 @@ namespace WebSocketSharp.Server
     ///   every 60 seconds; otherwise, <c>false</c>.
     ///   </para>
     ///   <para>
-    ///   The default value is <c>true</c>.
+    ///   The default value is <c>false</c>.
     ///   </para>
     /// </value>
     public bool KeepClean {

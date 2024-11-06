@@ -59,7 +59,6 @@ namespace WebSocketSharp.Server
       _log = log;
 
       _hosts = new Dictionary<string, WebSocketServiceHost> ();
-      _keepClean = true;
       _state = ServerState.Ready;
       _sync = ((ICollection) _hosts).SyncRoot;
       _waitTime = TimeSpan.FromSeconds (1);
@@ -190,7 +189,7 @@ namespace WebSocketSharp.Server
     ///   seconds; otherwise, <c>false</c>.
     ///   </para>
     ///   <para>
-    ///   The default value is <c>true</c>.
+    ///   The default value is <c>false</c>.
     ///   </para>
     /// </value>
     public bool KeepClean {
@@ -425,8 +424,8 @@ namespace WebSocketSharp.Server
 
         host = new WebSocketServiceHost<TBehavior> (path, initializer, _log);
 
-        if (!_keepClean)
-          host.KeepClean = false;
+        if (_keepClean)
+          host.KeepClean = true;
 
         if (_waitTime != host.WaitTime)
           host.WaitTime = _waitTime;

@@ -53,8 +53,8 @@ namespace Example2
       // To change the wait time for the response to the WebSocket Ping or Close.
       //wssv.WaitTime = TimeSpan.FromSeconds (2);
 
-      // Not to remove the inactive sessions periodically.
-      //wssv.KeepClean = false;
+      // To remove the inactive sessions periodically.
+      //wssv.KeepClean = true;
 #endif
       // To provide the secure connection.
       /*
