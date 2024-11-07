@@ -79,7 +79,8 @@ namespace WebSocketSharp.Net
     /// <paramref name="serializationInfo"/> is <see langword="null"/>.
     /// </exception>
     protected CookieException (
-      SerializationInfo serializationInfo, StreamingContext streamingContext
+      SerializationInfo serializationInfo,
+      StreamingContext streamingContext
     )
       : base (serializationInfo, streamingContext)
     {
