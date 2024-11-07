@@ -69,7 +69,8 @@ namespace WebSocketSharp.Net
     /// with the serialized data.
     /// </summary>
     /// <param name="serializationInfo">
-    /// A <see cref="SerializationInfo"/> that holds the serialized object data.
+    /// A <see cref="SerializationInfo"/> that contains the serialized
+    /// object data.
     /// </param>
     /// <param name="streamingContext">
     /// A <see cref="StreamingContext"/> that specifies the source for
