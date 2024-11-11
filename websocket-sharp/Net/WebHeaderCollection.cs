@@ -1448,11 +1448,11 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Populates a <see cref="SerializationInfo"/> instance with the data
-    /// needed to serialize this instance.
+    /// Populates the specified <see cref="SerializationInfo"/> instance with
+    /// the data needed to serialize the current instance.
     /// </summary>
     /// <param name="serializationInfo">
-    /// A <see cref="SerializationInfo"/> to populate with the data.
+    /// A <see cref="SerializationInfo"/> that holds the serialized object data.
     /// </param>
     /// <param name="streamingContext">
     /// A <see cref="StreamingContext"/> that specifies the destination for
