@@ -66,7 +66,7 @@ namespace WebSocketSharp.Net
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CookieException"/> class
-    /// with the serialized data.
+    /// with the specified serialized data.
     /// </summary>
     /// <param name="serializationInfo">
     /// A <see cref="SerializationInfo"/> that contains the serialized
