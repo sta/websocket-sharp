@@ -182,9 +182,9 @@ namespace WebSocketSharp.Net
       parameters["method"] = method;
       parameters["entity"] = entity;
 
-      var expected = AuthenticationResponse.CreateRequestDigest (parameters);
+      var expectedDigest = AuthenticationResponse.CreateRequestDigest (parameters);
 
-      return _parameters["response"] == expected;
+      return _parameters["response"] == expectedDigest;
     }
 
     #endregion
