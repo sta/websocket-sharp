@@ -59,6 +59,7 @@ namespace WebSocketSharp.Net
     private HttpListenerContext _context;
     private bool                _endCalled;
     private Exception           _exception;
+    private Logger              _log;
     private object              _state;
     private object              _sync;
     private ManualResetEvent    _waitHandle;
@@ -67,10 +68,15 @@ namespace WebSocketSharp.Net
 
     #region Internal Constructors
 
-    internal HttpListenerAsyncResult (AsyncCallback callback, object state)
+    internal HttpListenerAsyncResult (
+      AsyncCallback callback,
+      object state,
+      Logger log
+    )
     {
       _callback = callback;
       _state = state;
+      _log = log;
 
       _sync = new object ();
     }
@@ -160,7 +166,9 @@ namespace WebSocketSharp.Net
           try {
             _callback (this);
           }
-          catch {
+          catch (Exception ex) {
+            _log.Error (ex.Message);
+            _log.Debug (ex.ToString ());
           }
         },
         null

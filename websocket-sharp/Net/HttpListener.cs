@@ -547,7 +547,7 @@ namespace WebSocketSharp.Net
           throw new HttpListenerException (995, msg);
         }
 
-        var ares = new HttpListenerAsyncResult (callback, state);
+        var ares = new HttpListenerAsyncResult (callback, state, _log);
 
         if (_contextQueue.Count == 0) {
           _waitQueue.Enqueue (ares);
