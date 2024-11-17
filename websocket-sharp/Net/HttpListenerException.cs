@@ -54,8 +54,7 @@ namespace WebSocketSharp.Net
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HttpListenerException"/>
-    /// class from the specified instances of the <see cref="SerializationInfo"/>
-    /// and <see cref="StreamingContext"/> classes.
+    /// class with the specified serialized data.
     /// </summary>
     /// <param name="serializationInfo">
     /// A <see cref="SerializationInfo"/> that contains the serialized
