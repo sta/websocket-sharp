@@ -127,11 +127,11 @@ namespace WebSocketSharp.Net
     ///   and must end with a forward slash (/).
     ///   </para>
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="uriPrefix"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="uriPrefix"/> is invalid.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="uriPrefix"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// The <see cref="HttpListener"/> instance associated with this
