@@ -208,15 +208,15 @@ namespace WebSocketSharp.Net
     /// An <see cref="int"/> that specifies the zero-based index in
     /// the array at which copying begins.
     /// </param>
+    /// <exception cref="ArgumentException">
+    /// The space from <paramref name="offset"/> to the end of
+    /// <paramref name="array"/> is not enough to copy to.
+    /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="array"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="offset"/> is less than zero.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// The space from <paramref name="offset"/> to the end of
-    /// <paramref name="array"/> is not enough to copy to.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// The <see cref="HttpListener"/> instance associated with this
