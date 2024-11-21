@@ -68,11 +68,11 @@ namespace WebSocketSharp.Net
     /// A <see cref="string"/> that specifies the password for the username
     /// associated with the credentials.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="username"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="username"/> is an empty string.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="username"/> is <see langword="null"/>.
     /// </exception>
     public NetworkCredential (string username, string password)
       : this (username, password, null, null)
