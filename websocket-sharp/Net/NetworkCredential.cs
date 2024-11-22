@@ -99,11 +99,11 @@ namespace WebSocketSharp.Net
     /// An array of <see cref="string"/> that specifies the roles associated
     /// with the credentials if any.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="username"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="username"/> is an empty string.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="username"/> is <see langword="null"/>.
     /// </exception>
     public NetworkCredential (
       string username, string password, string domain, params string[] roles
