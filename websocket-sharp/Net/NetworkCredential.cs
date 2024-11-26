@@ -176,13 +176,15 @@ namespace WebSocketSharp.Net
     /// <summary>
     /// Gets the roles associated with the credentials.
     /// </summary>
-    /// <remarks>
-    /// This property returns an empty array if the roles were initialized
-    /// with <see langword="null"/>.
-    /// </remarks>
     /// <value>
-    /// An array of <see cref="string"/> that represents the role names
-    /// to which the username belongs.
+    ///   <para>
+    ///   An array of <see cref="string"/> that represents the role names
+    ///   to which the username belongs.
+    ///   </para>
+    ///   <para>
+    ///   An empty array if the role names were initialized with
+    ///   <see langword="null"/>.
+    ///   </para>
     /// </value>
     public string[] Roles {
       get {
