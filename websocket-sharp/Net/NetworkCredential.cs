@@ -137,7 +137,7 @@ namespace WebSocketSharp.Net
     ///   to which the username belongs.
     ///   </para>
     ///   <para>
-    ///   An empty string if the domain name was initialized with
+    ///   An empty string if the value was initialized with
     ///   <see langword="null"/>.
     ///   </para>
     /// </value>
