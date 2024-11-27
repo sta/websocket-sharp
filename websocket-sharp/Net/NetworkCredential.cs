@@ -133,8 +133,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents the domain name to which
-    ///   the username belongs.
+    ///   A <see cref="string"/> that represents the domain name
+    ///   to which the username belongs.
     ///   </para>
     ///   <para>
     ///   An empty string if the domain name was initialized with
