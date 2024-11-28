@@ -159,7 +159,7 @@ namespace WebSocketSharp.Net
     ///   A <see cref="string"/> that represents the password.
     ///   </para>
     ///   <para>
-    ///   An empty string if the password was initialized with
+    ///   An empty string if the value was initialized with
     ///   <see langword="null"/>.
     ///   </para>
     /// </value>
