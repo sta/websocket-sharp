@@ -182,7 +182,7 @@ namespace WebSocketSharp.Net
     ///   to which the username belongs.
     ///   </para>
     ///   <para>
-    ///   An empty array if the role names were initialized with
+    ///   An empty array if the value was initialized with
     ///   <see langword="null"/>.
     ///   </para>
     /// </value>
