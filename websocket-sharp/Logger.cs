@@ -215,7 +215,9 @@ namespace WebSocketSharp
         }
         catch (Exception ex) {
           var data = new LogData (
-                       LogLevel.Fatal, new StackFrame (0, true), ex.Message
+                       LogLevel.Fatal,
+                       new StackFrame (0, true),
+                       ex.Message
                      );
 
           Console.WriteLine (data.ToString ());
