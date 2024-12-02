@@ -166,7 +166,7 @@ namespace WebSocketSharp
     ///   An <see cref="T:System.Action{LogData, string}"/> delegate.
     ///   </para>
     ///   <para>
-    ///   It references the method used to output a log.
+    ///   It represents the delegate called when the logger outputs a log.
     ///   </para>
     ///   <para>
     ///   The string parameter passed to the delegate is the value of
