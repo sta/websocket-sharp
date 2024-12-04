@@ -91,8 +91,12 @@ namespace WebSocketSharp
     /// Gets the logging level of the log data.
     /// </summary>
     /// <value>
-    /// One of the <see cref="LogLevel"/> enum values that represents
-    /// the logging level of the log data.
+    ///   <para>
+    ///   One of the <see cref="LogLevel"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It represents the logging level of the log data.
+    ///   </para>
     /// </value>
     public LogLevel Level {
       get {
