@@ -148,8 +148,8 @@ namespace WebSocketSharp
 
       buff.AppendFormat ("{0} {1} {2}\n\n", date, level, caller);
 
-      for (var i = 0; i < msgs.Length; i++)
-        buff.AppendFormat ("  {0}\n", msgs[i]);
+      foreach (var msg in msgs)
+        buff.AppendFormat ("  {0}\n", msg);
 
       return buff.ToString ();
     }
