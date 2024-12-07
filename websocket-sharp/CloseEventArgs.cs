@@ -47,8 +47,8 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private bool        _wasClean;
     private PayloadData _payloadData;
+    private bool        _wasClean;
 
     #endregion
 
