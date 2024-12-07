@@ -47,7 +47,7 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private bool        _clean;
+    private bool        _wasClean;
     private PayloadData _payloadData;
 
     #endregion
@@ -57,7 +57,7 @@ namespace WebSocketSharp
     internal CloseEventArgs (PayloadData payloadData, bool clean)
     {
       _payloadData = payloadData;
-      _clean = clean;
+      _wasClean = clean;
     }
 
     #endregion
@@ -109,7 +109,7 @@ namespace WebSocketSharp
     /// </value>
     public bool WasClean {
       get {
-        return _clean;
+        return _wasClean;
       }
     }
 
