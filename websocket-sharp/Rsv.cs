@@ -31,11 +31,13 @@ using System;
 namespace WebSocketSharp
 {
   /// <summary>
-  /// Indicates whether each RSV (RSV1, RSV2, and RSV3) of a WebSocket frame is non-zero.
+  /// Indicates whether each RSV (RSV1, RSV2, and RSV3) of a WebSocket
+  /// frame is non-zero.
   /// </summary>
   /// <remarks>
   /// The values of this enumeration are defined in
-  /// <see href="http://tools.ietf.org/html/rfc6455#section-5.2">Section 5.2</see> of RFC 6455.
+  /// <see href="http://tools.ietf.org/html/rfc6455#section-5.2">
+  /// Section 5.2</see> of RFC 6455.
   /// </remarks>
   internal enum Rsv : byte
   {
