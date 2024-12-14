@@ -45,7 +45,9 @@ namespace WebSocketSharp
     #region Private Constructors
 
     private WebSocketException (
-      ushort code, string message, Exception innerException
+      ushort code,
+      string message,
+      Exception innerException
     )
       : base (message ?? code.GetErrorMessage (), innerException)
     {
