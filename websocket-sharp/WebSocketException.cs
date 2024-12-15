@@ -94,7 +94,9 @@ namespace WebSocketSharp
     }
 
     internal WebSocketException (
-      CloseStatusCode code, string message, Exception innerException
+      CloseStatusCode code,
+      string message,
+      Exception innerException
     )
       : this ((ushort) code, message, innerException)
     {
