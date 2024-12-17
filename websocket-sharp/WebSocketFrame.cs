@@ -81,7 +81,11 @@ namespace WebSocketSharp
     #region Internal Constructors
 
     internal WebSocketFrame (
-      Fin fin, Opcode opcode, byte[] data, bool compressed, bool mask
+      Fin fin,
+      Opcode opcode,
+      byte[] data,
+      bool compressed,
+      bool mask
     )
       : this (fin, opcode, new PayloadData (data), compressed, mask)
     {
