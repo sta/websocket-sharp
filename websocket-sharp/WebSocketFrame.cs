@@ -367,7 +367,8 @@ namespace WebSocketSharp
     }
 
     private static WebSocketFrame readExtendedPayloadLength (
-      Stream stream, WebSocketFrame frame
+      Stream stream,
+      WebSocketFrame frame
     )
     {
       var len = frame.ExtendedPayloadLengthWidth;
