@@ -434,7 +434,9 @@ namespace WebSocketSharp
     }
 
     private static void readHeaderAsync (
-      Stream stream, Action<WebSocketFrame> completed, Action<Exception> error
+      Stream stream,
+      Action<WebSocketFrame> completed,
+      Action<Exception> error
     )
     {
       stream.ReadBytesAsync (
