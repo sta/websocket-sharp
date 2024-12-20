@@ -451,7 +451,8 @@ namespace WebSocketSharp
     }
 
     private static WebSocketFrame readMaskingKey (
-      Stream stream, WebSocketFrame frame
+      Stream stream,
+      WebSocketFrame frame
     )
     {
       if (!frame.IsMasked) {
