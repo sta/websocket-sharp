@@ -507,7 +507,8 @@ namespace WebSocketSharp
     }
 
     private static WebSocketFrame readPayloadData (
-      Stream stream, WebSocketFrame frame
+      Stream stream,
+      WebSocketFrame frame
     )
     {
       var exactPayloadLen = frame.ExactPayloadLength;
