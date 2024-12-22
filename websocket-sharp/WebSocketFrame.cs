@@ -633,7 +633,12 @@ namespace WebSocketSharp
 
           return (arg1, arg2, arg3, arg4) => {
                    buff.AppendFormat (
-                     lineFmt, ++lineCnt, arg1, arg2, arg3, arg4
+                     lineFmt,
+                     ++lineCnt,
+                     arg1,
+                     arg2,
+                     arg3,
+                     arg4
                    );
                  };
         };
