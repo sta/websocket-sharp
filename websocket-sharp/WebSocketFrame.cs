@@ -755,7 +755,11 @@ Extended Payload Length: {7}
     internal static WebSocketFrame CreatePingFrame (byte[] data, bool mask)
     {
       return new WebSocketFrame (
-               Fin.Final, Opcode.Ping, new PayloadData (data), false, mask
+               Fin.Final,
+               Opcode.Ping,
+               new PayloadData (data),
+               false,
+               mask
              );
     }
 
