@@ -355,6 +355,7 @@ namespace WebSocketSharp
       }
 
       var frame = new WebSocketFrame ();
+
       frame._fin = fin;
       frame._rsv1 = rsv1;
       frame._rsv2 = rsv2;
