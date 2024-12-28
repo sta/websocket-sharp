@@ -859,6 +859,7 @@ Extended Payload Length: {7}
     {
       using (var buff = new MemoryStream ()) {
         var header = (int) _fin;
+
         header = (header << 1) + (int) _rsv1;
         header = (header << 1) + (int) _rsv2;
         header = (header << 1) + (int) _rsv3;
