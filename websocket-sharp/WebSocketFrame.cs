@@ -47,6 +47,7 @@ namespace WebSocketSharp
 
     private static readonly int _defaultHeaderLength;
     private static readonly int _defaultMaskingKeyLength;
+    private static readonly byte[] _emptyBytes;
     private byte[]              _extPayloadLength;
     private Fin                 _fin;
     private Mask                _mask;
@@ -66,6 +67,7 @@ namespace WebSocketSharp
     {
       _defaultHeaderLength = 2;
       _defaultMaskingKeyLength = 4;
+      _emptyBytes = new byte[0];
     }
 
     #endregion
@@ -110,7 +112,7 @@ namespace WebSocketSharp
 
       if (len < 126) {
         _payloadLength = (byte) len;
-        _extPayloadLength = WebSocket.EmptyBytes;
+        _extPayloadLength = _emptyBytes;
       }
       else if (len < 0x010000) {
         _payloadLength = (byte) 126;
@@ -129,7 +131,7 @@ namespace WebSocketSharp
       }
       else {
         _mask = Mask.Off;
-        _maskingKey = WebSocket.EmptyBytes;
+        _maskingKey = _emptyBytes;
       }
 
       _payloadData = payloadData;
@@ -375,7 +377,7 @@ namespace WebSocketSharp
       var len = frame.ExtendedPayloadLengthWidth;
 
       if (len == 0) {
-        frame._extPayloadLength = WebSocket.EmptyBytes;
+        frame._extPayloadLength = _emptyBytes;
 
         return frame;
       }
@@ -403,7 +405,7 @@ namespace WebSocketSharp
       var len = frame.ExtendedPayloadLengthWidth;
 
       if (len == 0) {
-        frame._extPayloadLength = WebSocket.EmptyBytes;
+        frame._extPayloadLength = _emptyBytes;
 
         completed (frame);
 
@@ -457,7 +459,7 @@ namespace WebSocketSharp
     )
     {
       if (!frame.IsMasked) {
-        frame._maskingKey = WebSocket.EmptyBytes;
+        frame._maskingKey = _emptyBytes;
 
         return frame;
       }
@@ -483,7 +485,7 @@ namespace WebSocketSharp
     )
     {
       if (!frame.IsMasked) {
-        frame._maskingKey = WebSocket.EmptyBytes;
+        frame._maskingKey = _emptyBytes;
 
         completed (frame);
 
@@ -841,7 +843,7 @@ Extended Payload Length: {7}
 
       _payloadData.Mask (_maskingKey);
 
-      _maskingKey = WebSocket.EmptyBytes;
+      _maskingKey = _emptyBytes;
       _mask = Mask.Off;
     }
 
