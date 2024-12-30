@@ -45,19 +45,19 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private static readonly int _defaultHeaderLength;
-    private static readonly int _defaultMaskingKeyLength;
+    private static readonly int    _defaultHeaderLength;
+    private static readonly int    _defaultMaskingKeyLength;
     private static readonly byte[] _emptyBytes;
-    private byte[]              _extPayloadLength;
-    private Fin                 _fin;
-    private Mask                _mask;
-    private byte[]              _maskingKey;
-    private Opcode              _opcode;
-    private PayloadData         _payloadData;
-    private byte                _payloadLength;
-    private Rsv                 _rsv1;
-    private Rsv                 _rsv2;
-    private Rsv                 _rsv3;
+    private byte[]                 _extPayloadLength;
+    private Fin                    _fin;
+    private Mask                   _mask;
+    private byte[]                 _maskingKey;
+    private Opcode                 _opcode;
+    private PayloadData            _payloadData;
+    private byte                   _payloadLength;
+    private Rsv                    _rsv1;
+    private Rsv                    _rsv2;
+    private Rsv                    _rsv3;
 
     #endregion
 
