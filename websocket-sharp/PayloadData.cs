@@ -37,6 +37,7 @@ namespace WebSocketSharp
     #region Private Fields
 
     private byte[] _data;
+    private static readonly byte[] _emptyBytes;
     private long   _extDataLength;
     private long   _length;
 
@@ -71,7 +72,8 @@ namespace WebSocketSharp
 
     static PayloadData ()
     {
-      Empty = new PayloadData (WebSocket.EmptyBytes, 0);
+      _emptyBytes = new byte[0];
+      Empty = new PayloadData (_emptyBytes, 0);
       MaxLength = Int64.MaxValue;
     }
 
@@ -155,7 +157,7 @@ namespace WebSocketSharp
       get {
         return _extDataLength > 0
                ? _data.SubArray (0, _extDataLength)
-               : WebSocket.EmptyBytes;
+               : _emptyBytes;
       }
     }
 
