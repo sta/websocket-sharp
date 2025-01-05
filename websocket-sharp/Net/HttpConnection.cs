@@ -76,7 +76,7 @@ namespace WebSocketSharp.Net
     private EndPoint              _remoteEndPoint;
     private MemoryStream          _requestBuffer;
     private int                   _reuses;
-    private bool                  _secure;
+    private bool                  _isSecure;
     private Socket                _socket;
     private Stream                _stream;
     private object                _sync;
@@ -120,7 +120,7 @@ namespace WebSocketSharp.Net
           sslConf.CheckCertificateRevocation
         );
 
-        _secure = true;
+        _isSecure = true;
         _stream = sslStream;
       }
       else {
@@ -156,7 +156,7 @@ namespace WebSocketSharp.Net
 
     public bool IsSecure {
       get {
-        return _secure;
+        return _isSecure;
       }
     }
 
