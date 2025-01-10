@@ -39,7 +39,7 @@ namespace WebSocketSharp
   /// <see href="http://tools.ietf.org/html/rfc6455#section-5.2">
   /// Section 5.2</see> of RFC 6455.
   /// </remarks>
-  internal enum Rsv : byte
+  internal enum Rsv
   {
     /// <summary>
     /// Equivalent to numeric value 0. Indicates zero.

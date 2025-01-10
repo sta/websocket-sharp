@@ -585,7 +585,7 @@ namespace WebSocketSharp
              || code == 1015;
     }
 
-    internal static bool IsSupportedOpcode (this byte opcode)
+    internal static bool IsSupportedOpcode (this int opcode)
     {
       return Enum.IsDefined (typeof (Opcode), opcode);
     }

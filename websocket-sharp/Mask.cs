@@ -38,7 +38,7 @@ namespace WebSocketSharp
   /// <see href="http://tools.ietf.org/html/rfc6455#section-5.2">
   /// Section 5.2</see> of RFC 6455.
   /// </remarks>
-  internal enum Mask : byte
+  internal enum Mask
   {
     /// <summary>
     /// Equivalent to numeric value 0. Indicates not masked.

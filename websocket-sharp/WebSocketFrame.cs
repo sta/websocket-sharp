@@ -342,7 +342,7 @@ namespace WebSocketSharp
       var rsv3 = (header[0] & 0x10) == 0x10 ? Rsv.On : Rsv.Off;
 
       // Opcode
-      var opcode = (byte) (header[0] & 0x0f);
+      var opcode = header[0] & 0x0f;
 
       // MASK
       var mask = (header[1] & 0x80) == 0x80 ? Mask.On : Mask.Off;
