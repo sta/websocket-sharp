@@ -54,7 +54,7 @@ namespace WebSocketSharp
     private byte[]                 _maskingKey;
     private Opcode                 _opcode;
     private PayloadData            _payloadData;
-    private byte                   _payloadLength;
+    private int                    _payloadLength;
     private Rsv                    _rsv1;
     private Rsv                    _rsv2;
     private Rsv                    _rsv3;
@@ -111,15 +111,15 @@ namespace WebSocketSharp
       var len = payloadData.Length;
 
       if (len < 126) {
-        _payloadLength = (byte) len;
+        _payloadLength = (int) len;
         _extPayloadLength = _emptyBytes;
       }
       else if (len < 0x010000) {
-        _payloadLength = (byte) 126;
+        _payloadLength = 126;
         _extPayloadLength = ((ushort) len).ToByteArray (ByteOrder.Big);
       }
       else {
-        _payloadLength = (byte) 127;
+        _payloadLength = 127;
         _extPayloadLength = len.ToByteArray (ByteOrder.Big);
       }
 
@@ -144,7 +144,7 @@ namespace WebSocketSharp
     internal ulong ExactPayloadLength {
       get {
         return _payloadLength < 126
-               ? _payloadLength
+               ? (ulong) _payloadLength
                : _payloadLength == 126
                  ? _extPayloadLength.ToUInt16 (ByteOrder.Big)
                  : _extPayloadLength.ToUInt64 (ByteOrder.Big);
@@ -284,7 +284,7 @@ namespace WebSocketSharp
       }
     }
 
-    public byte PayloadLength {
+    public int PayloadLength {
       get {
         return _payloadLength;
       }
@@ -348,7 +348,7 @@ namespace WebSocketSharp
       var mask = (header[1] & 0x80) == 0x80 ? Mask.On : Mask.Off;
 
       // Payload Length
-      var payloadLen = (byte) (header[1] & 0x7f);
+      var payloadLen = header[1] & 0x7f;
 
       if (!opcode.IsSupportedOpcode ()) {
         var msg = "The opcode of a frame is not supported.";
@@ -867,7 +867,7 @@ Extended Payload Length: {7}
         header = (header << 1) + (int) _rsv3;
         header = (header << 4) + (int) _opcode;
         header = (header << 1) + (int) _mask;
-        header = (header << 7) + (int) _payloadLength;
+        header = (header << 7) + _payloadLength;
 
         var uint16Header = (ushort) header;
         var rawHeader = uint16Header.ToByteArray (ByteOrder.Big);
