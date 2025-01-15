@@ -869,8 +869,8 @@ Extended Payload Length: {7}
         header = (header << 1) + (int) _mask;
         header = (header << 7) + _payloadLength;
 
-        var uint16Header = (ushort) header;
-        var rawHeader = uint16Header.ToByteArray (ByteOrder.Big);
+        var headerAsUInt16 = (ushort) header;
+        var rawHeader = headerAsUInt16.ToByteArray (ByteOrder.Big);
 
         buff.Write (rawHeader, 0, _defaultHeaderLength);
 
