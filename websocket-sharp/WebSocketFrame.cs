@@ -870,9 +870,9 @@ Extended Payload Length: {7}
         header = (header << 7) + _payloadLength;
 
         var headerAsUInt16 = (ushort) header;
-        var rawHeader = headerAsUInt16.ToByteArray (ByteOrder.Big);
+        var headerAsBytes = headerAsUInt16.ToByteArray (ByteOrder.Big);
 
-        buff.Write (rawHeader, 0, _defaultHeaderLength);
+        buff.Write (headerAsBytes, 0, _defaultHeaderLength);
 
         if (_payloadLength >= 126)
           buff.Write (_extPayloadLength, 0, _extPayloadLength.Length);
