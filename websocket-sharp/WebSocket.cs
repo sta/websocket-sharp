@@ -81,6 +81,7 @@ namespace WebSocketSharp
     private CookieCollection               _cookies;
     private NetworkCredential              _credentials;
     private bool                           _emitOnPing;
+    private static readonly byte[]         _emptyBytes;
     private bool                           _enableRedirection;
     private string                         _extensions;
     private bool                           _extensionsRequested;
@@ -125,11 +126,6 @@ namespace WebSocketSharp
     #region Internal Fields
 
     /// <summary>
-    /// Represents the empty array of <see cref="byte"/> used internally.
-    /// </summary>
-    internal static readonly byte[] EmptyBytes;
-
-    /// <summary>
     /// Represents the length used to determine whether the data should
     /// be fragmented in sending.
     /// </summary>
@@ -157,7 +153,7 @@ namespace WebSocketSharp
     static WebSocket ()
     {
       _maxRetryCountForConnect = 10;
-      EmptyBytes = new byte[0];
+      _emptyBytes = new byte[0];
       FragmentLength = 1016;
       RandomNumber = new RNGCryptoServiceProvider ();
     }
@@ -495,7 +491,7 @@ namespace WebSocketSharp
     /// </value>
     public bool IsAlive {
       get {
-        return ping (EmptyBytes);
+        return ping (_emptyBytes);
       }
     }
 
@@ -2031,7 +2027,7 @@ namespace WebSocketSharp
       var len = dataStream.Length;
 
       if (len == 0)
-        return send (Fin.Final, opcode, EmptyBytes, false);
+        return send (Fin.Final, opcode, _emptyBytes, false);
 
       var quo = len / FragmentLength;
       var rem = (int) (len % FragmentLength);
@@ -3315,7 +3311,7 @@ namespace WebSocketSharp
     /// </returns>
     public bool Ping ()
     {
-      return ping (EmptyBytes);
+      return ping (_emptyBytes);
     }
 
     /// <summary>
@@ -3342,7 +3338,7 @@ namespace WebSocketSharp
     public bool Ping (string message)
     {
       if (message.IsNullOrEmpty ())
-        return ping (EmptyBytes);
+        return ping (_emptyBytes);
 
       byte[] bytes;
 
