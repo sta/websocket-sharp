@@ -544,6 +544,11 @@ namespace WebSocketSharp
       return value.StartsWith (extStr, compType);
     }
 
+    internal static bool IsDefined (this CloseStatusCode code)
+    {
+      return Enum.IsDefined (typeof (CloseStatusCode), code);
+    }
+
     internal static bool IsEqualTo (
       this int value,
       char c,
