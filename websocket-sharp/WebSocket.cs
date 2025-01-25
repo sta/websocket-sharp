@@ -2873,11 +2873,12 @@ namespace WebSocketSharp
           throw new ArgumentException (msg, "code");
         }
       }
+      else {
+        if (code == CloseStatusCode.MandatoryExtension) {
+          var msg = "MandatoryExtension cannot be used.";
 
-      if (!_client && code == CloseStatusCode.MandatoryExtension) {
-        var msg = "MandatoryExtension cannot be used.";
-
-        throw new ArgumentException (msg, "code");
+          throw new ArgumentException (msg, "code");
+        }
       }
 
       if (reason.IsNullOrEmpty ()) {
