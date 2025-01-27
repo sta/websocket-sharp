@@ -3162,6 +3162,12 @@ namespace WebSocketSharp
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
+    ///   <paramref name="code"/> is an undefined enum value.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
     ///   <paramref name="code"/> is <see cref="CloseStatusCode.ServerError"/>.
     ///   It cannot be used by a client.
     ///   </para>
@@ -3191,6 +3197,12 @@ namespace WebSocketSharp
     /// </exception>
     public void CloseAsync (CloseStatusCode code, string reason)
     {
+      if (!code.IsDefined ()) {
+        var msg = "An undefined enum value.";
+
+        throw new ArgumentException (msg, "code");
+      }
+
       if (_client && code == CloseStatusCode.ServerError) {
         var msg = "ServerError cannot be used.";
 
