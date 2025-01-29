@@ -2999,6 +2999,12 @@ namespace WebSocketSharp
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
+    ///   <paramref name="code"/> is an undefined enum value.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
     ///   <paramref name="code"/> is <see cref="CloseStatusCode.ServerError"/>.
     ///   It cannot be used by a client.
     ///   </para>
