@@ -723,6 +723,12 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
+    ///   <paramref name="code"/> is an undefined enum value.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
     ///   <paramref name="code"/> is <see cref="CloseStatusCode.MandatoryExtension"/>.
     ///   </para>
     ///   <para>
