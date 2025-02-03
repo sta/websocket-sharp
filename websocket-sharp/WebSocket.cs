@@ -2617,7 +2617,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the connection with the specified code.
+    /// Closes the connection with the specified status code.
     /// </summary>
     /// <remarks>
     /// This method does nothing if the current state of the interface is
