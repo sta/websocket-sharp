@@ -2765,16 +2765,19 @@ namespace WebSocketSharp
         throw new ArgumentOutOfRangeException ("code", msg);
       }
 
-      if (_client && code == 1011) {
-        var msg = "1011 cannot be used.";
+      if (_client) {
+        if (code == 1011) {
+          var msg = "1011 cannot be used.";
 
-        throw new ArgumentException (msg, "code");
+          throw new ArgumentException (msg, "code");
+        }
       }
+      else {
+        if (code == 1010) {
+          var msg = "1010 cannot be used.";
 
-      if (!_client && code == 1010) {
-        var msg = "1010 cannot be used.";
-
-        throw new ArgumentException (msg, "code");
+          throw new ArgumentException (msg, "code");
+        }
       }
 
       if (reason.IsNullOrEmpty ()) {
