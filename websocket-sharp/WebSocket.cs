@@ -2810,7 +2810,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the connection with the specified code and reason.
+    /// Closes the connection with the specified status code and reason.
     /// </summary>
     /// <remarks>
     /// This method does nothing if the current state of the interface is
