@@ -2937,7 +2937,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the connection asynchronously with the specified code.
+    /// Closes the connection asynchronously with the specified status code.
     /// </summary>
     /// <remarks>
     ///   <para>
@@ -2959,9 +2959,6 @@ namespace WebSocketSharp
     ///   Section 7.4</see> of RFC 6455.
     ///   </para>
     /// </param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="code"/> is less than 1000 or greater than 4999.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="code"/> is 1011 (server error).
@@ -2974,6 +2971,9 @@ namespace WebSocketSharp
     ///   <paramref name="code"/> is 1010 (mandatory extension).
     ///   It cannot be used by a server.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="code"/> is less than 1000 or greater than 4999.
     /// </exception>
     public void CloseAsync (ushort code)
     {
