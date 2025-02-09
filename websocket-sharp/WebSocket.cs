@@ -2981,7 +2981,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the connection asynchronously with the specified code.
+    /// Closes the connection asynchronously with the specified status code.
     /// </summary>
     /// <remarks>
     ///   <para>
