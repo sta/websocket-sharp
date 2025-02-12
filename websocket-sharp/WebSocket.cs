@@ -3146,7 +3146,8 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the connection asynchronously with the specified code and reason.
+    /// Closes the connection asynchronously with the specified status code and
+    /// reason.
     /// </summary>
     /// <remarks>
     ///   <para>
