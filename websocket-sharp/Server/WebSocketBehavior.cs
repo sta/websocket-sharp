@@ -629,7 +629,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Closes the WebSocket connection for a session with the specified
-    /// code and reason.
+    /// status code and reason.
     /// </summary>
     /// <remarks>
     /// This method does nothing if the current state of the WebSocket
