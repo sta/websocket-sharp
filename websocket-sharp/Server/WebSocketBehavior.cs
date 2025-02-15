@@ -790,7 +790,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Closes the WebSocket connection for a session asynchronously with
-    /// the specified code and reason.
+    /// the specified status code and reason.
     /// </summary>
     /// <remarks>
     ///   <para>
