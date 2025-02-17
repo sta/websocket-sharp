@@ -968,7 +968,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Closes the session with the specified ID, code, and reason.
+    /// Closes the session with the specified ID, status code, and reason.
     /// </summary>
     /// <param name="id">
     /// A <see cref="string"/> that specifies the ID of the session to close.
@@ -992,6 +992,12 @@ namespace WebSocketSharp.Server
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="id"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="code"/> is an undefined enum value.
     ///   </para>
     ///   <para>
     ///   -or-
