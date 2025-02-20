@@ -225,9 +225,6 @@ namespace WebSocketSharp
     ///   RFC 2616</see>.
     ///   </para>
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="url"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="url"/> is an empty string.
@@ -250,6 +247,9 @@ namespace WebSocketSharp
     ///   <para>
     ///   <paramref name="protocols"/> contains a value twice.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="url"/> is <see langword="null"/>.
     /// </exception>
     public WebSocket (string url, params string[] protocols)
     {
