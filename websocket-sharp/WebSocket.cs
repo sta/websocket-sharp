@@ -113,7 +113,7 @@ namespace WebSocketSharp
     private volatile WebSocketState        _readyState;
     private ManualResetEvent               _receivingExited;
     private int                            _retryCountForConnect;
-    private bool                           _secure;
+    private bool                           _isSecure;
     private ClientSslConfiguration         _sslConfig;
     private Stream                         _stream;
     private TcpClient                      _tcpClient;
@@ -172,7 +172,7 @@ namespace WebSocketSharp
       _closeContext = context.Close;
       _log = context.Log;
       _message = messages;
-      _secure = context.IsSecureConnection;
+      _isSecure = context.IsSecureConnection;
       _stream = context.Stream;
       _waitTime = TimeSpan.FromSeconds (1);
 
@@ -188,7 +188,7 @@ namespace WebSocketSharp
       _closeContext = context.Close;
       _log = context.Log;
       _message = messages;
-      _secure = context.IsSecureConnection;
+      _isSecure = context.IsSecureConnection;
       _stream = context.Stream;
       _waitTime = TimeSpan.FromSeconds (1);
 
@@ -276,7 +276,7 @@ namespace WebSocketSharp
       _log = new Logger ();
       _message = messagec;
       _retryCountForConnect = -1;
-      _secure = _uri.Scheme == "wss";
+      _isSecure = _uri.Scheme == "wss";
       _waitTime = TimeSpan.FromSeconds (5);
 
       init ();
@@ -504,7 +504,7 @@ namespace WebSocketSharp
     /// </value>
     public bool IsSecure {
       get {
-        return _secure;
+        return _isSecure;
       }
     }
 
@@ -681,7 +681,7 @@ namespace WebSocketSharp
           throw new InvalidOperationException (msg);
         }
 
-        if (!_secure) {
+        if (!_isSecure) {
           var msg = "The interface does not use a secure connection.";
 
           throw new InvalidOperationException (msg);
@@ -2208,7 +2208,7 @@ namespace WebSocketSharp
         releaseClientResources ();
 
         _uri = uri;
-        _secure = uri.Scheme == "wss";
+        _isSecure = uri.Scheme == "wss";
 
         setClientStream ();
 
@@ -2283,7 +2283,7 @@ namespace WebSocketSharp
         _stream = _tcpClient.GetStream ();
       }
 
-      if (_secure) {
+      if (_isSecure) {
         var conf = getSslConfiguration ();
         var host = conf.TargetHost;
 
