@@ -97,6 +97,7 @@ namespace WebSocketSharp
     private bool                           _ignoreExtensions;
     private bool                           _inContinuation;
     private volatile bool                  _inMessage;
+    private bool                           _isSecure;
     private volatile Logger                _log;
     private static readonly int            _maxRetryCountForConnect;
     private Action<MessageEventArgs>       _message;
@@ -113,7 +114,6 @@ namespace WebSocketSharp
     private volatile WebSocketState        _readyState;
     private ManualResetEvent               _receivingExited;
     private int                            _retryCountForConnect;
-    private bool                           _isSecure;
     private ClientSslConfiguration         _sslConfig;
     private Stream                         _stream;
     private TcpClient                      _tcpClient;
