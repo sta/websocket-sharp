@@ -186,9 +186,9 @@ namespace WebSocketSharp
       _protocol = protocol;
 
       _closeContext = context.Close;
+      _isSecure = context.IsSecureConnection;
       _log = context.Log;
       _message = messages;
-      _isSecure = context.IsSecureConnection;
       _stream = context.Stream;
       _waitTime = TimeSpan.FromSeconds (1);
 
