@@ -273,10 +273,10 @@ namespace WebSocketSharp
 
       _base64Key = CreateBase64Key ();
       _client = true;
+      _isSecure = _uri.Scheme == "wss";
       _log = new Logger ();
       _message = messagec;
       _retryCountForConnect = -1;
-      _isSecure = _uri.Scheme == "wss";
       _waitTime = TimeSpan.FromSeconds (5);
 
       init ();
