@@ -178,6 +178,12 @@ namespace WebSocketSharp.Net
       }
     }
 
+    public Socket Socket {
+      get {
+        return _socket;
+      }
+    }
+
     public Stream Stream {
       get {
         return _stream;
