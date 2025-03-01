@@ -30,6 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.Net.Sockets;
 using System.Security.Principal;
 
 namespace WebSocketSharp.Net.WebSockets
@@ -65,6 +66,12 @@ namespace WebSocketSharp.Net.WebSockets
     internal Logger Log {
       get {
         return _context.Listener.Log;
+      }
+    }
+
+    internal Socket Socket {
+      get {
+        return _context.Connection.Socket;
       }
     }
 
