@@ -58,6 +58,7 @@ namespace WebSocketSharp.Net.WebSockets
     private Uri                 _requestUri;
     private bool                _secure;
     private System.Net.EndPoint _serverEndPoint;
+    private Socket              _socket;
     private Stream              _stream;
     private TcpClient           _tcpClient;
     private IPrincipal          _user;
@@ -79,6 +80,8 @@ namespace WebSocketSharp.Net.WebSockets
       _tcpClient = tcpClient;
       _secure = secure;
       _log = log;
+
+      _socket = tcpClient.Client;
 
       var netStream = tcpClient.GetStream ();
 
@@ -102,9 +105,8 @@ namespace WebSocketSharp.Net.WebSockets
         _stream = netStream;
       }
 
-      var sock = tcpClient.Client;
-      _serverEndPoint = sock.LocalEndPoint;
-      _userEndPoint = sock.RemoteEndPoint;
+      _serverEndPoint = _socket.LocalEndPoint;
+      _userEndPoint = _socket.RemoteEndPoint;
 
       _request = HttpRequest.ReadRequest (_stream, 90000);
       _websocket = new WebSocket (this, protocol);
@@ -117,6 +119,12 @@ namespace WebSocketSharp.Net.WebSockets
     internal Logger Log {
       get {
         return _log;
+      }
+    }
+
+    internal Socket Socket {
+      get {
+        return _socket;
       }
     }
 
