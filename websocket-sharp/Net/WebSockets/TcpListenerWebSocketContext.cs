@@ -61,7 +61,6 @@ namespace WebSocketSharp.Net.WebSockets
     private Stream              _stream;
     private TcpClient           _tcpClient;
     private IPrincipal          _user;
-    private System.Net.EndPoint _userEndPoint;
     private WebSocket           _websocket;
 
     #endregion
@@ -103,8 +102,6 @@ namespace WebSocketSharp.Net.WebSockets
       else {
         _stream = netStream;
       }
-
-      _userEndPoint = _socket.RemoteEndPoint;
 
       _request = HttpRequest.ReadRequest (_stream, 90000);
       _websocket = new WebSocket (this, protocol);
@@ -419,7 +416,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override System.Net.IPEndPoint UserEndPoint {
       get {
-        return (System.Net.IPEndPoint) _userEndPoint;
+        return (System.Net.IPEndPoint) _socket.RemoteEndPoint;
       }
     }
 
