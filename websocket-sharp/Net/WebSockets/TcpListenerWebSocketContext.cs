@@ -75,7 +75,6 @@ namespace WebSocketSharp.Net.WebSockets
     )
     {
       _tcpClient = tcpClient;
-      _secure = secure;
       _log = log;
 
       var netStream = tcpClient.GetStream ();
@@ -94,6 +93,7 @@ namespace WebSocketSharp.Net.WebSockets
           sslConfig.CheckCertificateRevocation
         );
 
+        _secure = true;
         _stream = sslStream;
       }
       else {
