@@ -56,7 +56,7 @@ namespace WebSocketSharp.Net.WebSockets
     private NameValueCollection _queryString;
     private HttpRequest         _request;
     private Uri                 _requestUri;
-    private bool                _secure;
+    private bool                _isSecureConnection;
     private Stream              _stream;
     private TcpClient           _tcpClient;
     private IPrincipal          _user;
@@ -93,7 +93,7 @@ namespace WebSocketSharp.Net.WebSockets
           sslConfig.CheckCertificateRevocation
         );
 
-        _secure = true;
+        _isSecureConnection = true;
         _stream = sslStream;
       }
       else {
@@ -213,7 +213,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override bool IsSecureConnection {
       get {
-        return _secure;
+        return _isSecureConnection;
       }
     }
 
@@ -291,7 +291,7 @@ namespace WebSocketSharp.Net.WebSockets
                           _request.RequestTarget,
                           _request.Headers["Host"],
                           _request.IsWebSocketRequest,
-                          _secure
+                          _isSecureConnection
                         );
         }
 
