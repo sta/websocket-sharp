@@ -52,11 +52,11 @@ namespace WebSocketSharp.Net.WebSockets
   {
     #region Private Fields
 
+    private bool                _isSecureConnection;
     private Logger              _log;
     private NameValueCollection _queryString;
     private HttpRequest         _request;
     private Uri                 _requestUri;
-    private bool                _isSecureConnection;
     private Stream              _stream;
     private TcpClient           _tcpClient;
     private IPrincipal          _user;
