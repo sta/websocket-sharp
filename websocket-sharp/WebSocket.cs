@@ -114,6 +114,7 @@ namespace WebSocketSharp
     private volatile WebSocketState        _readyState;
     private ManualResetEvent               _receivingExited;
     private int                            _retryCountForConnect;
+    private Socket                         _socket;
     private ClientSslConfiguration         _sslConfig;
     private Stream                         _stream;
     private TcpClient                      _tcpClient;
@@ -173,6 +174,7 @@ namespace WebSocketSharp
       _isSecure = context.IsSecureConnection;
       _log = context.Log;
       _message = messages;
+      _socket = context.Socket;
       _stream = context.Stream;
       _waitTime = TimeSpan.FromSeconds (1);
 
@@ -189,6 +191,7 @@ namespace WebSocketSharp
       _isSecure = context.IsSecureConnection;
       _log = context.Log;
       _message = messages;
+      _socket = context.Socket;
       _stream = context.Stream;
       _waitTime = TimeSpan.FromSeconds (1);
 
