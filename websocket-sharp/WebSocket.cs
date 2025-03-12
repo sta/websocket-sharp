@@ -102,6 +102,7 @@ namespace WebSocketSharp
     private static readonly int            _maxRetryCountForConnect;
     private Action<MessageEventArgs>       _message;
     private Queue<MessageEventArgs>        _messageEventQueue;
+    private bool                           _noDelay;
     private uint                           _nonceCount;
     private string                         _origin;
     private ManualResetEvent               _pongReceived;
@@ -531,6 +532,38 @@ namespace WebSocketSharp
     }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the underlying TCP socket
+    /// disables a delay when send or receive buffer is not full.
+    /// </summary>
+    /// <remarks>
+    /// The set operation works if the current state of the interface is
+    /// New or Closed.
+    /// </remarks>
+    /// <value>
+    ///   <para>
+    ///   <c>true</c> if the delay is disabled; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
+    /// </value>
+    /// <seealso cref="Socket.NoDelay"/>
+    public bool NoDelay {
+      get {
+        return _noDelay;
+      }
+
+      set {
+        lock (_forState) {
+          if (!canSet ())
+            return;
+
+          _noDelay = value;
+        }
+      }
+    }
+
+    /// <summary>
     /// Gets or sets the value of the HTTP Origin header to send with
     /// the handshake request.
     /// </summary>
@@ -885,6 +918,9 @@ namespace WebSocketSharp
 
         processSecWebSocketExtensionsClientHeader (val);
       }
+
+      if (_noDelay)
+        _socket.NoDelay = true;
 
       createHandshakeResponse ().WriteTo (_stream);
 
@@ -2257,6 +2293,10 @@ namespace WebSocketSharp
           releaseClientResources ();
 
           _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+
+          if (_noDelay)
+            _tcpClient.NoDelay = true;
+
           _stream = _tcpClient.GetStream ();
         }
 
@@ -2272,6 +2312,10 @@ namespace WebSocketSharp
     {
       if (_proxyUri != null) {
         _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+
+        if (_noDelay)
+          _tcpClient.NoDelay = true;
+
         _stream = _tcpClient.GetStream ();
 
         var res = sendProxyConnectRequest ();
@@ -2283,6 +2327,10 @@ namespace WebSocketSharp
       }
       else {
         _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
+
+        if (_noDelay)
+          _tcpClient.NoDelay = true;
+
         _stream = _tcpClient.GetStream ();
       }
 
