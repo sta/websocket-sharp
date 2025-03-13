@@ -1506,6 +1506,17 @@ namespace WebSocketSharp
       return ret;
     }
 
+    // As client
+    private TcpClient createTcpClient (string hostname, int port)
+    {
+      var ret = new TcpClient (hostname, port);
+
+      if (_noDelay)
+        ret.NoDelay = true;
+
+      return ret;
+    }
+
     // As server
     private bool customCheckHandshakeRequest (
       WebSocketContext context, out string message
