@@ -2318,11 +2318,7 @@ namespace WebSocketSharp
     private void setClientStream ()
     {
       if (_proxyUri != null) {
-        _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-
-        if (_noDelay)
-          _tcpClient.NoDelay = true;
-
+        _tcpClient = createTcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
         _stream = _tcpClient.GetStream ();
 
         var res = sendProxyConnectRequest ();
