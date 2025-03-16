@@ -2329,11 +2329,7 @@ namespace WebSocketSharp
           throw new WebSocketException (msg);
       }
       else {
-        _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
-
-        if (_noDelay)
-          _tcpClient.NoDelay = true;
-
+        _tcpClient = createTcpClient (_uri.DnsSafeHost, _uri.Port);
         _stream = _tcpClient.GetStream ();
       }
 
