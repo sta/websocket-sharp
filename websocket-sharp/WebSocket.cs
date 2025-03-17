@@ -2341,7 +2341,8 @@ namespace WebSocketSharp
           var msg = "An invalid host name is specified.";
 
           throw new WebSocketException (
-                  CloseStatusCode.TlsHandshakeFailure, msg
+                  CloseStatusCode.TlsHandshakeFailure,
+                  msg
                 );
         }
 
