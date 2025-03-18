@@ -2365,7 +2365,8 @@ namespace WebSocketSharp
         }
         catch (Exception ex) {
           throw new WebSocketException (
-                  CloseStatusCode.TlsHandshakeFailure, ex
+                  CloseStatusCode.TlsHandshakeFailure,
+                  ex
                 );
         }
       }
