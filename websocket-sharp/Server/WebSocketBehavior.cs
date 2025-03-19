@@ -53,6 +53,7 @@ namespace WebSocketSharp.Server
     private Func<string, bool>                             _hostValidator;
     private string                                         _id;
     private bool                                           _ignoreExtensions;
+    private bool                                           _noDelay;
     private Func<string, bool>                             _originValidator;
     private string                                         _protocol;
     private WebSocketSessionManager                        _sessions;
@@ -394,6 +395,39 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the underlying TCP socket of
+    /// the WebSocket interface for a session disables a delay when send or
+    /// receive buffer is not full.
+    /// </summary>
+    /// <value>
+    ///   <para>
+    ///   <c>true</c> if the delay is disabled; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
+    /// </value>
+    /// <seealso cref="System.Net.Sockets.Socket.NoDelay"/>
+    /// <exception cref="InvalidOperationException">
+    /// The set operation is not available when the session has already started.
+    /// </exception>
+    public bool NoDelay {
+      get {
+        return _noDelay;
+      }
+
+      set {
+        if (_websocket != null) {
+          var msg = "The set operation is not available.";
+
+          throw new InvalidOperationException (msg);
+        }
+
+        _noDelay = value;
+      }
+    }
+
+    /// <summary>
     /// Gets or sets the delegate used to validate the Origin header.
     /// </summary>
     /// <value>
@@ -587,6 +621,10 @@ namespace WebSocketSharp.Server
       _websocket.CustomHandshakeRequestChecker = checkHandshakeRequest;
       _websocket.EmitOnPing = _emitOnPing;
       _websocket.IgnoreExtensions = _ignoreExtensions;
+
+      if (_noDelay)
+        _websocket.NoDelay = true;
+
       _websocket.Protocol = _protocol;
 
       var waitTime = sessions.WaitTime;
