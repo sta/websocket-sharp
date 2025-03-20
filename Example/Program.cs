@@ -56,6 +56,10 @@ namespace Example
 
         // To emit a WebSocket.OnMessage event when receives a ping.
         //ws.EmitOnPing = true;
+
+        // To disable a delay when send or receive buffer of the underlying
+        // TCP socket is not full.
+        ws.NoDelay = true;
 #endif
         // To enable the Per-message Compression extension.
         //ws.Compression = CompressionMethod.Deflate;
