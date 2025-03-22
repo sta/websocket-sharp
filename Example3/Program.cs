@@ -136,6 +136,10 @@ namespace Example3
           // To emit a WebSocket.OnMessage event when receives a ping.
           s.EmitOnPing = true;
 
+          // To disable a delay when send or receive buffer of the underlying
+          // TCP socket is not full.
+          s.NoDelay = true;
+
           // To validate the Origin header.
           s.OriginValidator = val => {
               // Check the value of the Origin header, and return true if valid.
