@@ -495,7 +495,7 @@ namespace WebSocketSharp.Server
 
       set {
         if (_websocket != null) {
-          var msg = "The session has already started.";
+          var msg = "The set operation is not available.";
 
           throw new InvalidOperationException (msg);
         }
