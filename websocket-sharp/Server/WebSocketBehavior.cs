@@ -484,7 +484,7 @@ namespace WebSocketSharp.Server
     /// The value specified for a set operation is not a token.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The set operation is not available if the session has already started.
+    /// The set operation is not available when the session has already started.
     /// </exception>
     public string Protocol {
       get {
