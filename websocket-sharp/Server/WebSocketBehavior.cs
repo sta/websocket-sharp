@@ -620,7 +620,9 @@ namespace WebSocketSharp.Server
       _websocket = context.WebSocket;
       _websocket.CustomHandshakeRequestChecker = checkHandshakeRequest;
       _websocket.EmitOnPing = _emitOnPing;
-      _websocket.IgnoreExtensions = _ignoreExtensions;
+
+      if (_ignoreExtensions)
+        _websocket.IgnoreExtensions = true;
 
       if (_noDelay)
         _websocket.NoDelay = true;
