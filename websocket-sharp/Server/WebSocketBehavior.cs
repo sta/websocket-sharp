@@ -307,7 +307,7 @@ namespace WebSocketSharp.Server
     /// </exception>
     public bool EmitOnPing {
       get {
-        return _websocket != null ? _websocket.EmitOnPing : _emitOnPing;
+        return _emitOnPing;
       }
 
       set {
