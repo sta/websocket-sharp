@@ -302,6 +302,9 @@ namespace WebSocketSharp.Server
     ///   The default value is <c>false</c>.
     ///   </para>
     /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The set operation is not available when the session has already started.
+    /// </exception>
     public bool EmitOnPing {
       get {
         return _websocket != null ? _websocket.EmitOnPing : _emitOnPing;
@@ -309,9 +312,9 @@ namespace WebSocketSharp.Server
 
       set {
         if (_websocket != null) {
-          _websocket.EmitOnPing = value;
+          var msg = "The set operation is not available.";
 
-          return;
+          throw new InvalidOperationException (msg);
         }
 
         _emitOnPing = value;
