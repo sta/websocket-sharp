@@ -641,7 +641,8 @@ namespace WebSocketSharp.Server
       if (_noDelay)
         _websocket.NoDelay = true;
 
-      _websocket.Protocol = _protocol;
+      if (_protocol != null)
+        _websocket.Protocol = _protocol;
 
       var waitTime = sessions.WaitTime;
 
