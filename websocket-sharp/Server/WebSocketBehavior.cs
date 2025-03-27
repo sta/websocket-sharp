@@ -84,7 +84,7 @@ namespace WebSocketSharp.Server
     /// included in the WebSocket handshake request.
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The session has not started yet.
+    /// The get operation is not available when the session has not started yet.
     /// </exception>
     protected NameValueCollection Headers {
       get {
