@@ -489,6 +489,9 @@ namespace WebSocketSharp.Server
     ///   RFC 2616</see>.
     ///   </para>
     ///   <para>
+    ///   The value is initialized if not requested.
+    ///   </para>
+    ///   <para>
     ///   The default value is an empty string.
     ///   </para>
     /// </value>
