@@ -111,7 +111,7 @@ namespace WebSocketSharp.Server
     protected bool IsAlive {
       get {
         if (_websocket == null) {
-          var msg = "The session has not started yet.";
+          var msg = "The get operation is not available.";
 
           throw new InvalidOperationException (msg);
         }
