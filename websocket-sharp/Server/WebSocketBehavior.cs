@@ -133,7 +133,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The session has not started yet.
+    /// The get operation is not available when the session has not started yet.
     /// </exception>
     protected NameValueCollection QueryString {
       get {
@@ -164,7 +164,7 @@ namespace WebSocketSharp.Server
     protected WebSocketState ReadyState {
       get {
         if (_websocket == null) {
-          var msg = "The get operation is not available.";
+          var msg = "The session has not started yet.";
 
           throw new InvalidOperationException (msg);
         }
