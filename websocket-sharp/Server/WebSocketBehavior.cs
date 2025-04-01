@@ -213,7 +213,7 @@ namespace WebSocketSharp.Server
     protected IPrincipal User {
       get {
         if (_context == null) {
-          var msg = "The session has not started yet.";
+          var msg = "The get operation is not available.";
 
           throw new InvalidOperationException (msg);
         }
