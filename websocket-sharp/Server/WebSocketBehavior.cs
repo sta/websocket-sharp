@@ -208,7 +208,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The session has not started yet.
+    /// The get operation is not available when the session has not started yet.
     /// </exception>
     protected IPrincipal User {
       get {
