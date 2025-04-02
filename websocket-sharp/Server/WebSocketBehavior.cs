@@ -230,7 +230,7 @@ namespace WebSocketSharp.Server
     /// IP address and port number.
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The session has not started yet.
+    /// The get operation is not available when the session has not started yet.
     /// </exception>
     protected System.Net.IPEndPoint UserEndPoint {
       get {
