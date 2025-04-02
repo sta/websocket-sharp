@@ -235,7 +235,7 @@ namespace WebSocketSharp.Server
     protected System.Net.IPEndPoint UserEndPoint {
       get {
         if (_context == null) {
-          var msg = "The session has not started yet.";
+          var msg = "The get operation is not available.";
 
           throw new InvalidOperationException (msg);
         }
