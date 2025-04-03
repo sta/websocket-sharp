@@ -279,12 +279,21 @@ namespace WebSocketSharp.Server
     ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The set operation is not available when the session has already started.
+    /// </exception>
     public Func<CookieCollection, CookieCollection, bool> CookiesValidator {
       get {
         return _cookiesValidator;
       }
 
       set {
+        if (_websocket != null) {
+          var msg = "The set operation is not available.";
+
+          throw new InvalidOperationException (msg);
+        }
+
         _cookiesValidator = value;
       }
     }
