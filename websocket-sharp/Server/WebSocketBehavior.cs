@@ -266,7 +266,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     ///   <para>
     ///   2nd <see cref="CookieCollection"/> parameter passed to the delegate
-    ///   receives the cookies to send to the client.
+    ///   holds the cookies to send to the client.
     ///   </para>
     ///   <para>
     ///   The method invoked by the delegate must return <c>true</c>
