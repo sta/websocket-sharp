@@ -484,12 +484,21 @@ namespace WebSocketSharp.Server
     ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The set operation is not available when the session has already started.
+    /// </exception>
     public Func<string, bool> OriginValidator {
       get {
         return _originValidator;
       }
 
       set {
+        if (_websocket != null) {
+          var msg = "The set operation is not available.";
+
+          throw new InvalidOperationException (msg);
+        }
+
         _originValidator = value;
       }
     }
