@@ -704,7 +704,7 @@ namespace WebSocketSharp.Server
     protected void Close ()
     {
       if (_websocket == null) {
-        var msg = "The session has not started yet.";
+        var msg = "The Close method is not available.";
 
         throw new InvalidOperationException (msg);
       }
