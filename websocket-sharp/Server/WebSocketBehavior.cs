@@ -699,7 +699,7 @@ namespace WebSocketSharp.Server
     /// interface is Closing or Closed.
     /// </remarks>
     /// <exception cref="InvalidOperationException">
-    /// The session has not started yet.
+    /// The Close method is not available when the session has not started yet.
     /// </exception>
     protected void Close ()
     {
