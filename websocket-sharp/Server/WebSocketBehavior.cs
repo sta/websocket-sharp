@@ -695,7 +695,7 @@ namespace WebSocketSharp.Server
     /// Closes the WebSocket connection for a session.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the current state of the WebSocket
+    /// This method does nothing when the current state of the WebSocket
     /// interface is Closing or Closed.
     /// </remarks>
     /// <exception cref="InvalidOperationException">
