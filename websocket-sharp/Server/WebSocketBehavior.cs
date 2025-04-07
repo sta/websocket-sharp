@@ -717,7 +717,7 @@ namespace WebSocketSharp.Server
     /// status code and reason.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the current state of the WebSocket
+    /// This method does nothing when the current state of the WebSocket
     /// interface is Closing or Closed.
     /// </remarks>
     /// <param name="code">
@@ -769,7 +769,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The session has not started yet.
+    /// The Close method is not available when the session has not started yet.
     /// </exception>
     protected void Close (ushort code, string reason)
     {
