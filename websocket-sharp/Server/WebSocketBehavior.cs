@@ -787,7 +787,7 @@ namespace WebSocketSharp.Server
     /// status code and reason.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the current state of the WebSocket
+    /// This method does nothing when the current state of the WebSocket
     /// interface is Closing or Closed.
     /// </remarks>
     /// <param name="code">
@@ -834,7 +834,7 @@ namespace WebSocketSharp.Server
     /// The size of <paramref name="reason"/> is greater than 123 bytes.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The session has not started yet.
+    /// The Close method is not available when the session has not started yet.
     /// </exception>
     protected void Close (CloseStatusCode code, string reason)
     {
