@@ -679,10 +679,10 @@ namespace WebSocketSharp.Server
       if (waitTime != _websocket.WaitTime)
         _websocket.WaitTime = waitTime;
 
-      _websocket.OnOpen += onOpen;
-      _websocket.OnMessage += onMessage;
-      _websocket.OnError += onError;
       _websocket.OnClose += onClose;
+      _websocket.OnError += onError;
+      _websocket.OnMessage += onMessage;
+      _websocket.OnOpen += onOpen;
 
       _websocket.Accept ();
     }
