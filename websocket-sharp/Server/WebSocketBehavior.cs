@@ -959,7 +959,7 @@ namespace WebSocketSharp.Server
     ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method does nothing if the current state of the WebSocket
+    ///   This method does nothing when the current state of the WebSocket
     ///   interface is Closing or Closed.
     ///   </para>
     /// </remarks>
@@ -1007,7 +1007,8 @@ namespace WebSocketSharp.Server
     /// The size of <paramref name="reason"/> is greater than 123 bytes.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The session has not started yet.
+    /// The CloseAsync method is not available when the session has not
+    /// started yet.
     /// </exception>
     protected void CloseAsync (CloseStatusCode code, string reason)
     {
