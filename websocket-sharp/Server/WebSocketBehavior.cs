@@ -1109,7 +1109,7 @@ namespace WebSocketSharp.Server
     protected bool Ping (string message)
     {
       if (_websocket == null) {
-        var msg = "The session has not started yet.";
+        var msg = "The Ping method is not available.";
 
         throw new InvalidOperationException (msg);
       }
