@@ -1128,7 +1128,7 @@ namespace WebSocketSharp.Server
     /// </exception>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   The session has not started yet.
+    ///   The Send method is not available when the session has not started yet.
     ///   </para>
     ///   <para>
     ///   -or-
