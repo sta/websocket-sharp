@@ -1181,7 +1181,8 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The current state of the WebSocket interface is not Open.
+    ///   The Send method is not available when the current state of
+    ///   the WebSocket interface is not Open.
     ///   </para>
     /// </exception>
     protected void Send (FileInfo fileInfo)
