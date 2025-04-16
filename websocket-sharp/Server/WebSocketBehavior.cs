@@ -1284,7 +1284,7 @@ namespace WebSocketSharp.Server
     protected void Send (Stream stream, int length)
     {
       if (_websocket == null) {
-        var msg = "The session has not started yet.";
+        var msg = "The Send method is not available.";
 
         throw new InvalidOperationException (msg);
       }
