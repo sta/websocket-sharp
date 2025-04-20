@@ -1533,7 +1533,7 @@ namespace WebSocketSharp.Server
     protected void SendAsync (Stream stream, int length, Action<bool> completed)
     {
       if (_websocket == null) {
-        var msg = "The session has not started yet.";
+        var msg = "The SendAsync method is not available.";
 
         throw new InvalidOperationException (msg);
       }
