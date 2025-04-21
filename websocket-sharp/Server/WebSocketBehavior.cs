@@ -1556,7 +1556,7 @@ namespace WebSocketSharp.Server
     ///   the WebSocket interface.
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> if the session has not started yet.
+    ///   <see langword="null"/> when the session has not started yet.
     ///   </para>
     /// </value>
     WebSocket IWebSocketSession.WebSocket {
