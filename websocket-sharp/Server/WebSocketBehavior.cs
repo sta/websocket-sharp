@@ -383,7 +383,7 @@ namespace WebSocketSharp.Server
     ///   A <see cref="string"/> that represents the unique ID of the session.
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> if the session has not started yet.
+    ///   <see langword="null"/> when the session has not started yet.
     ///   </para>
     /// </value>
     public string ID {
