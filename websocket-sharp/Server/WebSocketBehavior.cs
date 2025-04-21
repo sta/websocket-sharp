@@ -567,7 +567,7 @@ namespace WebSocketSharp.Server
     ///   has started.
     ///   </para>
     ///   <para>
-    ///   <see cref="DateTime.MaxValue"/> if the session has not started yet.
+    ///   <see cref="DateTime.MaxValue"/> when the session has not started yet.
     ///   </para>
     /// </value>
     public DateTime StartTime {
