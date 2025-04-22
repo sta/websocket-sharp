@@ -25,6 +25,57 @@ namespace Example
       //using (var ws = new WebSocket ("ws://localhost:4649/Chat?name=nobita"))
       //using (var ws = new WebSocket ("wss://localhost:5963/Chat?name=nobita"))
       {
+        #if DEBUG
+        // To change the logging level.
+        ws.Log.Level = LogLevel.Trace;
+
+        // To enable the Per-message Compression extension.
+        //ws.Compression = CompressionMethod.Deflate;
+
+        // To emit a WebSocket.OnMessage event when receives a ping.
+        //ws.EmitOnPing = true;
+
+        // To enable the redirection.
+        //ws.EnableRedirection = true;
+
+        // To disable a delay when send or receive buffer of the underlying
+        // TCP socket is not full.
+        ws.NoDelay = true;
+
+        // To send the Origin header.
+        //ws.Origin = "http://localhost:4649";
+
+        // To send the cookies.
+        //ws.SetCookie (new Cookie ("name", "nobita"));
+        //ws.SetCookie (new Cookie ("roles", "\"idiot, gunfighter\""));
+
+        // To send the credentials for the HTTP Authentication (Basic/Digest).
+        //ws.SetCredentials ("nobita", "password", false);
+
+        // To connect through the HTTP Proxy server.
+        //ws.SetProxy ("http://localhost:3128", "nobita", "password");
+
+        // To validate the server certificate.
+        /*
+        ws.SslConfiguration.ServerCertificateValidationCallback =
+          (sender, certificate, chain, sslPolicyErrors) => {
+            var fmt = "Certificate:\n- Issuer: {0}\n- Subject: {1}";
+            var msg = String.Format (
+                        fmt,
+                        certificate.Issuer,
+                        certificate.Subject
+                      );
+
+            ws.Log.Debug (msg);
+
+            return true; // If the server certificate is valid.
+          };
+         */
+
+        // To change the wait time for the response to the Ping or Close.
+        //ws.WaitTime = TimeSpan.FromSeconds (10);
+        #endif
+
         // Set the WebSocket events.
 
         ws.OnOpen += (sender, e) => ws.Send ("Hi, there!");
@@ -47,53 +98,6 @@ namespace Example
 
             Console.WriteLine (fmt, e.Code, e.Reason);
           };
-#if DEBUG
-        // To change the logging level.
-        ws.Log.Level = LogLevel.Trace;
-
-        // To change the wait time for the response to the Ping or Close.
-        //ws.WaitTime = TimeSpan.FromSeconds (10);
-
-        // To emit a WebSocket.OnMessage event when receives a ping.
-        //ws.EmitOnPing = true;
-
-        // To disable a delay when send or receive buffer of the underlying
-        // TCP socket is not full.
-        ws.NoDelay = true;
-#endif
-        // To enable the Per-message Compression extension.
-        //ws.Compression = CompressionMethod.Deflate;
-
-        // To validate the server certificate.
-        /*
-        ws.SslConfiguration.ServerCertificateValidationCallback =
-          (sender, certificate, chain, sslPolicyErrors) => {
-            var fmt = "Certificate:\n- Issuer: {0}\n- Subject: {1}";
-            var msg = String.Format (
-                        fmt, certificate.Issuer, certificate.Subject
-                      );
-
-            ws.Log.Debug (msg);
-
-            return true; // If the server certificate is valid.
-          };
-         */
-
-        // To send the credentials for the HTTP Authentication (Basic/Digest).
-        //ws.SetCredentials ("nobita", "password", false);
-
-        // To send the Origin header.
-        //ws.Origin = "http://localhost:4649";
-
-        // To send the cookies.
-        //ws.SetCookie (new Cookie ("name", "nobita"));
-        //ws.SetCookie (new Cookie ("roles", "\"idiot, gunfighter\""));
-
-        // To connect through the HTTP Proxy server.
-        //ws.SetProxy ("http://localhost:3128", "nobita", "password");
-
-        // To enable the redirection.
-        //ws.EnableRedirection = true;
 
         // Connect to the server.
         ws.Connect ();
