@@ -78,26 +78,29 @@ namespace Example
 
         // Set the WebSocket events.
 
-        ws.OnOpen += (sender, e) => ws.Send ("Hi, there!");
+        ws.OnClose +=
+          (sender, e) => {
+            var fmt = "[WebSocket Close ({0})] {1}";
 
-        ws.OnMessage += (sender, e) => {
+            Console.WriteLine (fmt, e.Code, e.Reason);
+          };
+
+        ws.OnError +=
+          (sender, e) => {
+            var fmt = "[WebSocket Error] {0}";
+
+            Console.WriteLine (fmt, e.Message);
+          };
+
+        ws.OnMessage +=
+          (sender, e) => {
             var fmt = "[WebSocket Message] {0}";
             var body = !e.IsPing ? e.Data : "A ping was received.";
 
             Console.WriteLine (fmt, body);
           };
 
-        ws.OnError += (sender, e) => {
-            var fmt = "[WebSocket Error] {0}";
-
-            Console.WriteLine (fmt, e.Message);
-          };
-
-        ws.OnClose += (sender, e) => {
-            var fmt = "[WebSocket Close ({0})] {1}";
-
-            Console.WriteLine (fmt, e.Code, e.Reason);
-          };
+        ws.OnOpen += (sender, e) => ws.Send ("Hi, there!");
 
         // Connect to the server.
         ws.Connect ();
