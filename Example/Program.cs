@@ -94,10 +94,11 @@ namespace Example
 
         ws.OnMessage +=
           (sender, e) => {
-            var fmt = "[WebSocket Message] {0}";
-            var body = !e.IsPing ? e.Data : "A ping was received.";
+            var fmt = e.IsPing
+                      ? "[WebSocket Ping] {0}"
+                      : "[WebSocket Message] {0}";
 
-            Console.WriteLine (fmt, body);
+            Console.WriteLine (fmt, e.Data);
           };
 
         ws.OnOpen += (sender, e) => ws.Send ("Hi, there!");
