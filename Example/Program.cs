@@ -25,7 +25,7 @@ namespace Example
       //using (var ws = new WebSocket ("ws://localhost:4649/Chat?name=nobita"))
       //using (var ws = new WebSocket ("wss://localhost:5963/Chat?name=nobita"))
       {
-        #if DEBUG
+#if DEBUG
         // To change the logging level.
         ws.Log.Level = LogLevel.Trace;
 
@@ -74,7 +74,7 @@ namespace Example
 
         // To change the wait time for the response to the Ping or Close.
         //ws.WaitTime = TimeSpan.FromSeconds (10);
-        #endif
+#endif
 
         // Set the WebSocket events.
 
