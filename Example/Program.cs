@@ -113,6 +113,7 @@ namespace Example
 
         while (true) {
           Thread.Sleep (1000);
+
           Console.Write ("> ");
 
           var msg = Console.ReadLine ();
