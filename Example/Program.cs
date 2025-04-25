@@ -109,7 +109,7 @@ namespace Example
         // Connect to the server asynchronously.
         //ws.ConnectAsync ();
 
-        Console.WriteLine ("\nType 'exit' to exit.\n");
+        Console.WriteLine ("\nType \"exit\" to exit.\n");
 
         while (true) {
           Thread.Sleep (1000);
