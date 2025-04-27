@@ -14,7 +14,7 @@ namespace Example2
       // Create a new instance of the WebSocketServer class.
       //
       // If you would like to provide the secure connection, you should
-      // create a new instance with the 'secure' parameter set to true or
+      // create a new instance with the "secure" parameter set to true or
       // with a wss scheme WebSocket URL.
 
       var wssv = new WebSocketServer (4649);
