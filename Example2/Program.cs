@@ -145,18 +145,24 @@ namespace Example2
         }
       );
 
+      // Start the server.
       wssv.Start ();
 
       if (wssv.IsListening) {
-        Console.WriteLine ("Listening on port {0}, and providing WebSocket services:", wssv.Port);
+        Console.WriteLine (
+          "Listening on port {0}, and providing WebSocket services:",
+          wssv.Port
+        );
 
         foreach (var path in wssv.WebSocketServices.Paths)
           Console.WriteLine ("- {0}", path);
       }
 
       Console.WriteLine ("\nPress Enter key to stop the server...");
+
       Console.ReadLine ();
 
+      // Stop the server.
       wssv.Stop ();
     }
   }
