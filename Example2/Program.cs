@@ -46,7 +46,6 @@ namespace Example2
 
       //var wssv = new WebSocketServer ("ws://[::1]:4649");
       //var wssv = new WebSocketServer ("wss://[::1]:5963");
-
 #if DEBUG
       // To change the logging level.
       wssv.Log.Level = LogLevel.Trace;
@@ -86,7 +85,6 @@ namespace Example2
       // To change the wait time for the response to the WebSocket Ping or Close.
       //wssv.WaitTime = TimeSpan.FromSeconds (2);
 #endif
-
       // Add the WebSocket services.
 
       wssv.AddWebSocketService<Echo> ("/Echo");
