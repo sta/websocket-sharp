@@ -51,24 +51,12 @@ namespace Example3
       // To change the logging level.
       httpsv.Log.Level = LogLevel.Trace;
 
-      // To change the wait time for the response to the WebSocket Ping or Close.
-      //httpsv.WaitTime = TimeSpan.FromSeconds (2);
-
-      // To remove the inactive WebSocket sessions periodically.
-      //httpsv.KeepClean = true;
-#endif
-      // To provide the secure connection.
-      /*
-      var cert = ConfigurationManager.AppSettings["ServerCertFile"];
-      var passwd = ConfigurationManager.AppSettings["CertFilePassword"];
-      httpsv.SslConfiguration.ServerCertificate = new X509Certificate2 (cert, passwd);
-       */
-
       // To provide the HTTP Authentication (Basic/Digest).
       /*
       httpsv.AuthenticationSchemes = AuthenticationSchemes.Basic;
       httpsv.Realm = "WebSocket Test";
-      httpsv.UserCredentialsFinder = id => {
+      httpsv.UserCredentialsFinder =
+        id => {
           var name = id.Name;
 
           // Return user name, password, and roles.
@@ -78,9 +66,26 @@ namespace Example3
         };
        */
 
+      // To remove the inactive WebSocket sessions periodically.
+      //httpsv.KeepClean = true;
+
       // To resolve to wait for socket in TIME_WAIT state.
       //httpsv.ReuseAddress = true;
 
+      // To provide the secure connection.
+      /*
+      var cert = ConfigurationManager.AppSettings["ServerCertFile"];
+      var passwd = ConfigurationManager.AppSettings["CertFilePassword"];
+
+      httpsv.SslConfiguration.ServerCertificate = new X509Certificate2 (
+                                                    cert,
+                                                    passwd
+                                                  );
+       */
+
+      // To change the wait time for the response to the WebSocket Ping or Close.
+      //httpsv.WaitTime = TimeSpan.FromSeconds (2);
+#endif
       // Set the document root path.
       httpsv.DocumentRootPath = ConfigurationManager.AppSettings["DocumentRootPath"];
 
