@@ -75,7 +75,6 @@ namespace Example
         // To change the wait time for the response to the Ping or Close.
         //ws.WaitTime = TimeSpan.FromSeconds (10);
 #endif
-
         // Set the WebSocket events.
 
         ws.OnClose +=
