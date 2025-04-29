@@ -90,7 +90,8 @@ namespace Example3
       httpsv.DocumentRootPath = ConfigurationManager.AppSettings["DocumentRootPath"];
 
       // Set the HTTP GET request event.
-      httpsv.OnGet += (sender, e) => {
+      httpsv.OnGet +=
+        (sender, e) => {
           var req = e.Request;
           var res = e.Response;
 
