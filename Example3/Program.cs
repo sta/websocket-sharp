@@ -123,53 +123,62 @@ namespace Example3
         };
 
       // Add the WebSocket services.
-      httpsv.AddWebSocketService<Echo> ("/Echo");
-      httpsv.AddWebSocketService<Chat> ("/Chat");
 
-      // Add the WebSocket service with initializing.
-      /*
+      httpsv.AddWebSocketService<Echo> ("/Echo");
+
+      // With initializing.
       httpsv.AddWebSocketService<Chat> (
         "/Chat",
         s => {
           s.Prefix = "Anon#";
+#if DEBUG
+          // To validate the cookies.
+          /*
+          s.CookiesValidator =
+            (req, res) => {
+              // Check the cookies in "req", and set the cookies to send to
+              // the client with "res" if necessary.
 
-          // To send the Sec-WebSocket-Protocol header that has a subprotocol name.
-          s.Protocol = "chat";
+              foreach (var cookie in req) {
+                cookie.Expired = true;
 
-          // To ignore the Sec-WebSocket-Extensions header.
-          s.IgnoreExtensions = true;
+                res.Add (cookie);
+              }
+
+              return true; // If valid.
+            };
+           */
 
           // To emit a WebSocket.OnMessage event when receives a ping.
-          s.EmitOnPing = true;
+          //s.EmitOnPing = true;
+
+          // To ignore the Sec-WebSocket-Extensions header.
+          //s.IgnoreExtensions = true;
 
           // To disable a delay when send or receive buffer of the underlying
           // TCP socket is not full.
           s.NoDelay = true;
 
           // To validate the Origin header.
-          s.OriginValidator = val => {
+          /*
+          s.OriginValidator =
+            val => {
               // Check the value of the Origin header, and return true if valid.
+
               Uri origin;
 
               return !val.IsNullOrEmpty ()
                      && Uri.TryCreate (val, UriKind.Absolute, out origin)
                      && origin.Host == "localhost";
             };
+           */
 
-          // To validate the cookies.
-          s.CookiesValidator = (req, res) => {
-              // Check the cookies in 'req', and set the cookies to send to
-              // the client with 'res' if necessary.
-              foreach (var cookie in req) {
-                cookie.Expired = true;
-                res.Add (cookie);
-              }
-
-              return true; // If valid.
-            };
+          // To send the Sec-WebSocket-Protocol header that has a subprotocol
+          // name.
+          //s.Protocol = "chat";
+#endif
         }
       );
-       */
 
       httpsv.Start ();
 
