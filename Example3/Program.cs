@@ -180,18 +180,24 @@ namespace Example3
         }
       );
 
+      // Start the server.
       httpsv.Start ();
 
       if (httpsv.IsListening) {
-        Console.WriteLine ("Listening on port {0}, and providing WebSocket services:", httpsv.Port);
+        Console.WriteLine (
+          "Listening on port {0}, and providing WebSocket services:",
+          httpsv.Port
+        );
 
         foreach (var path in httpsv.WebSocketServices.Paths)
           Console.WriteLine ("- {0}", path);
       }
 
       Console.WriteLine ("\nPress Enter key to stop the server...");
+
       Console.ReadLine ();
 
+      // Stop the server.
       httpsv.Stop ();
     }
   }
