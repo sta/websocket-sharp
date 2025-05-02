@@ -87,7 +87,8 @@ namespace Example3
       //httpsv.WaitTime = TimeSpan.FromSeconds (2);
 #endif
       // Set the document root path.
-      httpsv.DocumentRootPath = ConfigurationManager.AppSettings["DocumentRootPath"];
+      httpsv.DocumentRootPath = ConfigurationManager
+                                .AppSettings["DocumentRootPath"];
 
       // Set the HTTP GET request event.
       httpsv.OnGet +=
