@@ -535,10 +535,6 @@ namespace WebSocketSharp
     /// Gets or sets a value indicating whether the underlying TCP socket
     /// disables a delay when send or receive buffer is not full.
     /// </summary>
-    /// <remarks>
-    /// The set operation works if the current state of the interface is
-    /// New or Closed.
-    /// </remarks>
     /// <value>
     ///   <para>
     ///   <c>true</c> if the delay is disabled; otherwise, <c>false</c>.
@@ -548,6 +544,10 @@ namespace WebSocketSharp
     ///   </para>
     /// </value>
     /// <seealso cref="Socket.NoDelay"/>
+    /// <exception cref="InvalidOperationException">
+    /// The set operation is not available when the current state of
+    /// the interface is neither New nor Closed.
+    /// </exception>
     public bool NoDelay {
       get {
         return _noDelay;
@@ -555,8 +555,11 @@ namespace WebSocketSharp
 
       set {
         lock (_forState) {
-          if (!canSet ())
-            return;
+          if (!canSet ()) {
+            var msg = "The set operation is not available.";
+
+            throw new InvalidOperationException (msg);
+          }
 
           _noDelay = value;
         }
