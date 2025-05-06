@@ -341,8 +341,17 @@ namespace WebSocketSharp
     ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The set operation is not available if the interface is not for
-    /// the client.
+    ///   <para>
+    ///   The set operation is not available if the interface is not for
+    ///   the client.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The set operation is not available when the current state of
+    ///   the interface is neither New nor Closed.
+    ///   </para>
     /// </exception>
     public CompressionMethod Compression {
       get {
@@ -357,8 +366,11 @@ namespace WebSocketSharp
         }
 
         lock (_forState) {
-          if (!canSet ())
-            return;
+          if (!canSet ()) {
+            var msg = "The current state of the interface is neither New nor Closed.";
+
+            throw new InvalidOperationException (msg);
+          }
 
           _compression = value;
         }
