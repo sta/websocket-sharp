@@ -356,14 +356,14 @@ namespace WebSocketSharp
 
       set {
         if (!_isClient) {
-          var msg = "The interface is not for the client.";
+          var msg = "The set operation is not available.";
 
           throw new InvalidOperationException (msg);
         }
 
         lock (_forState) {
           if (!canSet ()) {
-            var msg = "The current state of the interface is neither New nor Closed.";
+            var msg = "The set operation is not available.";
 
             throw new InvalidOperationException (msg);
           }
