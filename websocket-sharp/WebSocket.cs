@@ -440,10 +440,6 @@ namespace WebSocketSharp
     /// Gets or sets a value indicating whether the URL redirection for
     /// the handshake request is allowed.
     /// </summary>
-    /// <remarks>
-    /// The set operation works if the current state of the interface is
-    /// New or Closed.
-    /// </remarks>
     /// <value>
     ///   <para>
     ///   <c>true</c> if the interface allows the URL redirection for
@@ -454,8 +450,17 @@ namespace WebSocketSharp
     ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The set operation is not available if the interface is not for
-    /// the client.
+    ///   <para>
+    ///   The set operation is not available if the interface is not for
+    ///   the client.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The set operation is not available when the current state of
+    ///   the interface is neither New nor Closed.
+    ///   </para>
     /// </exception>
     public bool EnableRedirection {
       get {
@@ -464,14 +469,17 @@ namespace WebSocketSharp
 
       set {
         if (!_isClient) {
-          var msg = "The interface is not for the client.";
+          var msg = "The set operation is not available.";
 
           throw new InvalidOperationException (msg);
         }
 
         lock (_forState) {
-          if (!canSet ())
-            return;
+          if (!canSet ()) {
+            var msg = "The set operation is not available.";
+
+            throw new InvalidOperationException (msg);
+          }
 
           _enableRedirection = value;
         }
