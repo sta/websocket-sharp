@@ -767,10 +767,6 @@ namespace WebSocketSharp
     /// <summary>
     /// Gets or sets the time to wait for the response to the ping or close.
     /// </summary>
-    /// <remarks>
-    /// The set operation works if the current state of the interface is
-    /// New or Closed.
-    /// </remarks>
     /// <value>
     ///   <para>
     ///   A <see cref="TimeSpan"/> that represents the time to wait for
@@ -783,6 +779,10 @@ namespace WebSocketSharp
     /// </value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The value specified for a set operation is zero or less.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The set operation is not available when the current state of
+    /// the interface is neither New nor Closed.
     /// </exception>
     public TimeSpan WaitTime {
       get {
@@ -797,8 +797,11 @@ namespace WebSocketSharp
         }
 
         lock (_forState) {
-          if (!canSet ())
-            return;
+          if (!canSet ()) {
+            var msg = "The set operation is not available.";
+
+            throw new InvalidOperationException (msg);
+          }
 
           _waitTime = value;
         }
