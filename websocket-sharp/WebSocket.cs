@@ -595,10 +595,6 @@ namespace WebSocketSharp
     ///   <para>
     ///   The interface sends the Origin header if this property has any.
     ///   </para>
-    ///   <para>
-    ///   The set operation works if the current state of the interface is
-    ///   New or Closed.
-    ///   </para>
     /// </remarks>
     /// <value>
     ///   <para>
@@ -612,10 +608,6 @@ namespace WebSocketSharp
     ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
-    /// <exception cref="InvalidOperationException">
-    /// The set operation is not available if the interface is not for
-    /// the client.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   The value specified for a set operation is not an absolute URI string.
@@ -627,6 +619,19 @@ namespace WebSocketSharp
     ///   The value specified for a set operation includes the path segments.
     ///   </para>
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    ///   <para>
+    ///   The set operation is not available if the interface is not for
+    ///   the client.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The set operation is not available when the current state of
+    ///   the interface is neither New nor Closed.
+    ///   </para>
+    /// </exception>
     public string Origin {
       get {
         return _origin;
@@ -634,7 +639,7 @@ namespace WebSocketSharp
 
       set {
         if (!_isClient) {
-          var msg = "The interface is not for the client.";
+          var msg = "The set operation is not available.";
 
           throw new InvalidOperationException (msg);
         }
@@ -656,8 +661,11 @@ namespace WebSocketSharp
         }
 
         lock (_forState) {
-          if (!canSet ())
-            return;
+          if (!canSet ()) {
+            var msg = "The set operation is not available.";
+
+            throw new InvalidOperationException (msg);
+          }
 
           _origin = !value.IsNullOrEmpty () ? value.TrimEnd ('/') : value;
         }
