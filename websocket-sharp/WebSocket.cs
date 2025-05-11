@@ -727,13 +727,15 @@ namespace WebSocketSharp
     /// </value>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   The interface is not for the client.
+    ///   The get operation is not available if the interface is not for
+    ///   the client.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The interface does not use a secure connection.
+    ///   The get operation is not available if the interface does not use
+    ///   a secure connection.
     ///   </para>
     /// </exception>
     public ClientSslConfiguration SslConfiguration {
