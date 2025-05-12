@@ -741,13 +741,13 @@ namespace WebSocketSharp
     public ClientSslConfiguration SslConfiguration {
       get {
         if (!_isClient) {
-          var msg = "The interface is not for the client.";
+          var msg = "The get operation is not available.";
 
           throw new InvalidOperationException (msg);
         }
 
         if (!_isSecure) {
-          var msg = "The interface does not use a secure connection.";
+          var msg = "The get operation is not available.";
 
           throw new InvalidOperationException (msg);
         }
