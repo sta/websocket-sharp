@@ -3964,23 +3964,29 @@ namespace WebSocketSharp
     /// <summary>
     /// Sets an HTTP cookie to send with the handshake request.
     /// </summary>
-    /// <remarks>
-    /// This method works if the current state of the interface is
-    /// New or Closed.
-    /// </remarks>
     /// <param name="cookie">
     /// A <see cref="Cookie"/> that specifies the cookie to send.
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The interface is not for the client.
-    /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="cookie"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    ///   <para>
+    ///   The SetCookie method is not available if the interface is not for
+    ///   the client.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The SetCookie method is not available when the current state of
+    ///   the interface is neither New nor Closed.
+    ///   </para>
     /// </exception>
     public void SetCookie (Cookie cookie)
     {
       if (!_isClient) {
-        var msg = "The interface is not for the client.";
+        var msg = "The SetCookie method is not available.";
 
         throw new InvalidOperationException (msg);
       }
@@ -3989,8 +3995,11 @@ namespace WebSocketSharp
         throw new ArgumentNullException ("cookie");
 
       lock (_forState) {
-        if (!canSet ())
-          return;
+        if (!canSet ()) {
+          var msg = "The SetCookie method is not available.";
+
+          throw new InvalidOperationException (msg);
+        }
 
         lock (_cookies.SyncRoot)
           _cookies.SetOrRemove (cookie);
