@@ -3994,10 +3994,6 @@ namespace WebSocketSharp
     /// <summary>
     /// Sets the credentials for the HTTP authentication (Basic/Digest).
     /// </summary>
-    /// <remarks>
-    /// This method works if the current state of the interface is
-    /// New or Closed.
-    /// </remarks>
     /// <param name="username">
     ///   <para>
     ///   A <see cref="string"/> that specifies the username associated
@@ -4022,9 +4018,6 @@ namespace WebSocketSharp
     /// the Basic authentication in advance with the first handshake
     /// request; otherwise, <c>false</c>.
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The interface is not for the client.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="username"/> contains an invalid character.
@@ -4036,10 +4029,23 @@ namespace WebSocketSharp
     ///   <paramref name="password"/> contains an invalid character.
     ///   </para>
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    ///   <para>
+    ///   The SetCredentials method is not available if the interface is not for
+    ///   the client.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The SetCredentials method is not available when the current state of
+    ///   the interface is neither New nor Closed.
+    ///   </para>
+    /// </exception>
     public void SetCredentials (string username, string password, bool preAuth)
     {
       if (!_isClient) {
-        var msg = "The interface is not for the client.";
+        var msg = "The SetCredentials method is not available.";
 
         throw new InvalidOperationException (msg);
       }
@@ -4061,8 +4067,11 @@ namespace WebSocketSharp
       }
 
       lock (_forState) {
-        if (!canSet ())
-          return;
+        if (!canSet ()) {
+          var msg = "The SetCredentials method is not available.";
+
+          throw new InvalidOperationException (msg);
+        }
 
         if (username.IsNullOrEmpty ()) {
           _credentials = null;
