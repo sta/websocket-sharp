@@ -4081,7 +4081,9 @@ namespace WebSocketSharp
         }
 
         _credentials = new NetworkCredential (
-                         username, password, _uri.PathAndQuery
+                         username,
+                         password,
+                         _uri.PathAndQuery
                        );
 
         _preAuth = preAuth;
