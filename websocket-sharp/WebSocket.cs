@@ -4094,10 +4094,6 @@ namespace WebSocketSharp
     /// Sets the URL of the HTTP proxy server through which to connect and
     /// the credentials for the HTTP proxy authentication (Basic/Digest).
     /// </summary>
-    /// <remarks>
-    /// This method works if the current state of the interface is
-    /// New or Closed.
-    /// </remarks>
     /// <param name="url">
     ///   <para>
     ///   A <see cref="string"/> that specifies the URL of the proxy
@@ -4130,9 +4126,6 @@ namespace WebSocketSharp
     ///   <see langword="null"/> or an empty string if not necessary.
     ///   </para>
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The interface is not for the client.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="url"/> is not an absolute URI string.
@@ -4162,10 +4155,23 @@ namespace WebSocketSharp
     ///   <paramref name="password"/> contains an invalid character.
     ///   </para>
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    ///   <para>
+    ///   The SetProxy method is not available if the interface is not for
+    ///   the client.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The SetProxy method is not available when the current state of
+    ///   the interface is neither New nor Closed.
+    ///   </para>
+    /// </exception>
     public void SetProxy (string url, string username, string password)
     {
       if (!_isClient) {
-        var msg = "The interface is not for the client.";
+        var msg = "The SetProxy method is not available.";
 
         throw new InvalidOperationException (msg);
       }
@@ -4209,8 +4215,11 @@ namespace WebSocketSharp
       }
 
       lock (_forState) {
-        if (!canSet ())
-          return;
+        if (!canSet ()) {
+          var msg = "The SetProxy method is not available.";
+
+          throw new InvalidOperationException (msg);
+        }
 
         if (url.IsNullOrEmpty ()) {
           _proxyUri = null;
