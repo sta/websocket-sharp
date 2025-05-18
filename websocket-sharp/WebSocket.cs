@@ -4234,7 +4234,9 @@ namespace WebSocketSharp
                                 username,
                                 password,
                                 String.Format (
-                                  "{0}:{1}", _uri.DnsSafeHost, _uri.Port
+                                  "{0}:{1}",
+                                  _uri.DnsSafeHost,
+                                  _uri.Port
                                 )
                               )
                             : null;
