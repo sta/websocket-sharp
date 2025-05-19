@@ -4229,17 +4229,16 @@ namespace WebSocketSharp
         }
 
         _proxyUri = uri;
-        _proxyCredentials = !username.IsNullOrEmpty ()
-                            ? new NetworkCredential (
-                                username,
-                                password,
-                                String.Format (
-                                  "{0}:{1}",
-                                  _uri.DnsSafeHost,
-                                  _uri.Port
-                                )
-                              )
-                            : null;
+
+        if (username.IsNullOrEmpty ()) {
+          _proxyCredentials = null;
+
+          return;
+        }
+
+        var domain = String.Format ("{0}:{1}", _uri.DnsSafeHost, _uri.Port);
+
+        _proxyCredentials = new NetworkCredential (username, password, domain);
       }
     }
 
