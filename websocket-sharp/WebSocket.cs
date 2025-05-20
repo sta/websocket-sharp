@@ -537,8 +537,18 @@ namespace WebSocketSharp
     /// <value>
     /// A <see cref="Logger"/> that provides the logging function.
     /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The get operation is not available if the interface is not for
+    /// the client.
+    /// </exception>
     public Logger Log {
       get {
+        if (!_isClient) {
+          var msg = "The get operation is not available.";
+
+          throw new InvalidOperationException (msg);
+        }
+
         return _log;
       }
 
