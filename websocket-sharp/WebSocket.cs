@@ -426,13 +426,25 @@ namespace WebSocketSharp
     ///   The default value is <c>false</c>.
     ///   </para>
     /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The set operation is not available when the current state of
+    /// the interface is neither New nor Closed.
+    /// </exception>
     public bool EmitOnPing {
       get {
         return _emitOnPing;
       }
 
       set {
-        _emitOnPing = value;
+        lock (_forState) {
+          if (!canSet ()) {
+            var msg = "The set operation is not available.";
+
+            throw new InvalidOperationException (msg);
+          }
+
+          _emitOnPing = value;
+        }
       }
     }
 
