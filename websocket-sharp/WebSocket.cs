@@ -414,13 +414,13 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the message event is
-    /// emitted when the interface receives a ping.
+    /// Gets or sets a value indicating whether the interface emits
+    /// the message event when it receives a ping.
     /// </summary>
     /// <value>
     ///   <para>
     ///   <c>true</c> if the interface emits the message event when
-    ///   receives a ping; otherwise, <c>false</c>.
+    ///   it receives a ping; otherwise, <c>false</c>.
     ///   </para>
     ///   <para>
     ///   The default value is <c>false</c>.
