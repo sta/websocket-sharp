@@ -299,12 +299,12 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the message event is emitted
-    /// when the WebSocket interface for a session receives a ping.
+    /// Gets or sets a value indicating whether the WebSocket interface for
+    /// a session emits the message event when it receives a ping.
     /// </summary>
     /// <value>
     ///   <para>
-    ///   <c>true</c> if the interface emits the message event when receives
+    ///   <c>true</c> if the interface emits the message event when it receives
     ///   a ping; otherwise, <c>false</c>.
     ///   </para>
     ///   <para>
