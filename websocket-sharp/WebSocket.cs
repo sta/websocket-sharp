@@ -3388,7 +3388,7 @@ namespace WebSocketSharp
     public void Connect ()
     {
       if (!_isClient) {
-        var msg = "The interface is not for the client.";
+        var msg = "The Connect method is not available.";
 
         throw new InvalidOperationException (msg);
       }
