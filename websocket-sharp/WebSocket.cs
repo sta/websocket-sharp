@@ -3376,7 +3376,8 @@ namespace WebSocketSharp
     /// </remarks>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   The interface is not for the client.
+    ///   The Connect method is not available if the interface is not for
+    ///   the client.
     ///   </para>
     ///   <para>
     ///   -or-
