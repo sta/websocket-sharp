@@ -3371,7 +3371,7 @@ namespace WebSocketSharp
     /// Establishes a connection.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the current state of the interface is
+    /// This method does nothing when the current state of the interface is
     /// Connecting or Open.
     /// </remarks>
     /// <exception cref="InvalidOperationException">
