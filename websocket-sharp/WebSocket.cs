@@ -3435,7 +3435,7 @@ namespace WebSocketSharp
     public void ConnectAsync ()
     {
       if (!_isClient) {
-        var msg = "The interface is not for the client.";
+        var msg = "The ConnectAsync method is not available.";
 
         throw new InvalidOperationException (msg);
       }
