@@ -3430,7 +3430,8 @@ namespace WebSocketSharp
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   A series of reconnecting has failed.
+    ///   The ConnectAsync method is not available if a series of reconnecting
+    ///   has failed.
     ///   </para>
     /// </exception>
     public void ConnectAsync ()
