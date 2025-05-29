@@ -3442,7 +3442,7 @@ namespace WebSocketSharp
       }
 
       if (_retryCountForConnect >= _maxRetryCountForConnect) {
-        var msg = "A series of reconnecting has failed.";
+        var msg = "The ConnectAsync method is not available.";
 
         throw new InvalidOperationException (msg);
       }
