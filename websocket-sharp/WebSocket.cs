@@ -3417,7 +3417,7 @@ namespace WebSocketSharp
     ///   This method does not wait for the connect process to be complete.
     ///   </para>
     ///   <para>
-    ///   This method does nothing if the current state of the interface is
+    ///   This method does nothing when the current state of the interface is
     ///   Connecting or Open.
     ///   </para>
     /// </remarks>
