@@ -3524,12 +3524,12 @@ namespace WebSocketSharp
     /// <param name="data">
     /// An array of <see cref="byte"/> that specifies the binary data to send.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="data"/> is <see langword="null"/>.
+    /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The Send method is not available when the current state of
     /// the interface is not Open.
-    /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="data"/> is <see langword="null"/>.
     /// </exception>
     public void Send (byte[] data)
     {
