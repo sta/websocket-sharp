@@ -3556,13 +3556,6 @@ namespace WebSocketSharp
     ///   The file is sent as the binary data.
     ///   </para>
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The Send method is not available when the current state of
-    /// the interface is not Open.
-    /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="fileInfo"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   The file does not exist.
@@ -3573,6 +3566,13 @@ namespace WebSocketSharp
     ///   <para>
     ///   The file could not be opened.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="fileInfo"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The Send method is not available when the current state of
+    /// the interface is not Open.
     /// </exception>
     public void Send (FileInfo fileInfo)
     {
