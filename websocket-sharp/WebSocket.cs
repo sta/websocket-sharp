@@ -3557,7 +3557,8 @@ namespace WebSocketSharp
     ///   </para>
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// The current state of the interface is not Open.
+    /// The Send method is not available when the current state of
+    /// the interface is not Open.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="fileInfo"/> is <see langword="null"/>.
