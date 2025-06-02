@@ -3608,15 +3608,15 @@ namespace WebSocketSharp
     /// <param name="data">
     /// A <see cref="string"/> that specifies the text data to send.
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The Send method is not available when the current state of
-    /// the interface is not Open.
+    /// <exception cref="ArgumentException">
+    /// <paramref name="data"/> could not be UTF-8-encoded.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="data"/> is <see langword="null"/>.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="data"/> could not be UTF-8-encoded.
+    /// <exception cref="InvalidOperationException">
+    /// The Send method is not available when the current state of
+    /// the interface is not Open.
     /// </exception>
     public void Send (string data)
     {
