@@ -3654,13 +3654,6 @@ namespace WebSocketSharp
     /// <param name="length">
     /// An <see cref="int"/> that specifies the number of bytes to send.
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The Send method is not available when the current state of
-    /// the interface is not Open.
-    /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="stream"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="stream"/> cannot be read.
@@ -3677,6 +3670,13 @@ namespace WebSocketSharp
     ///   <para>
     ///   No data could be read from <paramref name="stream"/>.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="stream"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The Send method is not available when the current state of
+    /// the interface is not Open.
     /// </exception>
     public void Send (Stream stream, int length)
     {
