@@ -3655,7 +3655,8 @@ namespace WebSocketSharp
     /// An <see cref="int"/> that specifies the number of bytes to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// The current state of the interface is not Open.
+    /// The Send method is not available when the current state of
+    /// the interface is not Open.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="stream"/> is <see langword="null"/>.
