@@ -3734,7 +3734,7 @@ namespace WebSocketSharp
     ///   An <see cref="T:System.Action{bool}"/> delegate.
     ///   </para>
     ///   <para>
-    ///   The delegate invokes the method called when the send is complete.
+    ///   It specifies the delegate called when the send is complete.
     ///   </para>
     ///   <para>
     ///   The <see cref="bool"/> parameter passed to the method is <c>true</c>
