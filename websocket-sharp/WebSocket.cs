@@ -3864,15 +3864,15 @@ namespace WebSocketSharp
     ///   <see langword="null"/> if not necessary.
     ///   </para>
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The SendAsync method is not available when the current state of
-    /// the interface is not Open.
+    /// <exception cref="ArgumentException">
+    /// <paramref name="data"/> could not be UTF-8-encoded.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="data"/> is <see langword="null"/>.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="data"/> could not be UTF-8-encoded.
+    /// <exception cref="InvalidOperationException">
+    /// The SendAsync method is not available when the current state of
+    /// the interface is not Open.
     /// </exception>
     public void SendAsync (string data, Action<bool> completed)
     {
