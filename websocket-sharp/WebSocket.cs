@@ -3955,7 +3955,7 @@ namespace WebSocketSharp
     public void SendAsync (Stream stream, int length, Action<bool> completed)
     {
       if (_readyState != WebSocketState.Open) {
-        var msg = "The current state of the interface is not Open.";
+        var msg = "The SendAsync method is not available.";
 
         throw new InvalidOperationException (msg);
       }
