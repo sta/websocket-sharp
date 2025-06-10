@@ -3929,13 +3929,6 @@ namespace WebSocketSharp
     ///   <see langword="null"/> if not necessary.
     ///   </para>
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The SendAsync method is not available when the current state of
-    /// the interface is not Open.
-    /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="stream"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="stream"/> cannot be read.
@@ -3952,6 +3945,13 @@ namespace WebSocketSharp
     ///   <para>
     ///   No data could be read from <paramref name="stream"/>.
     ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="stream"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The SendAsync method is not available when the current state of
+    /// the interface is not Open.
     /// </exception>
     public void SendAsync (Stream stream, int length, Action<bool> completed)
     {
