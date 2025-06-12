@@ -2197,7 +2197,9 @@ namespace WebSocketSharp
     }
 
     private void sendAsync (
-      Opcode opcode, Stream sourceStream, Action<bool> completed
+      Opcode opcode,
+      Stream sourceStream,
+      Action<bool> completed
     )
     {
       Func<Opcode, Stream, bool> sender = send;
