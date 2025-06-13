@@ -2274,7 +2274,9 @@ namespace WebSocketSharp
           return res;
 
         var ares = new AuthenticationResponse (
-                     _authChallenge, _credentials, _nonceCount
+                     _authChallenge,
+                     _credentials,
+                     _nonceCount
                    );
 
         _nonceCount = ares.NonceCount;
