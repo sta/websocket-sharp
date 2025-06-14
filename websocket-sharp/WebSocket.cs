@@ -2664,7 +2664,9 @@ namespace WebSocketSharp
 
     // As server
     internal void Send (
-      Opcode opcode, byte[] data, Dictionary<CompressionMethod, byte[]> cache
+      Opcode opcode,
+      byte[] data,
+      Dictionary<CompressionMethod, byte[]> cache
     )
     {
       lock (_forSend) {
