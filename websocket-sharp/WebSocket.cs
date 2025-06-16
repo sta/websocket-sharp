@@ -1058,7 +1058,8 @@ namespace WebSocketSharp
 
     // As client
     private bool checkHandshakeResponse (
-      HttpResponse response, out string message
+      HttpResponse response,
+      out string message
     )
     {
       message = null;
