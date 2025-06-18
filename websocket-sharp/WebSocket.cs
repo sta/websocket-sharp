@@ -1354,7 +1354,11 @@ namespace WebSocketSharp
       Action<PayloadData, bool, bool> closer = close;
 
       closer.BeginInvoke (
-        payloadData, send, received, ar => closer.EndInvoke (ar), null
+        payloadData,
+        send,
+        received,
+        ar => closer.EndInvoke (ar),
+        null
       );
     }
 
