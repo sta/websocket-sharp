@@ -1466,7 +1466,9 @@ namespace WebSocketSharp
 
       if (_authChallenge != null) {
         var ret = new AuthenticationResponse (
-                    _authChallenge, _credentials, _nonceCount
+                    _authChallenge,
+                    _credentials,
+                    _nonceCount
                   );
 
         _nonceCount = ret.NonceCount;
