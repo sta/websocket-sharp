@@ -1464,19 +1464,18 @@ namespace WebSocketSharp
       if (_credentials == null)
         return null;
 
-      if (_authChallenge != null) {
-        var ret = new AuthenticationResponse (
-                    _authChallenge,
-                    _credentials,
-                    _nonceCount
-                  );
+      if (_authChallenge == null)
+        return _preAuth ? new AuthenticationResponse (_credentials) : null;
 
-        _nonceCount = ret.NonceCount;
+      var ret = new AuthenticationResponse (
+                  _authChallenge,
+                  _credentials,
+                  _nonceCount
+                );
 
-        return ret;
-      }
+      _nonceCount = ret.NonceCount;
 
-      return _preAuth ? new AuthenticationResponse (_credentials) : null;
+      return ret;
     }
 
     // As client
