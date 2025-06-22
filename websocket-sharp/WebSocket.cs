@@ -1485,7 +1485,8 @@ namespace WebSocketSharp
 
       if (_compression != CompressionMethod.None) {
         var str = _compression.ToExtensionString (
-                    "server_no_context_takeover", "client_no_context_takeover"
+                    "server_no_context_takeover",
+                    "client_no_context_takeover"
                   );
 
         buff.AppendFormat ("{0}, ", str);
