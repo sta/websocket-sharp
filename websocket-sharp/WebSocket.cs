@@ -1584,7 +1584,8 @@ namespace WebSocketSharp
 
     // As server
     private bool customCheckHandshakeRequest (
-      WebSocketContext context, out string message
+      WebSocketContext context,
+      out string message
     )
     {
       message = null;
