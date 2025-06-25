@@ -2456,10 +2456,10 @@ namespace WebSocketSharp
                 _stream,
                 false,
                 frame => {
-                  var cont = processReceivedFrame (frame)
-                             && _readyState != WebSocketState.Closed;
+                  var doNext = processReceivedFrame (frame)
+                               && _readyState != WebSocketState.Closed;
 
-                  if (!cont) {
+                  if (!doNext) {
                     var exited = _receivingExited;
 
                     if (exited != null)
