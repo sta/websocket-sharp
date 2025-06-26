@@ -2495,12 +2495,12 @@ namespace WebSocketSharp
       if (value.Length == 0)
         return false;
 
-      var comp = _compression != CompressionMethod.None;
+      var compRequested = _compression != CompressionMethod.None;
 
       foreach (var elm in value.SplitHeaderValue (',')) {
         var ext = elm.Trim ();
 
-        if (comp && ext.IsCompressionExtension (_compression)) {
+        if (compRequested && ext.IsCompressionExtension (_compression)) {
           var param1 = "server_no_context_takeover";
           var param2 = "client_no_context_takeover";
 
@@ -2526,7 +2526,7 @@ namespace WebSocketSharp
           if (invalid)
             return false;
 
-          comp = false;
+          compRequested = false;
         }
         else {
           return false;
