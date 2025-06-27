@@ -2515,11 +2515,11 @@ namespace WebSocketSharp
                           t => {
                             t = t.Trim ();
 
-                            var valid = t == name
-                                        || t == param1
-                                        || t == param2;
+                            var isValid = t == name
+                                          || t == param1
+                                          || t == param2;
 
-                            return !valid;
+                            return !isValid;
                           }
                         );
 
