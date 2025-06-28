@@ -2511,19 +2511,20 @@ namespace WebSocketSharp
           }
 
           var name = _compression.ToExtensionString ();
-          var invalid = ext.SplitHeaderValue (';').Contains (
-                          t => {
-                            t = t.Trim ();
 
-                            var isValid = t == name
-                                          || t == param1
-                                          || t == param2;
+          var isInvalid = ext.SplitHeaderValue (';').Contains (
+                            t => {
+                              t = t.Trim ();
 
-                            return !isValid;
-                          }
-                        );
+                              var isValid = t == name
+                                            || t == param1
+                                            || t == param2;
 
-          if (invalid)
+                              return !isValid;
+                            }
+                          );
+
+          if (isInvalid)
             return false;
 
           compRequested = false;
