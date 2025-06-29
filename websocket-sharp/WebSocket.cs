@@ -1978,7 +1978,7 @@ namespace WebSocketSharp
 
       var buff = new StringBuilder (80);
 
-      var comp = false;
+      var compRequested = false;
 
       foreach (var elm in value.SplitHeaderValue (',')) {
         var ext = elm.Trim ();
@@ -1986,7 +1986,7 @@ namespace WebSocketSharp
         if (ext.Length == 0)
           continue;
 
-        if (!comp) {
+        if (!compRequested) {
           if (ext.IsCompressionExtension (CompressionMethod.Deflate)) {
             _compression = CompressionMethod.Deflate;
 
@@ -1997,7 +1997,7 @@ namespace WebSocketSharp
 
             buff.AppendFormat ("{0}, ", str);
 
-            comp = true;
+            compRequested = true;
           }
         }
       }
