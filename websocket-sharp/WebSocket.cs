@@ -1118,11 +1118,11 @@ namespace WebSocketSharp
         }
       }
       else {
-        var valid = _protocolsRequested
-                    && subp.Length > 0
-                    && _protocols.Contains (p => p == subp);
+        var isValid = _protocolsRequested
+                      && subp.Length > 0
+                      && _protocols.Contains (p => p == subp);
 
-        if (!valid) {
+        if (!isValid) {
           message = "The Sec-WebSocket-Protocol header is invalid.";
 
           return false;
