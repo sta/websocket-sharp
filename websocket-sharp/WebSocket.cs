@@ -120,6 +120,7 @@ namespace WebSocketSharp
     private Stream                         _stream;
     private TcpClient                      _tcpClient;
     private Uri                            _uri;
+    private WebHeaderCollection            _userHeaders;
     private const string                   _version = "13";
     private TimeSpan                       _waitTime;
 
@@ -315,6 +316,18 @@ namespace WebSocketSharp
 
       set {
         _ignoreExtensions = value;
+      }
+    }
+
+    internal WebHeaderCollection UserHeaders {
+      get {
+        if (_userHeaders == null) {
+          _userHeaders = _isClient
+                         ? new WebHeaderCollection (HttpHeaderType.Request, false)
+                         : new WebHeaderCollection (HttpHeaderType.Response, false);
+        }
+
+        return _userHeaders;
       }
     }
 
