@@ -427,6 +427,7 @@ namespace WebSocketSharp.Net
               "Sec-WebSocket-Protocol",
               HttpHeaderType.Request
               | HttpHeaderType.Response
+              | HttpHeaderType.Restricted
               | HttpHeaderType.MultiValueInRequest
             )
           },
