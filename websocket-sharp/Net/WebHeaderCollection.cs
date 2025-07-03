@@ -499,6 +499,7 @@ namespace WebSocketSharp.Net
               "Upgrade",
               HttpHeaderType.Request
               | HttpHeaderType.Response
+              | HttpHeaderType.Restricted
               | HttpHeaderType.MultiValue
             )
           },
