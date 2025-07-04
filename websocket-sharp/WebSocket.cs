@@ -322,9 +322,11 @@ namespace WebSocketSharp
     internal WebHeaderCollection UserHeaders {
       get {
         if (_userHeaders == null) {
-          _userHeaders = _isClient
-                         ? new WebHeaderCollection (HttpHeaderType.Request, false)
-                         : new WebHeaderCollection (HttpHeaderType.Response, false);
+          var state = _isClient
+                      ? HttpHeaderType.Request
+                      : HttpHeaderType.Response;
+
+          _userHeaders = new WebHeaderCollection (state, false);
         }
 
         return _userHeaders;
