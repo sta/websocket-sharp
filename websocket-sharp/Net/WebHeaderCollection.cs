@@ -133,7 +133,9 @@ namespace WebSocketSharp.Net
             "Authorization",
             new HttpHeaderInfo (
               "Authorization",
-              HttpHeaderType.Request | HttpHeaderType.MultiValue
+              HttpHeaderType.Request
+              | HttpHeaderType.Restricted
+              | HttpHeaderType.MultiValue
             )
           },
           {
