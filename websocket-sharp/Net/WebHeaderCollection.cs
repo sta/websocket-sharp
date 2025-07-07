@@ -350,7 +350,9 @@ namespace WebSocketSharp.Net
             "ProxyAuthenticate",
             new HttpHeaderInfo (
               "Proxy-Authenticate",
-              HttpHeaderType.Response | HttpHeaderType.MultiValue
+              HttpHeaderType.Response
+              | HttpHeaderType.Restricted
+              | HttpHeaderType.MultiValue
             )
           },
           {
