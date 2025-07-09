@@ -225,7 +225,7 @@ namespace WebSocketSharp.Net
             "Cookie2",
             new HttpHeaderInfo (
               "Cookie2",
-              HttpHeaderType.Request
+              HttpHeaderType.Request | HttpHeaderType.Restricted
             )
           },
           {
