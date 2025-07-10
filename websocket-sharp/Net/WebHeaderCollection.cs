@@ -456,7 +456,9 @@ namespace WebSocketSharp.Net
             "SetCookie",
             new HttpHeaderInfo (
               "Set-Cookie",
-              HttpHeaderType.Response | HttpHeaderType.MultiValue
+              HttpHeaderType.Response
+              | HttpHeaderType.Restricted
+              | HttpHeaderType.MultiValue
             )
           },
           {
