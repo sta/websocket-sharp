@@ -1585,6 +1585,11 @@ namespace WebSocketSharp
       if (_extensions != null)
         headers["Sec-WebSocket-Extensions"] = _extensions;
 
+      var hasUserHeader = _userHeaders != null && _userHeaders.Count > 0;
+
+      if (hasUserHeader)
+        headers.Add (_userHeaders);
+
       if (_cookies.Count > 0)
         ret.SetCookies (_cookies);
 
