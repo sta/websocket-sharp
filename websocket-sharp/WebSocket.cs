@@ -4319,6 +4319,78 @@ namespace WebSocketSharp
       }
     }
 
+    /// <summary>
+    /// Sets a user header to send with the handshake request or response.
+    /// </summary>
+    /// <param name="name">
+    /// A <see cref="string"/> that specifies the name of the header to set.
+    /// </param>
+    /// <param name="value">
+    /// A <see cref="string"/> that specifies the value of the header to set.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="name"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="name"/> is a string of spaces.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="name"/> contains an invalid character.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="value"/> contains an invalid character.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="name"/> is a restricted header name.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="name"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The length of <paramref name="value"/> is greater than 65,535
+    /// characters.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// This instance does not allow the header.
+    ///   <para>
+    ///   The SetUserHeader method is not available when the current state of
+    ///   the interface is neither New nor Closed.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The SetUserHeader method is not available if the interface does not
+    ///   allow the header type.
+    ///   </para>
+    /// </exception>
+    public void SetUserHeader (string name, string value)
+    {
+      lock (_forState) {
+        if (!canSet ()) {
+          var msg = "The SetUserHeader method is not available.";
+
+          throw new InvalidOperationException (msg);
+        }
+
+        UserHeaders.Set (name, value);
+      }
+    }
+
     #endregion
 
     #region Explicit Interface Implementations
