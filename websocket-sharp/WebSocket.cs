@@ -2285,6 +2285,8 @@ namespace WebSocketSharp
     {
       var req = createHandshakeRequest ();
 
+      _log.Debug (req.ToString ());
+
       var timeout = 90000;
       var res = req.GetResponse (_stream, timeout);
 
@@ -2324,6 +2326,8 @@ namespace WebSocketSharp
           releaseClientResources ();
           setClientStream ();
         }
+
+        _log.Debug (req.ToString ());
 
         timeout = 15000;
         res = req.GetResponse (_stream, timeout);
