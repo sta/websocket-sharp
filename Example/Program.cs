@@ -55,6 +55,9 @@ namespace Example
         // To connect through the HTTP Proxy server.
         //ws.SetProxy ("http://localhost:3128", "nobita", "password");
 
+        // To send a user header.
+        ws.SetUserHeader ("HeaderFromHell", "HeaderFromHell2");
+
         // To validate the server certificate.
         /*
         ws.SslConfiguration.ServerCertificateValidationCallback =
