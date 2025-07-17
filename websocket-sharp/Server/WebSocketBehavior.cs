@@ -58,6 +58,7 @@ namespace WebSocketSharp.Server
     private string                                         _protocol;
     private WebSocketSessionManager                        _sessions;
     private DateTime                                       _startTime;
+    private Action<NameValueCollection, WebHeaderCollection> _userHeadersResponder;
     private WebSocket                                      _websocket;
 
     #endregion
@@ -576,6 +577,52 @@ namespace WebSocketSharp.Server
       }
     }
 
+    /// <summary>
+    /// Gets or sets the delegate used to respond to the user headers.
+    /// </summary>
+    /// <value>
+    ///   <para>
+    ///   A <see cref="T:System.Action{NameValueCollection, WebHeaderCollection}"/>
+    ///   delegate.
+    ///   </para>
+    ///   <para>
+    ///   It represents the delegate called when the WebSocket interface
+    ///   for a session validates the handshake request.
+    ///   </para>
+    ///   <para>
+    ///   1st <see cref="NameValueCollection"/> parameter passed to the delegate
+    ///   contains the HTTP headers included in the handshake request.
+    ///   </para>
+    ///   <para>
+    ///   2nd <see cref="WebHeaderCollection"/> parameter passed to the delegate
+    ///   holds the user headers to send to the client.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not necessary.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
+    ///   </para>
+    /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The set operation is not available when the session has already started.
+    /// </exception>
+    public Action<NameValueCollection, WebHeaderCollection> UserHeadersResponder {
+      get {
+        return _userHeadersResponder;
+      }
+
+      set {
+        if (_websocket != null) {
+          var msg = "The set operation is not available.";
+
+          throw new InvalidOperationException (msg);
+        }
+
+        _userHeadersResponder = value;
+      }
+    }
+
     #endregion
 
     #region Private Methods
@@ -596,6 +643,13 @@ namespace WebSocketSharp.Server
 
           return msg;
         }
+      }
+
+      if (_userHeadersResponder != null) {
+        var reqHeaders = context.Headers;
+        var userHeaders = context.WebSocket.UserHeaders;
+
+        _userHeadersResponder (reqHeaders, userHeaders);
       }
 
       if (_cookiesValidator != null) {
