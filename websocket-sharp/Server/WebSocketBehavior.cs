@@ -47,19 +47,19 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private WebSocketContext                               _context;
-    private Func<CookieCollection, CookieCollection, bool> _cookiesValidator;
-    private bool                                           _emitOnPing;
-    private Func<string, bool>                             _hostValidator;
-    private string                                         _id;
-    private bool                                           _ignoreExtensions;
-    private bool                                           _noDelay;
-    private Func<string, bool>                             _originValidator;
-    private string                                         _protocol;
-    private WebSocketSessionManager                        _sessions;
-    private DateTime                                       _startTime;
+    private WebSocketContext                                 _context;
+    private Func<CookieCollection, CookieCollection, bool>   _cookiesValidator;
+    private bool                                             _emitOnPing;
+    private Func<string, bool>                               _hostValidator;
+    private string                                           _id;
+    private bool                                             _ignoreExtensions;
+    private bool                                             _noDelay;
+    private Func<string, bool>                               _originValidator;
+    private string                                           _protocol;
+    private WebSocketSessionManager                          _sessions;
+    private DateTime                                         _startTime;
     private Action<NameValueCollection, WebHeaderCollection> _userHeadersResponder;
-    private WebSocket                                      _websocket;
+    private WebSocket                                        _websocket;
 
     #endregion
 
