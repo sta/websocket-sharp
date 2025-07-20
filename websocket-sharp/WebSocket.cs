@@ -1650,6 +1650,8 @@ namespace WebSocketSharp
         return false;
       }
 
+      _log.Debug (res.ToString ());
+
       if (_protocolsRequested)
         _protocol = res.Headers["Sec-WebSocket-Protocol"];
 
