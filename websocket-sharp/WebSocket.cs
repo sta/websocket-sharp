@@ -1639,18 +1639,17 @@ namespace WebSocketSharp
 
       var res = sendHandshakeRequest ();
 
+      _log.Debug (res.ToString ());
+
       string msg;
 
       if (!checkHandshakeResponse (res, out msg)) {
         _log.Error (msg);
-        _log.Debug (res.ToString ());
 
         abort (1002, "A handshake error has occurred.");
 
         return false;
       }
-
-      _log.Debug (res.ToString ());
 
       if (_protocolsRequested)
         _protocol = res.Headers["Sec-WebSocket-Protocol"];
