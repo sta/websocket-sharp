@@ -93,6 +93,7 @@ namespace WebSocketSharp
     private Opcode                         _fragmentsOpcode;
     private const string                   _guid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
     private Func<WebSocketContext, string> _handshakeRequestChecker;
+    private NameValueCollection            _handshakeResponseHeaders;
     private bool                           _ignoreExtensions;
     private bool                           _inContinuation;
     private volatile bool                  _inMessage;
@@ -528,6 +529,48 @@ namespace WebSocketSharp
     public string Extensions {
       get {
         return _extensions ?? String.Empty;
+      }
+    }
+
+    /// <summary>
+    /// Gets the HTTP headers included in the handshake response.
+    /// </summary>
+    /// <value>
+    /// A <see cref="NameValueCollection"/> that contains the headers
+    /// included in the handshake response.
+    /// </value>
+    /// <exception cref="InvalidOperationException">
+    ///   <para>
+    ///   The get operation is not available if the interface is not for
+    ///   the client.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The get operation is not available when the current state of
+    ///   the interface is New or Connecting.
+    ///   </para>
+    /// </exception>
+    public NameValueCollection HandshakeResponseHeaders {
+      get {
+        if (!_isClient) {
+          var msg = "The get operation is not available.";
+
+          throw new InvalidOperationException (msg);
+        }
+
+        lock (_forState) {
+          var canGet = _readyState > WebSocketState.Connecting;
+
+          if (!canGet) {
+            var msg = "The get operation is not available.";
+
+            throw new InvalidOperationException (msg);
+          }
+
+          return _handshakeResponseHeaders;
+        }
       }
     }
 
@@ -1640,6 +1683,8 @@ namespace WebSocketSharp
       var res = sendHandshakeRequest ();
 
       _log.Debug (res.ToString ());
+
+      _handshakeResponseHeaders = res.Headers;
 
       string msg;
 
