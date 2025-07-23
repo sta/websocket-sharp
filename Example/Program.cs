@@ -103,7 +103,19 @@ namespace Example
             Console.WriteLine (fmt, e.Data);
           };
 
-        ws.OnOpen += (sender, e) => ws.Send ("Hi, there!");
+        ws.OnOpen +=
+          (sender, e) => {
+#if DEBUG
+            var val = ws.HandshakeResponseHeaders["HeaderFromHell2"];
+
+            if (!val.IsNullOrEmpty ()) {
+              var fmt = "[WebSocket Open] HeaderFromHell2: {0}";
+
+              Console.WriteLine (fmt, val);
+            }
+#endif
+            ws.Send ("Hi, there!");
+          };
 
         // Connect to the server.
         ws.Connect ();
