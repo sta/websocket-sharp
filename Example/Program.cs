@@ -56,7 +56,12 @@ namespace Example
         //ws.SetProxy ("http://localhost:3128", "nobita", "password");
 
         // To send a user header.
-        ws.SetUserHeader ("HeaderFromHell", "HeaderFromHell2");
+
+        var reqHeader = "HeaderFromClient";
+        var resHeader = "HeaderFromServer";
+
+        ws.SetUserHeader (reqHeader, resHeader);
+
 
         // To validate the server certificate.
         /*
@@ -106,12 +111,12 @@ namespace Example
         ws.OnOpen +=
           (sender, e) => {
 #if DEBUG
-            var val = ws.HandshakeResponseHeaders["HeaderFromHell2"];
+            var val = ws.HandshakeResponseHeaders[resHeader];
 
             if (!val.IsNullOrEmpty ()) {
-              var fmt = "[WebSocket Open] HeaderFromHell2: {0}";
+              var fmt = "[WebSocket Open] {0}: {1}";
 
-              Console.WriteLine (fmt, val);
+              Console.WriteLine (fmt, resHeader, val);
             }
 #endif
             ws.Send ("Hi, there!");
