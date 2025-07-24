@@ -143,10 +143,10 @@ namespace Example2
           // To respond to the user headers.
           s.UserHeadersResponder =
             (reqHeaders, userHeaders) => {
-              var val = reqHeaders["HeaderFromHell"];
+              var val = reqHeaders["HeaderFromClient"];
 
               if (!val.IsNullOrEmpty ())
-                userHeaders[val] = "Header From Server";
+                userHeaders[val] = "Hello From Server";
             };
 #endif
         }
