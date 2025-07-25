@@ -18,9 +18,9 @@ namespace Example
       // If you would like to connect to the server with the secure connection,
       // you should create a new instance with a wss scheme WebSocket URL.
 
-      using (var ws = new WebSocket ("ws://localhost:4649/Echo"))
+      //using (var ws = new WebSocket ("ws://localhost:4649/Echo"))
       //using (var ws = new WebSocket ("wss://localhost:5963/Echo"))
-      //using (var ws = new WebSocket ("ws://localhost:4649/Chat"))
+      using (var ws = new WebSocket ("ws://localhost:4649/Chat"))
       //using (var ws = new WebSocket ("wss://localhost:5963/Chat"))
       //using (var ws = new WebSocket ("ws://localhost:4649/Chat?name=nobita"))
       //using (var ws = new WebSocket ("wss://localhost:5963/Chat?name=nobita"))
