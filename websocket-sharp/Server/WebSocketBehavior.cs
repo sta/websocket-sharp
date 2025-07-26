@@ -48,6 +48,7 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private WebSocketContext                                 _context;
+    private Action<CookieCollection, CookieCollection>       _cookiesResponder;
     private Func<CookieCollection, CookieCollection, bool>   _cookiesValidator;
     private bool                                             _emitOnPing;
     private Func<string, bool>                               _hostValidator;
@@ -248,6 +249,52 @@ namespace WebSocketSharp.Server
     #endregion
 
     #region Public Properties
+
+    /// <summary>
+    /// Gets or sets the delegate used to respond to the HTTP cookies.
+    /// </summary>
+    /// <value>
+    ///   <para>
+    ///   A <see cref="T:System.Action{CookieCollection, CookieCollection}"/>
+    ///   delegate.
+    ///   </para>
+    ///   <para>
+    ///   It represents the delegate called when the WebSocket interface
+    ///   for a session validates the handshake request.
+    ///   </para>
+    ///   <para>
+    ///   1st <see cref="CookieCollection"/> parameter passed to the delegate
+    ///   contains the cookies included in the handshake request if any.
+    ///   </para>
+    ///   <para>
+    ///   2nd <see cref="CookieCollection"/> parameter passed to the delegate
+    ///   holds the cookies to send to the client.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not necessary.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
+    ///   </para>
+    /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The set operation is not available when the session has already started.
+    /// </exception>
+    public Action<CookieCollection, CookieCollection> CookiesResponder {
+      get {
+        return _cookiesResponder;
+      }
+
+      set {
+        if (_websocket != null) {
+          var msg = "The set operation is not available.";
+
+          throw new InvalidOperationException (msg);
+        }
+
+        _cookiesResponder = value;
+      }
+    }
 
     /// <summary>
     /// Gets or sets the delegate used to validate the HTTP cookies.
