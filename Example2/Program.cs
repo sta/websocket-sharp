@@ -95,20 +95,15 @@ namespace Example2
         s => {
           s.Prefix = "Anon#";
 #if DEBUG
-          // To validate the cookies.
+          // To respond to the cookies.
           /*
-          s.CookiesValidator =
-            (req, res) => {
-              // Check the cookies in "req", and set the cookies to send to
-              // the client with "res" if necessary.
-
-              foreach (var cookie in req) {
+          s.CookiesResponder =
+            (reqCookies, resCookies) => {
+              foreach (var cookie in reqCookies) {
                 cookie.Expired = true;
 
-                res.Add (cookie);
+                resCookies.Add (cookie);
               }
-
-              return true; // If valid.
             };
            */
 
