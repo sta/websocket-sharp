@@ -136,6 +136,7 @@ namespace Example2
           //s.Protocol = "chat";
 
           // To respond to the user headers.
+          
           s.UserHeadersResponder =
             (reqHeaders, userHeaders) => {
               var val = reqHeaders["HeaderFromClient"];
@@ -143,6 +144,7 @@ namespace Example2
               if (!val.IsNullOrEmpty ())
                 userHeaders[val] = "Hello From Server";
             };
+           
 #endif
         }
       );
