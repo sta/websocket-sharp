@@ -692,22 +692,18 @@ namespace WebSocketSharp.Server
         }
       }
 
+      if (_cookiesResponder != null) {
+        var reqCookies = context.CookieCollection;
+        var resCookies = context.WebSocket.CookieCollection;
+
+        _cookiesResponder (reqCookies, resCookies);
+      }
+
       if (_userHeadersResponder != null) {
         var reqHeaders = context.Headers;
         var userHeaders = context.WebSocket.UserHeaders;
 
         _userHeadersResponder (reqHeaders, userHeaders);
-      }
-
-      if (_cookiesValidator != null) {
-        var req = context.CookieCollection;
-        var res = context.WebSocket.CookieCollection;
-
-        if (!_cookiesValidator (req, res)) {
-          var msg = "The Cookie header is non-existent or invalid.";
-
-          return msg;
-        }
       }
 
       return null;
