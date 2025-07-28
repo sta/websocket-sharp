@@ -133,21 +133,16 @@ namespace Example3
         s => {
           s.Prefix = "Anon#";
 #if DEBUG
-          // To validate the cookies.
+          // To respond to the cookies.
           /*
-          s.CookiesValidator =
-            (req, res) => {
-              // Check the cookies in "req", and set the cookies to send to
-              // the client with "res" if necessary.
+            s.CookiesResponder =
+              (reqCookies, resCookies) => {
+                foreach (var cookie in reqCookies) {
+                  cookie.Expired = true;
 
-              foreach (var cookie in req) {
-                cookie.Expired = true;
-
-                res.Add (cookie);
-              }
-
-              return true; // If valid.
-            };
+                  resCookies.Add (cookie);
+                }
+              };
            */
 
           // To emit a WebSocket.OnMessage event when receives a ping.
