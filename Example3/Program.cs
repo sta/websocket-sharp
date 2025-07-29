@@ -172,6 +172,17 @@ namespace Example3
           // To send the Sec-WebSocket-Protocol header that has a subprotocol
           // name.
           //s.Protocol = "chat";
+
+          // To respond to the user headers.
+          
+          s.UserHeadersResponder =
+            (reqHeaders, userHeaders) => {
+              var val = reqHeaders["HeaderFromClient"];
+
+              if (!val.IsNullOrEmpty ())
+                userHeaders[val] = "Hello From Server";
+            };
+           
 #endif
         }
       );
