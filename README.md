@@ -514,7 +514,7 @@ If you would like to provide the Digest authentication, you should set such as t
 wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;
 ```
 
-### Query string, Origin header, and Cookies ###
+### Query string, Origin header, Cookies, and user headers ###
 
 As a WebSocket client, if you would like to send the query string in the handshake request, you should create a new instance of the `WebSocket` class with a WebSocket URL that includes the [Query] string parameters.
 
@@ -528,10 +528,16 @@ And if you would like to send the Origin header in the handshake request, you sh
 ws.Origin = "http://example.com";
 ```
 
-And also if you would like to send the cookies in the handshake request, you should set any cookie by using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method before calling the connect method.
+And if you would like to send cookies in the handshake request, you should set any cookie by using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method before calling the connect method.
 
 ```csharp
 ws.SetCookie (new Cookie ("name", "nobita"));
+```
+
+And also if you would like to send user headers in the handshake request, you should set any user defined header by using the `WebSocket.SetUserHeader (string, string)` method before calling the connect method.
+
+```csharp
+ws.SetUserHeader ("HeaderFromClient", "HeaderFromServer");
 ```
 
 As a WebSocket server, if you would like to get the query string included in a handshake request, you should access the `WebSocketBehavior.QueryString` property, such as the following.
@@ -551,7 +557,7 @@ public class Chat : WebSocketBehavior
 }
 ```
 
-And if you would like to validate the Origin header, cookies, or both, you should set each validation for it with your `WebSocketBehavior`, for example, by using the `WebSocketServer.AddWebSocketService<TBehavior> (string, Action<TBehavior>)` method with initializing, such as the following.
+And if you would like to validate the Origin header, you should set a validation for it with your `WebSocketBehavior`, for example, by using the `WebSocketServer.AddWebSocketService<TBehavior> (string, Action<TBehavior>)` method with initializing, such as the following.
 
 ```csharp
 wssv.AddWebSocketService<Chat> (
@@ -567,19 +573,31 @@ wssv.AddWebSocketService<Chat> (
                && Uri.TryCreate (val, UriKind.Absolute, out origin)
                && origin.Host == "example.com";
       };
+  }
+);
+```
 
-    s.CookiesValidator =
-      (req, res) => {
-        // Check the cookies in "req", and set the cookies to send to
-        // the client with "res" if necessary.
+And also if you would like to respond to the cookies, user headers, or both, you should set each response action for it with your `WebSocketBehavior`, for example, by using the `WebSocketServer.AddWebSocketService<TBehavior> (string, Action<TBehavior>)` method with initializing, such as the following.
 
-        foreach (var cookie in req) {
+```csharp
+wssv.AddWebSocketService<Chat> (
+  "/Chat",
+  s => {
+    s.CookiesResponder =
+      (reqCookies, resCookies) => {
+        foreach (var cookie in reqCookies) {
           cookie.Expired = true;
 
-          res.Add (cookie);
+          resCookies.Add (cookie);
         }
+      };
 
-        return true; // If valid.
+    s.UserHeadersResponder =
+      (reqHeaders, userHeaders) => {
+        var val = reqHeaders["HeaderFromClient"];
+
+        if (!val.IsNullOrEmpty ())
+          userHeaders[val] = "Hello From Server";
       };
   }
 );
