@@ -49,7 +49,6 @@ namespace WebSocketSharp.Server
 
     private WebSocketContext                                 _context;
     private Action<CookieCollection, CookieCollection>       _cookiesResponder;
-    private Func<CookieCollection, CookieCollection, bool>   _cookiesValidator;
     private bool                                             _emitOnPing;
     private Func<string, bool>                               _hostValidator;
     private string                                           _id;
@@ -293,56 +292,6 @@ namespace WebSocketSharp.Server
         }
 
         _cookiesResponder = value;
-      }
-    }
-
-    /// <summary>
-    /// Gets or sets the delegate used to validate the HTTP cookies.
-    /// </summary>
-    /// <value>
-    ///   <para>
-    ///   A <see cref="T:System.Func{CookieCollection, CookieCollection, bool}"/>
-    ///   delegate.
-    ///   </para>
-    ///   <para>
-    ///   It represents the delegate called when the WebSocket interface
-    ///   for a session validates the handshake request.
-    ///   </para>
-    ///   <para>
-    ///   1st <see cref="CookieCollection"/> parameter passed to the delegate
-    ///   contains the cookies to validate.
-    ///   </para>
-    ///   <para>
-    ///   2nd <see cref="CookieCollection"/> parameter passed to the delegate
-    ///   holds the cookies to send to the client.
-    ///   </para>
-    ///   <para>
-    ///   The method invoked by the delegate must return <c>true</c>
-    ///   if the cookies are valid.
-    ///   </para>
-    ///   <para>
-    ///   <see langword="null"/> if not necessary.
-    ///   </para>
-    ///   <para>
-    ///   The default value is <see langword="null"/>.
-    ///   </para>
-    /// </value>
-    /// <exception cref="InvalidOperationException">
-    /// The set operation is not available when the session has already started.
-    /// </exception>
-    public Func<CookieCollection, CookieCollection, bool> CookiesValidator {
-      get {
-        return _cookiesValidator;
-      }
-
-      set {
-        if (_websocket != null) {
-          var msg = "The set operation is not available.";
-
-          throw new InvalidOperationException (msg);
-        }
-
-        _cookiesValidator = value;
       }
     }
 
