@@ -93,6 +93,7 @@ namespace WebSocketSharp
     private Opcode                         _fragmentsOpcode;
     private const string                   _guid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
     private Func<WebSocketContext, string> _handshakeRequestChecker;
+    private Action<WebSocketContext>       _handshakeRequestResponder;
     private NameValueCollection            _handshakeResponseHeaders;
     private bool                           _ignoreExtensions;
     private bool                           _inContinuation;
@@ -306,6 +307,17 @@ namespace WebSocketSharp
 
       set {
         _handshakeRequestChecker = value;
+      }
+    }
+
+    // As server
+    internal Action<WebSocketContext> CustomHandshakeRequestResponder {
+      get {
+        return _handshakeRequestResponder;
+      }
+
+      set {
+        _handshakeRequestResponder = value;
       }
     }
 
