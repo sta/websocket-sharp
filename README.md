@@ -9,7 +9,7 @@ websocket-sharp supports:
 - [Per-message Compression](#per-message-compression) extension
 - [Secure Connection](#secure-connection)
 - [HTTP Authentication](#http-authentication)
-- [Query string, Origin header, and Cookies](#query-string-origin-header-and-cookies)
+- [Query string, Origin header, Cookies, and user headers](#query-string-origin-header-cookies-and-user-headers)
 - [Connecting through the HTTP proxy server](#connecting-through-the-http-proxy-server)
 - .NET Framework **3.5** or later versions of .NET Framework (includes compatible environment such as [Mono])
 
