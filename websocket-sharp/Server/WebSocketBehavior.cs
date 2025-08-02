@@ -693,6 +693,23 @@ namespace WebSocketSharp.Server
       OnOpen ();
     }
 
+    private void respondToHandshakeRequest (WebSocketContext context)
+    {
+      if (_cookiesResponder != null) {
+        var reqCookies = context.CookieCollection;
+        var resCookies = context.WebSocket.CookieCollection;
+
+        _cookiesResponder (reqCookies, resCookies);
+      }
+
+      if (_userHeadersResponder != null) {
+        var reqHeaders = context.Headers;
+        var userHeaders = context.WebSocket.UserHeaders;
+
+        _userHeadersResponder (reqHeaders, userHeaders);
+      }
+    }
+
     #endregion
 
     #region Internal Methods
