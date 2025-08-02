@@ -1678,6 +1678,15 @@ namespace WebSocketSharp
       return message == null;
     }
 
+    // As server
+    private void customRespondToHandshakeRequest (WebSocketContext context)
+    {
+      if (_handshakeRequestResponder == null)
+        return;
+
+      _handshakeRequestResponder (context);
+    }
+
     private MessageEventArgs dequeueFromMessageEventQueue ()
     {
       lock (_forMessageEventQueue) {
