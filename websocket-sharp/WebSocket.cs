@@ -1043,6 +1043,8 @@ namespace WebSocketSharp
         processSecWebSocketExtensionsClientHeader (val);
       }
 
+      customRespondToHandshakeRequest (_context);
+
       if (_noDelay)
         _socket.NoDelay = true;
 
