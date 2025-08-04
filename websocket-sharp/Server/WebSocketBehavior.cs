@@ -641,20 +641,6 @@ namespace WebSocketSharp.Server
         }
       }
 
-      if (_cookiesResponder != null) {
-        var reqCookies = context.CookieCollection;
-        var resCookies = context.WebSocket.CookieCollection;
-
-        _cookiesResponder (reqCookies, resCookies);
-      }
-
-      if (_userHeadersResponder != null) {
-        var reqHeaders = context.Headers;
-        var userHeaders = context.WebSocket.UserHeaders;
-
-        _userHeadersResponder (reqHeaders, userHeaders);
-      }
-
       return null;
     }
 
@@ -724,6 +710,7 @@ namespace WebSocketSharp.Server
 
       _websocket = context.WebSocket;
       _websocket.CustomHandshakeRequestChecker = checkHandshakeRequest;
+      _websocket.CustomHandshakeRequestResponder = respondToHandshakeRequest;
 
       if (_emitOnPing)
         _websocket.EmitOnPing = true;
