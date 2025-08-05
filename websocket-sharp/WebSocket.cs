@@ -4438,7 +4438,6 @@ namespace WebSocketSharp
     /// characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// This instance does not allow the header.
     ///   <para>
     ///   The SetUserHeader method is not available when the current state of
     ///   the interface is neither New nor Closed.
