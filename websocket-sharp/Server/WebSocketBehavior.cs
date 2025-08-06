@@ -259,7 +259,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     ///   <para>
     ///   It represents the delegate called when the WebSocket interface
-    ///   for a session validates the handshake request.
+    ///   for a session respond to the handshake request.
     ///   </para>
     ///   <para>
     ///   1st <see cref="CookieCollection"/> parameter passed to the delegate
