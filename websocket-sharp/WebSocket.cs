@@ -1621,7 +1621,9 @@ namespace WebSocketSharp
       if (hasUserHeader)
         headers.Add (_userHeaders);
 
-      if (_cookies.Count > 0)
+      var hasCookie = _cookies != null && _cookies.Count > 0;
+
+      if (hasCookie)
         ret.SetCookies (_cookies);
 
       return ret;
