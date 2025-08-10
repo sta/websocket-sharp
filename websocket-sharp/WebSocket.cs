@@ -416,6 +416,11 @@ namespace WebSocketSharp
     /// </value>
     public IEnumerable<Cookie> Cookies {
       get {
+        var hasCookie = _cookies != null && _cookies.Count > 0;
+
+        if (!hasCookie)
+          yield break;
+
         lock (_cookies.SyncRoot) {
           foreach (var cookie in _cookies)
             yield return cookie;
