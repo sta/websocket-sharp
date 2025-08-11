@@ -295,6 +295,9 @@ namespace WebSocketSharp
 
     internal CookieCollection CookieCollection {
       get {
+        if (_cookies == null)
+          _cookies = new CookieCollection ();
+
         return _cookies;
       }
     }
@@ -1778,7 +1781,6 @@ namespace WebSocketSharp
     private void init ()
     {
       _compression = CompressionMethod.None;
-      _cookies = new CookieCollection ();
       _forPing = new object ();
       _forSend = new object ();
       _forState = new object ();
@@ -4145,8 +4147,8 @@ namespace WebSocketSharp
           throw new InvalidOperationException (msg);
         }
 
-        lock (_cookies.SyncRoot)
-          _cookies.SetOrRemove (cookie);
+        lock (CookieCollection.SyncRoot)
+          CookieCollection.SetOrRemove (cookie);
       }
     }
 
