@@ -94,6 +94,7 @@ namespace WebSocketSharp
     private const string                   _guid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
     private Func<WebSocketContext, string> _handshakeRequestChecker;
     private Action<WebSocketContext>       _handshakeRequestResponder;
+    private CookieCollection               _handshakeResponseCookies;
     private NameValueCollection            _handshakeResponseHeaders;
     private bool                           _ignoreExtensions;
     private bool                           _inContinuation;
@@ -549,6 +550,48 @@ namespace WebSocketSharp
     public string Extensions {
       get {
         return _extensions ?? String.Empty;
+      }
+    }
+
+    /// <summary>
+    /// Gets the HTTP cookies included in the handshake response.
+    /// </summary>
+    /// <value>
+    /// A <see cref="CookieCollection"/> that contains the cookies included in
+    /// the handshake response if any.
+    /// </value>
+    /// <exception cref="InvalidOperationException">
+    ///   <para>
+    ///   The get operation is not available if the interface is not for
+    ///   the client.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The get operation is not available when the current state of
+    ///   the interface is New or Connecting.
+    ///   </para>
+    /// </exception>
+    public CookieCollection HandshakeResponseCookies {
+      get {
+        if (!_isClient) {
+          var msg = "The get operation is not available.";
+
+          throw new InvalidOperationException (msg);
+        }
+
+        lock (_forState) {
+          var canGet = _readyState > WebSocketState.Connecting;
+
+          if (!canGet) {
+            var msg = "The get operation is not available.";
+
+            throw new InvalidOperationException (msg);
+          }
+
+          return _handshakeResponseCookies;
+        }
       }
     }
 
@@ -1720,6 +1763,7 @@ namespace WebSocketSharp
       _log.Debug (res.ToString ());
 
       _handshakeResponseHeaders = res.Headers;
+      _handshakeResponseCookies = res.Cookies;
 
       string msg;
 
@@ -1743,10 +1787,8 @@ namespace WebSocketSharp
           _extensions = exts;
       }
 
-      var cookies = res.Cookies;
-
-      if (cookies.Count > 0)
-        _cookies.SetOrRemove (cookies);
+      if (_handshakeResponseCookies.Count > 0)
+        _cookies.SetOrRemove (_handshakeResponseCookies);
 
       return true;
     }
