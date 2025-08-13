@@ -1776,10 +1776,10 @@ namespace WebSocketSharp
       }
 
       if (_protocolsRequested)
-        _protocol = res.Headers["Sec-WebSocket-Protocol"];
+        _protocol = _handshakeResponseHeaders["Sec-WebSocket-Protocol"];
 
       if (_extensionsRequested) {
-        var exts = res.Headers["Sec-WebSocket-Extensions"];
+        var exts = _handshakeResponseHeaders["Sec-WebSocket-Extensions"];
 
         if (exts == null)
           _compression = CompressionMethod.None;
