@@ -1788,7 +1788,7 @@ namespace WebSocketSharp
       }
 
       if (_handshakeResponseCookies.Count > 0)
-        _cookies.SetOrRemove (_handshakeResponseCookies);
+        CookieCollection.SetOrRemove (_handshakeResponseCookies);
 
       return true;
     }
