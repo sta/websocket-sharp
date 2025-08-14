@@ -1781,10 +1781,10 @@ namespace WebSocketSharp
       if (_extensionsRequested) {
         var exts = _handshakeResponseHeaders["Sec-WebSocket-Extensions"];
 
-        if (exts == null)
-          _compression = CompressionMethod.None;
-        else
+        if (exts != null)
           _extensions = exts;
+        else
+          _compression = CompressionMethod.None;
       }
 
       if (_handshakeResponseCookies.Count > 0)
