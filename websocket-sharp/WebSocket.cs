@@ -406,33 +406,6 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the HTTP cookies included in the handshake request/response.
-    /// </summary>
-    /// <value>
-    ///   <para>
-    ///   An <see cref="T:System.Collections.Generic.IEnumerable{WebSocketSharp.Net.Cookie}"/>
-    ///   instance.
-    ///   </para>
-    ///   <para>
-    ///   It provides an enumerator which supports the iteration over
-    ///   the collection of the cookies.
-    ///   </para>
-    /// </value>
-    public IEnumerable<Cookie> Cookies {
-      get {
-        var hasCookie = _cookies != null && _cookies.Count > 0;
-
-        if (!hasCookie)
-          yield break;
-
-        lock (_cookies.SyncRoot) {
-          foreach (var cookie in _cookies)
-            yield return cookie;
-        }
-      }
-    }
-
-    /// <summary>
     /// Gets the credentials for the HTTP authentication (Basic/Digest).
     /// </summary>
     /// <value>
@@ -4189,8 +4162,7 @@ namespace WebSocketSharp
           throw new InvalidOperationException (msg);
         }
 
-        lock (CookieCollection.SyncRoot)
-          CookieCollection.SetOrRemove (cookie);
+        CookieCollection.SetOrRemove (cookie);
       }
     }
 
