@@ -683,7 +683,7 @@ namespace WebSocketSharp.Server
     {
       if (_cookiesResponder != null) {
         var reqCookies = context.CookieCollection;
-        var resCookies = context.WebSocket.CookieCollection;
+        var resCookies = context.WebSocket.Cookies;
 
         _cookiesResponder (reqCookies, resCookies);
       }

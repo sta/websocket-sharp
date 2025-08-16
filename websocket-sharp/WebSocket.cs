@@ -294,7 +294,7 @@ namespace WebSocketSharp
 
     #region Internal Properties
 
-    internal CookieCollection CookieCollection {
+    internal CookieCollection Cookies {
       get {
         if (_cookies == null)
           _cookies = new CookieCollection ();
@@ -1761,7 +1761,7 @@ namespace WebSocketSharp
       }
 
       if (_handshakeResponseCookies.Count > 0)
-        CookieCollection.SetOrRemove (_handshakeResponseCookies);
+        Cookies.SetOrRemove (_handshakeResponseCookies);
 
       return true;
     }
@@ -4162,7 +4162,7 @@ namespace WebSocketSharp
           throw new InvalidOperationException (msg);
         }
 
-        CookieCollection.SetOrRemove (cookie);
+        Cookies.SetOrRemove (cookie);
       }
     }
 
