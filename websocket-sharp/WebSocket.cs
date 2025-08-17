@@ -1729,6 +1729,9 @@ namespace WebSocketSharp
     // As client
     private bool doHandshake ()
     {
+      _handshakeResponseHeaders = null;
+      _handshakeResponseCookies = null;
+
       setClientStream ();
 
       var res = sendHandshakeRequest ();
