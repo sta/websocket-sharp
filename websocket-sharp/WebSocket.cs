@@ -1807,6 +1807,14 @@ namespace WebSocketSharp
       _readyState = WebSocketState.New;
     }
 
+    // As client
+    private void initr ()
+    {
+      _extensionsRequested = false;
+      _handshakeResponseCookies = null;
+      _handshakeResponseHeaders = null;
+    }
+
     private void message ()
     {
       MessageEventArgs e = null;
