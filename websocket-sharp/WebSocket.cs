@@ -1527,6 +1527,9 @@ namespace WebSocketSharp
           return false;
         }
 
+        if (_readyState == WebSocketState.Closed)
+          initr ();
+
         _retryCountForConnect++;
 
         _readyState = WebSocketState.Connecting;
@@ -1729,9 +1732,6 @@ namespace WebSocketSharp
     // As client
     private bool doHandshake ()
     {
-      _handshakeResponseHeaders = null;
-      _handshakeResponseCookies = null;
-
       setClientStream ();
 
       var res = sendHandshakeRequest ();
