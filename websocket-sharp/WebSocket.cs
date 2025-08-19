@@ -3660,6 +3660,33 @@ namespace WebSocketSharp
 
       send (Opcode.Binary, new MemoryStream (data));
     }
+    
+    /// <summary>
+    /// Sends binary <paramref name="data"/> using the WebSocket connection.
+    /// </summary>
+    /// <param name="data">
+    /// An array of <see cref="byte"/> that represents the binary data to send.
+    /// </param>
+    /// <param name="index">
+    /// Start index for reading array <see cref="data"/>.
+    /// </param>
+    /// <param name="count">
+    /// Number of elements in <see cref="data"/> array to send.
+    /// </param>
+    public void Send (byte[] data, int index, int count)
+    {
+      var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
+                CheckSendParameter (data);
+
+      if (msg != null) {
+        _logger.Error (msg);
+        error ("An error has occurred in sending data.", null);
+
+        return;
+      }
+
+      send (Opcode.Binary, new MemoryStream (data, index, count));
+    }
 
     /// <summary>
     /// Sends the specified file to the remote endpoint.
