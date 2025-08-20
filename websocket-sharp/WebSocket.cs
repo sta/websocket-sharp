@@ -96,6 +96,7 @@ namespace WebSocketSharp
     private Action<WebSocketContext>       _handshakeRequestResponder;
     private CookieCollection               _handshakeResponseCookies;
     private NameValueCollection            _handshakeResponseHeaders;
+    private bool                           _hasProtocol;
     private bool                           _ignoreExtensions;
     private bool                           _inContinuation;
     private volatile bool                  _inMessage;
@@ -277,6 +278,7 @@ namespace WebSocketSharp
           throw new ArgumentException (msg, "protocols");
 
         _protocols = protocols;
+        _hasProtocol = true;
       }
 
       _base64Key = CreateBase64Key ();
