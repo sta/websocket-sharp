@@ -113,7 +113,6 @@ namespace WebSocketSharp
     private bool                           _preAuth;
     private string                         _protocol;
     private string[]                       _protocols;
-    private bool                           _protocolsRequested;
     private NetworkCredential              _proxyCredentials;
     private Uri                            _proxyUri;
     private volatile WebSocketState        _readyState;
@@ -1209,14 +1208,14 @@ namespace WebSocketSharp
       var subp = headers["Sec-WebSocket-Protocol"];
 
       if (subp == null) {
-        if (_protocolsRequested) {
+        if (_hasProtocol) {
           message = "The Sec-WebSocket-Protocol header is non-existent.";
 
           return false;
         }
       }
       else {
-        var isValid = _protocolsRequested
+        var isValid = _hasProtocol
                       && subp.Length > 0
                       && _protocols.Contains (p => p == subp);
 
@@ -1626,11 +1625,8 @@ namespace WebSocketSharp
       if (!_origin.IsNullOrEmpty ())
         headers["Origin"] = _origin;
 
-      if (_protocols != null) {
+      if (_hasProtocol)
         headers["Sec-WebSocket-Protocol"] = _protocols.ToString (", ");
-
-        _protocolsRequested = true;
-      }
 
       var exts = createExtensions ();
 
@@ -1753,7 +1749,7 @@ namespace WebSocketSharp
         return false;
       }
 
-      if (_protocolsRequested)
+      if (_hasProtocol)
         _protocol = _handshakeResponseHeaders["Sec-WebSocket-Protocol"];
 
       if (_extensionsRequested) {
