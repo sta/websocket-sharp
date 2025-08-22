@@ -83,7 +83,6 @@ namespace WebSocketSharp
     private static readonly byte[]         _emptyBytes;
     private bool                           _enableRedirection;
     private string                         _extensions;
-    private bool                           _extensionsRequested;
     private object                         _forMessageEventQueue;
     private object                         _forPing;
     private object                         _forSend;
@@ -96,6 +95,7 @@ namespace WebSocketSharp
     private Action<WebSocketContext>       _handshakeRequestResponder;
     private CookieCollection               _handshakeResponseCookies;
     private NameValueCollection            _handshakeResponseHeaders;
+    private bool                           _hasExtension;
     private bool                           _hasProtocol;
     private bool                           _ignoreExtensions;
     private bool                           _inContinuation;
@@ -1630,11 +1630,10 @@ namespace WebSocketSharp
 
       var exts = createExtensions ();
 
-      if (exts != null) {
-        headers["Sec-WebSocket-Extensions"] = exts;
+      _hasExtension = exts != null;
 
-        _extensionsRequested = true;
-      }
+      if (_hasExtension)
+        headers["Sec-WebSocket-Extensions"] = exts;
 
       var ares = createAuthenticationResponse ();
 
@@ -1752,7 +1751,7 @@ namespace WebSocketSharp
       if (_hasProtocol)
         _protocol = _handshakeResponseHeaders["Sec-WebSocket-Protocol"];
 
-      if (_extensionsRequested) {
+      if (_hasExtension) {
         var exts = _handshakeResponseHeaders["Sec-WebSocket-Extensions"];
 
         if (exts != null)
@@ -1808,7 +1807,6 @@ namespace WebSocketSharp
     // As client
     private void initr ()
     {
-      _extensionsRequested = false;
       _handshakeResponseCookies = null;
       _handshakeResponseHeaders = null;
     }
@@ -2622,7 +2620,7 @@ namespace WebSocketSharp
     // As client
     private bool validateSecWebSocketExtensionsServerHeader (string value)
     {
-      if (!_extensionsRequested)
+      if (!_hasExtension)
         return false;
 
       if (value.Length == 0)
