@@ -531,8 +531,14 @@ namespace WebSocketSharp
     /// Gets the HTTP cookies included in the handshake response.
     /// </summary>
     /// <value>
-    /// A <see cref="CookieCollection"/> that contains the cookies included in
-    /// the handshake response if any.
+    ///   <para>
+    ///   A <see cref="CookieCollection"/> that contains the cookies
+    ///   included in the handshake response if any.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the interface could not receive
+    ///   the handshake response.
+    ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
     ///   <para>
