@@ -579,8 +579,14 @@ namespace WebSocketSharp
     /// Gets the HTTP headers included in the handshake response.
     /// </summary>
     /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the headers
-    /// included in the handshake response.
+    ///   <para>
+    ///   A <see cref="NameValueCollection"/> that contains the headers
+    ///   included in the handshake response.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the interface could not receive
+    ///   the handshake response.
+    ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
     ///   <para>
