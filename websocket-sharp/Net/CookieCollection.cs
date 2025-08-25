@@ -689,7 +689,7 @@ namespace WebSocketSharp.Net
     public void Add (Cookie cookie)
     {
       if (_readOnly) {
-        var msg = "The collection is read-only.";
+        var msg = "The Add method is not available.";
 
         throw new InvalidOperationException (msg);
       }
