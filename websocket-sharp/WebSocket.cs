@@ -947,6 +947,52 @@ namespace WebSocketSharp
       }
     }
 
+    /// <summary>
+    /// Gets or sets the send timeout.
+    /// </summary>
+    /// <value>
+    /// A <see cref="TimeSpan"/> that represents the send timeout. The default value is the same as
+    /// underlying stream WriteTimeout.
+    /// </value>
+    public TimeSpan SendTimeout {
+      get {
+        if (_stream.WriteTimeout <= 0)
+        {
+          return TimeSpan.Zero;
+        }
+        return TimeSpan.FromMilliseconds(_stream.WriteTimeout);
+      }
+
+      set {
+        lock (_forSend) {
+          string msg;
+          if (!checkIfAvailable (true, true, false, true, false, false, out msg)) {
+            _logger.Error (msg);
+            error ("An error has occurred in setting the send timeout.", null);
+
+            return;
+          }
+
+          try
+          {
+            if (value <= TimeSpan.Zero)
+            {
+              _stream.WriteTimeout = -1;
+            }
+            else
+            {
+              _stream.WriteTimeout = (int)value.TotalMilliseconds;
+            }
+          }
+          catch(Exception ex)
+          {
+            _logger.Error (ex.ToString());
+            error ("An error has occurred in setting the send timeout.", ex);
+          }
+        }
+      }
+    }
+
     #endregion
 
     #region Public Events
