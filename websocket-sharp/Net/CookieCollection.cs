@@ -731,7 +731,7 @@ namespace WebSocketSharp.Net
     /// Removes all cookies from the collection.
     /// </summary>
     /// <exception cref="InvalidOperationException">
-    /// The collection is read-only.
+    /// This method is not available if the collection is read-only.
     /// </exception>
     public void Clear ()
     {
