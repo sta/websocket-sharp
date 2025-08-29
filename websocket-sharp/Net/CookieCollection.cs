@@ -838,7 +838,7 @@ namespace WebSocketSharp.Net
     /// <paramref name="cookie"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The collection is read-only.
+    /// This method is not available if the collection is read-only.
     /// </exception>
     public bool Remove (Cookie cookie)
     {
