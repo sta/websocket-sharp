@@ -823,13 +823,8 @@ namespace WebSocketSharp.Net
     /// Removes the specified cookie from the collection.
     /// </summary>
     /// <returns>
-    ///   <para>
-    ///   <c>true</c> if the cookie is successfully removed; otherwise,
-    ///   <c>false</c>.
-    ///   </para>
-    ///   <para>
-    ///   <c>false</c> if the cookie is not found in the collection.
-    ///   </para>
+    /// <c>true</c> if the cookie is successfully found and removed;
+    /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="cookie">
     /// A <see cref="Cookie"/> to remove.
