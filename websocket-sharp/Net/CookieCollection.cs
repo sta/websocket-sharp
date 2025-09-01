@@ -82,6 +82,16 @@ namespace WebSocketSharp.Net
       }
     }
 
+    internal bool ReadOnly {
+      get {
+        return _readOnly;
+      }
+
+      set {
+        _readOnly = value;
+      }
+    }
+
     internal IEnumerable<Cookie> Sorted {
       get {
         var list = new List<Cookie> (_list);
