@@ -135,10 +135,6 @@ namespace WebSocketSharp.Net
       get {
         return _readOnly;
       }
-
-      internal set {
-        _readOnly = value;
-      }
     }
 
     /// <summary>
