@@ -92,7 +92,7 @@ namespace WebSocketSharp.Net
       }
     }
 
-    internal IEnumerable<Cookie> Sorted {
+    internal IEnumerable<Cookie> SortedList {
       get {
         var list = new List<Cookie> (_list);
 
@@ -202,7 +202,7 @@ namespace WebSocketSharp.Net
 
         var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
 
-        foreach (var cookie in Sorted) {
+        foreach (var cookie in SortedList) {
           if (cookie.Name.Equals (name, caseInsensitive))
             return cookie;
         }

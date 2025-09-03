@@ -262,7 +262,7 @@ namespace WebSocketSharp
 
       var headers = Headers;
 
-      foreach (var cookie in cookies.Sorted) {
+      foreach (var cookie in cookies.SortedList) {
         var val = cookie.ToResponseString ();
 
         headers.Add ("Set-Cookie", val);

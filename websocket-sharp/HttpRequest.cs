@@ -231,7 +231,7 @@ namespace WebSocketSharp
 
       var buff = new StringBuilder (64);
 
-      foreach (var cookie in cookies.Sorted) {
+      foreach (var cookie in cookies.SortedList) {
         if (cookie.Expired)
           continue;
 
