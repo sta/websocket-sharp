@@ -92,7 +92,7 @@ namespace WebSocketSharp.Net
       }
     }
 
-    internal IEnumerable<Cookie> SortedList {
+    internal ICollection<Cookie> SortedList {
       get {
         var list = new List<Cookie> (_list);
 
