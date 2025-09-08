@@ -480,6 +480,11 @@ namespace WebSocketSharp.Server
       }
     }
 
+    internal static string CreateID ()
+    {
+      return Guid.NewGuid ().ToString ("N");
+    }
+
     internal bool Remove (string id)
     {
       lock (_sync)
