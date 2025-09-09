@@ -480,6 +480,18 @@ namespace WebSocketSharp.Server
       }
     }
 
+    internal bool Add2 (IWebSocketSession session)
+    {
+      lock (_sync) {
+        if (_state != ServerState.Start)
+          return false;
+
+        _sessions.Add (session.ID, session);
+
+        return true;
+      }
+    }
+
     internal static string CreateID ()
     {
       return Guid.NewGuid ().ToString ("N");
