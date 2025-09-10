@@ -56,6 +56,7 @@ namespace WebSocketSharp.Server
     private bool                                             _noDelay;
     private Func<string, bool>                               _originValidator;
     private string                                           _protocol;
+    private bool                                             _registered;
     private WebSocketSessionManager                          _sessions;
     private DateTime                                         _startTime;
     private Action<NameValueCollection, WebHeaderCollection> _userHeadersResponder;
@@ -376,15 +377,13 @@ namespace WebSocketSharp.Server
     /// Gets the unique ID of a session.
     /// </summary>
     /// <value>
-    ///   <para>
-    ///   A <see cref="string"/> that represents the unique ID of the session.
-    ///   </para>
-    ///   <para>
-    ///   <see langword="null"/> when the session has not started yet.
-    ///   </para>
+    /// A <see cref="string"/> that represents the unique ID of the session.
     /// </value>
     public string ID {
       get {
+        if (_id == null)
+          _id = WebSocketSessionManager.CreateID ();
+
         return _id;
       }
     }
@@ -646,7 +645,7 @@ namespace WebSocketSharp.Server
 
     private void onClose (object sender, CloseEventArgs e)
     {
-      if (_id == null)
+      if (!_registered)
         return;
 
       _sessions.Remove (_id);
@@ -666,9 +665,9 @@ namespace WebSocketSharp.Server
 
     private void onOpen (object sender, EventArgs e)
     {
-      _id = _sessions.Add (this);
+      _registered = _sessions.Add2 (this);
 
-      if (_id == null) {
+      if (!_registered) {
         _websocket.Close (CloseStatusCode.Away);
 
         return;
