@@ -466,20 +466,6 @@ namespace WebSocketSharp.Server
 
     #region Internal Methods
 
-    internal string Add (IWebSocketSession session)
-    {
-      lock (_sync) {
-        if (_state != ServerState.Start)
-          return null;
-
-        var id = createID ();
-
-        _sessions.Add (id, session);
-
-        return id;
-      }
-    }
-
     internal bool Add2 (IWebSocketSession session)
     {
       lock (_sync) {
