@@ -417,11 +417,6 @@ namespace WebSocketSharp.Server
       return _state == ServerState.Ready || _state == ServerState.Stop;
     }
 
-    private static string createID ()
-    {
-      return Guid.NewGuid ().ToString ("N");
-    }
-
     private void setSweepTimer (double interval)
     {
       _sweepTimer = new System.Timers.Timer (interval);
