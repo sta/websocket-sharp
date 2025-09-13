@@ -461,7 +461,7 @@ namespace WebSocketSharp.Server
 
     #region Internal Methods
 
-    internal bool Add2 (IWebSocketSession session)
+    internal bool Add (IWebSocketSession session)
     {
       lock (_sync) {
         if (_state != ServerState.Start)

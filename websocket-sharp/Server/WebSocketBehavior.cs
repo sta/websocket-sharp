@@ -665,7 +665,7 @@ namespace WebSocketSharp.Server
 
     private void onOpen (object sender, EventArgs e)
     {
-      _registered = _sessions.Add2 (this);
+      _registered = _sessions.Add (this);
 
       if (!_registered) {
         _websocket.Close (CloseStatusCode.Away);
