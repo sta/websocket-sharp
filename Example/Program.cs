@@ -57,8 +57,8 @@ namespace Example
 
         // To send a user header.
 
-        var reqHeader = "HeaderFromClient";
-        var resHeader = "HeaderFromServer";
+        var reqHeader = "RequestForID";
+        var resHeader = "ID";
 
         ws.SetUserHeader (reqHeader, resHeader);
 
