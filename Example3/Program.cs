@@ -177,10 +177,10 @@ namespace Example3
           
           s.UserHeadersResponder =
             (reqHeaders, userHeaders) => {
-              var val = reqHeaders["HeaderFromClient"];
+              var val = reqHeaders["RequestForID"];
 
               if (!val.IsNullOrEmpty ())
-                userHeaders[val] = "Hello From Server";
+                userHeaders[val] = s.ID;
             };
            
 #endif
