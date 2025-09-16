@@ -537,7 +537,7 @@ ws.SetCookie (new Cookie ("name", "nobita"));
 And also if you would like to send user headers in the handshake request, you should set any user defined header by using the `WebSocket.SetUserHeader (string, string)` method before calling the connect method.
 
 ```csharp
-ws.SetUserHeader ("HeaderFromClient", "HeaderFromServer");
+ws.SetUserHeader ("RequestForID", "ID");
 ```
 
 As a WebSocket server, if you would like to get the query string included in a handshake request, you should access the `WebSocketBehavior.QueryString` property, such as the following.
@@ -594,10 +594,10 @@ wssv.AddWebSocketService<Chat> (
 
     s.UserHeadersResponder =
       (reqHeaders, userHeaders) => {
-        var val = reqHeaders["HeaderFromClient"];
+        var val = reqHeaders["RequestForID"];
 
         if (!val.IsNullOrEmpty ())
-          userHeaders[val] = "Hello From Server";
+          userHeaders[val] = s.ID;
       };
   }
 );
