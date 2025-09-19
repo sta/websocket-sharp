@@ -1814,6 +1814,10 @@ namespace WebSocketSharp
       _messageEventQueue = new Queue<MessageEventArgs> ();
       _forMessageEventQueue = ((ICollection) _messageEventQueue).SyncRoot;
       _readyState = WebSocketState.New;
+      OnClose += (o, e) =>
+      {
+          _messageEventQueue.Clear();
+      };
     }
 
     // As client
