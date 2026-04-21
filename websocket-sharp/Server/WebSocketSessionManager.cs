@@ -511,7 +511,7 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Sends the specified data to every client in the WebSocket service.
+    /// Sends the specified data to all clients in the WebSocket service.
     /// </summary>
     /// <param name="data">
     /// An array of <see cref="byte"/> that specifies the binary data to send.
