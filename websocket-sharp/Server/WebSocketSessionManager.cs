@@ -816,7 +816,8 @@ namespace WebSocketSharp.Server
     /// <paramref name="stream"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current state of the service is not Start.
+    /// This method is not available when the current state of the service is
+    /// not Start.
     /// </exception>
     public void BroadcastAsync (Stream stream, int length, Action completed)
     {
