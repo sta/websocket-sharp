@@ -865,7 +865,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Closes the session with the specified ID.
+    /// Closes the specified session.
     /// </summary>
     /// <param name="id">
     /// A <see cref="string"/> that specifies the ID of the session to close.
