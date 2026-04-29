@@ -956,7 +956,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The session could not be found.
+    /// This method is not available if the session could not be found.
     /// </exception>
     public void CloseSession (string id, ushort code, string reason)
     {
