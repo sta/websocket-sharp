@@ -893,7 +893,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Closes the session with the specified ID, status code, and reason.
+    /// Closes the specified session with the specified status code and reason.
     /// </summary>
     /// <param name="id">
     /// A <see cref="string"/> that specifies the ID of the session to close.
