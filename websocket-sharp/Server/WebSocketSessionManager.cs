@@ -1030,7 +1030,7 @@ namespace WebSocketSharp.Server
     /// The size of <paramref name="reason"/> is greater than 123 bytes.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The session could not be found.
+    /// This method is not available if the session could not be found.
     /// </exception>
     public void CloseSession (string id, CloseStatusCode code, string reason)
     {
