@@ -1062,7 +1062,7 @@ namespace WebSocketSharp.Server
     /// <paramref name="id"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The session could not be found.
+    /// This method is not available if the session could not be found.
     /// </exception>
     public bool PingTo (string id)
     {
