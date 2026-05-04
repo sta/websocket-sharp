@@ -1046,7 +1046,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a ping to the client using the specified session.
+    /// Sends a ping to the client for the specified session.
     /// </summary>
     /// <returns>
     /// <c>true</c> if the send has successfully done and a pong has been
