@@ -1114,7 +1114,7 @@ namespace WebSocketSharp.Server
     /// The size of <paramref name="message"/> is greater than 125 bytes.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The session could not be found.
+    /// This method is not available if the session could not be found.
     /// </exception>
     public bool PingTo (string message, string id)
     {
