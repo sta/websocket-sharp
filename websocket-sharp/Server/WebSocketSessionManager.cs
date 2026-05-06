@@ -1078,7 +1078,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a ping with the specified message to the client using
+    /// Sends a ping with the specified message to the client for
     /// the specified session.
     /// </summary>
     /// <returns>
