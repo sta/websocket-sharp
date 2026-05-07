@@ -1154,7 +1154,7 @@ namespace WebSocketSharp.Server
     /// </exception>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   The session could not be found.
+    ///   This method is not available if the session could not be found.
     ///   </para>
     ///   <para>
     ///   -or-
