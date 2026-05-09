@@ -1130,7 +1130,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified data to the client using the specified session.
+    /// Sends the specified data to the client for the specified session.
     /// </summary>
     /// <param name="data">
     /// An array of <see cref="byte"/> that specifies the binary data to send.
