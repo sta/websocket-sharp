@@ -1178,7 +1178,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified data to the client using the specified session.
+    /// Sends the specified data to the client for the specified session.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> that specifies the text data to send.
