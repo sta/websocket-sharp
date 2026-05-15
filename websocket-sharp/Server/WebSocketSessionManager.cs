@@ -1234,7 +1234,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the data from the specified stream instance to the client using
+    /// Sends the data from the specified stream instance to the client for
     /// the specified session.
     /// </summary>
     /// <param name="stream">
