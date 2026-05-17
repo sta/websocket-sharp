@@ -1361,7 +1361,8 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The current state of the WebSocket interface is not Open.
+    ///   This method is not available when the current state of the WebSocket
+    ///   interface is not Open.
     ///   </para>
     /// </exception>
     public void SendToAsync (byte[] data, string id, Action<bool> completed)
