@@ -1379,7 +1379,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified data to the client using the specified session
+    /// Sends the specified data to the client for the specified session
     /// asynchronously.
     /// </summary>
     /// <remarks>
