@@ -1609,7 +1609,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Tries to get the session instance with the specified ID.
+    /// Tries to get the specified session instance.
     /// </summary>
     /// <returns>
     /// <c>true</c> if the try has succeeded; otherwise, <c>false</c>.
