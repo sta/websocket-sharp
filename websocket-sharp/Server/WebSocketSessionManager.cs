@@ -1612,7 +1612,7 @@ namespace WebSocketSharp.Server
     /// Tries to get the specified session instance.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the try has succeeded; otherwise, <c>false</c>.
+    /// <c>true</c> if the get operation succeeds; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="id">
     /// A <see cref="string"/> that specifies the ID of the session to get.
