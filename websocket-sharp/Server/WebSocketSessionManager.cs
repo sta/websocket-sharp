@@ -1620,7 +1620,7 @@ namespace WebSocketSharp.Server
     /// <param name="session">
     ///   <para>
     ///   When this method returns, a <see cref="IWebSocketSession"/> instance
-    ///   that receives the session instance.
+    ///   that holds the session instance.
     ///   </para>
     ///   <para>
     ///   It provides the function to access the information in the session.
