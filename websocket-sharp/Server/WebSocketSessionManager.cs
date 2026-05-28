@@ -1623,7 +1623,7 @@ namespace WebSocketSharp.Server
     ///   that holds the session instance.
     ///   </para>
     ///   <para>
-    ///   It provides the function to access the information in the session.
+    ///   It provides the access to the information in the session.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if not found.
