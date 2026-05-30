@@ -184,7 +184,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the session instance with the specified ID.
+    /// Gets the specified session instance.
     /// </summary>
     /// <value>
     ///   <para>
