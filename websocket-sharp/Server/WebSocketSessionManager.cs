@@ -189,7 +189,7 @@ namespace WebSocketSharp.Server
     /// <value>
     ///   <para>
     ///   A <see cref="IWebSocketSession"/> instance that provides
-    ///   the function to access the information in the session.
+    ///   the access to the information in the session.
     ///   </para>
     ///   <para>
     ///   <see langword="null"/> if not found.
