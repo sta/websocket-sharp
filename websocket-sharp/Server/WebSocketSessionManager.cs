@@ -282,7 +282,7 @@ namespace WebSocketSharp.Server
     /// Ping or Close.
     /// </summary>
     /// <remarks>
-    /// The set operation works if the current state of the service is
+    /// The set operation is available when the current state of the service is
     /// Ready or Stop.
     /// </remarks>
     /// <value>
