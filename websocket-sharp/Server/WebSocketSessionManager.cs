@@ -305,8 +305,11 @@ namespace WebSocketSharp.Server
         }
 
         lock (_sync) {
-          if (!canSet ())
-            return;
+          if (!canSet ()) {
+            var msg = "The current state of the service is neither Ready nor Stop.";
+
+            throw new InvalidOperationException (msg);
+          }
 
           _waitTime = value;
         }
