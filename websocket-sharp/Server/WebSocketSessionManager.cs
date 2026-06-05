@@ -281,16 +281,16 @@ namespace WebSocketSharp.Server
     /// Gets or sets the time to wait for the response to the WebSocket
     /// Ping or Close.
     /// </summary>
-    /// <remarks>
-    /// The set operation is available when the current state of the service is
-    /// Ready or Stop.
-    /// </remarks>
     /// <value>
     /// A <see cref="TimeSpan"/> that represents the time to wait for
     /// the response.
     /// </value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The value specified for a set operation is zero or less.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The set operation is not available when the current state of
+    /// the service is neither Ready nor Stop.
     /// </exception>
     public TimeSpan WaitTime {
       get {
