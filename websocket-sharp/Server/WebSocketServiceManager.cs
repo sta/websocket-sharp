@@ -199,8 +199,11 @@ namespace WebSocketSharp.Server
 
       set {
         lock (_sync) {
-          if (!canSet ())
-            return;
+          if (!canSet ()) {
+            var msg = "The current state of the server is neither Ready nor Stop.";
+
+            throw new InvalidOperationException (msg);
+          }
 
           foreach (var host in _hosts.Values)
             host.KeepClean = value;
