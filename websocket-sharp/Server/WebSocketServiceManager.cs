@@ -269,7 +269,10 @@ namespace WebSocketSharp.Server
         }
 
         lock (_sync) {
-          if (!canSet ()) {
+          var canSet = _state == ServerState.Ready
+                       || _state == ServerState.Stop;
+
+          if (!canSet) {
             var msg = "The current state of the server is neither Ready nor Stop.";
 
             throw new InvalidOperationException (msg);
