@@ -288,15 +288,6 @@ namespace WebSocketSharp.Server
 
     #endregion
 
-    #region Private Methods
-
-    private bool canSet ()
-    {
-      return _state == ServerState.Ready || _state == ServerState.Stop;
-    }
-
-    #endregion
-
     #region Internal Methods
 
     internal bool InternalTryGetServiceHost (
