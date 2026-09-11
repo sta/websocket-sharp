@@ -716,11 +716,6 @@ namespace WebSocketSharp.Server
       return auth ();
     }
 
-    private bool canSet ()
-    {
-      return _state == ServerState.Ready || _state == ServerState.Stop;
-    }
-
     private bool checkHostNameForRequest (string name)
     {
       return !_isDnsStyle
