@@ -19,6 +19,13 @@ websocket-sharp supports:
 - [hybi-00] for older [draft-ietf-hybi-thewebsocketprotocol-00]. No longer maintained.
 - [draft75] for even more old [draft-hixie-thewebsocketprotocol-75]. No longer maintained.
 
+## Pre-Build Dependencies ##
+
+1. Newtonsoft.json - The fastest way to add this to your project is via NuGet.
+2. Ensure your target build is set to "Release" or "Debug" (opposed to "Release_Ubuntu", hinted by errors in the form of "Notifications" being missing). 
+
+*#2 is tricky: You may only see "Release_" with an underscore
+
 ## Build ##
 
 websocket-sharp is built as a single assembly, **websocket-sharp.dll**.
