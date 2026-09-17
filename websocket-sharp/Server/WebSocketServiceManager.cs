@@ -513,6 +513,7 @@ namespace WebSocketSharp.Server
       CheckPath (path);
 
       path = path.TrimSlashFromEnd ();
+
       WebSocketServiceHost host;
 
       lock (_sync) {
