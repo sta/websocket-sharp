@@ -148,23 +148,7 @@ namespace WebSocketSharp.Server
     /// </exception>
     public WebSocketServiceHost this[string path] {
       get {
-        if (path == null)
-          throw new ArgumentNullException ("path");
-
-        if (path.Length == 0)
-          throw new ArgumentException ("An empty string.", "path");
-
-        if (path[0] != '/') {
-          var msg = "Not an absolute path.";
-
-          throw new ArgumentException (msg, "path");
-        }
-
-        if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
-          var msg = "It includes either or both query and fragment components.";
-
-          throw new ArgumentException (msg, "path");
-        }
+        CheckPath (path);
 
         WebSocketServiceHost host;
 
