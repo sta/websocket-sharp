@@ -273,6 +273,33 @@ namespace WebSocketSharp.Server
 
     #region Internal Methods
 
+    /// <summary>
+    /// Checks if the specified path is valid.
+    /// </summary>
+    /// <param name="path">
+    /// A <see cref="string"/> to test.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="path"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is not an absolute path.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> includes either or both
+    ///   query and fragment components.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
+    /// </exception>
     internal static void CheckPath (string path)
     {
       if (path == null)
