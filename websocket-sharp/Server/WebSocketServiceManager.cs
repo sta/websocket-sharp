@@ -277,7 +277,12 @@ namespace WebSocketSharp.Server
     /// Checks if the specified path is valid.
     /// </summary>
     /// <param name="path">
-    /// A <see cref="string"/> that specifies an absolute path to test.
+    ///   <para>
+    ///   A <see cref="string"/> that specifies an absolute path to test.
+    ///   </para>
+    ///   <para>
+    ///   / is used as the path separator.
+    ///   </para>
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
