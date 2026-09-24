@@ -440,9 +440,9 @@ namespace WebSocketSharp.Server
         WebSocketServiceHost host;
 
         if (_hosts.TryGetValue (path, out host)) {
-          var msg = "It is already in use.";
+          var msg = "The specified path is already in use.";
 
-          throw new ArgumentException (msg, "path");
+          throw new InvalidOperationException (msg);
         }
 
         host = new WebSocketServiceHost<TBehavior> (path, initializer, _log);
