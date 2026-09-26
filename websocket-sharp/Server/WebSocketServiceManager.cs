@@ -373,6 +373,9 @@ namespace WebSocketSharp.Server
     ///   the service to add.
     ///   </para>
     ///   <para>
+    ///   / is used as the path separator.
+    ///   </para>
+    ///   <para>
     ///   / is trimmed from the end of the string if present.
     ///   </para>
     /// </param>
