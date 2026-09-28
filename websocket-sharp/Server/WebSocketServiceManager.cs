@@ -560,6 +560,9 @@ namespace WebSocketSharp.Server
     ///   the service to get.
     ///   </para>
     ///   <para>
+    ///   / is used as the path separator.
+    ///   </para>
+    ///   <para>
     ///   / is trimmed from the end of the string if present.
     ///   </para>
     /// </param>
