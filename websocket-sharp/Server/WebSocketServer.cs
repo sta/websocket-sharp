@@ -1096,15 +1096,12 @@ namespace WebSocketSharp.Server
     ///   <paramref name="path"/> includes either or both
     ///   query and fragment components.
     ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="path"/> is already in use.
-    ///   </para>
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="path"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The specified path is already in use.
     /// </exception>
     public void AddWebSocketService<TBehavior> (
       string path,
