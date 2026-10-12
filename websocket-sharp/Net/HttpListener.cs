@@ -903,7 +903,8 @@ namespace WebSocketSharp.Net
     /// a request is received.
     /// </remarks>
     /// <returns>
-    /// A <see cref="HttpListenerContext"/> that represents a request.
+    /// A <see cref="HttpListenerContext"/> that holds the request and
+    /// response objects.
     /// </returns>
     /// <exception cref="HttpListenerException">
     /// This method is canceled.
