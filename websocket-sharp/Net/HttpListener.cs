@@ -921,7 +921,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// This listener has been closed.
+    /// The listener has been closed.
     /// </exception>
     public HttpListenerContext GetContext ()
     {
