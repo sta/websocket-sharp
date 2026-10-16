@@ -776,13 +776,13 @@ namespace WebSocketSharp.Net
     /// </exception>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   This listener has not been started or is currently stopped.
+    ///   The listener has not been started or is currently stopped.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   This listener has no URI prefix on which listens.
+    ///   The listener has no URI prefix on which listens.
     ///   </para>
     /// </exception>
     /// <exception cref="ObjectDisposedException">
