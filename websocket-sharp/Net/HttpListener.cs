@@ -845,7 +845,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   This listener has not been started or is currently stopped.
+    ///   The listener has not been started or is currently stopped.
     ///   </para>
     ///   <para>
     ///   -or-
