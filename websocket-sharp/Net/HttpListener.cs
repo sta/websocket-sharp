@@ -827,7 +827,8 @@ namespace WebSocketSharp.Net
     /// the <see cref="BeginGetContext"/> method.
     /// </remarks>
     /// <returns>
-    /// A <see cref="HttpListenerContext"/> that represents a request.
+    /// A <see cref="HttpListenerContext"/> that holds the request and
+    /// response objects.
     /// </returns>
     /// <param name="asyncResult">
     /// An <see cref="IAsyncResult"/> instance obtained by calling
