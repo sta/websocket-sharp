@@ -542,7 +542,7 @@ namespace WebSocketSharp.Net
     {
       lock (_contextRegistrySync) {
         if (!_listening) {
-          var msg = "The method is canceled.";
+          var msg = "This method is canceled.";
 
           throw new HttpListenerException (995, msg);
         }
