@@ -259,7 +259,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </value>
     /// <exception cref="ObjectDisposedException">
-    /// This listener has been closed.
+    /// The listener has been closed.
     /// </exception>
     public string CertificateFolderPath {
       get {
