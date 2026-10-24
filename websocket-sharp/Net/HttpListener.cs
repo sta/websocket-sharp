@@ -252,7 +252,7 @@ namespace WebSocketSharp.Net
     /// <value>
     ///   <para>
     ///   A <see cref="string"/> that represents the path to the folder
-    ///   in which stores the certificate files.
+    ///   where the certificate files are stored.
     ///   </para>
     ///   <para>
     ///   The default value is <see langword="null"/>.
