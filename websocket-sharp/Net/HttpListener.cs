@@ -234,9 +234,9 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   This property represents the path to the folder in which stores
-    ///   the certificate files associated with each port number of added
-    ///   URI prefixes.
+    ///   This property represents the path to the folder that stores
+    ///   the certificate files associated with each port number of
+    ///   added URI prefixes.
     ///   </para>
     ///   <para>
     ///   A set of the certificate files is a pair of &lt;port number&gt;.cer
