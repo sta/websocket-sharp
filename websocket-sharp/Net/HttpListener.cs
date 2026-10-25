@@ -229,7 +229,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the path to the folder in which stores the certificate
+    /// Gets or sets the path to the folder that stores the certificate
     /// files used to authenticate the server on the secure connection.
     /// </summary>
     /// <remarks>
