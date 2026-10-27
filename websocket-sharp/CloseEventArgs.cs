@@ -101,6 +101,28 @@ namespace WebSocketSharp
     }
 
     /// <summary>
+    /// Gets the http status code for the handshake error
+    /// </summary>
+    /// <value>
+    ///   <para>
+    ///   A <see cref="int"/> that represents http status code for
+    ///   the handshake error
+    ///   </para>
+    /// </value>
+    public int HttpStatusCode => _payloadData.HttpStatusCode;
+   
+    /// <summary>
+    /// Gets the http response body for the handshake error
+    /// </summary>
+    /// <value>
+    ///   <para>
+    ///   A <see cref="int"/> that represents http response body for
+    ///   the handshake error
+    ///   </para>
+    /// </value>
+    public string HttpResponseBody => _payloadData.HttpResponseBody;
+    
+    /// <summary>
     /// Gets a value indicating whether the connection has been closed cleanly.
     /// </summary>
     /// <value>
