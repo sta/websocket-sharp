@@ -350,7 +350,7 @@ namespace WebSocketSharp.Net
     /// A <see cref="Logger"/> that provides the logging functions.
     /// </value>
     /// <exception cref="ObjectDisposedException">
-    /// This listener has been closed.
+    /// The listener has been closed.
     /// </exception>
     public Logger Log {
       get {
