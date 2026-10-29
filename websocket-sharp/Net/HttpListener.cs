@@ -369,7 +369,7 @@ namespace WebSocketSharp.Net
     /// prefixes.
     /// </value>
     /// <exception cref="ObjectDisposedException">
-    /// This listener has been closed.
+    /// The listener has been closed.
     /// </exception>
     public HttpListenerPrefixCollection Prefixes {
       get {
