@@ -422,7 +422,7 @@ namespace WebSocketSharp.Net
     /// configuration used to provide secure connections.
     /// </value>
     /// <exception cref="ObjectDisposedException">
-    /// This listener has been closed.
+    /// The listener has been closed.
     /// </exception>
     public ServerSslConfiguration SslConfiguration {
       get {
