@@ -62,7 +62,7 @@ namespace WebSocketSharp.Net
   ///   The listener supports HTTP/1.1 version request and response.
   ///   </para>
   ///   <para>
-  ///   And the listener allows to accept WebSocket handshake requests.
+  ///   And the listener allows to accept the WebSocket handshake request.
   ///   </para>
   ///   <para>
   ///   This class cannot be inherited.
