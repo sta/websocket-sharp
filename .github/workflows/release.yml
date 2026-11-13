@@ -20,4 +20,4 @@ jobs:
         run: |
           cd websocket-sharp/websocket-sharp-netstandard
           dotnet pack altwebsocket-sharp.csproj -c release
-          dotnet nuget push bin/release/AltWebSocketSharp.1.0.9.nupkg --api-key $NUGET_DEPLOY_KEY --source https://api.nuget.org/v3/index.json
+          dotnet nuget push bin/release/AltWebSocketSharp.1.0.10.nupkg --api-key $NUGET_DEPLOY_KEY --source https://api.nuget.org/v3/index.json
