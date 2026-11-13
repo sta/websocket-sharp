@@ -17,6 +17,7 @@ using NetWebSocketMessageType = System.Net.WebSockets.WebSocketMessageType;
 static class Program
 {
     const long LimitMs = 1000;
+    const int InFlightDelayMs = 300;
 
     static int Main(string[] args)
     {
@@ -25,13 +26,16 @@ static class Program
 
         for (var i = 1; i <= iterations; i++)
         {
-            var (clientMs, clean) = ClientCloseAgainstSystemNetServer();
+            var (clientMs, clean) = ClientCloseAgainstSystemNetServer(0);
+            var (inFlightMs, inFlightClean) = ClientCloseAgainstSystemNetServer(InFlightDelayMs);
             var serverMs = ServerCloseAgainstSystemNetClient();
-            Console.WriteLine($"run {i}: ClientWebSocket.Close() = {clientMs} ms (WasClean={clean}), server-side session close = {serverMs} ms");
+            Console.WriteLine($"run {i}: ClientWebSocket.Close() = {clientMs} ms (WasClean={clean}), server-side session close = {serverMs} ms, Close() with a data frame before a {InFlightDelayMs} ms-late close reply = {inFlightMs} ms (WasClean={inFlightClean})");
             failed |= clientMs >= LimitMs || serverMs >= LimitMs || !clean;
+            // Close() must wait for the real close reply, not return on the data frame.
+            failed |= inFlightMs < InFlightDelayMs - 50 || inFlightMs >= LimitMs || !inFlightClean;
         }
 
-        Console.WriteLine(failed ? "FAIL: a close took >= 1000 ms or the client close was not clean" : "OK: every close took < 1000 ms and the client close was clean");
+        Console.WriteLine(failed ? "FAIL: see the timings above" : "OK: every close took < 1000 ms, client closes were clean, and Close() waited for the real close reply");
         return failed ? 1 : 0;
     }
 
@@ -45,8 +49,9 @@ static class Program
     }
 
     // AltWebSocketSharp.ClientWebSocket closes against a System.Net.WebSockets
-    // server that echoes the close frame as soon as it receives it.
-    static (long ms, bool wasClean) ClientCloseAgainstSystemNetServer()
+    // server that echoes the close frame. With replyDelayMs > 0 the server
+    // first sends a data frame and only replies to the close after that delay.
+    static (long ms, bool wasClean) ClientCloseAgainstSystemNetServer(int replyDelayMs)
     {
         var port = FreePort();
         var prefix = $"http://127.0.0.1:{port}/";
@@ -65,6 +70,12 @@ static class Program
                 var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                 if (result.MessageType == NetWebSocketMessageType.Close)
                 {
+                    if (replyDelayMs > 0)
+                    {
+                        var data = System.Text.Encoding.UTF8.GetBytes("in flight");
+                        await ws.SendAsync(new ArraySegment<byte>(data), NetWebSocketMessageType.Text, true, CancellationToken.None);
+                        await Task.Delay(replyDelayMs);
+                    }
                     await ws.CloseOutputAsync(NetWebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
                     break;
                 }
@@ -115,7 +126,11 @@ static class Program
             {
                 var result = await client.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                 if (result.MessageType == NetWebSocketMessageType.Close)
-                    break; // System.Net answers the close frame automatically
+                {
+                    // ReceiveAsync does not answer a close frame; send the reply.
+                    await client.CloseOutputAsync(NetWebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+                    break;
+                }
             }
         });
 

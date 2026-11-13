@@ -1224,40 +1224,63 @@ namespace AltWebSocketSharp
             pongReceivedEvent = new ManualResetEvent(false);
             receivingExitedEvent = new ManualResetEvent(false);
 
-            ReceiveLoop(receivingExitedEvent);
+            ReceiveLoop(socketStream, receivingExitedEvent);
         }
 
 
-        // The loop signals the event it was started with, not the
-        // receivingExitedEvent field. The close sequence clears that field
-        // (ReleaseCommonResources) before it waits on the saved event in
-        // CloseHandshake, so signalling the field would never wake the
-        // waiting Close() and every close would wait out its full timeout.
-        private void ReceiveLoop(ManualResetEvent receivingExited)
+        // The loop keeps its own references to the stream and to the
+        // receivingExited event. The close sequence clears both fields
+        // (ReleaseClientResources / ReleaseServerResources and
+        // ReleaseCommonResources) before CloseHandshake waits on the saved
+        // event. Signalling the field would never wake the waiting Close(),
+        // and every close would wait out its full timeout.
+        //
+        // The loop signals the event only when a close frame arrives (or
+        // when processing a frame ends the connection), so a data frame
+        // that is still in flight during a local close is not mistaken for
+        // the peer's close reply.
+        private void ReceiveLoop(Stream stream, ManualResetEvent receivingExited)
         {
+            void SignalReceivingExited()
+            {
+                try
+                {
+                    receivingExited?.Set();
+                }
+                catch (ObjectDisposedException)
+                {
+                    // The close sequence already gave up waiting and disposed it.
+                }
+            }
+
             void OnReadCompleted(WebSocketFrame frame)
             {
-                var receivedFrameResult = ProcessReceivedFrame(frame);
-                var closed = readyState == WebSocketState.Closed;
-
-                if (!receivedFrameResult || closed)
+                if (readyState == WebSocketState.Closed)
                 {
-                    logger.Info($"ReceiveLoop exit closed={closed} receivedFrameResult={receivedFrameResult}");
-
-                    try
+                    // A local close is waiting for the peer's close reply.
+                    // Ignore anything else that was already in flight.
+                    if (frame.IsClose)
                     {
-                        receivingExited?.Set();
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        // The close sequence already gave up waiting and disposed it.
+                        logger.Info("ReceiveLoop exit: close reply received after the local close.");
+                        SignalReceivingExited();
+                        return;
                     }
 
+                    ReceiveLoop(stream, receivingExited);
+                    return;
+                }
+
+                var receivedFrameResult = ProcessReceivedFrame(frame);
+
+                if (!receivedFrameResult)
+                {
+                    logger.Info("ReceiveLoop exit: the received frame ended the connection.");
+                    SignalReceivingExited();
                     return;
                 }
 
                 // Receive next asap because the Ping or Close needs a response to it.
-                ReceiveLoop(receivingExited);
+                ReceiveLoop(stream, receivingExited);
 
                 if (inMessage || !HasMessage || readyState != WebSocketState.Open)
                     return;
@@ -1267,11 +1290,19 @@ namespace AltWebSocketSharp
 
             void OnReadFailed(Exception ex)
             {
+                if (readyState == WebSocketState.Closed)
+                {
+                    // The close sequence closed the stream (after the handshake
+                    // or its timeout). Nothing is left to report.
+                    logger.Debug("ReceiveLoop exit: the stream was closed after the local close.");
+                    return;
+                }
+
                 logger.Fatal(ex.ToString());
                 Fatal("An exception has occurred while receiving.", ex);
             }
 
-            WebSocketFrame.ReadFrameAsync(socketStream, false, OnReadCompleted, OnReadFailed);
+            WebSocketFrame.ReadFrameAsync(stream, false, OnReadCompleted, OnReadFailed);
         }
 
 
