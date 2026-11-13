@@ -1224,11 +1224,16 @@ namespace AltWebSocketSharp
             pongReceivedEvent = new ManualResetEvent(false);
             receivingExitedEvent = new ManualResetEvent(false);
 
-            ReceiveLoop();
+            ReceiveLoop(receivingExitedEvent);
         }
 
 
-        private void ReceiveLoop()
+        // The loop signals the event it was started with, not the
+        // receivingExitedEvent field. The close sequence clears that field
+        // (ReleaseCommonResources) before it waits on the saved event in
+        // CloseHandshake, so signalling the field would never wake the
+        // waiting Close() and every close would wait out its full timeout.
+        private void ReceiveLoop(ManualResetEvent receivingExited)
         {
             void OnReadCompleted(WebSocketFrame frame)
             {
@@ -1239,12 +1244,20 @@ namespace AltWebSocketSharp
                 {
                     logger.Info($"ReceiveLoop exit closed={closed} receivedFrameResult={receivedFrameResult}");
 
-                    receivingExitedEvent?.Set();
+                    try
+                    {
+                        receivingExited?.Set();
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // The close sequence already gave up waiting and disposed it.
+                    }
+
                     return;
                 }
 
                 // Receive next asap because the Ping or Close needs a response to it.
-                ReceiveLoop();
+                ReceiveLoop(receivingExited);
 
                 if (inMessage || !HasMessage || readyState != WebSocketState.Open)
                     return;
